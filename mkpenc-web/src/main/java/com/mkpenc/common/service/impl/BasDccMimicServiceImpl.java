@@ -12,8 +12,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.mkpenc.common.mapper.BasCommonMapper;
 import com.mkpenc.common.mapper.BasDccMimicMapper;
-import com.mkpenc.common.model.DccGrpTagInfo;
-import com.mkpenc.common.model.TagDccInfo;
+import com.mkpenc.common.model.ComDccGrpTagInfo;
+import com.mkpenc.common.model.ComTagDccInfo;
 import com.mkpenc.common.service.BasDccMimicService;
 
 
@@ -25,15 +25,14 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 	@Autowired
 	private BasDccMimicMapper basDccMimicMapper;
 	
-	public List<TagDccInfo> getDccGrpTagList(Map searchMap) {
+	public List<ComTagDccInfo> getDccGrpTagList(Map searchMap) {
+		List<ComDccGrpTagInfo> dccGrpTagInfoList = basDccMimicMapper.selectDccGrpTagList(searchMap);
 		
-		List<DccGrpTagInfo> dccGrpTagInfoList = basDccMimicMapper.selectDccGrpTagList(searchMap);
+		List<ComTagDccInfo> tagDccInfoList = new ArrayList();
 		
-		List<TagDccInfo> tagDccInfoList = new ArrayList();
-		
-		for(DccGrpTagInfo dccGrpTagInfo:dccGrpTagInfoList) {
+		for(ComDccGrpTagInfo dccGrpTagInfo:dccGrpTagInfoList) {
 			
-			TagDccInfo tagDccInfo = new TagDccInfo();
+			ComTagDccInfo tagDccInfo = new ComTagDccInfo();
 						
 			tagDccInfo.setHogi(dccGrpTagInfo.getHogi());
 			tagDccInfo.setADDRESS(dccGrpTagInfo.getADDRESS() == null? "": dccGrpTagInfo.getADDRESS());
@@ -211,7 +210,7 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 		return sqlQueryDcc(searchMap).split("|");
 	}
 	
-	public Map getDccValue(Map searchMap, List<TagDccInfo> tagDccInfoList,  ModelAndView mav){
+	public Map getDccValue(Map searchMap, List<ComTagDccInfo> tagDccInfoList,  ModelAndView mav){
 	
 		Map rtnMap = new HashMap();
 		
@@ -273,7 +272,7 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
     	return rtnMap; 
 	}
 	
-	private Map setDataConv(double fValue, TagDccInfo tagDccInfo, Map searchMap) {
+	private Map setDataConv(double fValue, ComTagDccInfo tagDccInfo, Map searchMap) {
 		
 		Map dataConv = new HashMap();
 		
@@ -317,7 +316,7 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 	    return dataConv;
 	}
 	
-	private void checkAlarm(Map lblData, TagDccInfo tagDccInfo) {
+	private void checkAlarm(Map lblData, ComTagDccInfo tagDccInfo) {
 		
 		switch(tagDccInfo.getAlarmType()) {
 			case "1" : 

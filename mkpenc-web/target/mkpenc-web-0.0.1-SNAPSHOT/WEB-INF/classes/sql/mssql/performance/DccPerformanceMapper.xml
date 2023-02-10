@@ -2,47 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mkpenc.performance.mapper.DccPerformanceMapper">
-
-    <select id="selectGrpNameList" parameterType="DccSearchPerformance" resultType="GroupNameInfo">
-		        SELECT
-			         Gubun
-			         , ID
-			         , MenuNo
-			         , UGrpNo
-			         , UGrpName
-		        FROM MST_GrpName
-		        <trim prefix="WHERE" prefixOverrides="AND | OR">
-			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sDive)">
-			            AND Gubun = #{sDive}
-			        </if>
-			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sGrpID)">
-			            AND ID = #{sGrpID}
-			        </if>
-			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sMenuNo)">
-			            AND MenuNo = #{sMenuNo}
-			        </if>      
-			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sUGrpNo)">
-			            AND UGrpNo = #{sUGrpNo}
-			        </if>     			        
-		        </trim>        
-    </select>
-    
-    <select id="selectMaxGrpName" parameterType="DccSearchPerformance" resultType="java.util.Map">
-		        SELECT
-			       MAX(UGrpNo) as MAX_UGrpNo
-		        FROM MST_GrpName
-		        <trim prefix="WHERE" prefixOverrides="AND | OR">
-			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sDive)">
-			            AND Gubun = #{sDive}
-			        </if>
-			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sGrpID)">
-			            AND ID = #{sGrpID}
-			        </if>
-			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sMenuNo)">
-			            AND MenuNo = #{sMenuNo}
-			        </if>      
-		        </trim>        
-    </select>
     
     <insert id="insertGrpName" parameterType="java.util.Map">
     	  INSERT INTO MST_GrpName (Gubun, ID, MenuNo, UGrpNo, UGrpName) 
@@ -57,67 +16,7 @@
 	      	AND MenuNo = #{menuNo}
 			AND UGrpNo = #{uGrpNo}
     </update>
-    
-    <select id="selectDccGrpTagList" parameterType="DccSearchPerformance" resultType="DccGrpTagInfo">
-        
-			      SELECT 
-			         		 C.iSeq
-			         		, BSCAL
-			         		, LOOPNAME
-			         		, UNIT
-			         		, LIMIT1
-			         		, LIMIT2
-			         		, TYPE
-			         		, IOTYPE
-			         		, ADDRESS
-			         		, IOBIT
-			         		, C.TBLNO
-			         		, FLDNO
-			         		, SaveCoreChk
-			         		, C.Descr
-			         		, B.Descr as DataLoop
-			         		, GrpHogi
-		        			, B.MinVal
-		        			, B.MaxVal
-		        			, Hogi
-		        			, XYGubun
-		        			, ELOW
-		        			, EHIGH
-		        			, VLOW
-		        			, VHIGH
-		        			, FASTIOCHK
-		         FROM MST_GrpTag B, MST_TAG_DCC C
-		         WHERE B.HOGI = C.IHOGI 
-		            <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and "X".equals(sXYGubun)'>
-		           			AND B.ISEQ = C.ISEQ
-		           	</if>
-		            <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and "Y".equals(sXYGubun)'>
-		           			AND B.YSEQ = C.ISEQ
-		           	</if>  
-		            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sHogi)">
-		            		AND B.GrpHOGI = #{sHogi}
-		            </if>
-		         	<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sDive)">
-	            			AND B.Gubun = #{sDive}
-	        		</if>
-	        		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sGrpID)">
-	            			AND B.ID = #{sGrpID}
-	        		</if>
-	        		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sMenuNo)">
-	            			AND B.MenuNo = #{sMenuNo}
-	        		</if>      
-	        		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sUGrpNo)">
-	            			AND B.GrpNo = #{sUGrpNo}
-	        		</if>		                  
-    </select>      
-    
-    <select id="selectFastIoChk" parameterType="DccGrpTagInfo" resultType="String">
-        	SELECT FLDNO 
-        	 FROM MST_TAG_DCC 
-            WHERE IHOGI = #{Hogi}
-               AND ADDRESS = #{ADDRESS}
-               AND IOTYPE IN ('FTAI','FTDT')
-    </select>
+
     
     <select id="selectTrendInfoByUrlA" parameterType="java.util.Map" resultType="java.util.Map">
     
@@ -256,51 +155,14 @@
     	  VALUES ( #{gubun},  #{id}, #{grpHogi}, #{menuNo}, #{grpNo}, #{hogi}, #{tagNo}, #{iSeq}, #{maxVal}, #{minVal}, #{ySeq}, #{yMaxVal}, #{yMinVal}, #{saveCoreChk}, #{descr} )        
     </insert>
     
-    <select id="selectScanTime" parameterType="DccSearchPerformance" resultType="java.util.Map">
-        	SELECT CONVERT(VARCHAR,SCANTIME,120) as SCANTIME
-        	 FROM LOG_TIMER
+   <select id="selectScanTime" parameterType="DccSearchPerformance" resultType="java.util.Map">
+        	SELECT Convert(varchar,ScanTime,120) as SCANTIME
+        	 FROM LOG_Timer
             WHERE GUBUN = 'D'
                AND HOGI = #{sHogi}
                 AND DATATYPE = #{sXYGubun}
     </select>
-  
-    <select id="selectTblNoFldNo" parameterType="DccSearchPerformance" resultType="java.util.Map">
-        	SELECT C.TBLNO, C.FLDNO 
-        	 FROM MST_GRPTAG B, MST_TAG_DCC C 
-        	WHERE B.HOGI = C.IHOGI
-        	    <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and "X".equals(sXYGubun)'>
-		           			AND B.ISEQ = C.ISEQ
-	           	</if>
-	            <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and "Y".equals(sXYGubun)'>
-	           			AND B.YSEQ = C.ISEQ
-	           	</if> 
-	           	AND B.Gubun ='D' 
-	            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sHogi)">
-	            		AND B.GrpHOGI = #{sHogi}
-	            </if>
-        		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sGrpID)">
-            			AND B.ID = #{sGrpID}
-        		</if>
-        		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sMenuNo)">
-            			AND B.MenuNo = #{sMenuNo}
-        		</if>      
-        		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sUGrpNo)">
-            			AND B.GrpNo = #{sUGrpNo}
-        		</if>	
-        	ORDER BY B.TAGNO	                  
-    </select>  
-    
-    <select id="selectLogDccTrend" parameterType="java.util.Map" resultType="java.util.Map">
-      	SELECT ${tblnoGrp} SEQ, * 
-      	 FROM LOG_${hogi}DCC_TREND${tblnoGrp}
-      	  <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(startDate)">
-	      	 WHERE WHERE Scantime <![CDATA[>]]>  DATEADD(SECOND, -5,#{pSCanTime}) AND Scantime <![CDATA[<=]]> #{pSCanTime}
-      	 </if>
-      	 <if test="@org.apache.commons.lang3.StringUtils@isEmpty(startDate)">
-	      	 WHERE WHERE Scantime = #{pSCanTime}
-      	 </if>
-    </select>  
-    
+       
     <select id="selectXYLogDccTrendByUrl" parameterType="java.util.Map" resultType="java.util.Map">
       	 	SELECT SCANTIME, ${idx} SEQ, 
 		               TVALUE1, TVALUE2, TVALUE3, TVALUE4, TVALUE5, TVALUE6, TVALUE7, TVALUE8, TVALUE9, TVALUE10, 

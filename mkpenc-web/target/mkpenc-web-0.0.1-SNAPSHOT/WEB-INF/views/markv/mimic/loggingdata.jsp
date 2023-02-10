@@ -31,7 +31,7 @@
 			<!-- page_title -->
 			<div class="page_title">
 				<h3>LOGGING DATA</h3>
-				<div class="bc"><span>MARK_V</span><span>Mimic</span><strong>LOGGING DATA</strong></div>
+				<div class="bc"><span>MARK_V</span><span>Mimic</span><span>SECONDARY</span><strong>LOGGING DATA</strong></div>
 			</div>
 			<!-- //page_title -->
             <!-- fx_layout -->

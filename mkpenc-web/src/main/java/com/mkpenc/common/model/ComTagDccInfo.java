@@ -4,7 +4,7 @@ import com.mkpenc.common.annotaion.Model;
 
 @SuppressWarnings("serial")
 @Model
-public class TagDccInfo {
+public class ComTagDccInfo {
 	
 	 	private int iSeq;            
 	 	private String GrpHogi;         

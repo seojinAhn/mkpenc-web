@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.mkpenc.common.annotaion.Mapper;
-import com.mkpenc.common.model.DccGrpTagInfo;
-import com.mkpenc.common.model.TagDccInfo;
 import com.mkpenc.performance.model.DccSearchPerformance;
 import com.mkpenc.performance.model.GroupNameInfo;
 

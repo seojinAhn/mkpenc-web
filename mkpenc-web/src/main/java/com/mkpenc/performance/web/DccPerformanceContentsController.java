@@ -12,9 +12,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mkpenc.admin.model.DccSearchAdmin;
 import com.mkpenc.admin.model.MemberInfo;
 import com.mkpenc.admin.service.DccAdminService;
+import com.mkpenc.common.model.ComTagDccInfo;
 import com.mkpenc.common.model.CommonConstant;
-import com.mkpenc.common.model.DccGrpTagInfo;
-import com.mkpenc.common.model.TagDccInfo;
 import com.mkpenc.common.module.StringUtil;
 import com.mkpenc.common.service.BasCommonService;
 import com.mkpenc.common.service.BasDccMimicService;
@@ -151,9 +150,9 @@ public class DccPerformanceContentsController {
     		dccGrpTagSearchMap.put("menuNo", dccSearchPerformance.getsMenuNo()==null?  "": dccSearchPerformance.getsMenuNo());
     		dccGrpTagSearchMap.put("uGrpNo", dccSearchPerformance.getsUGrpNo()==null?  "": dccSearchPerformance.getsUGrpNo());
     		
-    		List<TagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
     		
-    		for(TagDccInfo tagDccInfo:tagDccInfoList) {
+    		for(ComTagDccInfo tagDccInfo:tagDccInfoList) {
     			
     			Map searchMap = new HashMap();
     			Map rtnMap;
@@ -264,7 +263,7 @@ public class DccPerformanceContentsController {
     				 tagDccInfo.setGapAB("");
     				 tagDccInfo.setRateAB("");
     			}
-    		} // end for TagDccInfo
+    		} // end for ComTagDccInfo
 
     		mav.addObject("TagDccInfoList", tagDccInfoList);
     		
@@ -272,7 +271,7 @@ public class DccPerformanceContentsController {
     	
 	}
 	
-	private String methodCompare(String iVal, TagDccInfo tagDccInfo ) {
+	private String methodCompare(String iVal, ComTagDccInfo tagDccInfo ) {
 		
 		String rVal = "";
 		String rtn = "";
@@ -371,7 +370,7 @@ public class DccPerformanceContentsController {
 		dccGrpTagSearchMap.put("menuNo", dccSearchPerformance.getsMenuNo()==null?  "": dccSearchPerformance.getsMenuNo());
 		dccGrpTagSearchMap.put("uGrpNo", dccSearchPerformance.getsUGrpNo()==null?  "": dccSearchPerformance.getsUGrpNo());
 		
-		List<TagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 		
 		mav.addObject("TagDccInfoList", tagDccInfoList);
     	mav.addObject("BaseSearch", dccSearchPerformance);        	
@@ -415,7 +414,7 @@ public class DccPerformanceContentsController {
     		dccGrpTagSearchMap.put("menuNo", dccSearchPerformance.getsMenuNo()==null?  "": dccSearchPerformance.getsMenuNo());
     		dccGrpTagSearchMap.put("uGrpNo", dccSearchPerformance.getsUGrpNo()==null?  "": dccSearchPerformance.getsUGrpNo());
     		
-    		List<TagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
     		
     		mav.addObject("TagDccInfoList", tagDccInfoList);
     	}    	    	
@@ -656,7 +655,7 @@ public class DccPerformanceContentsController {
         		dccGrpTagSearchMap.put("menuNo", dccSearchPerformance.getsMenuNo()==null?  "": dccSearchPerformance.getsMenuNo());
         		dccGrpTagSearchMap.put("uGrpNo", dccSearchPerformance.getsUGrpNo()==null?  "": dccSearchPerformance.getsUGrpNo());
         		
-        		List<TagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+        		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
         		
         		mav.addObject("TagDccInfoList", tagDccInfoList);
         	}
@@ -690,7 +689,7 @@ public class DccPerformanceContentsController {
     		dccGrpTagSearchMap.put("menuNo", dccSearchPerformance.getsMenuNo()==null?  "": dccSearchPerformance.getsMenuNo());
     		dccGrpTagSearchMap.put("uGrpNo", dccSearchPerformance.getsUGrpNo()==null?  "": dccSearchPerformance.getsUGrpNo());
     		
-    		List<TagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
     		
     		mav.addObject("TagDccInfoList", tagDccInfoList);
     		
@@ -703,7 +702,7 @@ public class DccPerformanceContentsController {
     		List<Map> dccTagList = new ArrayList<Map>();
     		
     		int iRow = 0;
-    		for(TagDccInfo tagDccInfo:tagDccInfoList) {
+    		for(ComTagDccInfo tagDccInfo:tagDccInfoList) {
     			
     			Map rtnMap = new HashMap();
     			
@@ -1176,7 +1175,7 @@ public class DccPerformanceContentsController {
     		dccGrpTagSearchMap.put("menuNo", dccSearchPerformance.getsMenuNo()==null?  "": dccSearchPerformance.getsMenuNo());
     		dccGrpTagSearchMap.put("uGrpNo", dccSearchPerformance.getsUGrpNo()==null?  "": dccSearchPerformance.getsUGrpNo());
     		
-    		List<TagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
         	Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
         	
@@ -1228,7 +1227,7 @@ public class DccPerformanceContentsController {
     		        	
         	//VB : ScreenInit
     		dccGrpTagSearchMap.put("xyGubun","X");
-    		List<TagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
+    		List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer  
         	Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList, mav);
@@ -1289,7 +1288,7 @@ public class DccPerformanceContentsController {
         	
         	//VB : ScreenInit
         	dccGrpTagSearchMap.put("xyGubun","Y");
-    		List<TagDccInfo> tagDccInfoYList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
+    		List<ComTagDccInfo> tagDccInfoYList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer  
         	Map dccValY = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoYList,  mav);
@@ -1399,14 +1398,14 @@ public class DccPerformanceContentsController {
     		        	
         	//VB : ScreenInit--X
     		dccGrpTagSearchMap.put("xyGubun","X");
-        	List<TagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
+        	List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer--X
         	Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList, mav);
         	
         	//VB : ScreenInit--Y
         	dccGrpTagSearchMap.put("xyGubun","Y");
-        	List<TagDccInfo> tagDccInfoYList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
+        	List<ComTagDccInfo> tagDccInfoYList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer--Y
         	Map dccValY = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoYList, mav);
@@ -1461,7 +1460,7 @@ public class DccPerformanceContentsController {
     		        	
         	//VB : ScreenInit--X
     		dccGrpTagSearchMap.put("xyGubun","X");
-        	List<TagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
+        	List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer--X
         	Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList, mav);
@@ -1522,7 +1521,7 @@ public class DccPerformanceContentsController {
         	
         	//VB : ScreenInit--Y
         	dccGrpTagSearchMap.put("xyGubun","Y");
-        	List<TagDccInfo> tagDccInfoYList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
+        	List<ComTagDccInfo> tagDccInfoYList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer --Y
         	Map dccValY = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoYList, mav);
@@ -1634,7 +1633,7 @@ public class DccPerformanceContentsController {
         	
         	//VB : ScreenInit--X
     		dccGrpTagSearchMap.put("xyGubun","X");
-        	List<TagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
+        	List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer--X 
         	Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList,  mav);

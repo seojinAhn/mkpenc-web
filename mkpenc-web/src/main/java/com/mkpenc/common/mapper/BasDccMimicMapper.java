@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.mkpenc.common.annotaion.Mapper;
-import com.mkpenc.common.model.DccGrpTagInfo;
+import com.mkpenc.common.model.ComDccGrpTagInfo;
 
 @Mapper
 public interface BasDccMimicMapper {
 	
-	List<DccGrpTagInfo> selectDccGrpTagList(Map searchMapper);
+	List<ComDccGrpTagInfo> selectDccGrpTagList(Map searchMapper);
 	
-	String selectFastIoChk(DccGrpTagInfo dccGrpTagInfo);
+	String selectFastIoChk(ComDccGrpTagInfo dccGrpTagInfo);
 	
 	Map selectScanTime(Map searchMapper);	
 	

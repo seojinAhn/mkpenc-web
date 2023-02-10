@@ -31,7 +31,7 @@
 			<!-- page_title -->
 			<div class="page_title">
 				<h3>TURBINE OVERVIEW</h3>
-				<div class="bc"><span>MARK_V</span><span>Mimic</span><strong>TURBINE OVERVIEW</strong></div>
+				<div class="bc"><span>MARK_V</span><span>Mimic</span><span>SECONDARY</span><strong>TURBINE OVERVIEW</strong></div>
 			</div>
 			<!-- //page_title -->
             <!-- fx_layout -->

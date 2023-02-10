@@ -17,8 +17,25 @@
 <script type="text/javascript" src="<c:url value="/resources/js/common.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/performance.js" />" charset="utf-8"></script>
+<script type="text/javascript">
 
+$(function () {
+	
+	var timer =0;
+	
+			
+		timer = setInterval(function () {
+			
+			// 화면초기화
+  			var	comSubmit	=	new ComSubmit("programonoffFrm");
+			comSubmit.setUrl("/dcc/performance/programonoff");
+			//comSubmit.submit();
+			
+			 }, 5000); 	  
 
+});	
+
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -35,6 +52,7 @@
 				<div class="bc"><span>DCC</span><span>Perfomance</span><strong>PROGRAM ON/OFF</strong></div>
 			</div>
 			<!-- //page_title -->
+			<form id="programonoffFrm" name="programonoffFrm">	</form>
             <!-- fx_layout -->
             <div class="fx_layout">
                 <div class="fx_block">

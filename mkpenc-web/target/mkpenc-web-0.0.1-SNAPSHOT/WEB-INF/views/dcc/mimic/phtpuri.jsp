@@ -31,7 +31,7 @@
 			<!-- page_title -->
 			<div class="page_title">
 				<h3>PHT PURIFICATION SYSTEM</h3>
-				<div class="bc"><span>DCC</span><span>Mimic</span><strong>PHT PURIFICATION SYSTEM</strong></div>
+				<div class="bc"><span>DCC</span><span>Mimic</span><span>PRIMARY</span><strong>PHT PURIFICATION SYSTEM</strong></div>
 			</div>
 			<!-- //page_title -->
 			<div class="img_wrap pht_puri">

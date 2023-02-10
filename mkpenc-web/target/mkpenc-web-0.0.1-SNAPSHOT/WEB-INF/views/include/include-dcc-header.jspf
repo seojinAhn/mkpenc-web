@@ -68,9 +68,9 @@
                                  <li>          
                                      <a href="#none">SECONDARY</a>         
                                      <ul>          
-                                         <li><a href="#none">MAIN STEM</a></li>            
-                                         <li><a href="#none">FEED WATER</a></li>           
-                                         <li><a href="#none">CONDENSATE</a></li>           
+                                         <li><a href="/dcc/mimic/mainsteam">MAIN STEAM</a></li>            
+                                         <li><a href="/dcc/mimic/feedwater">FEED WATER</a></li>           
+                                         <li><a href="/dcc/mimic/condensate">CONDENSATE</a></li>           
                                      </ul>         
                                  </li>         
                              </ul>         
@@ -78,7 +78,7 @@
                                  <li>          
                                      <a href="#none">FUEL</a>          
                                      <ul>          
-                                         <li><a href="#none">F/H MAIN</a></li>         
+                                         <li><a href="/dcc/mimic/fuelhandlingmenu">F/H MAIN</a></li>         
                                          <li><a href="#none">D20 CTRL(A)</a></li>          
                                          <li><a href="#none">D20 CTRL(C)</a></li>          
                                      </ul>         
@@ -159,12 +159,12 @@
                          <div class="lnb_depth_wrap">          
                              <ul>          
                                  <li>          
-                                     <a href="#none">ALARM</a>         
+                                     <a href="/dcc/alarm/alarm">ALARM</a>         
                                  </li>         
                              </ul>         
                              <ul>          
                                  <li>          
-                                     <a href="#none">SUMMARY</a>           
+                                     <a href="/dcc/alarm/summary">SUMMARY</a>           
                                  </li>         
                              </ul>         
                              <ul>          

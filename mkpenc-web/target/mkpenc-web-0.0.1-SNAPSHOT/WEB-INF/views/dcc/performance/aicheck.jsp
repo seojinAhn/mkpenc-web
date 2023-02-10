@@ -17,7 +17,25 @@
 <script type="text/javascript" src="<c:url value="/resources/js/common.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/performance.js" />" charset="utf-8"></script>
+<script type="text/javascript">
 
+$(function () {
+	
+	var timer =0;
+	
+			
+		timer = setInterval(function () {
+			
+			// 화면초기화
+  			var	comSubmit	=	new ComSubmit("dccselfcheckSearch");
+			comSubmit.setUrl("/dcc/performance/dccselfcheck");
+			//comSubmit.submit();
+			
+			 }, 5000); 	  
+
+});	
+
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -34,6 +52,7 @@
 				<div class="bc"><span>DCC</span><span>Perfomance</span><strong>AI CHECK</strong></div>
 			</div>
 			<!-- //page_title -->
+			<form id="aicheckFrm" name="aicheckFrm">	</form>
             <!-- form_wrap -->
             <div class="form_wrap">
                 <!-- form_head -->

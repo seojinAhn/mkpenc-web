@@ -27,14 +27,13 @@ $(function () {
 		timer = setInterval(function () {
 			
 			// 화면초기화
-  			var	comSubmit	=	new ComSubmit("dccselfcheckSearch");
+  			var	comSubmit	=	new ComSubmit("dccselfcheckFrm");
 			comSubmit.setUrl("/dcc/performance/dccselfcheck");
 			//comSubmit.submit();
 			
 			 }, 5000); 	  
 
 });	
-
 
 </script>
 </head>
@@ -53,7 +52,7 @@ $(function () {
 				<div class="bc"><span>DCC</span><span>Perfomance</span><strong>DCC SELF CHECK</strong></div>
 			</div>
 			<!-- //page_title -->
-			<form id="dccselfcheckSearch" name="dccselfcheckSearch">	</form>
+			<form id="dccselfcheckFrm" name="dccselfcheckFrm">	</form>
             <!-- fx_layout -->
             <div class="fx_layout">
                 <div class="fx_block">
@@ -100,8 +99,8 @@ $(function () {
                                 <td class="tc">AO 335 / AI 1332</td>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label class="full flex_end">${lblDataXList[2].fValue}<</label>
-                                        <label class="full flex_end">${lblDataXList[3].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[2].fValue}</label>
+                                        <label class="full flex_end">${lblDataXList[3].fValue}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -109,8 +108,8 @@ $(function () {
                                 <td class="tc">AO 342 / AI 2457</td>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label class="full flex_end">${lblDataXList[4].fValue}<</label>
-                                        <label class="full flex_end">${lblDataXList[5].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[4].fValue}</label>
+                                        <label class="full flex_end">${lblDataXList[5].fValue}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -118,8 +117,8 @@ $(function () {
                                 <td class="tc">AO 364 / AI 3077</td>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label class="full flex_end">${lblDataXList[6].fValue}<</label>
-                                        <label class="full flex_end">${lblDataXList[7].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[6].fValue}</label>
+                                        <label class="full flex_end">${lblDataXList[7].fValue}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -139,19 +138,19 @@ $(function () {
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DO 200B08</label>
-                                        <label class="full flex_end">${lblDataXList[8].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[8].fValue}</label>
                                     </div>
                                 </td>
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DI 40B00</label>
-                                        <label class="full flex_end">${lblDataXList[9].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[9].fValue}</label>
                                     </div>
                                 </td>
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DI 66B15</label>
-                                        <label class="full flex_end">${lblDataXList[10].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[10].fValue}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -159,19 +158,19 @@ $(function () {
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DO 212B13</label>
-                                        <label class="full flex_end">${lblDataXList[11].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[11].fValue}</label>
                                     </div>
                                 </td>
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DI 61B01</label>
-                                        <label class="full flex_end">${lblDataXList[12].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[12].fValue}</label>
                                     </div>
                                 </td>
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DI 45B05</label>
-                                        <label class="full flex_end">${lblDataXList[13].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[13].fValue}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -179,19 +178,19 @@ $(function () {
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DO 221B09</label>
-                                        <label class="full flex_end">${lblDataXList[14].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[14].fValue}</label>
                                     </div>
                                 </td>
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DI 55B15</label>
-                                        <label class="full flex_end">${lblDataXList[15].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[15].fValue}</label>
                                     </div>
                                 </td>
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DI 73B11</label>
-                                        <label class="full flex_end">${lblDataXList[16].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[16].fValue}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -199,19 +198,19 @@ $(function () {
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DO 233B14</label>
-                                        <label class="full flex_end">${lblDataXList[17].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[17].fValue}</label>
                                     </div>
                                 </td>
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DI 52B10</label>
-                                        <label class="full flex_end">${lblDataXList[18].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[18].fValue}</label>
                                     </div>
                                 </td>
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DI 70B14</label>
-                                        <label class="full flex_end">${lblDataXList[19].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[19].fValue}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -219,19 +218,19 @@ $(function () {
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DO 242B10</label>
-                                        <label class="full flex_end">${lblDataXList[20].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[20].fValue}</label>
                                     </div>
                                 </td>
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DI 114B12</label>
-                                        <label class="full flex_end">${lblDataXList[21].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[21].fValue}</label>
                                     </div>
                                 </td>
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DI 102B02</label>
-                                        <label class="full flex_end">${lblDataXList[22].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[22].fValue}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -239,19 +238,19 @@ $(function () {
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DO 247B12</label>
-                                        <label class="full flex_end">${lblDataXList[23].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[23].fValue}</label>
                                     </div>
                                 </td>
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DI 107B07</label>
-                                        <label class="full flex_end">${lblDataXList[24].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[24].fValue}</label>
                                     </div>
                                 </td>
                                 <td class="tc">
                                     <div class="fx_form">
                                         <label class="full">DI 111B13</label>
-                                        <label class="full flex_end">${lblDataXList[25].fValue}<</label>
+                                        <label class="full flex_end">${lblDataXList[25].fValue}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -660,10 +659,10 @@ $(function () {
                                 <td colspan="3"></td>
                             </tr>                            
                             <tr>
-                                <td class="tc" bgcolor="${shpDataYList[36].BackColor}">${lblDataYList[62].fValue}</td>
+                                <td class="tc" bgcolor="${shpDataYList[36].BackColor} ">${lblDataYList[62].fValue}</td>
                                 <td class="tc" bgcolor="${shpDataYList[37].BackColor}">${lblDataYList[63].fValue}</td>
-                                <td class="tc" bgcolor="${shpDataYList[48].BackColor}">${lblDataYList[64].fValue}</td>
-                                <td class="tc" bgcolor="${shpDataYList[49].BackColor}">${lblDataYList[65].fValue}</td>
+                                <td class="tc" bgcolor="${shpDataYList[38].BackColor}">${lblDataYList[64].fValue}</td>
+                                <td class="tc" bgcolor="${shpDataYList[39].BackColor}">${lblDataYList[65].fValue}</td>
                                 <td class="tc" bgcolor="${shpDataYList[40].BackColor}">${lblDataYList[66].fValue}</td>
                                 <td class="tc" bgcolor="${shpDataYList[41].BackColor}">${lblDataYList[67].fValue}</td>
                                 <td colspan="3" class="bd_t_none"></td>

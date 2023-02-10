@@ -12,8 +12,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.mkpenc.common.mapper.BasCommonMapper;
 import com.mkpenc.common.mapper.BasDccOsmsMapper;
-import com.mkpenc.common.model.DccGrpTagInfo;
-import com.mkpenc.common.model.TagDccInfo;
+import com.mkpenc.common.model.ComDccGrpTagInfo;
+import com.mkpenc.common.model.ComTagDccInfo;
 import com.mkpenc.common.service.BasDccOsmsService;
 import com.mkpenc.performance.model.DccSearchPerformance;
 
@@ -26,15 +26,15 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	@Autowired
 	private BasDccOsmsMapper basDccOsmsMapper;
 	
-	public List<TagDccInfo> getDccGrpTagList(Map searchMap) {
+	public List<ComTagDccInfo> getDccGrpTagList(Map searchMap) {
 		
-		List<DccGrpTagInfo> dccGrpTagInfoList = basDccOsmsMapper.selectDccGrpTagList(searchMap);
+		List<ComDccGrpTagInfo> dccGrpTagInfoList = basDccOsmsMapper.selectDccGrpTagList(searchMap);
 		
-		List<TagDccInfo> tagDccInfoList = new ArrayList();
+		List<ComTagDccInfo> tagDccInfoList = new ArrayList();
 		
-		for(DccGrpTagInfo dccGrpTagInfo:dccGrpTagInfoList) {
+		for(ComDccGrpTagInfo dccGrpTagInfo:dccGrpTagInfoList) {
 			
-			TagDccInfo tagDccInfo = new TagDccInfo();
+			ComTagDccInfo tagDccInfo = new ComTagDccInfo();
 						
 			tagDccInfo.setHogi(dccGrpTagInfo.getHogi());
 			tagDccInfo.setADDRESS(dccGrpTagInfo.getADDRESS() == null? "": dccGrpTagInfo.getADDRESS());
@@ -212,7 +212,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		return sqlQueryDcc(searchMap).split("|");
 	}
 	
-	public Map getDccValue(Map searchMap, List<TagDccInfo> tagDccInfoList,  ModelAndView mav){
+	public Map getDccValue(Map searchMap, List<ComTagDccInfo> tagDccInfoList,  ModelAndView mav){
 	
 		Map rtnMap = new HashMap();
 		
@@ -274,7 +274,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
     	return rtnMap; 
 	}
 	
-	private Map setDataConv(double fValue, TagDccInfo tagDccInfo, Map searchMap) {
+	private Map setDataConv(double fValue, ComTagDccInfo tagDccInfo, Map searchMap) {
 		
 		Map dataConv = new HashMap();
 		
@@ -318,7 +318,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	    return dataConv;
 	}
 	
-	private void checkAlarm(Map lblData, TagDccInfo tagDccInfo) {
+	private void checkAlarm(Map lblData, ComTagDccInfo tagDccInfo) {
 		
 		switch(tagDccInfo.getAlarmType()) {
 			case "1" : 

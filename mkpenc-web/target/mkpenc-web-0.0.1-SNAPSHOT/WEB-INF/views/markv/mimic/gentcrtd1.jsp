@@ -30,7 +30,7 @@
 			<!-- page_title -->
 			<div class="page_title">
 				<h3>STATOR SLOT(RTD) & BAR(TC) TEMP-1</h3>
-				<div class="bc"><span>MARK_V</span><span>Mimic</span><strong>STATOR SLOT(RTD) & BAR(TC) TEMP-1</strong></div>
+				<div class="bc"><span>MARK_V</span><span>Mimic</span><span>AUX</span><strong>STATOR SLOT(RTD) & BAR(TC) TEMP-1</strong></div>
 			</div>
 			<!-- //page_title -->
             <!-- fx_layout -->

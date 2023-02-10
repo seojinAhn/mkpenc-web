@@ -30,7 +30,7 @@
 			<!-- page_title -->
 			<div class="page_title">
 				<h3>중요 계통 I/O 상태</h3>
-				<div class="bc"><span>DCC</span><span>Perfomance</span><strong>중요 계통 I/O 상태</strong></div>
+				<div class="bc"><span>DCC</span><span>Perfomance</span><strong>주요 계통 I/O 상태</strong></div>
 			</div>
 			<!-- //page_title -->
             <!-- fx_layout -->

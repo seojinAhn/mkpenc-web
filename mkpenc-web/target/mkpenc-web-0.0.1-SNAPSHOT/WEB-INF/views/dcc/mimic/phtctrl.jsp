@@ -31,7 +31,7 @@
 			<!-- page_title -->
 			<div class="page_title">
 				<h3>PHT PRESSURE & INVENTORY CONTROLSYSTEM</h3>
-				<div class="bc"><span>DCC</span><span>Mimic</span><strong>PHT PRESSURE & INVENTORY CONTROLSYSTEM</strong></div>
+				<div class="bc"><span>DCC</span><span>Mimic</span><span>PRIMARY</span><strong>PHT PRESSURE & INVENTORY CONTROLSYSTEM</strong></div>
 			</div>
 			<!-- //page_title -->
 			<div class="img_wrap pht_control">

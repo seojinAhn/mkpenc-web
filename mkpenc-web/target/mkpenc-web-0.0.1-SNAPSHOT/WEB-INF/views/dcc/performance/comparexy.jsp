@@ -32,7 +32,7 @@ $(function () {
  		}
  		
  		// 화면초기화
-		var	comSubmit	=	new ComSubmit("ompareXYForm");
+		var	comSubmit	=	new ComSubmit("ompareXYFrm");
 		comSubmit.setUrl("/dcc/performance/comparexy");
 		comSubmit.submit();
   		
@@ -61,7 +61,7 @@ $(function () {
 			<!-- fx_srch_wrap -->
 			<div class="fx_srch_wrap">	
 				<div class="fx_srch_form">
-				<form id="ompareXYForm" name="ompareXYForm">
+				<form id="ompareXYFrm" name="ompareXYFrm">
 				<input type = "hidden" id="sHogi" name="sHogi" value="${UserInfo.hogi }">
 				<input type = "hidden" id="sXYGubun" name="sXYGubun" value="${UserInfo.xyGubun }">
 					<div class="fx_srch_row">

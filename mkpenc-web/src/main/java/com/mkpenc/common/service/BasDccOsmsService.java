@@ -6,16 +6,16 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mkpenc.common.model.TagDccInfo;
+import com.mkpenc.common.model.ComTagDccInfo;
 
 
 @Service
 public  interface BasDccOsmsService {
 	
-	public List<TagDccInfo> getDccGrpTagList(Map searchMap);
+	public List<ComTagDccInfo> getDccGrpTagList(Map searchMap);
 	
 	public String[] getDccValueReturn(Map searchMap);
 	
-	public Map getDccValue(Map searchMap, List<TagDccInfo> tagDccInfoList,  ModelAndView mav);
+	public Map getDccValue(Map searchMap, List<ComTagDccInfo> tagDccInfoList,  ModelAndView mav);
 
 }

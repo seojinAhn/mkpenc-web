@@ -30,8 +30,8 @@ $(function () {
   			
   			timer = setInterval(function () {
   				
-  				var comAjax = new ComAjax("compareVarSearch");
-  				comAjax.setUrl("/dcc/performance/runtimer");
+  				var comAjax = new ComAjax("compare34Frm");
+  				comAjax.setUrl("/dcc/performance/runtimer34");
   				comAjax.setCallback("mbr_RuntimerEventCallback");
   				//comAjax.ajax();		
   				
@@ -74,7 +74,7 @@ $(function () {
                 <!-- list_head -->
                 <div class="list_head">
                     <div class="list_info">
-	                    <form id="compareVarSearch" name=compareVarSearch">
+	                    <form id="compare34Frm" name=compare34Frm">
 						<input type = "hidden" id="sGrpID" name="sGrpID" value="${UserInfo.id }">
 						<input type = "hidden" id="sMenuNo" name="sMenuNo" value = "43">
 						<input type = "hidden" id="sDive" name="sDive" value = "D">

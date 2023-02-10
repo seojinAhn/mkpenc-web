@@ -5,8 +5,6 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.mkpenc.common.model.DccGrpTagInfo;
-import com.mkpenc.common.model.TagDccInfo;
 import com.mkpenc.performance.model.DccSearchPerformance;
 import com.mkpenc.performance.model.GroupNameInfo;
 

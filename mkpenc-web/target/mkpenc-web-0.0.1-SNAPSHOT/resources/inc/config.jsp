@@ -25,4 +25,4 @@
 <%-- User name --%>
 <c:set var="USER_WRITER" value="월성 3, 4호기 담당자" />
 
-<jsp:useBean id="now" class="java.util.Date" />
+<%-- <jsp:useBean id="now" class="java.util.Date" /> --%>
