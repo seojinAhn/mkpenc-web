@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onmakers.cms.module.board.mapper.BoardCommentMapper">
+	
+	<resultMap id="boardComment-result" type="BoardComment">
+		<result property="commentSeq" column="COMMENT_SEQ" />
+		<result property="bbsKey" column="BBS_KEY" />
+		<result property="bbsId" column="BBS_ID" />
+		<result property="mberId" column="MBER_ID" />
+		<result property="cntn" column="CNTN" />
+		<result property="regDt" column="REG_DT" />
+		<result property="mkerNm" column="MKER_NM" />
+		<result property="pswd" column="PSWD" />
+		<result property="contIp" column="CONT_IP" />
+	</resultMap>
+	
+	<sql id="boardCommentWhere-fragment">
+		<where>
+			<if test="commentSeq != null and commentSeq != 0">
+				COMMENT_SEQ = #{commentSeq}
+			</if>
+			<if test="bbsKey != null and bbsKey != 0">
+				AND BBS_KEY = #{bbsKey}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(bbsId)">
+				AND BBS_ID = #{bbsId}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="selectBoardCommentList" parameterType="SearchBoard" resultMap="boardComment-result">
+		SELECT
+			COMMENT_SEQ
+			, BBS_KEY
+			, BBS_ID
+			, MBER_ID
+			, CNTN
+			, REG_DT
+			, MKER_NM
+			, PSWD
+			, CONT_IP
+		FROM
+			MOB_BBS_COMMENT
+		WHERE BBS_KEY = #{bbsKey}
+		AND BBS_ID = #{bbsId}
+		ORDER BY REG_DT DESC
+	</select>
+	
+	<select id="selectBoardComment" parameterType="integer" resultMap="boardComment-result">
+		SELECT
+			COMMENT_SEQ
+			, BBS_KEY
+			, BBS_ID
+			, MBER_ID
+			, CNTN
+			, REG_DT
+			, MKER_NM
+			, PSWD
+			, CONT_IP
+		FROM
+			MOB_BBS_COMMENT
+		WHERE COMMENT_SEQ = #{commentSeq}
+	</select>
+	
+	<insert id="insertBoardComment" parameterType="BoardComment">
+		INSERT INTO MOB_BBS_COMMENT (
+			BBS_KEY
+			, BBS_ID
+			, MBER_ID
+			, CNTN
+			, REG_DT
+			, MKER_NM
+			, PSWD
+			, CONT_IP
+		) VALUES (
+			#{bbsKey}
+			, #{bbsId}
+			, #{mberId}
+			, #{cntn}
+			, SYSDATE
+			, #{mkerNm}
+			, PASSWORD(#{pswd})
+			, #{contIp}
+		)
+	</insert>
+	
+	<update id="changeBbsCommentBbsKey" parameterType="SearchBoard">
+		UPDATE
+			MOB_BBS_COMMENT
+		SET
+			BBS_KEY = BBS_KEY - 1
+		WHERE BBS_KEY <![CDATA[ < ]]> #{bbsKey}
+		AND BBS_KEY <![CDATA[ > ]]> (
+			SELECT * FROM (
+				SELECT
+					NVL(MAX(BBS_KEY), 0)
+				FROM
+					MOB_BBS
+				WHERE BBS_KEY <![CDATA[ < ]]> #{bbsKey}
+				AND DTH = 0
+			<!-- ) AS TEMP -->
+			) TEMP
+		)
+		AND BBS_ID = #{bbsId}
+	</update>
+	
+	<delete id="deleteBoardComment" parameterType="BoardComment">
+		DELETE FROM
+			MOB_BBS_COMMENT
+		<include refid="boardCommentWhere-fragment" />
+	</delete>
+	
+</mapper>

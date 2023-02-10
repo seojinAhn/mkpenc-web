@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onmakers.tdms.module.formula.mapper.FormulaMapper">
+    <select id="selectFormulaInfoList" parameterType="SearchFormula" resultType="FormulaInfo">
+        SELECT
+              T1.FORMULA_SEQ
+            , T1.REQ_NO
+            , T1.TEST_CD
+            , T1.FORMULA_CNTN
+            , T1.FORMULA_DESC
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , (SELECT COUNT(ST1.RESULT_FORMULA_SEQ) FROM TDT_RESULT_FORMULA ST1 WHERE ST1.FORMULA_SEQ = T1.FORMULA_SEQ) USE_COUNT
+        FROM MST_FORMULA_DTL T1
+        WHERE T1.IS_VALID_YN = 'Y'
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchReqNo)">
+          AND T1.REQ_NO = #{searchReqNo}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchTestCd)">
+            AND T1.TEST_CD = #{searchTestCd}
+        </if>
+    </select>
+
+    <select id="selectFormulaInfo" parameterType="SearchFormula" resultType="FormulaInfo">
+        SELECT
+              T1.FORMULA_SEQ
+            , T1.REQ_NO
+            , T1.TEST_CD
+            , T1.FORMULA_CNTN
+            , T1.FORMULA_DESC
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+        FROM MST_FORMULA_DTL T1
+        WHERE T1.FORMULA_SEQ = #{searchFormulaSeq}
+    </select>
+
+    <select id="selectFormulaInfoVariableList" parameterType="SearchFormula" resultType="FormulaVariable">
+        SELECT
+              T1.VARIABLE_SEQ
+            , T1.FORMULA_SEQ
+            , T1.VARIABLE_KEY
+            , T1.VARIABLE_TYPE_CD
+            , T1.CHANNEL_KEY
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+        FROM MST_FORMULA_VARIABLE T1
+        WHERE T1.IS_VALID_YN = 'Y'
+        AND T1.FORMULA_SEQ = #{searchFormulaSeq}
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchVariableTypeCd)">
+            AND T1.VARIABLE_TYPE_CD = #{searchVariableTypeCd}
+        </if>
+    </select>
+
+
+    <insert id="insertDegreeInStabilizerBar" parameterType="ResultFormula">
+        INSERT TDT_RESULT_DTL_LA
+        SELECT
+              T1.REQ_NO
+            , T1.REV
+            , T1.GRP_SEQ
+            , 'Degree'
+            , T1.REC_TIME
+            , ASIN(T1.CHANNEL_VAL / #{variableValue}) * 180 / 3.14
+            , T1.CHANNEL_VAL_ORG
+            , 'Y'
+            , T1.REG_ID
+            , NOW()
+            , T1.UPT_ID
+            , NOW()
+        FROM TDT_RESULT_DTL_LA T1
+        WHERE T1.REQ_NO = #{reqNo} AND T1.REV = #{rev} AND T1.CHANNEL_KEY = 'Exhaust 1 Dis' ;
+    </insert>
+
+    <insert id="insertTorsionalForceInStabilizerBar" parameterType="ResultFormula">
+        INSERT TDT_RESULT_DTL_LA
+        SELECT
+              T1.REQ_NO
+            , T1.REV
+            , T1.GRP_SEQ
+            , 'Torsional Force'
+            , T1.REC_TIME
+            , T2.CHANNEL_VAL * 120 * COS((ASIN(T1.CHANNEL_VAL/#{variableValue}) * 180 / 3.14) * 3.14 / 180) / 1000
+            , T1.CHANNEL_VAL_ORG
+            , 'Y'
+            , T1.REG_ID
+            , NOW()
+            , T1.UPT_ID
+            , NOW()
+        FROM TDT_RESULT_DTL_LA T1
+        LEFT JOIN TDT_RESULT_DTL_LA T2
+        ON T2.REQ_NO = T1.REQ_NO AND T2.REV = T1.REV AND T2.GRP_SEQ = T1.GRP_SEQ
+        WHERE T1.REQ_NO = #{reqNo} AND T1.REV = #{rev} AND T1.CHANNEL_KEY = 'Exhaust 1 Dis' AND T2.CHANNEL_KEY = 'Exhaust 1 Force'
+    </insert>
+
+    <delete id="deleteStabilizerBarByChannelKey" parameterType="ResultFormula">
+        DELETE FROM TDT_RESULT_DTL_LA
+        WHERE REQ_NO = #{reqNo} AND REV = #{rev} AND CHANNEL_KEY = #{channelKey};
+    </delete>
+
+
+    <insert id="insertResultFormula" parameterType="ResultFormula">
+        INSERT INTO TDT_RESULT_FORMULA(
+              REQ_NO
+            , REV
+            , FORMULA_TYPE_CD
+            , FORMULA_SEQ
+            , VARIABLE_SEQ
+            , CHANNEL_KEY
+            , UNIT_KEY
+            , VARIABLE_VALUE
+            , IS_VALID_YN
+            , REG_ID
+            , REG_DT
+        ) VALUES(
+              #{reqNo}
+            , #{rev}
+            , #{formulaTypeCd}
+            , #{formulaSeq}
+            , #{variableSeq}
+            , #{channelKey}
+            , #{unitKey}
+            , #{variableValue}
+            , 'Y'
+            , #{regId}
+            , NOW()
+        )
+        <selectKey resultType="Integer" keyProperty="resultFormulaSeq">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <insert id="insertResultFormulaVariable" parameterType="ResultFormulaVariable">
+        INSERT INTO TDT_RESULT_FORMULA_VARIABLE (
+              RESULT_FORMULA_SEQ
+            , VARIABLE_SEQ
+            , VARIABLE_VALUE
+            , REG_ID
+            , REG_DT
+        ) VALUES (
+              #{resultFormulaSeq}
+            , #{variableSeq}
+            , #{variableValue}
+            , #{regId}
+            , NOW()
+        )
+    </insert>
+
+    <delete id="deleteResultFormulaByChannelKey" parameterType="ResultFormula">
+        DELETE FROM TDT_RESULT_FORMULA
+        WHERE REQ_NO = #{reqNo} AND REV = #{rev} AND FORMULA_TYPE_CD = #{formulaTypeCd} AND CHANNEL_KEY = #{channelKey}
+    </delete>
+
+    <select id="selectResultFormulaList" parameterType="SearchFormula" resultType="ResultFormula">
+        SELECT
+              T1.RESULT_FORMULA_SEQ
+            , T1.REQ_NO
+            , T1.REV
+            , T1.FORMULA_TYPE_CD
+            , T1.FORMULA_SEQ
+            , T1.VARIABLE_SEQ
+            , T1.CHANNEL_KEY
+            , T1.UNIT_KEY
+            , T1.VARIABLE_VALUE
+            , T1.IS_VALID_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+        FROM TDT_RESULT_FORMULA T1
+        WHERE 1=1
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchFormulaTypeCd)">
+            AND T1.FORMULA_TYPE_CD = #{searchFormulaTypeCd}
+        </if>
+    </select>
+
+
+    <insert id="insertFormulaInfo" parameterType="FormulaInfo">
+        INSERT INTO MST_FORMULA_DTL (
+              REQ_NO
+            , TEST_CD
+            , FORMULA_CNTN
+            , FORMULA_DESC
+            , IS_VALID_YN
+            , IS_VIEW_YN
+            , REG_ID
+            , REG_DT
+        ) VALUES(
+              #{reqNo}
+            , #{testCd}
+            , #{formulaCntn}
+            , #{formulaDesc}
+            , 'Y'
+            , 'Y'
+            , #{regId}
+            , NOW()
+        )
+        <selectKey resultType="Integer" keyProperty="formulaSeq">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <delete id="deleteFormulaInfo" parameterType="Integer">
+        DELETE FROM MST_FORMULA_DTL
+        WHERE FORMULA_SEQ = #{formulaSeq}
+    </delete>
+
+    <insert id="insertFormulaInfoVariable" parameterType="FormulaVariable">
+        INSERT INTO MST_FORMULA_VARIABLE (
+              FORMULA_SEQ
+            , VARIABLE_KEY
+            , CHANNEL_KEY
+            , VARIABLE_TYPE_CD
+            , IS_VALID_YN
+            , IS_VIEW_YN
+            , REG_ID
+            , REG_DT
+        ) VALUES (
+              #{formulaSeq}
+            , #{variableKey}
+            , #{channelKey}
+            , #{variableTypeCd}
+            , 'Y'
+            , 'Y'
+            , #{regId}
+            , NOW()
+        )
+    </insert>
+
+    <delete id="deleteFormulaInfoVariableAll" parameterType="Integer">
+        DELETE FROM MST_FORMULA_VARIABLE
+        WHERE FORMULA_SEQ = #{formulaSeq}
+    </delete>
+
+    <delete id="deleteResultFormula" parameterType="Integer">
+        DELETE FROM TDT_RESULT_FORMULA
+        WHERE RESULT_FORMULA_SEQ = #{resultFormulaSeq}
+    </delete>
+
+    <delete id="deleteResultFormulaVariable" parameterType="Integer">
+        DELETE FROM TDT_RESULT_FORMULA_VARIABLE
+        WHERE RESULT_FORMULA_SEQ = #{resultFormulaSeq}
+    </delete>
+
+    <select id="selectResultFormula" parameterType="SearchFormula" resultType="ResultFormula">
+        SELECT
+              T1.RESULT_FORMULA_SEQ
+            , T1.REQ_NO
+            , T1.REV
+            , T1.FORMULA_TYPE_CD
+            , T1.FORMULA_SEQ
+            , T1.VARIABLE_SEQ
+            , T1.CHANNEL_KEY
+            , T1.UNIT_KEY
+            , T1.VARIABLE_VALUE
+            , T1.IS_VALID_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+        FROM TDT_RESULT_FORMULA T1
+        WHERE T1.RESULT_FORMULA_SEQ = #{searchResultFormulaSeq}
+    </select>
+
+    <select id="selectResultFormulaVariableList" parameterType="SearchFormula" resultType="ResultFormulaVariable">
+        SELECT
+              T1.RESULT_FORMULA_SEQ
+            , T1.VARIABLE_SEQ
+            , T1.VARIABLE_VALUE
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+        FROM TDT_RESULT_FORMULA_VARIABLE T1
+        WHERE T1.RESULT_FORMULA_SEQ = #{searchResultFormulaSeq}
+    </select>
+</mapper>

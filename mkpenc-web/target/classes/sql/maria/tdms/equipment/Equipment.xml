@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onmakers.tdms.module.equipment.mapper.EquipmentMapper">
+    <select id="selectEquipmentList" parameterType="SearchEquipment" resultType="Equipment">
+        SELECT
+              T1.EQUIP_CD
+            , T1.EQUIP_NM
+            , T1.EQUIP_MANUFACTURER
+            , T1.EQUIP_SUPPLIER
+            , T1.EQUIP_MDL
+            , T1.EQUIP_SPEC
+            , T1.EQUIP_USG
+            , T1.PIG
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , T1.TEST_CD
+            , FN_GET_CODE_NM('TESTCD', T1.TEST_CD) TEST_CD_NM
+          FROM MST_EQUIPMENT T1
+          WHERE T1.IS_VIEW_YN = 'Y'
+            <if test="searchTestCd != null">
+              AND T1.TEST_CD = #{searchTestCd}
+            </if>
+    </select>
+
+    <select id="selectEquipment" parameterType="SearchEquipment" resultType="Equipment">
+        SELECT
+              T1.EQUIP_CD
+            , T1.EQUIP_NM
+            , T1.EQUIP_MANUFACTURER
+            , T1.EQUIP_SUPPLIER
+            , T1.EQUIP_MDL
+            , T1.EQUIP_SPEC
+            , T1.EQUIP_USG
+            , T1.PIG
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , T1.TEST_CD
+            , FN_GET_CODE_NM('TESTCD', T1.TEST_CD)        TEST_CD_NM
+          FROM MST_EQUIPMENT T1
+          WHERE T1.EQUIP_CD = #{searchEquipCd}
+    </select>
+
+    <insert id="insertEquipment" parameterType="Equipment">
+        INSERT INTO MST_EQUIPMENT (
+              EQUIP_CD
+            , EQUIP_NM
+            , EQUIP_MANUFACTURER
+            , EQUIP_SUPPLIER
+            , EQUIP_MDL
+            , EQUIP_SPEC
+            , EQUIP_USG
+            , PIG
+            , IS_VALID_YN
+            , IS_VIEW_YN
+            , REG_ID
+            , REG_DT
+            , TEST_CD
+        ) VALUES (
+              #{equipCd}
+            , #{equipNm}
+            , #{equipManufacturer}
+            , #{equipSupplier}
+            , #{equipMdl}
+            , #{equipSpec}
+            , #{equipUsg}
+            , #{pig}
+            , 'Y'
+            , 'Y'
+            , #{regId}
+            , NOW()
+            , #{testCd}
+        )
+    </insert>
+
+    <update id="updateEquipment" parameterType="Equipment">
+        UPDATE MST_EQUIPMENT SET
+              EQUIP_NM = #{equipNm}
+            , EQUIP_MANUFACTURER = #{equipManufacturer}
+            , EQUIP_SUPPLIER = #{equipSupplier}
+            , EQUIP_MDL = #{equipMdl}
+            , EQUIP_SPEC = #{equipSpec}
+            , EQUIP_USG = #{equipUsg}
+            , PIG = #{pig}
+            , IS_VALID_YN = #{isValidYn}
+            , IS_VIEW_YN = #{isViewYn}
+            , UPT_ID = #{uptId}
+            , UPT_DT = NOW()
+            , TEST_CD = #{testCd}
+        WHERE EQUIP_CD = #{equipCd}
+    </update>
+
+    <update id="updateEquipmentViewYn" parameterType="Equipment">
+        UPDATE MST_EQUIPMENT SET
+              IS_VIEW_YN = #{isViewYn}
+            , UPT_ID = #{uptId}
+            , UPT_DT = NOW()
+        WHERE EQUIP_CD = #{equipCd}
+    </update>
+
+
+    <select id="selectEquipCd" parameterType="String" resultType="String">
+        SELECT CONCAT(#{key}, '_', SEQ_VALUE(#{key}))
+    </select>
+
+</mapper>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onmakers.tdms.module.equipment.mapper.ReportMapper">
+    <select id="selectReport" parameterType="SearchEquipment" resultType="Report">
+        SELECT
+              T1.REPORT_SEQ
+            , T1.REQ_NO
+            , T1.REV
+            , T1.FILE_TYPE_CD
+            , T1.TEST_METHOD
+            , T1.TEST_RESULT
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+        FROM TDT_REPORT_INFO T1
+        WHERE T1.IS_VALID_YN = 'Y'
+            AND T1.REQ_NO = #{searchReqNo}
+            AND T1.REV = #{searchRev}
+            <if test="searchReportSeq != null and searchReportSeq != 0" >
+              AND T1.REPORT_SEQ = #{searchReportSeq}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchFileTypeCd)">
+              AND T1.FILE_TYPE_CD = #{searchFileTypeCd}
+            </if>
+    </select>
+
+    <insert id="insertReport" parameterType="Report">
+        INSERT INTO TDT_REPORT_INFO (
+              REQ_NO
+            , REV
+            , FILE_TYPE_CD
+            , TEST_METHOD
+            , TEST_RESULT
+            , IS_VALID_YN
+            , IS_VIEW_YN
+            , REG_ID
+            , REG_DT
+        ) VALUES (
+              #{reqNo}
+            , #{rev}
+            , #{fileTypeCd}
+            , #{testMethod}
+            , #{testResult}
+            , 'Y'
+            , 'Y'
+            , #{regId}
+            , NOW()
+        )
+        <selectKey resultType="Integer" keyProperty="reportSeq">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <update id="updateReport" parameterType="Report">
+        UPDATE TDT_REPORT_INFO SET
+          TEST_METHOD = #{testMethod}
+        , TEST_RESULT = #{testResult}
+        , UPT_ID = #{uptId}
+        , UPT_DT = NOW()
+        WHERE REPORT_SEQ = #{reportSeq}
+    </update>
+
+    <delete id="deleteReport" parameterType="Integer">
+        DELETE FROM TDT_REPORT_INFO
+        WHERE REPORT_SEQ = #{reportSeq}
+    </delete>
+
+
+    <update id="updateReportSendYn" parameterType="Integer">
+        UPDATE TDT_REPORT_INFO SET DATA_SEND_YN = 'Y'
+        WHERE REPORT_SEQ = #{reportSeq}
+    </update>
+
+
+    <select id="selectReportImageList" parameterType="SearchEquipment" resultType="ReportImage">
+        SELECT
+              T1.REPORT_IMG_SEQ
+            , T1.REPORT_SEQ
+            , T1.FILE_SEQ
+            , T1.IMG_TYPE_CD
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+        FROM TDT_REPORT_IMG_INFO T1
+        WHERE 1=1
+        <if test="searchReportSeq != 0">
+          AND T1.REPORT_SEQ = #{searchReportSeq}
+        </if>
+    </select>
+
+    <delete id="deleteReportImageAllByReportSeq" parameterType="Integer">
+        DELETE FROM TDT_REPORT_IMG_INFO
+        WHERE REPORT_SEQ = #{reportSeq}
+    </delete>
+
+    <insert id="insertReportImage" parameterType="ReportImage">
+        INSERT INTO TDT_REPORT_IMG_INFO (
+              REPORT_SEQ
+            , FILE_SEQ
+            , IMG_TYPE_CD
+            , IS_VALID_YN
+            , REG_ID
+            , REG_DT
+        ) VALUES (
+              #{reportSeq}
+            , #{fileSeq}
+            , #{imgTypeCd}
+            , 'Y'
+            , #{regId}
+            , NOW()
+        )
+    </insert>
+</mapper>

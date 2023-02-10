@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onmakers.cms.module.weblog.accessstat.daily.mapper.AccessStatDailyMapper">
+	
+	<resultMap id="accessStatDailySummary-result" type="AccessStatDailySummary">
+		<result property="vsitCnt" column="VSIT_CNT" />
+		<result property="mberVsitCnt" column="MBER_VSIT_CNT" />
+		<result property="guestVsitCnt" column="GUEST_VSIT_CNT" />
+		<result property="pageReadCnt" column="PAGE_READ_CNT" />
+		<result property="mberPageReadCnt" column="MBER_PAGE_READ_CNT" />
+		<result property="guestPageReadCnt" column="GUEST_PAGE_READ_CNT" />
+		
+		<result property="pageReadAvg" column="PAGE_READ_AVG" />
+		<result property="dailyVsitAvg" column="DAILY_VSIT_AVG" />
+		<result property="dailyPageReadAvg" column="DAILY_PAGE_READ_AVG" />
+	</resultMap>
+	
+	<resultMap id="accessStatDaily-result" type="AccessStatDaily">
+		<result property="sttsDtSeq" column="STTS_DT_SEQ" />
+		<result property="sttsDt" column="STTS_DT" />
+		<result property="vsitCnt" column="VSIT_CNT" />
+		<result property="mberVsitCnt" column="MBER_VSIT_CNT" />
+		<result property="guestVsitCnt" column="GUEST_VSIT_CNT" />
+		<result property="pageReadCnt" column="PAGE_READ_CNT" />
+		<result property="mberPageReadCnt" column="MBER_PAGE_READ_CNT" />
+		<result property="guestPageReadCnt" column="GUEST_PAGE_READ_CNT" />
+		
+		<result property="vsitChange" column="VSIT_CHANGE" />
+		<result property="pageReadChange" column="PAGE_READ_CHANGE" />
+		<result property="pageReadAvg" column="PAGE_READ_AVG" />
+	</resultMap>
+	
+	<sql id="selectAccessStatDailyListWhere-fragment">
+		<where>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(startDate)">
+				STTS_DT <![CDATA[ >= ]]> #{startDate}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(endDate)">
+				AND STTS_DT <![CDATA[ <= ]]> #{endDate}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="selectAccessStatDailySummary" parameterType="SearchAccessStatDaily" resultMap="accessStatDailySummary-result">
+		SELECT  /*+INDEX_DESC(T1)*/
+			SUM(VSIT_CNT) AS VSIT_CNT
+			, SUM(MBER_VSIT_CNT) AS MBER_VSIT_CNT
+			, SUM(GUEST_VSIT_CNT) AS GUEST_VSIT_CNT
+			, SUM(PAGE_READ_CNT) AS PAGE_READ_CNT
+			, SUM(MBER_PAGE_READ_CNT) AS MBER_PAGE_READ_CNT
+			, SUM(GUEST_PAGE_READ_CNT) AS GUEST_PAGE_READ_CNT
+			, TRUNCATE(IF(SUM(VSIT_CNT) = 0, 0, SUM(PAGE_READ_CNT) / SUM(VSIT_CNT)), 2) PAGE_READ_AVG
+			, TRUNCATE(IF(COUNT(*) = 0, 0, SUM(VSIT_CNT) / COUNT(*)), 2) DAILY_VSIT_AVG
+            , TRUNCATE(IF(COUNT(*) = 0, 0, SUM(PAGE_READ_CNT) / COUNT(*)), 2) DAILY_PAGE_READ_AVG
+		FROM
+			TB_ACSS_STTS_DT T1
+		<include refid="selectAccessStatDailyListWhere-fragment" />
+	</select>
+	
+	<select id="selectAccessStatDailyListCount" parameterType="SearchAccessStatDaily" resultType="integer">
+		SELECT
+			COUNT(*)
+		FROM 
+			TB_ACSS_STTS_DT T1
+		<include refid="selectAccessStatDailyListWhere-fragment" />
+	</select>
+	
+	<select id="selectAccessStatDailyList" parameterType="SearchAccessStatDaily" resultMap="accessStatDaily-result">
+        SELECT /*+INDEX_DESC(T1)*/
+			STTS_DT_SEQ,
+			STTS_DT,
+			VSIT_CNT,
+			MBER_VSIT_CNT,
+			GUEST_VSIT_CNT,
+			PAGE_READ_CNT,
+			MBER_PAGE_READ_CNT,
+			GUEST_PAGE_READ_CNT,
+			IFNULL((
+				VSIT_CNT
+				-
+				(
+					SELECT /*+INDEX_DESC(T2)*/ 
+						VSIT_CNT
+					FROM
+						TB_ACSS_STTS_DT T2
+					WHERE T2.STTS_DT = DATE_FORMAT(STR_TO_DATE(T1.STTS_DT, '%Y-%m-%d') - 1, '%Y-%m-%d')
+				)
+			), 0) VSIT_CHANGE,
+			IFNULL((
+				PAGE_READ_CNT
+				-
+				(
+					SELECT /*+INDEX_DESC(T2)*/ 
+						PAGE_READ_CNT
+					FROM
+						TB_ACSS_STTS_DT T2
+					WHERE T2.STTS_DT = DATE_FORMAT(STR_TO_DATE(T1.STTS_DT, '%Y-%m-%d') - INTERVAL 1 DAY, '%Y-%m-%d')
+				)
+			), 0) PAGE_READ_CHANGE,
+			TRUNCATE(IF(VSIT_CNT = 0, 0, PAGE_READ_CNT / VSIT_CNT), 2) PAGE_READ_AVG
+		FROM 
+			TB_ACSS_STTS_DT T1
+		<include refid="selectAccessStatDailyListWhere-fragment" />
+		ORDER BY STTS_DT DESC
+		LIMIT #{pageOffset}, #{pageSize}
+	</select>
+	
+</mapper>

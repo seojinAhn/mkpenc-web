@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onmakers.cms.module.member.mapper.MemberMapper">
+	<sql id="memberListWhere-fragment">
+		WHERE IS_VALID_YN = 'Y'
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchText)">
+				<if test="searchType.equals('MBER_ID')">
+					AND TBL.MBER_ID LIKE CONCAT('%', #{searchText}, '%')
+				</if>
+				<if test="searchType.equals('NAME')">
+					AND TBL.NAME LIKE CONCAT('%', #{searchText}, '%')
+				</if>
+				<if test="searchType.equals('NICKNM')">
+					AND TBL.NICKNM LIKE CONCAT('%', #{searchText}, '%')
+				</if>
+			</if>
+	</sql>
+
+	<select id="selectMemberList" parameterType="SearchMember" resultType="Member">
+		SELECT
+              T1.MEMBER_ID
+            , T1.PASSWORD
+            , T1.MEMBER_NAME
+            , T1.TEL_NO
+            , T1.HP_NO
+            , T1.ZIP_CD
+            , T1.ADDR_M
+            , T1.ADDR_S
+            , T1.EMAIL
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , T1.VISIT_DT
+            , T1.AUS_DPT_CD
+            , FN_GET_CODE_NM('AUSDPTCD', T1.AUS_DPT_CD)  AUS_DPT_CD_NM
+            , (SELECT ST1.AUTH_CD FROM CMS_AUTH_MEMBER_MAP ST1 WHERE ST1.MEMBER_ID = T1.MEMBER_ID LIMIT 1) AUTH_CD
+		FROM CMS_MEMBER T1
+		WHERE 1=1
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchText)">
+            <if test="searchType.equals('MBER_ID')">
+                AND T1.MEMBER_ID LIKE CONCAT('%', #{searchText}, '%')
+            </if>
+            <if test="searchType.equals('NAME')">
+                AND T1.MEMBER_NAME LIKE CONCAT('%', #{searchText}, '%')
+            </if>
+        </if>
+	</select>
+
+	<select id="selectMember" parameterType="SearchMember" resultType="Member">
+		SELECT
+              T1.MEMBER_ID
+            , T1.PASSWORD
+            , T1.MEMBER_NAME
+            , T1.TEL_NO
+            , T1.HP_NO
+            , T1.ZIP_CD
+            , T1.ADDR_M
+            , T1.ADDR_S
+            , T1.EMAIL
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , T1.VISIT_DT
+            , T1.AUS_DPT_CD
+            , (SELECT ST1.AUTH_CD FROM CMS_AUTH_MEMBER_MAP ST1 WHERE ST1.MEMBER_ID = T1.MEMBER_ID LIMIT 1) AUTH_CD
+        , FN_GET_CODE_NM('AUSDPTCD', T1.AUS_DPT_CD)  AUS_DPT_CD_NM
+        FROM CMS_MEMBER T1
+		WHERE MEMBER_ID = #{memberId}
+	</select>
+
+	<insert id="insertMember" parameterType="Member" >
+		INSERT INTO CMS_MEMBER (
+              MEMBER_ID
+            , PASSWORD
+            , MEMBER_NAME
+            , TEL_NO
+            , HP_NO
+            , ZIP_CD
+            , ADDR_M
+            , ADDR_S
+            , EMAIL
+            , IS_VALID_YN
+            , IS_VIEW_YN
+            , REG_ID
+            , REG_DT
+            , AUS_DPT_CD
+		) VALUES (
+		  #{memberId}
+        , #{password}
+        , #{memberName}
+        , #{telNo}
+        , #{hpNo}
+        , #{zipCd}
+        , #{addrM}
+        , #{addrS}
+        , #{email}
+        , 'Y'
+        , 'Y'
+        , #{regId}
+        , NOW()
+        , #{ausDptCd}
+		)
+	</insert>
+
+	<update id="updateMember" parameterType="Member">
+		UPDATE CMS_MEMBER SET
+          MEMBER_NAME = #{memberName}
+        , TEL_NO = #{telNo}
+        , HP_NO = #{hpNo}
+        , ZIP_CD = #{zipCd}
+        , ADDR_M = #{addrM}
+        , ADDR_S = #{addrS}
+        , EMAIL = #{email}
+        , UPT_ID = #{uptId}
+        , UPT_DT = NOW()
+        , AUS_DPT_CD = #{ausDptCd}
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(password)">
+            , PASSWORD = #{password}
+        </if>
+		WHERE MEMBER_ID = #{memberId}
+	</update>
+
+	<delete id="deleteMember" parameterType="Member">
+		DELETE FROM CMS_MEMBER
+		WHERE MEMBER_ID = #{memberId}
+	</delete>
+
+	<update id="updateMemberLogin" parameterType="Member">
+		UPDATE CMS_MEMBER SET
+			VSIT_DT = NOW(),
+			CONT_CNT = CONT_CNT + 1
+		WHERE MEMBER_ID = #{memberId}
+	</update>
+
+
+    <select id="selectMemberByUserId" parameterType="String" resultType="Member">
+        SELECT
+              T1.MEMBER_ID
+            , T1.PASSWORD
+            , T1.MEMBER_NAME
+            , T1.TEL_NO
+            , T1.HP_NO
+            , T1.ZIP_CD
+            , T1.ADDR_M
+            , T1.ADDR_S
+            , T1.EMAIL
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , T1.VISIT_DT
+            , T1.AUS_DPT_CD
+            , FN_GET_CODE_NM('AUSDPTCD', T1.AUS_DPT_CD)  AUS_DPT_CD_NM
+        FROM CMS_MEMBER T1
+        WHERE T1.MEMBER_ID = #{memberId} AND T1.IS_VALID_YN = 'Y'
+    </select>
+
+    <update id="updateMemberPassword" parameterType="Member">
+        UPDATE CMS_MEMBER SET PASSWORD = #{password}
+        WHERE MEMBER_ID = #{memberId}
+    </update>
+</mapper>

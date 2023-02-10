@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mkpenc.alarm.mapper.DccAlarmMapper">
+
+    <select id="selectLogDccAlarmMinSeq" parameterType="DccSearchAlarm" resultType="int">
+       SELECT MIN(SEQ) AS SEQ 
+    	 FROM LOG_${sHogi}DCC_ALARM 
+    	 <trim prefix="WHERE" prefixOverrides="AND | OR">
+    	 	<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun)">
+	        	AND ALMXYGUBUN = #{sXYGubun}
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sDate)">
+	        	AND ALMDATE <![CDATA[>=]]>  #{sDate)}
+	        </if>	        
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(iDate)">
+	            AND SEQ <![CDATA[>=]]>  #{iDate)}
+	        </if>	       
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sPageNo)">
+	        	AND SEQ <![CDATA[>]]>  #{sPageNo)}
+	        </if>	        
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(iPageNo)">
+	            AND PAGNO <![CDATA[>=]]>  #{iPageNo)}
+	        </if>	        	     
+    	 </trim>
+    </select>
+    
+    <select id="selectLogDccAlarmMaxSeq" parameterType="DccSearchAlarm" resultType="int">
+    	SELECT MAX(SEQ) AS SEQ 
+    	 FROM LOG_${sHogi}DCC_ALARM 
+    	 <trim prefix="WHERE" prefixOverrides="AND | OR">
+    	 	<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sPageNo)">
+	        	AND ALMXYGUBUN = #{sPageNo}
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sPageNo)">
+	        	AND SEQ <![CDATA[<]]>  #{sPageNo)}
+	        </if>	        
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(iPageNo)">
+	            AND PAGNO <![CDATA[<=]]>  #{iPageNo)}
+	        </if>	        	        
+    	 </trim>
+    </select>
+    
+    <select id="selectLogDccAlarm" parameterType="DccSearchAlarm" resultType="java.util.Map">
+		SELECT ALMGUBUN, 
+					substring(ALMDATE,12,15) AS ALMTIME , 
+					ALMMSECCHK, 
+					ALMCODE, 
+					ALMADDRESS, 
+					ALMMESG,
+					CONVERT(CHAR(10), ALMDATE,111) ALMYEAR , 
+					ALMMESGLINE, 
+					CONVERT(CHAR(23),ALMDATE,21) AS ALMDATE, 
+					PAGNO, 
+					PAGLINE, 
+					SEQ
+    	 FROM LOG_${sHogi}DCC_ALARM 
+    	 <trim prefix="WHERE" prefixOverrides="AND | OR">
+    	 	<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun)">
+	        	AND ALMXYGUBUN = #{sXYGubun}
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(nSeq)">
+	        	AND SEQ =  #{nSeq)}
+	        </if>	        
+    	 </trim>
+    	   ORDER BY PAGLINE   
+    </select>    
+    
+    <select id="execLogDccAlarm" statementType="CALLABLE" parameterType="DccSearchAlarm" resultType="java.util.Map">
+		{ call almlist_skip (#{sHogi},  #{sDate},  #{sPageNo},  #{sCurPage}, #{sXYGubun},  #{sMovePage} ) }
+    </select>     
+    
+    
+</mapper>
