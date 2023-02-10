@@ -31,6 +31,8 @@ public class ComDccGrpTagInfo {
 		private double  VLOW;
 		private double  VHIGH;
 		private int  FASTIOCHK;
+		
+		
 		/**
 		 * @return the iSeq
 		 */
