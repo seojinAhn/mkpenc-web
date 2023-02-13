@@ -154,12 +154,12 @@ public class MarkvMimicContentsController {
         return mav;
     }
 	
-	@RequestMapping("tbnsteamsealsys")
-	public ModelAndView tbnsteamsealsys(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+	@RequestMapping("tbnstemsealsys")
+	public ModelAndView tbnstemsealsys(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
         
 		ModelAndView mav = new ModelAndView();
 
-        logger.info("############ tbnsteamsealsys");
+        logger.info("############ tbnstemsealsys");
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
