@@ -101,7 +101,7 @@
                                       <ul>          
                                           <li><a href="#none">FRONT STANDARD</a></li>         
                                           <li><a href="#none">FA SOLENOID</a></li>          
-                                          <li><a href="#none">HYDRAULIC TRIP SYS</a></li>            
+                                          <li><a href="/markv/mimic/hydraulictripsys">HYDRAULIC TRIP SYS</a></li>            
                                           <li><a href="/markv/mimic/valvetightness">VALVE TIGHTNESS</a></li>            
                                       </ul>         
                                   </li>         
