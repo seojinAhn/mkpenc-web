@@ -22,7 +22,7 @@
                         <em class="fa fa-wrench fa-5x text-muted"></em>
                     </div>
                     <div class="text-lg mb-3">500</div>
-                    <p class="lead m-0">에러가 발생하였습니다.</p>
+                    <p class="lead m-0">에러가 발생하였습니다.!!!!</p>
                     <%--<p>Don't worry, we're now checking this.</p>--%>
                     <%--<p>In the meantime, please try one of those links below or come back in a moment</p>--%>
                 </div>
