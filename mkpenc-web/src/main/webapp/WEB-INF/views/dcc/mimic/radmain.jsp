@@ -24,138 +24,147 @@
 	<!-- header_wrap -->
 	<%@ include file="/WEB-INF/views/include/include-dcc-header.jspf" %>
 	<!-- header_wrap -->
-	<!-- container -->
+<!-- container -->
 	<div class="container">
 		<!-- contents -->
 		<div class="contents">
 			<!-- page_title -->
 			<div class="page_title">
-				<h3>FUEL HANDLING SYSTEM</h3>
-				<div class="bc"><span>DCC</span><span>Mimic</span><span>FUEL</span><strong>FUEL HANDLING SYSTEM</strong></div>
+				<h3>RADIATION SYSTEM</h3>
+				<div class="bc"><span>DCC</span><span>Mimic</span><span>RADIATION</span><strong>RADIATION SYSTEM</strong></div>
 			</div>
 			<!-- //page_title -->
-			<div class="img_wrap fuel_handling">
+			<div class="img_wrap radiation_system">
+                <!-- 마우스 우클릭 메뉴 -->
+                <div class="context_menu" id="mouse_area">
+                    <ul>
+                        <li><a href="#none">RB Base</a></li>
+                        <li><a href="#none">RB 1F</a></li>
+                        <li><a href="#none">RB 2F</a></li>
+                        <li><a href="#none">RB 3F</a></li>
+                        <li><a href="#none">RB 4F</a></li>
+                        <li><a href="#none">RB 5F</a></li>
+                        <li><a href="#none">SB Base</a></li>
+                    </ul>
+                </div>
+                <!-- //마우스 우클릭 메뉴 -->                  
                 <!-- range_slider -->
                 <div class="range_slider">
                     <input type="range" id="opacity-change" value="100" min="20" max="100">
                     <span>1</span>
                 </div>
                 <div class="img_mask"></div>
-                <a href="" class="link_txt" style="top:150px;left:540px;">F/M (A)</a>
-                <a href="" class="link_txt" style="top:150px;right:490px;">F/M (C)</a>
-                <!-- ///range_slider -->         
-                <div class="chart_block small wide" style="top:180px;left:140px;">
-                    <h4>Control Pressure (A side)</h4>
+                <!-- ///range_slider -->
+                <div class="chart_block small wide" style="top:140px;left:180px;">
+                    <h4>배기중 방사능 농도</h4>
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <span>Mag.Pr.</span>
-                                <span>0.422</span>
-                                <span>MPa</span>
+                                <span>불활성 기체</span>
+                                <span>0.0572</span>
+                                <span>% DEL</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <span>C-Ram Pr.</span>
-                                <span>0.000</span>
-                                <span>MPa</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart_block small wide" style="top:180px;right:100px;">
-                    <h4>Control Pressure (C side)</h4>
-                    <div class="chart_block_contents">
-                        <div class="summary">
-                            <p>
-                                <span>Mag.Pr.</span>
-                                <span>0.422</span>
-                                <span>MPa</span>
-                            </p>
-                        </div>
-                        <div class="summary">
-                            <p>
-                                <span>C-Ram Pr.</span>
-                                <span>0.000</span>
-                                <span>MPa</span>
+                                <span>삼중수소</span>
+                                <span>0.0572</span>
+                                <span>% DEL</span>
                             </p>
                         </div>
                     </div>
                 </div>                
-                <div class="chart_block small wide" style="top:230px;left:420px;">
-                    <h4>Ram Position (A side)</h4>
+                <div class="chart_block small" style="top:40px;left:550px;">
+                    <h4>기체폐기물 배출율</h4>
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <span>B-Ram Position</span>
-                                <span>-0.9</span>
-                                <span>CM</span>
-                            </p>
-                        </div>
-                        <div class="summary">
-                            <p>
-                                <span>C-Ram Position</span>
-                                <span>0.5</span>
-                                <span>CM</span>
-                            </p>
-                        </div>
-                        <div class="summary">
-                            <p>
-                                <span>L-Ram Position</span>
-                                <span>-0.990</span>
-                                <span>CM</span>
+                                <span></span>
+                                <span>2283.5</span>
+                                <span>M3/MIN</span>
                             </p>
                         </div>
                     </div>
                 </div>
-                <div class="chart_block small wide" style="top:230px;right:370px;">
-                    <h4>Ram Position (C side)</h4>
+                <div class="chart_block small wide" style="top:40px;left:720px;">
+                    <h4>금일방사능 배출량</h4>
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <span>B-Ram Position</span>
-                                <span>-0.3</span>
-                                <span>CM</span>
+                                <span>입자</span>
+                                <span>0.0572</span>
+                                <span>% DEL</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <span>C-Ram Position</span>
-                                <span>2.5</span>
-                                <span>CM</span>
+                                <span>옥소</span>
+                                <span>0.0572</span>
+                                <span>% DEL</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <span>L-Ram Position</span>
-                                <span>-0.854</span>
-                                <span>CM</span>
+                                <span>불활성 기체</span>
+                                <span>0.0572</span>
+                                <span>% DEL</span>
                             </p>
                         </div>
                     </div>
                 </div>
-                <div class="chart_block small wide" style="bottom:110px;right:250px;">
-                    <h4>D2O Supply Pressure</h4>
+                <div class="chart_block small wide" style="top:150px;right:160px;">
+                    <h4>금일방사능 배출량</h4>
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <span>Common Pr.</span>
-                                <span>0.457</span>
-                                <span>MPa</span>
+                                <span>입자</span>
+                                <span>0.0572</span>
+                                <span>% DEL</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <span>A-Side Pr.</span>
-                                <span>0.393</span>
-                                <span>MPa</span>
+                                <span>옥소</span>
+                                <span>0.0572</span>
+                                <span>% DEL</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <span>C-Side Pr.</span>
-                                <span>0.403</span>
-                                <span>MPa</span>
+                                <span>불활성 기체</span>
+                                <span>0.0572</span>
+                                <span>% DEL</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart_block small wide" style="bottom:160px;right:60px;">
+                    <h4>액체배출 유량</h4>
+                    <div class="chart_block_contents">
+                        <div class="summary">
+                            <p>
+                                <span></span>
+                                <span>0.0572</span>
+                                <span>% DEL</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart_block small wide" style="bottom:60px;right:60px;">
+                    <h4>금일 방사능 배출량</h4>
+                    <div class="chart_block_contents">
+                        <div class="summary">
+                            <p>
+                                <span>전베타</span>
+                                <span>0.0572</span>
+                                <span>% DEL</span>
+                            </p>
+                        </div>
+                        <div class="summary">
+                            <p>
+                                <span>감마</span>
+                                <span>0.0572</span>
+                                <span>% DEL</span>
                             </p>
                         </div>
                     </div>
@@ -171,6 +180,7 @@
 </div>
 <!--  //wrap  -->
 <script type="text/javascript" src="<c:url value="/resources/js/context_menu.js" />" charset="utf-8"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/range_control.js" />" charset="utf-8"></script>
 </body>
 </html>
 

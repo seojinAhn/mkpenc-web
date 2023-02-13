@@ -60,7 +60,7 @@
                                          <li><a href="/dcc/mimic/phtctrl">PHT CTRL</a></li>         
                                          <li><a href="/dcc/mimic/moderator">MODERATOR</a></li>            
                                          <li><a href="/dcc/mimic/phtpuri">PHT PURI</a></li>         
-                                         <li><a href="#none">ECC</a></li>          
+                                         <li><a href="/dcc/mimic/ecc">ECC</a></li>          
                                      </ul>         
                                  </li>         
                              </ul>         
@@ -79,8 +79,8 @@
                                      <a href="#none">FUEL</a>          
                                      <ul>          
                                          <li><a href="/dcc/mimic/fuelhandlingmenu">F/H MAIN</a></li>         
-                                         <li><a href="#none">D20 CTRL(A)</a></li>          
-                                         <li><a href="#none">D20 CTRL(C)</a></li>          
+                                         <li><a href="/dcc/mimic/d2octrla">D20 CTRL(A)</a></li>          
+                                         <li><a href="/dcc/mimic/d2octrlc">D20 CTRL(C)</a></li>          
                                      </ul>         
                                  </li>         
                              </ul>         
@@ -88,14 +88,14 @@
                                  <li>          
                                      <a href="#none">RADIATION</a>         
                                      <ul>          
-                                         <li><a href="#none">RAD MAIN</a></li>         
-                                         <li><a href="#none">RB BASE</a></li>          
-                                         <li><a href="#none">RB 1F</a></li>            
-                                         <li><a href="#none">RB 2F</a></li>            
-                                         <li><a href="#none">RB 3F</a></li>            
-                                         <li><a href="#none">RB 4F</a></li>            
-                                         <li><a href="#none">RB 5F</a></li>            
-                                         <li><a href="#none">SB BASE</a></li>          
+                                         <li><a href="/dcc/mimic/radmain">RAD MAIN</a></li>         
+                                         <li><a href="/dcc/mimic/rbbase">RB BASE</a></li>          
+                                         <li><a href="/dcc/mimic/rb1f">RB 1F</a></li>            
+                                         <li><a href="/dcc/mimic/rb2f">RB 2F</a></li>            
+                                         <li><a href="/dcc/mimic/rb3f">RB 3F</a></li>            
+                                         <li><a href="/dcc/mimic/rb4f">RB 4F</a></li>            
+                                         <li><a href="/dcc/mimic/rb5f">RB 5F</a></li>            
+                                         <li><a href="/dcc/mimic/sbbase">SB BASE</a></li>          
                                      </ul>         
                                  </li>         
                              </ul>         
@@ -201,7 +201,7 @@
                          <div class="lnb_depth_wrap">          
                              <ul>          
                                  <li>          
-                                     <a href="#none">SCHEMATIC</a>         
+                                     <a href="/dcc/status/schematic">SCHEMATIC</a>         
                                  </li>         
                              </ul>         
                              <ul>          

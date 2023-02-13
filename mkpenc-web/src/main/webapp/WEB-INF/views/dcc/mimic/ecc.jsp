@@ -30,132 +30,159 @@
 		<div class="contents">
 			<!-- page_title -->
 			<div class="page_title">
-				<h3>FUEL HANDLING SYSTEM</h3>
-				<div class="bc"><span>DCC</span><span>Mimic</span><span>FUEL</span><strong>FUEL HANDLING SYSTEM</strong></div>
+				<h3>EMERGENCY CORE COOLING SYSTEM</h3>
+				<div class="bc"><span>DCC</span><span>Mimic</span><span>PRIMARY</span><strong>EMERGENCY CORE COOLING SYSTEM</strong></div>
 			</div>
 			<!-- //page_title -->
-			<div class="img_wrap fuel_handling">
+			<div class="img_wrap emergency_core_cooling">
                 <!-- range_slider -->
                 <div class="range_slider">
                     <input type="range" id="opacity-change" value="100" min="20" max="100">
                     <span>1</span>
                 </div>
                 <div class="img_mask"></div>
-                <a href="" class="link_txt" style="top:150px;left:540px;">F/M (A)</a>
-                <a href="" class="link_txt" style="top:150px;right:490px;">F/M (C)</a>
                 <!-- ///range_slider -->         
-                <div class="chart_block small wide" style="top:180px;left:140px;">
-                    <h4>Control Pressure (A side)</h4>
+                <div class="chart_block small" style="top:290px;left:410px;">
+                    <h4>Tank 1</h4>
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <span>Mag.Pr.</span>
-                                <span>0.422</span>
-                                <span>MPa</span>
-                            </p>
-                        </div>
-                        <div class="summary">
-                            <p>
-                                <span>C-Ram Pr.</span>
-                                <span>0.000</span>
-                                <span>MPa</span>
+                                <span>M</span>
+                                <span>10.074</span>
+                                <span>METER</span>
                             </p>
                         </div>
                     </div>
                 </div>
-                <div class="chart_block small wide" style="top:180px;right:100px;">
-                    <h4>Control Pressure (C side)</h4>
+                <div class="chart_block small" style="top:370px;left:280px;">
+                    <h4>Pp 1 Temp</h4>
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <span>Mag.Pr.</span>
-                                <span>0.422</span>
-                                <span>MPa</span>
-                            </p>
-                        </div>
-                        <div class="summary">
-                            <p>
-                                <span>C-Ram Pr.</span>
-                                <span>0.000</span>
-                                <span>MPa</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>                
-                <div class="chart_block small wide" style="top:230px;left:420px;">
-                    <h4>Ram Position (A side)</h4>
-                    <div class="chart_block_contents">
-                        <div class="summary">
-                            <p>
-                                <span>B-Ram Position</span>
-                                <span>-0.9</span>
-                                <span>CM</span>
-                            </p>
-                        </div>
-                        <div class="summary">
-                            <p>
-                                <span>C-Ram Position</span>
-                                <span>0.5</span>
-                                <span>CM</span>
-                            </p>
-                        </div>
-                        <div class="summary">
-                            <p>
-                                <span>L-Ram Position</span>
-                                <span>-0.990</span>
-                                <span>CM</span>
+                                <span>131</span>
+                                <span>25.78</span>
+                                <span>DEG</span>
                             </p>
                         </div>
                     </div>
                 </div>
-                <div class="chart_block small wide" style="top:230px;right:370px;">
-                    <h4>Ram Position (C side)</h4>
+                <div class="chart_block small" style="top:520px;left:280px;">
+                    <h4>Pp 2 Temp</h4>
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <span>B-Ram Position</span>
-                                <span>-0.3</span>
-                                <span>CM</span>
-                            </p>
-                        </div>
-                        <div class="summary">
-                            <p>
-                                <span>C-Ram Position</span>
-                                <span>2.5</span>
-                                <span>CM</span>
-                            </p>
-                        </div>
-                        <div class="summary">
-                            <p>
-                                <span>L-Ram Position</span>
-                                <span>-0.854</span>
-                                <span>CM</span>
+                                <span>141</span>
+                                <span>30.53</span>
+                                <span>DEGC</span>
                             </p>
                         </div>
                     </div>
                 </div>
-                <div class="chart_block small wide" style="bottom:110px;right:250px;">
-                    <h4>D2O Supply Pressure</h4>
+                <div class="chart_block small" style="top:180px;left:680px;">
+                    <h4>Tank 3 L</h4>
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <span>Common Pr.</span>
-                                <span>0.457</span>
-                                <span>MPa</span>
+                                <span>K</span>
+                                <span>10.097</span>
+                                <span>METER</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <span>A-Side Pr.</span>
-                                <span>0.393</span>
-                                <span>MPa</span>
+                                <span>L</span>
+                                <span>10.100</span>
+                                <span>METER</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart_block small" style="top:130px;left:890px;">
+                    <h4>Dousing Tk L</h4>
+                    <div class="chart_block_contents">
+                        <div class="summary">
+                            <p>
+                                <span>K</span>
+                                <span>3.7356</span>
+                                <span>METER</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <span>C-Side Pr.</span>
-                                <span>0.403</span>
-                                <span>MPa</span>
+                                <span>L</span>
+                                <span>3.7739</span>
+                                <span>METER</span>
+                            </p>
+                        </div>
+                        <div class="summary">
+                            <p>
+                                <span>M</span>
+                                <span>3.7578</span>
+                                <span>METER</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart_block small" style="top:130px;left:1060px;">
+                    <h4>R/B P</h4>
+                    <div class="chart_block_contents">
+                        <div class="summary">
+                            <p>
+                                <span>K</span>
+                                <span>-0.7356</span>
+                                <span>KPAD</span>
+                            </p>
+                        </div>
+                        <div class="summary">
+                            <p>
+                                <span>L</span>
+                                <span>-0.7739</span>
+                                <span>KPAD</span>
+                            </p>
+                        </div>
+                        <div class="summary">
+                            <p>
+                                <span>M</span>
+                                <span>-0.7578</span>
+                                <span>KPAD</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart_block small" style="top:270px;left:1080px;">
+                    <h4>RD L</h4>
+                    <div class="chart_block_contents">
+                        <div class="summary">
+                            <p>
+                                <span>K</span>
+                                <span>0.7356</span>
+                                <span>METER</span>
+                            </p>
+                        </div>
+                        <div class="summary">
+                            <p>
+                                <span>M</span>
+                                <span>0.7739</span>
+                                <span>METER</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart_block small" style="top:390px;left:970px;">
+                    <h4>RD L</h4>
+                    <div class="chart_block_contents">
+                        <div class="summary">
+                            <p>
+                                <span>K</span>
+                                <span>1,203</span>
+                                <span>METER</span>
+                            </p>
+                        </div>
+                        <div class="summary">
+                            <p>
+                                <span>M</span>
+                                <span>1,179</span>
+                                <span>METER</span>
                             </p>
                         </div>
                     </div>
@@ -170,7 +197,7 @@
 	<!-- //footer -->
 </div>
 <!--  //wrap  -->
-<script type="text/javascript" src="<c:url value="/resources/js/context_menu.js" />" charset="utf-8"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/range_control.js" />" charset="utf-8"></script>
 </body>
 </html>
 
