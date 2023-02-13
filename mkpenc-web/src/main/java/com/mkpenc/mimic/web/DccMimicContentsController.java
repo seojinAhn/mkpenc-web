@@ -134,6 +134,25 @@ public class DccMimicContentsController {
         return mav;
     }		
 	
+	@RequestMapping("ecc")
+	public ModelAndView ecc(DccSearchMimic dccSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ ecc");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }		
+	
 	@RequestMapping("mainsteam")
 	public ModelAndView mainsteam(DccSearchMimic dccSearchMimic, HttpServletRequest request) {
         
@@ -210,4 +229,195 @@ public class DccMimicContentsController {
       
         return mav;
     }		
+	
+	@RequestMapping("d2octrla")
+	public ModelAndView d2octrla(DccSearchMimic dccSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ d2octrla");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }	
+	
+	@RequestMapping("d2octrlc")
+	public ModelAndView d2octrlc(DccSearchMimic dccSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ d2octrlc");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }		
+	
+	@RequestMapping("radmain")
+	public ModelAndView radmain(DccSearchMimic dccSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ radmain");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }	
+	
+	@RequestMapping("rbbase")
+	public ModelAndView rbbase(DccSearchMimic dccSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ rbbase");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }		
+	
+	@RequestMapping("rb1f")
+	public ModelAndView rb1f(DccSearchMimic dccSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ rb1f");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }		
+	
+	@RequestMapping("rb2f")
+	public ModelAndView rb2f(DccSearchMimic dccSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ rb2f");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }		
+	
+	@RequestMapping("rb3f")
+	public ModelAndView rb3f(DccSearchMimic dccSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ rb3f");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }	
+	
+	@RequestMapping("rb4f")
+	public ModelAndView rb4f(DccSearchMimic dccSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ rb4f");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping("rb5f")
+	public ModelAndView rb5f(DccSearchMimic dccSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ rb4f");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }	
+	
+	@RequestMapping("sbbase")
+	public ModelAndView sbbase(DccSearchMimic dccSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ sbbase");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }		
+	
 }

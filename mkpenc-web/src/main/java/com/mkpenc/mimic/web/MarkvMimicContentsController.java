@@ -154,6 +154,44 @@ public class MarkvMimicContentsController {
         return mav;
     }
 	
+	@RequestMapping("tbnsteamsealsys")
+	public ModelAndView tbnsteamsealsys(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ tbnsteamsealsys");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", markvSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }	
+	
+	@RequestMapping("lubeoilsys")
+	public ModelAndView lubeoilsys(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ lubeoilsys");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", markvSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }		
+	
 	@RequestMapping("drainvalvepos")
 	public ModelAndView drainvalvepos(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
         
@@ -172,6 +210,25 @@ public class MarkvMimicContentsController {
 
         return mav;
     }	
+	
+	@RequestMapping("sealoilsys")
+	public ModelAndView sealoilsys(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ sealoilsys");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", markvSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }		
 	
 	@RequestMapping("gentcrtd1")
 	public ModelAndView gentcrtd1(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
@@ -210,6 +267,25 @@ public class MarkvMimicContentsController {
 
         return mav;
     }
+	
+	@RequestMapping("hydraulictripsys")
+	public ModelAndView hydraulictripsys(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ hydraulictripsys");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", markvSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }	
 	
 	@RequestMapping("valvetightness")
 	public ModelAndView valvetightness(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
