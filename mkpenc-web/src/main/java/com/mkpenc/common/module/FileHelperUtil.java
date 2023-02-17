@@ -1,13 +1,13 @@
 package com.mkpenc.common.module;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mkpenc.alarm.model.DccSearchAlarm;
 import com.mkpenc.common.model.CommonConstant;
 import com.mkpenc.common.model.Upload;
 
@@ -116,6 +115,9 @@ public class FileHelperUtil {
 			case "ADMIN":
 				path = File.separator + upload.getDiv();
 				break;
+			case "ALARM":
+				path = File.separator + upload.getDiv();
+				break;
 		}
 
 		return path;
@@ -135,6 +137,55 @@ public class FileHelperUtil {
 	public static String createDateDir(){
 		LocalDate current = LocalDate.now();
 		return DateTimeFormatter.ofPattern("yyyy/MM/dd").format(current);
+	}
+	
+	public boolean writeTxtFile(String fileName, String[] contents, String div) {
+		boolean rtv = false;
+		String path = File.separator+div;
+		
+		try {
+			File dir = new File(commonConstant.getAttachPath(), path);
+			File file = new File(dir, fileName);
+			
+			if(!dir.exists()) {
+				dir.mkdirs();
+			}
+			
+			if( !file.exists() ) {
+				file.createNewFile();
+			}
+			
+			FileWriter fw = new FileWriter(file);
+			BufferedWriter bw = new BufferedWriter(fw);
+			
+			for( String line : contents ) {
+				bw.write(line);
+				bw.newLine();
+			}
+			
+			bw.close();
+			
+			if( file.exists() ) {
+				rtv = true;
+			} else {
+				Thread.sleep(500);
+			}
+		} catch( Exception e ) {
+			logger.error(e.toString());
+		}
+		
+		return rtv;
+	}
+	
+	public void deleteTxtFile(Upload upload, String fileName) {
+		String path = getPath(upload);
+		
+		File dir = new File(commonConstant.getAttachPath(), path);
+		File file = new File(dir, fileName);
+		
+		if( file.exists() ) {
+			file.delete();
+		}
 	}
 
 }

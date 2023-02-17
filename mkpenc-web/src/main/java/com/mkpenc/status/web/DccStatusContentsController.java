@@ -1,6 +1,5 @@
 package com.mkpenc.status.web;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,6 +15,8 @@ import com.mkpenc.status.model.DccSearchStatus;
 import com.mkpenc.status.model.DccTagInfo;
 import com.mkpenc.status.model.TblFldInfo;
 import com.mkpenc.status.service.DccStatusService;
+import com.mkpenc.tip.model.DccIolistInfo;
+import com.mkpenc.tip.model.DccSearchTip;
 import com.mkpenc.admin.model.MemberInfo;
 import com.mkpenc.common.module.ExcelHelperUtil;
 
@@ -216,9 +217,11 @@ public class DccStatusContentsController {
     		}
         	
         	dccSearchStatus.setMenuName(this.menuName);
+        	userInfo.setHogi(dccSearchStatus.getHogiHeader());
+        	userInfo.setXyGubun(dccSearchStatus.getXyHeader());
         	
         	mav.addObject("BaseSearch", dccSearchStatus);
-        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	mav.addObject("UserInfo", userInfo);
         	
         	mav.addObject("DccTagInfoList", dccTagInfoList);
         	mav.addObject("DccLogTrendInfoList", dccLogTrendInfoList);
@@ -929,9 +932,11 @@ public class DccStatusContentsController {
     		}
 
         	dccSearchStatus.setMenuName(this.menuName);
+        	userInfo.setHogi(dccSearchStatus.getHogiHeader());
+        	userInfo.setXyGubun(dccSearchStatus.getXyHeader());
         	
         	mav.addObject("BaseSearch", dccSearchStatus);
-        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	mav.addObject("UserInfo", userInfo);
         	
         	mav.addObject("DccTagInfoList", dccTagInfoList);
         	mav.addObject("DccLogTrendInfoList", dccLogTrendInfoList);
@@ -1356,9 +1361,11 @@ public class DccStatusContentsController {
     		}
         	
         	dccSearchStatus.setMenuName(this.menuName);
+        	userInfo.setHogi(dccSearchStatus.getHogiHeader());
+        	userInfo.setXyGubun(dccSearchStatus.getXyHeader());
         	
         	mav.addObject("BaseSearch", dccSearchStatus);
-        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	mav.addObject("UserInfo", userInfo);
         	
         	mav.addObject("DccTagInfoList", dccTagInfoList);
         	mav.addObject("DccLogTrendInfoList", dccLogTrendInfoList);
@@ -1643,12 +1650,6 @@ public class DccStatusContentsController {
         	dccSearchStatus.setUserId(userInfo.getId());
         	dccSearchStatus.setUserIp(getClientIP(request));
         	
-			/*
-			 * dccSearchStatus.setHogi("3"); dccSearchStatus.setXyGubun("X");
-			 * 
-			 * String scanTime = dccStatusService.selectScanTime(dccSearchStatus);
-			 */
-        	
         	if( dccSearchStatus.getMenuNo() == null ) dccSearchStatus.setMenuNo("11");
         	if( dccSearchStatus.getGrpNo() == null ) dccSearchStatus.setGrpNo("2");
         	if( dccSearchStatus.getGrpId() == null ) dccSearchStatus.setGrpId("mimic");
@@ -1659,13 +1660,6 @@ public class DccStatusContentsController {
         	logger.info("Update User ["+userInfo.getId()+"]...... ["+String.valueOf(res)+"]");
         	
         	List<DccGrpTagInfo> dccGrpTagInfoList = dccStatusService.selectDccGrpTag(dccSearchStatus);
-        	/*System.out.println("size :: "+dccGrpTagInfoList.size());
-        	if(dccGrpTagInfoList.size() > 0) {
-        		System.out.println(dccGrpTagInfoList.get(0).getiSeq());
-        		System.out.println(dccGrpTagInfoList.get(1).getiSeq());
-        	} else {
-        		System.out.println("NULL...");
-        	}*/
         	List<DccTagInfo> dccTagInfoList = new ArrayList<DccTagInfo>();
         	DccTagInfo dccTagInfo = null;
         	
@@ -1715,12 +1709,6 @@ public class DccStatusContentsController {
                 		dccTagInfo.setDataLimit2(dccGrpTagInfoList.get(i).getLimit2());
         				break;
         		}
-				/*
-				 * dccTagInfoList.get(i).setDataLimit1(dccGrpTagInfoList.get(i).getLimit1());
-				 * dccTagInfoList.get(i).setDataLimit2(dccGrpTagInfoList.get(i).getLimit2());
-				 * dccTagInfoList.get(i).setDtabLimit1(menuName);
-				 * dccTagInfoList.get(i).setDtabLimit2(menuName);
-				 */
         		dccTagInfo.seteHigh(dccGrpTagInfoList.get(i).geteHigh());
         		dccTagInfo.seteLow(dccGrpTagInfoList.get(i).geteLow());
         		dccTagInfo.setFastIoChk(dccGrpTagInfoList.get(i).getFastIoChk());
@@ -1754,16 +1742,11 @@ public class DccStatusContentsController {
         		dccTagInfoList.add(dccTagInfo);
         	}
         	
-        	/*dccTagInfoList.forEach(t -> {
-        		System.out.println("["+t.getFldNo()+"] "+t.getUnit());
-        	});*/
-        	
         	List<DccLogTrendInfo> dccLogTrendInfoList = new ArrayList<DccLogTrendInfo>();
         	List<DccLogTrendInfo> dccLogTrendInfoListOrg = new ArrayList<DccLogTrendInfo>();
         	List<DccLogTrendInfo> dccLogTrendInfoTmpList = new ArrayList<DccLogTrendInfo>();
         	List<DccLogTrendInfo> dccLogTrendInfoTmpOrgList = new ArrayList<DccLogTrendInfo>();
     		String scanTime = dccStatusService.selectScanTime(dccSearchStatus);
-    		//System.out.println(scanTime);
     		if( scanTime == null || "".equals(scanTime) ) {
     			dccSearchStatus.setStartDate("");
     		} else {
@@ -1843,13 +1826,13 @@ public class DccStatusContentsController {
     				dccLogTrendInfoListOrg.add(dccLogTrendInfoTmpOrgList.get(j));
     			}
     		}
-    		//System.out.println(dccLogTrendInfoList.size());
-    		//System.out.println(dccLogTrendInfoList.get(0).getSCANTIME());
         	
         	dccSearchStatus.setMenuName(this.menuName);
+        	userInfo.setHogi(dccSearchStatus.getHogiHeader());
+        	userInfo.setXyGubun(dccSearchStatus.getXyHeader());
         	
         	mav.addObject("BaseSearch", dccSearchStatus);
-        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	mav.addObject("UserInfo", userInfo);
         	
         	mav.addObject("DccTagInfoList", dccTagInfoList);
         	mav.addObject("DccLogTrendInfoList", dccLogTrendInfoList);
@@ -1863,18 +1846,6 @@ public class DccStatusContentsController {
 	@RequestMapping("rrsExcelExport")
 	public void rrsExcelExport(HttpServletRequest request, HttpServletResponse response, DccSearchStatus dccSearchStatus) throws Exception {
 		try{
-			
-			/*if(dccSearchAdmin.getSearchKey() != null && !dccSearchAdmin.getSearchKey().isEmpty()) {
-        		if(dccSearchAdmin.getSearchKey().equals("progName")){
-        			dccSearchAdmin.setProgName(dccSearchAdmin.getSearchWord());
-        		}else if(dccSearchAdmin.getSearchKey().equals("logNo")){
-        			dccSearchAdmin.setLogNo(dccSearchAdmin.getSearchWord());
-        		}else if(dccSearchAdmin.getSearchKey().equals("descr")){
-        			dccSearchAdmin.setDescr(dccSearchAdmin.getSearchWord());
-        		}else if(dccSearchAdmin.getSearchKey().equals("createDate")){
-        			dccSearchAdmin.setCreateDate(dccSearchAdmin.getSearchWord());
-        		}
-        	}*/
 	        	
         	if( dccSearchStatus.getMenuNo() == null ) dccSearchStatus.setMenuNo("11");
         	if( dccSearchStatus.getGrpNo() == null ) dccSearchStatus.setGrpNo("2");
@@ -2025,10 +1996,6 @@ public class DccStatusContentsController {
     		}
     		
     		excelHelperUtil.statusExcelDownload(request, response, values, dccTagInfoList, scanTimeList, "rrs");
-
-	        //List<DccIolistInfo> dccIolistList = dccTipService.selectIoListExcelDownload(dccSearchTip);
-			
-			//excelHelperUtil.iolistExcelDownload(request, response, dccIolistList);		
 			
 		}catch(Exception e) {
 			logger.error("### e : {}", e);
@@ -2304,9 +2271,11 @@ public class DccStatusContentsController {
     		}
         	
         	dccSearchStatus.setMenuName(this.menuName);
+        	userInfo.setHogi(dccSearchStatus.getHogiHeader());
+        	userInfo.setXyGubun(dccSearchStatus.getXyHeader());
         	
         	mav.addObject("BaseSearch", dccSearchStatus);
-        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	mav.addObject("UserInfo", userInfo);
         	
         	mav.addObject("DccTagInfoList", dccTagInfoList);
         	mav.addObject("DccLogTrendInfoList", dccLogTrendInfoList);
@@ -2757,9 +2726,11 @@ public class DccStatusContentsController {
     		}
         	
         	dccSearchStatus.setMenuName(this.menuName);
+        	userInfo.setHogi(dccSearchStatus.getHogiHeader());
+        	userInfo.setXyGubun(dccSearchStatus.getXyHeader());
         	
         	mav.addObject("BaseSearch", dccSearchStatus);
-        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	mav.addObject("UserInfo", userInfo);
         	
         	mav.addObject("DccTagInfoList", dccTagInfoList);
         	mav.addObject("DccLogTrendInfoList", dccLogTrendInfoList);
@@ -3022,12 +2993,6 @@ public class DccStatusContentsController {
         	dccSearchStatus.setUserId(userInfo.getId());
         	dccSearchStatus.setUserIp(getClientIP(request));
         	
-			/*
-			 * dccSearchStatus.setHogi("3"); dccSearchStatus.setXyGubun("X");
-			 * 
-			 * String scanTime = dccStatusService.selectScanTime(dccSearchStatus);
-			 */
-        	
         	if( dccSearchStatus.getMenuNo() == null ) dccSearchStatus.setMenuNo("11");
         	if( dccSearchStatus.getGrpNo() == null ) dccSearchStatus.setGrpNo("12");
         	if( dccSearchStatus.getGrpId() == null ) dccSearchStatus.setGrpId("mimic");
@@ -3038,13 +3003,6 @@ public class DccStatusContentsController {
         	logger.info("Update User ["+userInfo.getId()+"]...... ["+String.valueOf(res)+"]");
         	
         	List<DccGrpTagInfo> dccGrpTagInfoList = dccStatusService.selectDccGrpTag(dccSearchStatus);
-        	/*System.out.println("size :: "+dccGrpTagInfoList.size());
-        	if(dccGrpTagInfoList.size() > 0) {
-        		System.out.println(dccGrpTagInfoList.get(0).getiSeq());
-        		System.out.println(dccGrpTagInfoList.get(1).getiSeq());
-        	} else {
-        		System.out.println("NULL...");
-        	}*/
         	List<DccTagInfo> dccTagInfoList = new ArrayList<DccTagInfo>();
         	DccTagInfo dccTagInfo = null;
         	
@@ -3094,12 +3052,6 @@ public class DccStatusContentsController {
                 		dccTagInfo.setDataLimit2(dccGrpTagInfoList.get(i).getLimit2());
         				break;
         		}
-				/*
-				 * dccTagInfoList.get(i).setDataLimit1(dccGrpTagInfoList.get(i).getLimit1());
-				 * dccTagInfoList.get(i).setDataLimit2(dccGrpTagInfoList.get(i).getLimit2());
-				 * dccTagInfoList.get(i).setDtabLimit1(menuName);
-				 * dccTagInfoList.get(i).setDtabLimit2(menuName);
-				 */
         		dccTagInfo.seteHigh(dccGrpTagInfoList.get(i).geteHigh());
         		dccTagInfo.seteLow(dccGrpTagInfoList.get(i).geteLow());
         		dccTagInfo.setFastIoChk(dccGrpTagInfoList.get(i).getFastIoChk());
@@ -3133,14 +3085,9 @@ public class DccStatusContentsController {
         		dccTagInfoList.add(dccTagInfo);
         	}
         	
-        	/*dccTagInfoList.forEach(t -> {
-        		System.out.println("["+t.getFldNo()+"] "+t.getUnit());
-        	});*/
-        	
         	List<DccLogTrendInfo> dccLogTrendInfoList = new ArrayList<DccLogTrendInfo>();
         	List<DccLogTrendInfo> dccLogTrendInfoTmpList = new ArrayList<DccLogTrendInfo>();
     		String scanTime = dccStatusService.selectScanTime(dccSearchStatus);
-    		//System.out.println(scanTime);
     		if( scanTime == null || "".equals(scanTime) ) {
     			dccSearchStatus.setStartDate("");
     		} else {
@@ -3250,13 +3197,13 @@ public class DccStatusContentsController {
     				dccLogTrendInfoList.add(dccLogTrendInfoTmpList.get(j));
     			}
     		}
-    		//System.out.println(dccLogTrendInfoList.size());
-    		//System.out.println(dccLogTrendInfoList.get(0).getSCANTIME());
         	
         	dccSearchStatus.setMenuName(this.menuName);
+        	userInfo.setHogi(dccSearchStatus.getHogiHeader());
+        	userInfo.setXyGubun(dccSearchStatus.getXyHeader());
         	
         	mav.addObject("BaseSearch", dccSearchStatus);
-        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	mav.addObject("UserInfo", userInfo);
         	
         	mav.addObject("DccTagInfoList", dccTagInfoList);
         	mav.addObject("DccLogTrendInfoList", dccLogTrendInfoList);
@@ -3269,18 +3216,6 @@ public class DccStatusContentsController {
 	@RequestMapping("stbExcelExport")
 	public void stbExcelExport(HttpServletRequest request, HttpServletResponse response, DccSearchStatus dccSearchStatus) throws Exception {
 		try{
-			
-			/*if(dccSearchAdmin.getSearchKey() != null && !dccSearchAdmin.getSearchKey().isEmpty()) {
-        		if(dccSearchAdmin.getSearchKey().equals("progName")){
-        			dccSearchAdmin.setProgName(dccSearchAdmin.getSearchWord());
-        		}else if(dccSearchAdmin.getSearchKey().equals("logNo")){
-        			dccSearchAdmin.setLogNo(dccSearchAdmin.getSearchWord());
-        		}else if(dccSearchAdmin.getSearchKey().equals("descr")){
-        			dccSearchAdmin.setDescr(dccSearchAdmin.getSearchWord());
-        		}else if(dccSearchAdmin.getSearchKey().equals("createDate")){
-        			dccSearchAdmin.setCreateDate(dccSearchAdmin.getSearchWord());
-        		}
-        	}*/
 	        	
         	if( dccSearchStatus.getMenuNo() == null ) dccSearchStatus.setMenuNo("11");
         	if( dccSearchStatus.getGrpNo() == null ) dccSearchStatus.setGrpNo("12");
@@ -3473,10 +3408,6 @@ public class DccStatusContentsController {
     		}
     		
     		excelHelperUtil.statusExcelDownload(request, response, values, dccTagInfoList, scanTimeList, "stb");
-
-	        //List<DccIolistInfo> dccIolistList = dccTipService.selectIoListExcelDownload(dccSearchTip);
-			
-			//excelHelperUtil.iolistExcelDownload(request, response, dccIolistList);		
 			
 		}catch(Exception e) {
 			logger.error("### e : {}", e);
@@ -3563,12 +3494,6 @@ public class DccStatusContentsController {
         	dccSearchStatus.setUserId(userInfo.getId());
         	dccSearchStatus.setUserIp(getClientIP(request));
         	
-			/*
-			 * dccSearchStatus.setHogi("3"); dccSearchStatus.setXyGubun("X");
-			 * 
-			 * String scanTime = dccStatusService.selectScanTime(dccSearchStatus);
-			 */
-        	
         	if( dccSearchStatus.getMenuNo() == null ) dccSearchStatus.setMenuNo("11");
         	if( dccSearchStatus.getGrpNo() == null ) dccSearchStatus.setGrpNo("13");
         	if( dccSearchStatus.getGrpId() == null ) dccSearchStatus.setGrpId("mimic");
@@ -3579,13 +3504,6 @@ public class DccStatusContentsController {
         	logger.info("Update User ["+userInfo.getId()+"]...... ["+String.valueOf(res)+"]");
         	
         	List<DccGrpTagInfo> dccGrpTagInfoList = dccStatusService.selectDccGrpTag(dccSearchStatus);
-        	/*System.out.println("size :: "+dccGrpTagInfoList.size());
-        	if(dccGrpTagInfoList.size() > 0) {
-        		System.out.println(dccGrpTagInfoList.get(0).getiSeq());
-        		System.out.println(dccGrpTagInfoList.get(1).getiSeq());
-        	} else {
-        		System.out.println("NULL...");
-        	}*/
         	List<DccTagInfo> dccTagInfoList = new ArrayList<DccTagInfo>();
         	DccTagInfo dccTagInfo = null;
         	
@@ -3635,12 +3553,6 @@ public class DccStatusContentsController {
                 		dccTagInfo.setDataLimit2(dccGrpTagInfoList.get(i).getLimit2());
         				break;
         		}
-				/*
-				 * dccTagInfoList.get(i).setDataLimit1(dccGrpTagInfoList.get(i).getLimit1());
-				 * dccTagInfoList.get(i).setDataLimit2(dccGrpTagInfoList.get(i).getLimit2());
-				 * dccTagInfoList.get(i).setDtabLimit1(menuName);
-				 * dccTagInfoList.get(i).setDtabLimit2(menuName);
-				 */
         		dccTagInfo.seteHigh(dccGrpTagInfoList.get(i).geteHigh());
         		dccTagInfo.seteLow(dccGrpTagInfoList.get(i).geteLow());
         		dccTagInfo.setFastIoChk(dccGrpTagInfoList.get(i).getFastIoChk());
@@ -3674,14 +3586,9 @@ public class DccStatusContentsController {
         		dccTagInfoList.add(dccTagInfo);
         	}
         	
-        	/*dccTagInfoList.forEach(t -> {
-        		System.out.println("["+t.getFldNo()+"] "+t.getUnit());
-        	});*/
-        	
         	List<DccLogTrendInfo> dccLogTrendInfoList = new ArrayList<DccLogTrendInfo>();
         	List<DccLogTrendInfo> dccLogTrendInfoTmpList = new ArrayList<DccLogTrendInfo>();
     		String scanTime = dccStatusService.selectScanTime(dccSearchStatus);
-    		//System.out.println(scanTime);
     		if( scanTime == null || "".equals(scanTime) ) {
     			dccSearchStatus.setStartDate("");
     		} else {
@@ -3763,13 +3670,13 @@ public class DccStatusContentsController {
     				dccLogTrendInfoList.add(dccLogTrendInfoTmpList.get(j));
     			}
     		}
-    		//System.out.println(dccLogTrendInfoList.size());
-    		//System.out.println(dccLogTrendInfoList.get(0).getSCANTIME());
         	
         	dccSearchStatus.setMenuName(this.menuName);
+        	userInfo.setHogi(dccSearchStatus.getHogiHeader());
+        	userInfo.setXyGubun(dccSearchStatus.getXyHeader());
         	
         	mav.addObject("BaseSearch", dccSearchStatus);
-        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	mav.addObject("UserInfo", userInfo);
         	
         	mav.addObject("DccTagInfoList", dccTagInfoList);
         	mav.addObject("DccLogTrendInfoList", dccLogTrendInfoList);
@@ -3782,18 +3689,6 @@ public class DccStatusContentsController {
 	@RequestMapping("sbExcelExport")
 	public void sbExcelExport(HttpServletRequest request, HttpServletResponse response, DccSearchStatus dccSearchStatus) throws Exception {
 		try{
-			
-			/*if(dccSearchAdmin.getSearchKey() != null && !dccSearchAdmin.getSearchKey().isEmpty()) {
-        		if(dccSearchAdmin.getSearchKey().equals("progName")){
-        			dccSearchAdmin.setProgName(dccSearchAdmin.getSearchWord());
-        		}else if(dccSearchAdmin.getSearchKey().equals("logNo")){
-        			dccSearchAdmin.setLogNo(dccSearchAdmin.getSearchWord());
-        		}else if(dccSearchAdmin.getSearchKey().equals("descr")){
-        			dccSearchAdmin.setDescr(dccSearchAdmin.getSearchWord());
-        		}else if(dccSearchAdmin.getSearchKey().equals("createDate")){
-        			dccSearchAdmin.setCreateDate(dccSearchAdmin.getSearchWord());
-        		}
-        	}*/
 	        	
         	if( dccSearchStatus.getMenuNo() == null ) dccSearchStatus.setMenuNo("11");
         	if( dccSearchStatus.getGrpNo() == null ) dccSearchStatus.setGrpNo("13");
@@ -3971,10 +3866,6 @@ public class DccStatusContentsController {
     		}
     		
     		excelHelperUtil.statusExcelDownload(request, response, values, dccTagInfoList, scanTimeList, "sb");
-
-	        //List<DccIolistInfo> dccIolistList = dccTipService.selectIoListExcelDownload(dccSearchTip);
-			
-			//excelHelperUtil.iolistExcelDownload(request, response, dccIolistList);		
 			
 		}catch(Exception e) {
 			logger.error("### e : {}", e);

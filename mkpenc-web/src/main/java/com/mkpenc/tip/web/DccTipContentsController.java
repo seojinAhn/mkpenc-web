@@ -56,11 +56,17 @@ public class DccTipContentsController {
     	}
         	
         if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
 	        List<DccIolistInfo> iolistList = dccTipService.selectIoList(dccSearchTip);
 	        List<DccIoColumnInfo> ioColumnList = dccTipService.selectIoColumnList(dccSearchTip);
-	
-	        mav.addObject("BaseSearch", dccSearchTip);
-        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+
+        	userInfo.setHogi(dccSearchTip.getHogiHeader());
+        	userInfo.setXyGubun(dccSearchTip.getXyHeader());
+        	
+        	mav.addObject("BaseSearch", dccSearchTip);
+        	mav.addObject("UserInfo", userInfo);
         	
 	        mav.addObject("DccIolistList", iolistList);
 	        mav.addObject("DccIoColumnList", ioColumnList);

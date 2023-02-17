@@ -146,7 +146,7 @@
 		if( tooltipText.indexOf(":]") > -1 ) {
 			tooltipText = tooltipText.replace(":]","]");
 		}
-		$("#"+id).attr("title",tooltipText);
+		$("#val"+id).attr("title",tooltipText);
 	}
 	
 	function toCSV() {
@@ -156,13 +156,12 @@
 	}
 
 	$(function(){
-		if( $("#hogiHeader4").attr("class") == 'current' && $("#hogiHeader4").attr("class") != 'undefined' && $("#hogiHeader4").attr("class") != '') {
+		if( $("input:radio[id='4']").is(":checked") ) {
 			hogiHeader = "4";
 		} else {
 			hogiHeader = "3";
 		}
-		
-		if( $("input:checkbox[id='xy']").is(":checked") ) {
+		if( $("input:radio[id='Y']").is(":checked") ) {
 			xyHeader = "Y";
 		} else {
 			xyHeader = "X";
@@ -171,29 +170,27 @@
 		var lblDateVal = '${BaseSearch.hogi}'+'${BaseSearch.xyGubun}'+' '+'${DccLogTrendInfoList[0].SCANTIME}';
 		$("#lblDate").text(lblDateVal);
 		
-		$(document.body).delegate('#hogiHeader3', 'click', function() {
+		$(document.body).delegate('#3', 'click', function() {
 			setTimer('3',xyHeader,0);
 		});
-		$(document.body).delegate('#hogiHeader4', 'click', function() {
+		$(document.body).delegate('#4', 'click', function() {
 			setTimer('4',xyHeader,0);
 		});
-		$(document.body).delegate('#xy', 'click', function() {
-			if( $("input:checkbox[id='xy']").is(":checked") ) {
-				xyHeader = "Y";
-			} else {
-				xyHeader = "X";
-			}
-			setTimer(hogiHeader,xyHeader,0);
+		$(document.body).delegate('#X', 'click', function() {
+			setTimer(hogiHeader,'X',0);
+		});
+		$(document.body).delegate('#Y', 'click', function() {
+			setTimer(hogiHeader,'Y',0);
 		});
 		
 		$(document.body).delegate('#dccStatusPHTPUMP label', 'dblclick', function() {
-			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
+			var cId = this.id.replaceAll('unit','').replaceAll('val','');
 			if( cId != null && cId != '' && cId != 'undefined' ) {
 				showTag(cId,tDccTagSeq[cId]);
 			}
 		});
 		$(document.body).delegate('#dccStatusPHTPUMP label', 'mouseover focus', function() {
-			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
+			var cId = this.id.replaceAll('unit','').replaceAll('val','');
 			showTooltip(cId);
 		});
 		
@@ -426,114 +423,114 @@
                     <tbody>
                         <tr>
                             <th>BREAKES/POWER</th>
-                            <td class="tr"><label id="54" class="full flex_end">${DccLogTrendInfoList[0].TVALUE55}</label></td>
-                            <td class="tr"><label id="55" class="full flex_end">${DccLogTrendInfoList[0].TVALUE56}</label></td>
-                            <td class="tr"><label id="56" class="full flex_end">${DccLogTrendInfoList[0].TVALUE57}</label></td>
-                            <td class="tr"><label id="57" class="full flex_end">${DccLogTrendInfoList[0].TVALUE58}</label></td>
+                            <td class="tr"><label id="val54" class="full flex_end">${DccLogTrendInfoList[0].TVALUE55}</label></td>
+                            <td class="tr"><label id="val55" class="full flex_end">${DccLogTrendInfoList[0].TVALUE56}</label></td>
+                            <td class="tr"><label id="val56" class="full flex_end">${DccLogTrendInfoList[0].TVALUE57}</label></td>
+                            <td class="tr"><label id="val57" class="full flex_end">${DccLogTrendInfoList[0].TVALUE58}</label></td>
                         </tr>
                         <tr>
                             <th>SPEED (RPM)</th>
-                            <td class="tr"><label id="0" class="full flex_end">${DccLogTrendInfoList[0].TVALUE1}</label></td>
-                            <td class="tr"><label id="14" class="full flex_end">${DccLogTrendInfoList[0].TVALUE15}</label></td>
-                            <td class="tr"><label id="28" class="full flex_end">${DccLogTrendInfoList[0].TVALUE29}</label></td>
-                            <td class="tr"><label id="41" class="full flex_end">${DccLogTrendInfoList[0].TVALUE42}</label></td>
+                            <td class="tr"><label id="val0" class="full flex_end">${DccLogTrendInfoList[0].TVALUE1}</label></td>
+                            <td class="tr"><label id="val14" class="full flex_end">${DccLogTrendInfoList[0].TVALUE15}</label></td>
+                            <td class="tr"><label id="val28" class="full flex_end">${DccLogTrendInfoList[0].TVALUE29}</label></td>
+                            <td class="tr"><label id="val41" class="full flex_end">${DccLogTrendInfoList[0].TVALUE42}</label></td>
                         </tr>
                         <tr>
                             <th colspan="5">BEARING (℃)</td>
                         </tr>
                         <tr>
                             <th>UP-THRUST</th>
-                            <td class="tr"><label id="2" class="full flex_end">${DccLogTrendInfoList[0].TVALUE3}</label></td>
-                            <td class="tr"><label id="16" class="full flex_end">${DccLogTrendInfoList[0].TVALUE17}</label></td>
-                            <td class="tr"><label id="30" class="full flex_end">${DccLogTrendInfoList[0].TVALUE31}</label></td>
-                            <td class="tr"><label id="43" class="full flex_end">${DccLogTrendInfoList[0].TVALUE44}</label></td>                         
+                            <td class="tr"><label id="val2" class="full flex_end">${DccLogTrendInfoList[0].TVALUE3}</label></td>
+                            <td class="tr"><label id="val16" class="full flex_end">${DccLogTrendInfoList[0].TVALUE17}</label></td>
+                            <td class="tr"><label id="val30" class="full flex_end">${DccLogTrendInfoList[0].TVALUE31}</label></td>
+                            <td class="tr"><label id="val43" class="full flex_end">${DccLogTrendInfoList[0].TVALUE44}</label></td>                         
                         </tr>
                         <tr>
                             <th>DOWN-THRUST</th>
-                            <td class="tr"><label id="1" class="full flex_end">${DccLogTrendInfoList[0].TVALUE2}</label></td>
-                            <td class="tr"><label id="15" class="full flex_end">${DccLogTrendInfoList[0].TVALUE16}</label></td>
-                            <td class="tr"><label id="29" class="full flex_end">${DccLogTrendInfoList[0].TVALUE30}</label></td>
-                            <td class="tr"><label id="42" class="full flex_end">${DccLogTrendInfoList[0].TVALUE43}</label></td>                            
+                            <td class="tr"><label id="val1" class="full flex_end">${DccLogTrendInfoList[0].TVALUE2}</label></td>
+                            <td class="tr"><label id="val15" class="full flex_end">${DccLogTrendInfoList[0].TVALUE16}</label></td>
+                            <td class="tr"><label id="val29" class="full flex_end">${DccLogTrendInfoList[0].TVALUE30}</label></td>
+                            <td class="tr"><label id="val42" class="full flex_end">${DccLogTrendInfoList[0].TVALUE43}</label></td>                            
                         </tr>
                         <tr>
                             <th>UPPER GUIDE</th>
-                            <td class="tr"><label id="4" class="full flex_end">${DccLogTrendInfoList[0].TVALUE5}</label></td>
-                            <td class="tr"><label id="18" class="full flex_end">${DccLogTrendInfoList[0].TVALUE19}</label></td>
-                            <td class="tr"><label id="32" class="full flex_end">${DccLogTrendInfoList[0].TVALUE33}</label></td>
-                            <td class="tr"><label id="45" class="full flex_end">${DccLogTrendInfoList[0].TVALUE46}</label></td>                            
+                            <td class="tr"><label id="val4" class="full flex_end">${DccLogTrendInfoList[0].TVALUE5}</label></td>
+                            <td class="tr"><label id="val18" class="full flex_end">${DccLogTrendInfoList[0].TVALUE19}</label></td>
+                            <td class="tr"><label id="val32" class="full flex_end">${DccLogTrendInfoList[0].TVALUE33}</label></td>
+                            <td class="tr"><label id="val45" class="full flex_end">${DccLogTrendInfoList[0].TVALUE46}</label></td>                            
                         </tr>
                         <tr>
                             <th>LOWER GUIDE</th>
-                            <td class="tr"><label id="3" class="full flex_end">${DccLogTrendInfoList[0].TVALUE4}</label></td>
-                            <td class="tr"><label id="17" class="full flex_end">${DccLogTrendInfoList[0].TVALUE18}</label></td>
-                            <td class="tr"><label id="31" class="full flex_end">${DccLogTrendInfoList[0].TVALUE32}</label></td>
-                            <td class="tr"><label id="44" class="full flex_end">${DccLogTrendInfoList[0].TVALUE45}</label></td>
+                            <td class="tr"><label id="val3" class="full flex_end">${DccLogTrendInfoList[0].TVALUE4}</label></td>
+                            <td class="tr"><label id="val17" class="full flex_end">${DccLogTrendInfoList[0].TVALUE18}</label></td>
+                            <td class="tr"><label id="val31" class="full flex_end">${DccLogTrendInfoList[0].TVALUE32}</label></td>
+                            <td class="tr"><label id="val44" class="full flex_end">${DccLogTrendInfoList[0].TVALUE45}</label></td>
                         </tr>
                         <tr>
                             <th colspan="5">SEAL CAVITY</td>
                         </tr>                        
                         <tr>
                             <th>THIRD TEMP (℃)</th>
-                            <td class="tr"><label id="6" class="full flex_end">${DccLogTrendInfoList[0].TVALUE7}</label></td>
-                            <td class="tr"><label id="20" class="full flex_end">${DccLogTrendInfoList[0].TVALUE21}</label></td>
-                            <td class="tr"><label id="34" class="full flex_end">${DccLogTrendInfoList[0].TVALUE35}</label></td>
-                            <td class="tr"><label id="47" class="full flex_end">${DccLogTrendInfoList[0].TVALUE48}</label></td>
+                            <td class="tr"><label id="val6" class="full flex_end">${DccLogTrendInfoList[0].TVALUE7}</label></td>
+                            <td class="tr"><label id="val20" class="full flex_end">${DccLogTrendInfoList[0].TVALUE21}</label></td>
+                            <td class="tr"><label id="val34" class="full flex_end">${DccLogTrendInfoList[0].TVALUE35}</label></td>
+                            <td class="tr"><label id="val47" class="full flex_end">${DccLogTrendInfoList[0].TVALUE48}</label></td>
                         </tr>
                         <tr>
                             <th>FIRST TEMP (℃)</th>
-                            <td class="tr"><label id="5" class="full flex_end">${DccLogTrendInfoList[0].TVALUE6}</label></td>
-                            <td class="tr"><label id="19" class="full flex_end">${DccLogTrendInfoList[0].TVALUE20}</label></td>
-                            <td class="tr"><label id="33" class="full flex_end">${DccLogTrendInfoList[0].TVALUE34}</label></td>
-                            <td class="tr"><label id="46" class="full flex_end">${DccLogTrendInfoList[0].TVALUE47}</label></td>
+                            <td class="tr"><label id="val5" class="full flex_end">${DccLogTrendInfoList[0].TVALUE6}</label></td>
+                            <td class="tr"><label id="val19" class="full flex_end">${DccLogTrendInfoList[0].TVALUE20}</label></td>
+                            <td class="tr"><label id="val33" class="full flex_end">${DccLogTrendInfoList[0].TVALUE34}</label></td>
+                            <td class="tr"><label id="val46" class="full flex_end">${DccLogTrendInfoList[0].TVALUE47}</label></td>
                         </tr>
                         <tr>
                             <th>THIRD PRESS (MPEG)</th>
-                            <td class="tr"><label id="7" class="full flex_end">${DccLogTrendInfoList[0].TVALUE8}</label></td>
-                            <td class="tr"><label id="21" class="full flex_end">${DccLogTrendInfoList[0].TVALUE22}</label></td>
-                            <td class="tr"><label id="35" class="full flex_end">${DccLogTrendInfoList[0].TVALUE36}</label></td>
-                            <td class="tr"><label id="48" class="full flex_end">${DccLogTrendInfoList[0].TVALUE49}</label></td>
+                            <td class="tr"><label id="val7" class="full flex_end">${DccLogTrendInfoList[0].TVALUE8}</label></td>
+                            <td class="tr"><label id="val21" class="full flex_end">${DccLogTrendInfoList[0].TVALUE22}</label></td>
+                            <td class="tr"><label id="val35" class="full flex_end">${DccLogTrendInfoList[0].TVALUE36}</label></td>
+                            <td class="tr"><label id="val48" class="full flex_end">${DccLogTrendInfoList[0].TVALUE49}</label></td>
                         </tr>
                         <tr>
                             <th>SECOND PRESS (MPEG)</th>
-                            <td class="tr"><label id="8" class="full flex_end">${DccLogTrendInfoList[0].TVALUE9}</label></td>
-                            <td class="tr"><label id="22" class="full flex_end">${DccLogTrendInfoList[0].TVALUE23}</label></td>
-                            <td class="tr"><label id="36" class="full flex_end">${DccLogTrendInfoList[0].TVALUE37}</label></td>
-                            <td class="tr"><label id="49" class="full flex_end">${DccLogTrendInfoList[0].TVALUE50}</label></td>
+                            <td class="tr"><label id="val8" class="full flex_end">${DccLogTrendInfoList[0].TVALUE9}</label></td>
+                            <td class="tr"><label id="val22" class="full flex_end">${DccLogTrendInfoList[0].TVALUE23}</label></td>
+                            <td class="tr"><label id="val36" class="full flex_end">${DccLogTrendInfoList[0].TVALUE37}</label></td>
+                            <td class="tr"><label id="val49" class="full flex_end">${DccLogTrendInfoList[0].TVALUE50}</label></td>
                         </tr>
                         <tr>
                             <th>INJECT PRESS (MPEG)</th>
-                            <td class="tr"><label id="9" class="full flex_end">${DccLogTrendInfoList[0].TVALUE10}</label></td>
-                            <td class="tr"><label id="23" class="full flex_end">${DccLogTrendInfoList[0].TVALUE24}</label></td>
-                            <td class="tr"><label id="37" class="full flex_end">${DccLogTrendInfoList[0].TVALUE38}</label></td>
-                            <td class="tr"><label id="50" class="full flex_end">${DccLogTrendInfoList[0].TVALUE51}</label></td>
+                            <td class="tr"><label id="val9" class="full flex_end">${DccLogTrendInfoList[0].TVALUE10}</label></td>
+                            <td class="tr"><label id="val23" class="full flex_end">${DccLogTrendInfoList[0].TVALUE24}</label></td>
+                            <td class="tr"><label id="val37" class="full flex_end">${DccLogTrendInfoList[0].TVALUE38}</label></td>
+                            <td class="tr"><label id="val50" class="full flex_end">${DccLogTrendInfoList[0].TVALUE51}</label></td>
                         </tr>
                         <tr>
                             <th>SEAL FLOW (L/S)</th>
-                            <td class="tr"><label id="10" class="full flex_end">${DccLogTrendInfoList[0].TVALUE11}</label></td>
-                            <td class="tr"><label id="24" class="full flex_end">${DccLogTrendInfoList[0].TVALUE25}</label></td>
-                            <td class="tr"><label id="38" class="full flex_end">${DccLogTrendInfoList[0].TVALUE39}</label></td>
-                            <td class="tr"><label id="51" class="full flex_end">${DccLogTrendInfoList[0].TVALUE52}</label></td>
+                            <td class="tr"><label id="val10" class="full flex_end">${DccLogTrendInfoList[0].TVALUE11}</label></td>
+                            <td class="tr"><label id="val24" class="full flex_end">${DccLogTrendInfoList[0].TVALUE25}</label></td>
+                            <td class="tr"><label id="val38" class="full flex_end">${DccLogTrendInfoList[0].TVALUE39}</label></td>
+                            <td class="tr"><label id="val51" class="full flex_end">${DccLogTrendInfoList[0].TVALUE52}</label></td>
                         </tr>
                         <tr>
                             <th>VIBRATION (MM/SEC)</th>
-                            <td class="tr"><label id="11" class="full flex_end">${DccLogTrendInfoList[0].TVALUE12}</label></td>
-                            <td class="tr"><label id="25" class="full flex_end">${DccLogTrendInfoList[0].TVALUE26}</label></td>
-                            <td class="tr"><label id="39" class="full flex_end">${DccLogTrendInfoList[0].TVALUE40}</label></td>
-                            <td class="tr"><label id="52" class="full flex_end">${DccLogTrendInfoList[0].TVALUE53}</label></td>
+                            <td class="tr"><label id="val11" class="full flex_end">${DccLogTrendInfoList[0].TVALUE12}</label></td>
+                            <td class="tr"><label id="val25" class="full flex_end">${DccLogTrendInfoList[0].TVALUE26}</label></td>
+                            <td class="tr"><label id="val39" class="full flex_end">${DccLogTrendInfoList[0].TVALUE40}</label></td>
+                            <td class="tr"><label id="val52" class="full flex_end">${DccLogTrendInfoList[0].TVALUE53}</label></td>
                         </tr>
                         <tr>
                             <th>SHAFT RUNOT (MM)</th>
-                            <td class="tr"><label id="12" class="full flex_end">${DccLogTrendInfoList[0].TVALUE13}</label></td>
-                            <td class="tr"><label id="26" class="full flex_end">${DccLogTrendInfoList[0].TVALUE27}</label></td>
-                            <td class="tr"><label id="40" class="full flex_end">${DccLogTrendInfoList[0].TVALUE41}</label></td>
-                            <td class="tr"><label id="53" class="full flex_end">${DccLogTrendInfoList[0].TVALUE54}</label></td>
+                            <td class="tr"><label id="val12" class="full flex_end">${DccLogTrendInfoList[0].TVALUE13}</label></td>
+                            <td class="tr"><label id="val26" class="full flex_end">${DccLogTrendInfoList[0].TVALUE27}</label></td>
+                            <td class="tr"><label id="val40" class="full flex_end">${DccLogTrendInfoList[0].TVALUE41}</label></td>
+                            <td class="tr"><label id="val53" class="full flex_end">${DccLogTrendInfoList[0].TVALUE54}</label></td>
                         </tr>
                         <tr>
                             <th>MAIN FLOW (KG/S)</th>
-                            <td class="tr"><label id="13" class="full flex_end">${DccLogTrendInfoList[0].TVALUE14}</label></td>
-                            <td class="tr"><label id="27" class="full flex_end">${DccLogTrendInfoList[0].TVALUE28}</label></td>
-                            <td class="tr"><label id="58" class="full flex_end">${DccLogTrendInfoList[0].TVALUE59}</label></td>
-                            <td class="tr"><label id="59" class="full flex_end">${DccLogTrendInfoList[0].TVALUE60}</label></td>
+                            <td class="tr"><label id="val13" class="full flex_end">${DccLogTrendInfoList[0].TVALUE14}</label></td>
+                            <td class="tr"><label id="val27" class="full flex_end">${DccLogTrendInfoList[0].TVALUE28}</label></td>
+                            <td class="tr"><label id="val58" class="full flex_end">${DccLogTrendInfoList[0].TVALUE59}</label></td>
+                            <td class="tr"><label id="val59" class="full flex_end">${DccLogTrendInfoList[0].TVALUE60}</label></td>
                         </tr>
                     </tbody>
                 </table>
