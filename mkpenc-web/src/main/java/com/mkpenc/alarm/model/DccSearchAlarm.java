@@ -9,6 +9,14 @@ public class DccSearchAlarm  extends BaseSearch {
 	private String hogiHeader;
 	private String xyHeader;
 	
+	private String sGrpID;
+	private String sMenuNo;
+	private String sDive;
+	private String sUGrpNo;
+	
+	private String sHogi;
+	private String sXYGubun;
+	
 	private String pType;
 	
 	private String hogi;
@@ -48,6 +56,78 @@ public class DccSearchAlarm  extends BaseSearch {
 	 */
 	public void setXyHeader(String xyHeader) {
 		this.xyHeader = xyHeader;
+	}
+	/**
+	 * @return the sGrpID
+	 */
+	public String getsGrpID() {
+		return sGrpID;
+	}
+	/**
+	 * @param sGrpID the sGrpID to set
+	 */
+	public void setsGrpID(String sGrpID) {
+		this.sGrpID = sGrpID;
+	}
+	/**
+	 * @return the sMenuNo
+	 */
+	public String getsMenuNo() {
+		return sMenuNo;
+	}
+	/**
+	 * @param sMenuNo the sMenuNo to set
+	 */
+	public void setsMenuNo(String sMenuNo) {
+		this.sMenuNo = sMenuNo;
+	}
+	/**
+	 * @return the sDive
+	 */
+	public String getsDive() {
+		return sDive;
+	}
+	/**
+	 * @param sDive the sDive to set
+	 */
+	public void setsDive(String sDive) {
+		this.sDive = sDive;
+	}
+	/**
+	 * @return the sUGrpNo
+	 */
+	public String getsUGrpNo() {
+		return sUGrpNo;
+	}
+	/**
+	 * @param sUGrpNo the sUGrpNo to set
+	 */
+	public void setsUGrpNo(String sUGrpNo) {
+		this.sUGrpNo = sUGrpNo;
+	}
+	/**
+	 * @return the sHogi
+	 */
+	public String getsHogi() {
+		return sHogi;
+	}
+	/**
+	 * @param sHogi the sHogi to set
+	 */
+	public void setsHogi(String sHogi) {
+		this.sHogi = sHogi;
+	}
+	/**
+	 * @return the sXYGubun
+	 */
+	public String getsXYGubun() {
+		return sXYGubun;
+	}
+	/**
+	 * @param sXYGubun the sXYGubun to set
+	 */
+	public void setsXYGubun(String sXYGubun) {
+		this.sXYGubun = sXYGubun;
 	}
 	/**
 	 * @return the pType

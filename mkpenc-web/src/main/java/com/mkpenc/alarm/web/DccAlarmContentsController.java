@@ -4,16 +4,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mkpenc.alarm.model.DccSearchAlarm;
 import com.mkpenc.admin.model.MemberInfo;
 import com.mkpenc.alarm.model.DccAlarmInfo;
 import com.mkpenc.alarm.service.DccAlarmService;
+import com.mkpenc.common.model.ComTagDccInfo;
+import com.mkpenc.common.model.CommonConstant;
 import com.mkpenc.common.model.Upload;
 import com.mkpenc.common.module.ExcelHelperUtil;
 import com.mkpenc.common.module.FileHelperUtil;
 import com.mkpenc.common.module.PageHtmlUtil;
+import com.mkpenc.common.module.StringUtil;
+import com.mkpenc.common.service.BasCommonService;
+import com.mkpenc.common.service.BasDccMimicService;
+import com.mkpenc.common.service.BasDccOsmsService;
+import com.mkpenc.performance.model.DccSearchPerformance;
 import com.mkpenc.tip.model.DccIolistInfo;
 
 import static org.mockito.ArgumentMatchers.contains;
@@ -24,7 +33,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,7 +49,21 @@ public class DccAlarmContentsController {
 
 	private static Logger logger = LoggerFactory.getLogger(DccAlarmContentsController.class);
 	
+	public String[] gFormat = new String[]{ "%.5f",     "%.4f",     "%.4f",     "%.4f",     "%.3f",     "%.3f",     "%.3f",     "%.2f",     "%.2f",     "%.2f",     "%.2f",     "%.1f",     "%.1f",     "%.1f",     "%.1f",     "%.0f"};
+	
 	private String menuName = "ALARM";
+	
+	@Autowired
+	 private CommonConstant commonConstant;	
+	
+	@Autowired
+	private BasCommonService basCommonService;
+	
+	@Autowired	
+	private BasDccOsmsService basDccOsmsService;
+	
+	@Autowired
+	private BasDccMimicService basDccMimicService;
 	
 	@Autowired
 	private DccAlarmService dccAlarmService;
@@ -467,18 +492,230 @@ public class DccAlarmContentsController {
 
         logger.info("############ earlywarning");
         
+        if( dccSearchAlarm.getHogiHeader() != null ) {
+    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi(dccSearchAlarm.getHogiHeader());
+    	} else {
+    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi("3");
+    	}
+    	if( dccSearchAlarm.getXyHeader() != null ) {
+    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyHeader());
+    	} else {
+    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun("X");
+    	}
+        
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
+        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+    		if(dccSearchAlarm.getsMenuNo() == null || dccSearchAlarm.getsMenuNo().isEmpty()) {
+            	
+    			dccSearchAlarm.setsDive("D");
+    			dccSearchAlarm.setsMenuNo("65");
+    			dccSearchAlarm.setsGrpID("Alarm");;
+	        	
+	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+	        	dccSearchAlarm.setsHogi(member.getHogi());
+	        	dccSearchAlarm.setsXYGubun(member.getXyGubun());
+	        	
+	        	//dccSearchAlarm.setsGrpID(member.getId());
+        	}
+        	
+        	//if(dccSearchAlarm.getsUGrpNo() != null && !dccSearchAlarm.getsUGrpNo().isEmpty()) {
+        		
+        		Map dccGrpTagSearchMap = new HashMap();
+        		dccGrpTagSearchMap.put("xyGubun",dccSearchAlarm.getsXYGubun()==null?  "X": dccSearchAlarm.getsXYGubun());
+        		dccGrpTagSearchMap.put("hogi",dccSearchAlarm.getsHogi()==null?  "3": dccSearchAlarm.getsHogi());
+        		dccGrpTagSearchMap.put("dive",dccSearchAlarm.getsDive()==null?  "D": dccSearchAlarm.getsDive());
+        		//dccGrpTagSearchMap.put("grpID", dccSearchAlarm.getsGrpID()==null?  "": dccSearchAlarm.getsGrpID());
+        		dccGrpTagSearchMap.put("grpID", "Alarm");
+        		dccGrpTagSearchMap.put("menuNo", dccSearchAlarm.getsMenuNo()==null?  "65": dccSearchAlarm.getsMenuNo());
+        		dccGrpTagSearchMap.put("uGrpNo", dccSearchAlarm.getsUGrpNo()==null?  "1": dccSearchAlarm.getsUGrpNo());
+        		dccGrpTagSearchMap.put("pSCanTime", dccSearchAlarm.getStartDate()==null?  "2022-12-01 14:52:01.000": dccSearchAlarm.getStartDate());
+
+        		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+        		
+        		mav.addObject("TagDccInfoList", tagDccInfoList);
+        		
+        		String[] varValue =  basDccOsmsService.getDccValueReturn(dccGrpTagSearchMap);
+        		
+        		List<Map> dccTagList = new ArrayList<Map>();
+        		
+        		int iRow = 0;
+        		for(ComTagDccInfo tagDccInfo:tagDccInfoList) {
+        			
+        			Map rtnMap = new HashMap();
+
+        			rtnMap.put("SCANTIME", varValue[0]);
+        			rtnMap.put("IOTYPE", tagDccInfo.getIOTYPE());
+        			
+        			if(tagDccInfo.getIOTYPE().equals("DI") || tagDccInfo.getIOTYPE().equals("DO")) {
+        				rtnMap.put("ADDRESS", tagDccInfo.getADDRESS()  + "-" +  tagDccInfo.getIOTYPE());
+        			}else {
+        				rtnMap.put("ADDRESS", tagDccInfo.getADDRESS());    				
+        			}
+        			
+        			rtnMap.put("DataLoop", tagDccInfo.getDataLoop());
+        			rtnMap.put("Descr", tagDccInfo.getDescr());
+        			rtnMap.put("MinVal", tagDccInfo.getMinVal());
+        			rtnMap.put("MaxVal", tagDccInfo.getMaxVal());
+        			rtnMap.put("ELow", tagDccInfo.getELOW());
+        			rtnMap.put("EHigh", tagDccInfo.getEHIGH());
+        			
+        			if(varValue.length > 1) {
+        				
+//        				if(StringUtil.isNumeric(varValue[iRow + 1])){
+//        					
+//        					if(tagDccInfo.getIOTYPE().equals("DI") || tagDccInfo.getIOTYPE().equals("DO")) {
+//        	    				rtnMap.put("Value", GetBitVal(varValue[iRow + 1], ""+tagDccInfo.getIOBIT()));
+//        					}else if(tagDccInfo.getIOTYPE().equals("DI")){
+//        						rtnMap.put("Value", varValue[iRow + 1]);
+//        					}else {
+//        	    				rtnMap.put("Value", String.format(gFormat[tagDccInfo.getBScale()], varValue[iRow + 1])); 		
+//        	    			}
+//        				}
+    					rtnMap.put("Value", varValue[iRow + 1]);
+    					if(StringUtil.isNumeric(varValue[iRow + 1])){
+	        				if( Double.parseDouble(varValue[iRow + 1]) < tagDccInfo.getELOW() ) {
+	        					rtnMap.put("BackColor", "#fdf3c0");
+	        				} else if( Double.parseDouble(varValue[iRow + 1]) < tagDccInfo.getEHIGH() ){
+	        					rtnMap.put("BackColor", "#ff5f1f");
+	        				} else {
+	        					rtnMap.put("BackColor", "#ffffff");
+	        				}
+        				} else {
+        					rtnMap.put("BackColor", "#ffffff");
+        				}
+        			}
+        			
+        			rtnMap.put("Unit", tagDccInfo.getUnit());
+        			
+        			dccTagList.add(rtnMap);
+        			System.out.println(iRow+" || "+varValue[iRow + 1]);
+        			iRow++;
+        		}
+        		
+        		mav.addObject("DccTagList", dccTagList);
+        	//}
+        	
         	dccSearchAlarm.setMenuName(this.menuName);
+
+        	userInfo.setHogi(dccSearchAlarm.getHogiHeader());
+        	userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
         	
         	mav.addObject("BaseSearch", dccSearchAlarm);
-        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	mav.addObject("UserInfo", userInfo);
         	
         }
        
 
         return mav;
     }
+	
+	@RequestMapping(value = "runtimerEW", method = { RequestMethod.POST })
+	@ResponseBody
+	public ModelAndView runtimerEW(DccSearchAlarm dccSearchAlarm, HttpServletRequest request) {
+		
+		logger.info("############ runtimerEW");
+                
+		ModelAndView mav = new ModelAndView("jsonView");
+		
+    	if( dccSearchAlarm.getHogiHeader() != null ) {
+    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi(dccSearchAlarm.getHogiHeader());
+    	} else {
+    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi("3");
+    	}
+    	if( dccSearchAlarm.getXyHeader() != null ) {
+    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyHeader());
+    	} else {
+    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun("X");
+    	}
+
+    	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+		
+		if(dccSearchAlarm.getsUGrpNo() != null && !dccSearchAlarm.getsUGrpNo().isEmpty()) {
+        	
+    		Map dccGrpTagSearchMap = new HashMap();
+    		dccGrpTagSearchMap.put("xyGubun",dccSearchAlarm.getsXYGubun()==null?  "X": dccSearchAlarm.getsXYGubun());
+    		dccGrpTagSearchMap.put("hogi",dccSearchAlarm.getsHogi()==null?  "3": dccSearchAlarm.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchAlarm.getsDive()==null?  "D": dccSearchAlarm.getsDive());
+    		//dccGrpTagSearchMap.put("grpID", dccSearchAlarm.getsGrpID()==null?  "": dccSearchAlarm.getsGrpID());
+    		dccGrpTagSearchMap.put("grpID", "Alarm");
+    		dccGrpTagSearchMap.put("menuNo", dccSearchAlarm.getsMenuNo()==null?  "65": dccSearchAlarm.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchAlarm.getsUGrpNo()==null?  "1": dccSearchAlarm.getsUGrpNo());
+    		dccGrpTagSearchMap.put("pSCanTime", dccSearchAlarm.getStartDate()==null?  "2022-12-01 14:52:01.000": dccSearchAlarm.getStartDate());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+    		
+    		mav.addObject("TagDccInfoList", tagDccInfoList);
+    		
+    		String[] varValue =  basDccOsmsService.getDccValueReturn(dccGrpTagSearchMap);
+    		
+    		List<Map> dccTagList = new ArrayList<Map>();
+    		
+    		int iRow = 0;
+    		for(ComTagDccInfo tagDccInfo:tagDccInfoList) {
+    			
+    			Map rtnMap = new HashMap();
+
+    			rtnMap.put("SCANTIME", varValue[0]);
+    			rtnMap.put("IOTYPE", tagDccInfo.getIOTYPE());
+    			
+    			if(tagDccInfo.getIOTYPE().equals("DI") || tagDccInfo.getIOTYPE().equals("DO")) {
+    				rtnMap.put("ADDRESS", tagDccInfo.getADDRESS()  + "-" +  tagDccInfo.getIOTYPE());
+    			}else {
+    				rtnMap.put("ADDRESS", tagDccInfo.getADDRESS());    				
+    			}
+    			
+    			rtnMap.put("DataLoop", tagDccInfo.getDataLoop());
+    			rtnMap.put("Descr", tagDccInfo.getDescr());
+    			rtnMap.put("MinVal", tagDccInfo.getMinVal());
+    			rtnMap.put("MaxVal", tagDccInfo.getMaxVal());
+    			rtnMap.put("ELow", tagDccInfo.getELOW());
+    			rtnMap.put("EHigh", tagDccInfo.getEHIGH());
+    			
+    			if(varValue.length > 1) {
+    				
+//    				if(StringUtil.isNumeric(varValue[iRow + 1])){
+//    					
+//    					if(tagDccInfo.getIOTYPE().equals("DI") || tagDccInfo.getIOTYPE().equals("DO")) {
+//    	    				rtnMap.put("Value", GetBitVal(varValue[iRow + 1], ""+tagDccInfo.getIOBIT()));
+//    					}else if(tagDccInfo.getIOTYPE().equals("DI")){
+//    						rtnMap.put("Value", varValue[iRow + 1]);
+//    					}else {
+//    	    				rtnMap.put("Value", String.format(gFormat[tagDccInfo.getBScale()], varValue[iRow + 1])); 		
+//    	    			}
+//    				}
+					rtnMap.put("Value", varValue[iRow + 1]);
+					if(StringUtil.isNumeric(varValue[iRow + 1])){
+        				if( Double.parseDouble(varValue[iRow + 1]) < tagDccInfo.getELOW() ) {
+        					rtnMap.put("BackColor", "#fdf3c0");
+        				} else if( Double.parseDouble(varValue[iRow + 1]) < tagDccInfo.getEHIGH() ){
+        					rtnMap.put("BackColor", "#ff5f1f");
+        				} else {
+        					rtnMap.put("BackColor", "#ffffff");
+        				}
+    				} else {
+    					rtnMap.put("BackColor", "#ffffff");
+    				}
+    			}
+    			
+    			rtnMap.put("Unit", tagDccInfo.getUnit());
+    			
+    			dccTagList.add(rtnMap);
+    			iRow++;
+    		}
+    		
+    		mav.addObject("DccTagList", dccTagList);
+    	}
+
+    	userInfo.setHogi(dccSearchAlarm.getHogiHeader());
+    	userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
+
+		mav.addObject("BaseSearch", dccSearchAlarm);        	
+    	mav.addObject("UserInfo", userInfo);
+
+		return mav;
+	}
 	
 	@RequestMapping("fixedtimecontrol")
 	public ModelAndView fixedtimecontrol(DccSearchAlarm dccSearchAlarm, HttpServletRequest request) {
@@ -488,10 +725,15 @@ public class DccAlarmContentsController {
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
+        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	dccSearchAlarm.setMenuName(this.menuName);
+
+        	userInfo.setHogi(dccSearchAlarm.getHogiHeader());
+        	userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
         	
         	mav.addObject("BaseSearch", dccSearchAlarm);
-        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	mav.addObject("UserInfo", userInfo);
         	
         }
         
@@ -508,14 +750,48 @@ public class DccAlarmContentsController {
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
+        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	dccSearchAlarm.setMenuName(this.menuName);
+
+        	userInfo.setHogi(dccSearchAlarm.getHogiHeader());
+        	userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
         	
         	mav.addObject("BaseSearch", dccSearchAlarm);
-        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	mav.addObject("UserInfo", userInfo);
         	
         }
         
 
         return mav;
     }
+	
+	// - 디지털 값을 가져온다.(16bit -> 1bit)
+	//private int GetBitVal(ByVal DigitalValue As String, ByVal DigitalBit As String) As String
+	private String GetBitVal(String digitalValue, String digitalBit) {
+	    
+	    long Rest = 0;
+	    
+	    long di_val;
+	    int bit_no;	    
+	    
+	    if(digitalBit.isEmpty()) {
+	       if(digitalValue == null) {
+	    	   return "";
+	       }else {
+	    	   return digitalValue;
+	       }
+	    }
+	    
+	    di_val = Long.parseLong(digitalValue);
+	    bit_no = Integer.parseInt(digitalBit);;
+
+	    for(int i = 0;i < bit_no;i++) {
+	        Rest = (di_val % 2);
+	        //di_val = di_val \ 2;
+	    	di_val = di_val / 2;
+		}
+	    
+	    return Rest +"";
+	}
 }

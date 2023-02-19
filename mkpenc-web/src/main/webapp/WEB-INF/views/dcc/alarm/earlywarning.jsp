@@ -17,6 +17,45 @@
 <script type="text/javascript" src="<c:url value="/resources/js/common.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/alarm.js" />" charset="utf-8"></script>
+
+<script type="text/javascript">
+	var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
+	var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
+	
+	$(function () {
+		if( $("input:radio[id='4']").is(":checked") ) {
+			hogiHeader = "4";
+		} else {
+			hogiHeader = "3";
+		}
+		if( $("input:radio[id='Y']").is(":checked") ) {
+			xyHeader = "Y";
+		} else {
+			xyHeader = "X";
+		}
+		
+		var lblDateVal = '${BaseSearch.sHogi}'+'${BaseSearch.sXYGubun}'+' '+'${DccTagList[0].SCANTIME}';
+		$("#lblDate").text(lblDateVal);
+		var diff = new Date().getTime() - new Date('${DccTagList[0].SCANTIME}').getTime();
+		if( diff / 1800000 > 1 ) {
+			$("#lblDate").css('color','#e85516');
+		} else {
+			$("#lblDate").css('color','#05c8be');
+		}
+		
+		var timer =0;
+		
+		timer = setInterval(function () {
+			var comAjax = new ComAjax("earlyWarningFrm");
+			comAjax.setUrl("/dcc/alarm/runtimerEW");
+			comAjax.addParam("hogiHeader", hogiHeader);
+			comAjax.addParam("xyHeader", xyHeader);
+			comAjax.setCallback("mbr_RuntimerEventCallback");
+			//comAjax.ajax();
+		}, 5000);
+	 
+	});	
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -46,6 +85,14 @@
 				<!-- list_head -->
 				<div class="list_head">
 					<div class="list_info">
+						<form id="earlyWarningFrm" name=earlyWarningFrm">
+							<input type = "hidden" id="sGrpID" name="sGrpID" value="${UserInfo.id}">
+							<input type = "hidden" id="sUGrpNo" name="sUGrpNo" value="1">
+							<input type = "hidden" id="sMenuNo" name="sMenuNo" value = "65">
+							<input type = "hidden" id="sDive" name="sDive" value = "D">
+							<input type = "hidden" id="sHogi" name="sHogi" value="${UserInfo.hogi}">
+							<input type = "hidden" id="sXYGubun" name="sXYGubun" value="${UserInfo.xyGubun}">
+						</form>
                         <div class="fx_legend">
                             <ul>
                                 <li class="low">Low</li>
@@ -66,6 +113,8 @@
                         <col width="100px"/>
                         <col width="100px"/>
                         <col width="140px"/>
+                        <col width="140px"/>
+                        <col width="140px"/>
                     </colgroup>
                     <thead>
                         <tr>
@@ -77,120 +126,30 @@
                             <th>경보 LOW</th>
                             <th>경보 HIGH</th>
                             <th>MAX</th>
-                            <th>VALUE</th>
+                            <th colspan="2">VALUE</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tagDccInfoList" name="tagDccInfoList">
+                    	<c:forEach var="tagDccInfo" items="${DccTagList}" varStatus="status">
                         <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
+                            <td class="tc">${status.count}</td>
+                            <td class="tc">${tagDccInfo.Descr}</td>
+                            <td class="tc">${tagDccInfo.IOTYPE}</td>
+                            <c:choose>
+                            	<c:when test="${tagDccInfo.IOTYPE eq 'DI' or tagDccInfo.IOTYPE eq 'DO' }">
+	                            	<td class="tc">${tagDccInfo.ADDRESS} : ${tagDccInfo.IOBIT}</td>
+	                            </c:when>
+	                            <c:otherwise>
+                           			<td class="tc">${tagDccInfo.ADDRESS}</td>
+                           		</c:otherwise>
+                            </c:choose>
+                            <td class="tc">${tagDccInfo.MinVal}</td>
+                            <td class="tc">${tagDccInfo.ELow}</td>
+                            <td class="tc">${tagDccInfo.EHigh}</td>
+                            <td class="tc">${tagDccInfo.MaxVal}</td>
+                            <td colspan="2" class="tc" style="background:${tagDccInfo.BackColor}">${tagDccInfo.Value}&nbsp;${tagDccInfo.Unit}</td>
                         </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
+                        </c:forEach>
                     </tbody>
                 </table>
                 <!-- //list_table -->
