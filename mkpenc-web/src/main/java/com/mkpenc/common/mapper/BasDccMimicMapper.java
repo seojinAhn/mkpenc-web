@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.mkpenc.common.annotaion.Mapper;
 import com.mkpenc.common.model.ComDccGrpTagInfo;
+import com.mkpenc.common.model.ComShowTagInfo;
+import com.mkpenc.mimic.model.DccSearchMimic;
 
 @Mapper
 public interface BasDccMimicMapper {
@@ -18,5 +20,13 @@ public interface BasDccMimicMapper {
 	List<Map>  selectTblNoFldNo(Map searchMapper);
 	
 	List<Map> selectLogDccTrend(Map selectMap);
+	
+	String selectSeqInfo(DccSearchMimic searchMimic);
+	
+	int updateTagInfo(DccSearchMimic searchMimic);
+	
+	List<ComShowTagInfo> selectTagSearch(DccSearchMimic searchMimic);
+	
+	List<ComShowTagInfo> selectTagFind(DccSearchMimic searchMimic);
 
 }

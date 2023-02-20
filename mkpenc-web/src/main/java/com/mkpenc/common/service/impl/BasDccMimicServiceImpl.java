@@ -13,8 +13,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mkpenc.common.mapper.BasCommonMapper;
 import com.mkpenc.common.mapper.BasDccMimicMapper;
 import com.mkpenc.common.model.ComDccGrpTagInfo;
+import com.mkpenc.common.model.ComShowTagInfo;
 import com.mkpenc.common.model.ComTagDccInfo;
 import com.mkpenc.common.service.BasDccMimicService;
+import com.mkpenc.mimic.model.DccSearchMimic;
 
 
 @Service("basDccMimicService")
@@ -452,6 +454,26 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 		
 		return pStr;
 		
+	}
+	
+	@Override
+	public String selectSeqInfo(DccSearchMimic searchMimic) {
+		return basDccMimicMapper.selectSeqInfo(searchMimic);
+	}
+	
+	@Override
+	public int updateTagInfo(DccSearchMimic searchMimic) {
+		return basDccMimicMapper.updateTagInfo(searchMimic);
+	}
+	
+	@Override
+	public List<ComShowTagInfo> selectTagSearch(DccSearchMimic searchMimic) {
+		return basDccMimicMapper.selectTagSearch(searchMimic);
+	}
+	
+	@Override
+	public List<ComShowTagInfo> selectTagFind(DccSearchMimic searchMimic) {
+		return basDccMimicMapper.selectTagFind(searchMimic);
 	}
 
 }

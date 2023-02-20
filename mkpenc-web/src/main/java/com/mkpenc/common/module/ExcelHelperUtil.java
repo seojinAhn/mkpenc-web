@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mkpenc.admin.model.EquipInfo;
 import com.mkpenc.admin.model.IOListInfo;
 import com.mkpenc.admin.model.SwSmInfo;
+import com.mkpenc.common.model.ComTagDccInfo;
 import com.mkpenc.common.model.Upload;
 import com.mkpenc.status.model.DccTagInfo;
 import com.mkpenc.tip.model.DccIolistInfo;
@@ -1870,6 +1872,85 @@ public class ExcelHelperUtil {
 			cell.setCellValue(dccTagInfoList.get(lii).getAddress());
 			cell = row.createCell(6);
 			cell.setCellValue(dccTagInfoList.get(lii).getIoBit());
+			}
+		}
+		
+		String browser = WebUtil.getBrowser(request);
+		String encodedFilename = WebUtil.webEncoding(browser, fileName);
+		
+		response.setContentType("application/vnd.ms-excel");
+		response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
+		
+		//Excel File Output
+		ServletOutputStream output = response.getOutputStream();
+		output.flush();
+		wb.write(output);
+		output.flush();
+		output.close();
+		wb.close();		
+		
+	}
+	
+	public void mimicExcelDownload(HttpServletRequest request, HttpServletResponse response, List<String> lblDataList,
+			List<ComTagDccInfo> tagDccInfoList, String searchTime, String type) throws Exception{
+		
+		Workbook wb = new XSSFWorkbook();
+		Sheet sheet = wb.createSheet("첫번째 시트");
+		Row row = null;
+		Cell cell = null;
+		int rowNum = 0;
+		int size = 0;
+		String fileName = new SimpleDateFormat("yyMM").format(new Date())+".xlsx";
+		String prefix = "";
+		String title = "";
+		
+		switch( type ) {
+			case "lzc_1":
+				prefix = "lzci_";
+				title = "Liquid Zone Control System";
+				size = 14;
+				break;
+			case "lzc_2":
+				prefix = "lzcii_";
+				title = "Liquid Zone Control System(3단계)";
+				size = 42;
+				break;
+			
+		}
+		
+		fileName = prefix+fileName;
+		
+		// Set Title
+		row = sheet.createRow(rowNum++);
+		cell = row.createCell(0);
+		cell.setCellValue(title);
+		// Set empty row
+		row = sheet.createRow(rowNum++);
+		// Set lblDate
+		row = sheet.createRow(rowNum++);
+		cell = row.createCell(0);
+		cell.setCellValue(searchTime);
+		// Set empty row
+		row = sheet.createRow(rowNum++);
+
+		
+		for( int lli=0;lli<lblDataList.size();lli++ ) {
+			for( int lii=0;lii<size;lii++ ) {
+			row = sheet.createRow(rowNum++);
+			cell = row.createCell(0);
+			cell.setCellValue(lii+1);
+			cell = row.createCell(1);
+			cell.setCellValue(tagDccInfoList.get(lii).getDataLoop());
+			cell = row.createCell(2);
+			cell.setCellValue(lblDataList.get(lli));
+			cell = row.createCell(3);
+			cell.setCellValue(tagDccInfoList.get(lii).getUnit());
+			cell = row.createCell(4);
+			cell.setCellValue(tagDccInfoList.get(lii).getIOTYPE());
+			cell = row.createCell(5);
+			cell.setCellValue(tagDccInfoList.get(lii).getADDRESS());
+			cell = row.createCell(6);
+			cell.setCellValue(tagDccInfoList.get(lii).getIOBIT());
 			}
 		}
 		
