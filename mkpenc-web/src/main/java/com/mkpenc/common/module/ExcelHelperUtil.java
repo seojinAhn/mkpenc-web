@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mkpenc.admin.model.EquipInfo;
 import com.mkpenc.admin.model.IOListInfo;
 import com.mkpenc.admin.model.SwSmInfo;
+import com.mkpenc.alarm.model.DccAlarmInfo;
 import com.mkpenc.common.model.ComTagDccInfo;
 import com.mkpenc.common.model.Upload;
 import com.mkpenc.status.model.DccTagInfo;
@@ -1969,6 +1970,93 @@ public class ExcelHelperUtil {
 		wb.close();		
 		
 	}
-	 
+	
+	public void alarmExcelDownload(HttpServletRequest request, HttpServletResponse response, String prefix, String title,
+			List<DccAlarmInfo> dccAlarmInfoList, String type) throws Exception{
+	
+		Workbook wb = new XSSFWorkbook();
+		Sheet sheet = wb.createSheet("첫번째 시트");
+		Row row = null;
+		Cell cell = null;
+		int rowNum = 0;
+		String fileName = prefix.toUpperCase();
+		String suffix = "";
+		
+		// Set Title
+		row = sheet.createRow(rowNum++);
+		cell = row.createCell(0);
+		cell.setCellValue(title);
+		// Set empty row
+		row = sheet.createRow(rowNum++);
+		
+		switch( type ) {
+			case "alarm":
+				suffix = "_ALARM.xlsx";
+				
+				for( int lli=0;lli<dccAlarmInfoList.size();lli++ ) {
+					row = sheet.createRow(rowNum++);
+					cell = row.createCell(0);
+					cell.setCellValue(dccAlarmInfoList.get(lli).getAlmGubun());
+					cell = row.createCell(1);
+					cell.setCellValue(dccAlarmInfoList.get(lli).getAlmDate());
+					cell = row.createCell(2);
+					cell.setCellValue(dccAlarmInfoList.get(lli).getAlmCode());
+					cell = row.createCell(3);
+					cell.setCellValue(dccAlarmInfoList.get(lli).getAlmAddress());
+					cell = row.createCell(4);
+					cell.setCellValue(dccAlarmInfoList.get(lli).getAlmMesg());
+				}
+				break;
+			case "alarmsearch":
+				suffix = "_ALARM.xlsx";
+				
+				// Header
+		        row = sheet.createRow(rowNum++);
+		        cell = row.createCell(0);
+		        cell.setCellValue("A/N");
+		        cell = row.createCell(1);
+		        cell.setCellValue("경보일자");
+		        cell = row.createCell(2);
+		        cell.setCellValue("경보명");
+		        cell = row.createCell(3);
+		        cell.setCellValue("경보내역");
+		        
+		        for( int lli=0;lli<dccAlarmInfoList.size();lli++ ) {
+					row = sheet.createRow(rowNum++);
+					cell = row.createCell(0);
+					cell.setCellValue(dccAlarmInfoList.get(lli).getAlmGubun());
+					cell = row.createCell(1);
+					if( dccAlarmInfoList.get(lli).getAlmMsecchk().equals("0") ) {
+						cell.setCellValue(dccAlarmInfoList.get(lli).getAlmDate());
+					} else {
+						cell.setCellValue(dccAlarmInfoList.get(lli).getAlmDate()+".000");
+					}
+					cell = row.createCell(2);
+					cell.setCellValue(dccAlarmInfoList.get(lli).getAlmCode()+dccAlarmInfoList.get(lli).getAlmAddress());
+					cell = row.createCell(3);
+					cell.setCellValue(dccAlarmInfoList.get(lli).getAlmMesg());
+				}
+				break;
+			case "stb":
+				//suffix = "stb_";
+				break;
+		}
+		fileName = fileName+suffix;
+		
+		String browser = WebUtil.getBrowser(request);
+		String encodedFilename = WebUtil.webEncoding(browser, fileName);
+		
+		response.setContentType("application/vnd.ms-excel");
+		response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
+		
+		//Excel File Output
+		ServletOutputStream output = response.getOutputStream();
+		output.flush();
+		wb.write(output);
+		output.flush();
+		output.close();
+		wb.close();
+		
+	}
 
 }
