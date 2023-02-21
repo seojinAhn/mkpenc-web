@@ -1916,6 +1916,22 @@ public class ExcelHelperUtil {
 				title = "Liquid Zone Control System(3단계)";
 				size = 42;
 				break;
+			case "pht":
+				prefix = "pht_";
+				title = "Primary Heat Transport System";
+				size = 32;
+				break;
+			case "phtctrl":
+				prefix = "pics_";
+				title = "Presure & Inventory Control System";
+				size = 27;
+				break;
+			case "moderator":
+				prefix = "mod_";
+				title = "Moderator System";
+				size = 21;
+				break;
+				
 			
 		}
 		
