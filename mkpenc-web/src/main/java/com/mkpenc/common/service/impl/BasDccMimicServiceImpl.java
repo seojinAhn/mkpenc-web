@@ -26,6 +26,7 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 	private BasDccMimicMapper basDccMimicMapper;
 	
 	public List<ComTagDccInfo> getDccGrpTagList(Map searchMap) {
+		
 		List<ComDccGrpTagInfo> dccGrpTagInfoList = basDccMimicMapper.selectDccGrpTagList(searchMap);
 		
 		List<ComTagDccInfo> tagDccInfoList = new ArrayList();
