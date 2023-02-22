@@ -13,6 +13,8 @@ import com.mkpenc.mimic.model.DccSearchMimic;
 @Service
 public  interface BasDccMimicService {
 	
+	public List<ComTagDccInfo> getDccGrpTagNoUnitConvList(Map searchMap);
+	
 	public List<ComTagDccInfo> getDccGrpTagList(Map searchMap);
 	
 	public String[] getDccValueReturn(Map searchMap);

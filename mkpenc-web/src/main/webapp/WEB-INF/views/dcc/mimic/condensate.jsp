@@ -341,8 +341,8 @@ function toCSV() {
                     <span>1</span>
                 </div>
                 <div class="img_mask"></div>
-                <a href="#none" class="link_txt" style="top:60px;right:350px;">Main System<br>Pressure System</a>
-                <a href="#none" class="link_txt" style="top:166px;left:146px;">S/G F/W System</a>
+                <a href="/dcc/mimic/mainsteam" class="link_txt" style="top:60px;right:350px;">Main System<br>Pressure System</a>
+                <a href="/dcc/mimic/feedwater" class="link_txt" style="top:166px;left:146px;">S/G F/W System</a>
                 <!-- ///range_slider -->              
                 <div class="chart_block small" style="top:30px;left:140px;">
                     <h4>Dearator</h4>
