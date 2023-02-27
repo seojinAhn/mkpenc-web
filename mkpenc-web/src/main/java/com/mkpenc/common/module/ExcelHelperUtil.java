@@ -1914,9 +1914,103 @@ public class ExcelHelperUtil {
 			case "lzc_2":
 				prefix = "lzcii_";
 				title = "Liquid Zone Control System(3단계)";
+				size = 42;
+				break;
+			case "pht":
+				prefix = "pht_";
+				title = "Primary Heat Transport System";
+				size = 32;
+				break;
+			case "phtctrl":
+				prefix = "pics_";
+				title = "Presure & Inventory Control System";
+				size = 27;
+				break;
+			case "moderator":
+				prefix = "mod_";
+				title = "Moderator System";
+				size = 21;
+				break;
+			case "phtpuri":
+				prefix = "puri_";
+				title = "PHT Purification System";
+				size = 7;
+				break;
+			case "ecc":
+				prefix = "ecc_";
+				title = "Emergency Code Cooling System";
+				size = 23;
+				break;	
+			case "mainsteam":
+				prefix = "msp_";
+				title = "Main Steam System";
+				size = 20;
+				break;
+			case "feedwater":
+				prefix = "sgfw_";
+				title = "Feed Water";
+				size = 41;
+				break;
+			case "condensate":
+				prefix = "condensate_";
+				title = "Condensate System";
+				size = 30;
+				break;
+			case "fuelhandlingmenu":
+				prefix = "fh_";
+				title = "Fuel Handling System";
+				size = 13;
+				break;
+			case "d2octrla":
+				prefix = "d2oa_";
+				title = "D2O Control System(A-Side)";
+				size = 15;
+				break;
+			case "d2octrlc":
+				prefix = "d2oc_";
+				title = "D2O Control System(C-Side)";
 				size = 14;
 				break;
-			
+			case "radmain":
+				prefix = "rad_";
+				title = "Radiation System";
+				size = 18;
+				break;
+			case "rbbase":
+				prefix = "rbb_";
+				title = "RB Base";
+				size = 5;
+				break;
+			case "rb1f":
+				prefix = "rb1f_";
+				title = "RB 1F";
+				size = 8;
+				break;
+			case "rb2f":
+				prefix = "rb2f_";
+				title = "RB 2F";
+				size = 1;
+				break;
+			case "rb3f":
+				prefix = "rb3f_";
+				title = "RB 3F";
+				size = 5;
+				break;
+			case "rb4f":
+				prefix = "rb4f_";
+				title = "RB 4F";
+				size = 7;
+				break;
+			case "rb5f":
+				prefix = "rb5f_";
+				title = "RB 5F";
+				size = 2;
+				break;
+			case "sbbase":
+				prefix = "sbb_";
+				title = "SB Base";
+				size = 3;
+				break;
 		}
 		
 		fileName = prefix+fileName;

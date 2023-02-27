@@ -14,8 +14,6 @@
         <link href="https://fonts.googleapis.com/css?family=Laila" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet">
         <style>
-        
-        
             table {
                 margin-bottom: 1em;
             }

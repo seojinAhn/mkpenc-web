@@ -138,6 +138,94 @@
       	 <if test="@org.apache.commons.lang3.StringUtils@isEmpty(startDate)">
 	      	 WHERE WHERE Scantime = #{pSCanTime}
       	 </if>
-    </select>           
+    </select>   
+    
+    <select id="selectTagSearch" parameterType="DccSearchMimic" resultType="ComShowTagInfo">
+    	SELECT
+    		IHOGI,
+    		XYGUBUN,
+    		DESCR,
+    		IOTYPE,
+    		ADDRESS,
+    		IOBIT,
+    		ISEQ,
+    		LOOPNAME
+    	FROM MST_TAG_DCC
+    	WHERE IHOGI = #{txtHogi} AND ADDRESS = #{txtAddress}
+    	<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(txtIoType)'>
+    		AND IOTYPE = #{txtIoType}
+    	</if>
+    	<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(txtIoBit)'>
+    		AND IOBIT = #{txtIoBit}
+    	</if>
+    </select>
+    
+    <select id="selectTagFind" parameterType="DccSearchMimic" resultType="ComShowTagInfo">
+    	SELECT
+			ISEQ,
+    		IHOGI,
+    		XYGUBUN,
+    		LOOPNAME,
+    		IOTYPE,
+    		ADDRESS,
+    		IOBIT,
+    		DESCR
+		FROM MST_TAG_DCC
+		WHERE IHOGI = #{txtHogi} AND (ADDRESS like '${searchStr}%'
+		<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStr)'>
+			<if test='@org.apache.commons.lang3.StringUtils@containsNone(findAll,"1")'>
+				<if test='@org.apache.commons.lang3.StringUtils@equals(chkOpt1,"1")'>
+		        	OR LOOPNAME like '%${searchStr}%'
+		        </if>
+				<if test='@org.apache.commons.lang3.StringUtils@equals(chkOpt2,"1")'>
+		        	OR DESCR like '%${searchStr}%'
+		        </if>
+	        </if>
+        </if>
+    	) ORDER BY ISEQ
+    </select>
+    
+    <select id="selectSeqInfo" parameterType="DccSearchMimic" resultType="String">
+    	SELECT
+			CONVERT(VARCHAR(10),ISNULL(a.ISEQ,''))+'_'+CONVERT(VARCHAR(10),ISNULL(b.ISEQ,'')) AS SEQS
+		FROM MST_TAG_DCC a, MST_TAG_DCC b
+		WHERE a.IHOGI = b.IHOGI
+		AND a.IOTYPE = b.IOTYPE
+		AND a.ADDRESS = b.ADDRESS
+		<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(txtIoBit)'>
+		AND a.IOBIT = b.IOBIT
+		</if>
+		AND a.IHOGI = #{txtHogi}
+		AND a.IOTYPE = #{txtIoType}
+		AND a.ADDRESS = #{txtAddress}
+		<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(txtIoBit)'>
+		AND a.IOBIT = #{txtIoBit}
+		</if>
+		AND a.XYGUBUN = 'X'
+		AND b.XYGUBUN = 'Y'
+    </select>
+    
+    <update id="updateTagInfo" parameterType="DccSearchMimic" >
+    	UPDATE MST_GRPTAG SET
+		Hogi = #{txtHogi}
+		<if test='@org.apache.commons.lang3.StringUtils@equals(chkXy,"1")'>
+			,ISEQ = #{iSeq}
+			,YSEQ = #{ySeq}
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@containsNone(chkXy,"1")'>
+			<if test='@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(xyGubun,"X")'>
+				,ISEQ = #{iSeq}
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@containsNone(xyGubun,"X") and @org.apache.commons.lang3.StringUtils@containsNone(xyGubun,"x")'>
+				,YSEQ = #{ySeq}
+			</if>
+		</if>
+		WHERE GUBUN = #{gubun}
+		AND ID = #{grpId}
+		AND MENUNO = #{menuNo}
+		AND GRPNO = #{grpNo}
+		AND GrpHOGI = #{hogi}
+		AND TAGNO = #{tagNo}
+    </update>        
 
 </mapper>

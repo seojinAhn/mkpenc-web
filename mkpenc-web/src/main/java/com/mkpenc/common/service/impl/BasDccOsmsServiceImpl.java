@@ -209,7 +209,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	}
 	
 	public String[] getDccValueReturn(Map searchMap) {
-		return sqlQueryDcc(searchMap).split("\\|");
+		return sqlQueryDcc(searchMap).split("|");
 	}
 	
 	public Map getDccValue(Map searchMap, List<ComTagDccInfo> tagDccInfoList,  ModelAndView mav){

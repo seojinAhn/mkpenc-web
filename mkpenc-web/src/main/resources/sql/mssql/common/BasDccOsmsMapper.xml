@@ -3,7 +3,7 @@
 
 <mapper namespace="com.mkpenc.common.mapper.BasDccOsmsMapper">
 
-<select id="selectDccGrpTagList" parameterType="java.util.Map" resultType="ComDccGrpTagInfo">
+<select id="selectDccGrpTagList" parameterType="java.util.Map" resultType="DccGrpTagInfo">
         
 			      SELECT 
 			         		 C.iSeq
@@ -19,7 +19,7 @@
 			         		, C.TBLNO
 			         		, FLDNO
 			         		, SaveCoreChk
-			         		, C.Descr as Descr
+			         		, C.Descr
 			         		, B.Descr as DataLoop
 			         		, GrpHogi
 		        			, B.MinVal
