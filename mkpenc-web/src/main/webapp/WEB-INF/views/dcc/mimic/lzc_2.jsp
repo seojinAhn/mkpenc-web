@@ -354,6 +354,7 @@ function toCSV() {
 			</div>
 			<!-- //page_title -->
 			<div class="img_wrap lzc_ii" id="lzc_2div">
+			<form id="lzc_2Frm" style="display:none"></form> 
                 <!-- range_slider -->
                 <div class="range_slider">
                     <input type="range" id="opacity-change" value="100" min="20" max="100">
