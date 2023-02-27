@@ -22,6 +22,7 @@ import com.mkpenc.performance.model.DccSearchPerformance;
 import com.mkpenc.performance.model.GroupNameInfo;
 import com.mkpenc.performance.service.DccPerformanceService;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -135,7 +136,7 @@ public class DccPerformanceContentsController {
 		grpSearchMap.put("dive",dccSearchPerformance.getsDive()==null?  "": dccSearchPerformance.getsDive());
 		grpSearchMap.put("grpID", dccSearchPerformance.getsGrpID()==null?  "": dccSearchPerformance.getsGrpID());
 		grpSearchMap.put("menuNo", dccSearchPerformance.getsMenuNo()==null?  "": dccSearchPerformance.getsMenuNo());
-		grpSearchMap.put("uGrpNo", dccSearchPerformance.getsUGrpNo()==null?  "": dccSearchPerformance.getsUGrpNo());
+		//grpSearchMap.put("uGrpNo", dccSearchPerformance.getsUGrpNo()==null?  "": dccSearchPerformance.getsUGrpNo());
 				
 		List<Map> grpNameList = basCommonService.selectGrpNameList(grpSearchMap);
     	mav.addObject("GroupNameList", grpNameList);
@@ -181,28 +182,66 @@ public class DccPerformanceContentsController {
     			
     			if(rtnMap != null) {
     				
-    				if(rtnMap.get("minTvalue") != null) {
-    					tagDccInfo.setSpareMinFldNo(rtnMap.get("minTvalue").toString());
-    				}else {
-    					tagDccInfo.setSpareMinFldNo("");
-    				}
+    				//  If tDccTag(pCnt).IOTYPE = "DT" And (CInt(tDccTag(pCnt).AlarmType) = 4 Or CInt(tDccTag(pCnt).AlarmType) = 12) Then
     				
-    				if(rtnMap.get("maxTvalue") != null) {
-    					tagDccInfo.setSpareMaxFldNo(rtnMap.get("maxTvalue").toString());
+    				if(tagDccInfo.getIOTYPE().equals("DT") && (tagDccInfo.getAlarmType().equals("4") || tagDccInfo.getAlarmType().equals("12"))) {
+    					
+    					//private String methodCompare(String iVal, TagDccInfo tagDccInfo ) {
+    					
+    					if(rtnMap.get("avgTvalue") != null) {
+    						
+    						double tmp = Double.parseDouble(rtnMap.get("avgTvalue").toString()) * 100;
+	    					tagDccInfo.setSpareAvgFldNo(methodCompare(String.valueOf(tmp), tagDccInfo));
+	    				}else {
+	    					tagDccInfo.setSpareAvgFldNo("");
+	    				}
+	    				
+	    				if(rtnMap.get("stdevTvalue") != null) {
+	    					tagDccInfo.setSpareStdevFldNo(methodCompare(rtnMap.get("stdevTvalue").toString(),tagDccInfo));
+	    				}else {
+	    					tagDccInfo.setSpareStdevFldNo("");
+	    				}
+	    				
+	    				if(rtnMap.get("maxTvalue") != null) {
+	    					double tmp = Double.parseDouble(rtnMap.get("maxTvalue").toString()) * 100;
+	    					tagDccInfo.setSpareMaxFldNo(methodCompare(String.valueOf(tmp), tagDccInfo));
+	    				}else {
+	    					tagDccInfo.setSpareMaxFldNo("");
+	    				}
+	    				
+	    				if(rtnMap.get("minTvalue") != null) {
+	    					double tmp = Double.parseDouble(rtnMap.get("minTvalue").toString()) * 100;
+	    					tagDccInfo.setSpareMinFldNo(methodCompare(String.valueOf(tmp), tagDccInfo));
+	    				}else {
+	    					tagDccInfo.setSpareMinFldNo("");
+	    				}
+    					
     				}else {
-    					tagDccInfo.setSpareMaxFldNo("");
-    				}
-    				
-    				if(rtnMap.get("avgTvalue") != null) {
-    					tagDccInfo.setSpareAvgFldNo(rtnMap.get("avgTvalue").toString());
-    				}else {
-    					tagDccInfo.setSpareAvgFldNo("");
-    				}
-    				
-    				if(rtnMap.get("stdevTvalue") != null) {
-    					tagDccInfo.setSpareStdevFldNo(rtnMap.get("stdevTvalue").toString());
-    				}else {
-    					tagDccInfo.setSpareStdevFldNo("");
+	    				
+	    				if(rtnMap.get("avgTvalue") != null) {
+	    					tagDccInfo.setSpareAvgFldNo(methodCompare(rtnMap.get("avgTvalue").toString(), tagDccInfo) );
+	    				}else {
+	    					tagDccInfo.setSpareAvgFldNo("");
+	    				}
+	    				
+	    				if(rtnMap.get("stdevTvalue") != null) {
+	    					tagDccInfo.setSpareStdevFldNo(methodCompare(rtnMap.get("stdevTvalue").toString(), tagDccInfo));
+	    				}else {
+	    					tagDccInfo.setSpareStdevFldNo("");
+	    				}
+	    				
+	    				if(rtnMap.get("maxTvalue") != null) {
+	    					tagDccInfo.setSpareMaxFldNo(methodCompare(rtnMap.get("maxTvalue").toString(), tagDccInfo));
+	    				}else {
+	    					tagDccInfo.setSpareMaxFldNo("");
+	    				}
+	    				
+	    				if(rtnMap.get("minTvalue") != null) {
+	    					tagDccInfo.setSpareMinFldNo(methodCompare(rtnMap.get("minTvalue").toString(), tagDccInfo));
+	    				}else {
+	    					tagDccInfo.setSpareMinFldNo("");
+	    				}
+	    				
     				}
    
     			}
@@ -220,49 +259,88 @@ public class DccPerformanceContentsController {
     			
     			if(rtnMap != null) {
     				
-    				if(rtnMap.get("minTvalue") != null) {
-    					tagDccInfo.setFixedMinFldNo(rtnMap.get("minTvalue").toString());
-    				}else {
-    					tagDccInfo.setFixedMinFldNo("");
-    				}
+    				//  If tDccTag(pCnt).IOTYPE = "DT" And (CInt(tDccTag(pCnt).AlarmType) = 4 Or CInt(tDccTag(pCnt).AlarmType) = 12) Then
     				
-    				if(rtnMap.get("maxTvalue") != null) {
-    					tagDccInfo.setFixedMaxFldNo(rtnMap.get("maxTvalue").toString());
+    				if(tagDccInfo.getIOTYPE().equals("DT") && (tagDccInfo.getAlarmType().equals("4") || tagDccInfo.getAlarmType().equals("12"))) {
+    					
+    					//private String methodCompare(String iVal, TagDccInfo tagDccInfo ) {
+    					
+    					if(rtnMap.get("avgTvalue") != null) {
+    						
+    						double tmp = Double.parseDouble(rtnMap.get("avgTvalue").toString()) * 100;
+	    					tagDccInfo.setSpareAvgFldNo(methodCompare(String.valueOf(tmp), tagDccInfo));
+	    				}else {
+	    					tagDccInfo.setSpareAvgFldNo("");
+	    				}
+	    				
+	    				if(rtnMap.get("stdevTvalue") != null) {
+	    					tagDccInfo.setSpareStdevFldNo(methodCompare(rtnMap.get("stdevTvalue").toString(),tagDccInfo));
+	    				}else {
+	    					tagDccInfo.setSpareStdevFldNo("");
+	    				}
+	    				
+	    				if(rtnMap.get("maxTvalue") != null) {
+	    					double tmp = Double.parseDouble(rtnMap.get("maxTvalue").toString()) * 100;
+	    					tagDccInfo.setSpareMaxFldNo(methodCompare(String.valueOf(tmp), tagDccInfo));
+	    				}else {
+	    					tagDccInfo.setSpareMaxFldNo("");
+	    				}
+	    				
+	    				if(rtnMap.get("minTvalue") != null) {
+	    					double tmp = Double.parseDouble(rtnMap.get("minTvalue").toString()) * 100;
+	    					tagDccInfo.setSpareMinFldNo(methodCompare(String.valueOf(tmp), tagDccInfo));
+	    				}else {
+	    					tagDccInfo.setSpareMinFldNo("");
+	    				}
+    					
     				}else {
-    					tagDccInfo.setFixedMaxFldNo("");
+	    				
+	    				
+	    				if(rtnMap.get("avgTvalue") != null) {
+	    					tagDccInfo.setFixedAvgFldNo(methodCompare(rtnMap.get("avgTvalue").toString(), tagDccInfo));
+	    				}else {
+	    					tagDccInfo.setFixedAvgFldNo("");
+	    				}
+	    				
+	    				if(rtnMap.get("stdevTvalue") != null) {
+	    					tagDccInfo.setFixedStdevFldNo(methodCompare(rtnMap.get("stdevTvalue").toString(), tagDccInfo));
+	    				}else {
+	    					tagDccInfo.setFixedStdevFldNo("");
+	    				}   
+	    				
+	    				if(rtnMap.get("maxTvalue") != null) {
+	    					tagDccInfo.setFixedMaxFldNo(methodCompare(rtnMap.get("maxTvalue").toString(), tagDccInfo));
+	    				}else {
+	    					tagDccInfo.setFixedMaxFldNo("");
+	    				}
+	    				
+	    				if(rtnMap.get("minTvalue") != null) {
+	    					tagDccInfo.setFixedMinFldNo(methodCompare(rtnMap.get("minTvalue").toString(), tagDccInfo));
+	    				}else {
+	    					tagDccInfo.setFixedMinFldNo("");
+	    				}	    				
+	    				
     				}
-    				
-    				if(rtnMap.get("avgTvalue") != null) {
-    					tagDccInfo.setFixedAvgFldNo(rtnMap.get("avgTvalue").toString());
-    				}else {
-    					tagDccInfo.setFixedAvgFldNo("");
-    				}
-    				
-    				if(rtnMap.get("stdevTvalue") != null) {
-    					tagDccInfo.setFixedStdevFldNo(rtnMap.get("stdevTvalue").toString());
-    				}else {
-    					tagDccInfo.setFixedStdevFldNo("");
-    				}       
     			}
     			
-    			if( tagDccInfo.getSpareAvgFldNo() != null && !tagDccInfo.getSpareAvgFldNo().equals("") &&
-    					tagDccInfo.getFixedAvgFldNo() != null && !tagDccInfo.getFixedAvgFldNo().equals("")) {
-    				     			
-    				  double gapAB = Double.parseDouble(tagDccInfo.getFixedAvgFldNo()) - Double.parseDouble(tagDccInfo.getSpareAvgFldNo());
-    				  tagDccInfo.setGapAB(String.format(gFormat[tagDccInfo.getBScale()], gapAB));
-    				  
-    				  if( tagDccInfo.getGapAB() != null && tagDccInfo.getGapAB().equals("") &&
-    						  tagDccInfo.getSpareAvgFldNo() != null && !tagDccInfo.getSpareAvgFldNo().equals("")) {
-    					  
-    					  double rateAB = (Double.parseDouble(tagDccInfo.getGapAB()) /  Double.parseDouble(tagDccInfo.getSpareAvgFldNo())) * 100;
-    					  tagDccInfo.setRateAB(String.format(gFormat[tagDccInfo.getBScale()], rateAB));
-    				  }else {
-    					  tagDccInfo.setRateAB("");
-    				  }
-    			}else {
-    				 tagDccInfo.setGapAB("");
-    				 tagDccInfo.setRateAB("");
-    			}
+				if( tagDccInfo.getSpareAvgFldNo() != null && !tagDccInfo.getSpareAvgFldNo().equals("") && !tagDccInfo.getSpareAvgFldNo().equals("***IRR") && 
+							tagDccInfo.getFixedAvgFldNo() != null && !tagDccInfo.getFixedAvgFldNo().equals("") && !tagDccInfo.getFixedAvgFldNo().equals("***IRR")) {
+				 			
+							double gapAB = Double.parseDouble(tagDccInfo.getFixedAvgFldNo()) - Double.parseDouble(tagDccInfo.getSpareAvgFldNo());
+							tagDccInfo.setGapAB(String.format(gFormat[tagDccInfo.getBScale()], gapAB));
+					
+							if( tagDccInfo.getGapAB() != null && !tagDccInfo.getGapAB().equals("") &&
+								  tagDccInfo.getSpareAvgFldNo() != null && !tagDccInfo.getSpareAvgFldNo().equals("")) {
+							  
+							  double rateAB = (Double.parseDouble(tagDccInfo.getGapAB()) /  Double.parseDouble(tagDccInfo.getSpareAvgFldNo())) * 100;
+							  tagDccInfo.setRateAB(String.format(gFormat[tagDccInfo.getBScale()], rateAB));
+							}else {
+							  tagDccInfo.setRateAB("");
+							}
+				}else {
+							tagDccInfo.setGapAB("");
+							tagDccInfo.setRateAB("");
+				}
     		} // end for ComTagDccInfo
 
     		mav.addObject("TagDccInfoList", tagDccInfoList);
@@ -274,13 +352,13 @@ public class DccPerformanceContentsController {
 	private String methodCompare(String iVal, ComTagDccInfo tagDccInfo ) {
 		
 		String rVal = "";
-		String rtn = "";
+		//String rtn = "";
 		
 		if(iVal == null) {
 	       return rVal;
 		}
 		
-		if(Integer.parseInt(rVal) < -9999999) {
+		if(Double.parseDouble(iVal) < -9999999) {
 			return rVal;
 		}else {
 			if(tagDccInfo.getIOTYPE().equals("SC") && tagDccInfo.getBScale() != 0) {
@@ -303,7 +381,7 @@ public class DccPerformanceContentsController {
 		}
 		
 		if(rVal != null && !rVal.isEmpty()) {
-			if(rVal.equals("-32768")) {
+			if(Double.parseDouble(rVal) > -32768) {
 				if( tagDccInfo.getIOTYPE().equals("DI") ||  tagDccInfo.getIOTYPE().equals("SC")) {
 					if(tagDccInfo.getIOTYPE().equals("SC")) {
 						//Method_Compare = Format(CSng(rVal / 2 ^ (15 - tDccTag(iCnt).IOBIT)), gFormat(tDccTag(iCnt).BScale))
@@ -314,7 +392,7 @@ public class DccPerformanceContentsController {
 					}
 				}else {
 					 // Method_Compare = Format(CSng(rVal), gFormat(tDccTag(iCnt).BScale))
-					return String.format(gFormat[tagDccInfo.getBScale()], rVal);
+					return String.format(gFormat[tagDccInfo.getBScale()], Double.parseDouble(rVal));
 				}
 			}else {
 				return "***IRR";
@@ -323,6 +401,7 @@ public class DccPerformanceContentsController {
 			return "";
 		}		
 	}
+	
 	
 	// - 디지털 값을 가져온다.(16bit -> 1bit)
 	//private int GetBitVal(ByVal DigitalValue As String, ByVal DigitalBit As String) As String
@@ -341,8 +420,8 @@ public class DccPerformanceContentsController {
 	       }
 	    }
 	    
-	    di_val = Long.parseLong(digitalValue);
-	    bit_no = Integer.parseInt(digitalBit);;
+	    di_val = Math.round(Double.parseDouble(digitalValue));	    
+	    bit_no = Integer.parseInt(digitalBit);
 
 	    for(int i = 0;i < bit_no;i++) {
 	        Rest = (di_val % 2);
@@ -760,8 +839,6 @@ public class DccPerformanceContentsController {
 	}		
 	
 	
-	
-	
 	@RequestMapping("comparexy")
 	public ModelAndView comparexy(DccSearchPerformance dccSearchPerformance, HttpServletRequest request) {
         
@@ -771,8 +848,15 @@ public class DccPerformanceContentsController {
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
+        	String preSPer = "";
+        	dccSearchPerformance.setMenuName(this.menuName);
+        	
         	if(dccSearchPerformance.getsPer() == null || dccSearchPerformance.getsPer().isEmpty()) {
-        		dccSearchPerformance.setsPer("2");
+        		dccSearchPerformance.setsPer("0.02");
+        	}else {
+        		preSPer = dccSearchPerformance.getsPer(); 
+        		double per = Double.parseDouble(preSPer) / 100;
+        		dccSearchPerformance.setsPer(String.valueOf(per));
         	}
         	
         	if(dccSearchPerformance.getsHogi() == null || dccSearchPerformance.getsHogi().isEmpty()){
@@ -780,12 +864,13 @@ public class DccPerformanceContentsController {
 	        	dccSearchPerformance.setsHogi(member.getHogi());
         	}
         	
-        	// XYGubun = "X", "Y"
-        	dccSearchPerformance.setsIOType("0");
+        	if(dccSearchPerformance.getsIOType() == null || dccSearchPerformance.getsIOType().isEmpty()) {
+        		dccSearchPerformance.setsIOType("0");
+        	}
+        	
         	getCompareXY(dccSearchPerformance, mav);
-        	
-        	dccSearchPerformance.setMenuName(this.menuName);
-        	
+        	dccSearchPerformance.setsPer(preSPer);        	
+        	        	
         	mav.addObject("BaseSearch", dccSearchPerformance);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
         	
@@ -803,8 +888,17 @@ public class DccPerformanceContentsController {
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
+
+        	
+        	String preSPer = "";
+        	dccSearchPerformance.setMenuName(this.menuName);
+        	
         	if(dccSearchPerformance.getsPer() == null || dccSearchPerformance.getsPer().isEmpty()) {
-        		dccSearchPerformance.setsPer("2");
+        		dccSearchPerformance.setsPer("0.02");
+        	}else {
+        		preSPer = dccSearchPerformance.getsPer(); 
+        		double per = Double.parseDouble(preSPer) / 100;
+        		dccSearchPerformance.setsPer(String.valueOf(per));
         	}
         	
         	if(dccSearchPerformance.getsHogi() == null || dccSearchPerformance.getsHogi().isEmpty()){
@@ -812,12 +906,13 @@ public class DccPerformanceContentsController {
 	        	dccSearchPerformance.setsHogi(member.getHogi());
         	}
         	
-        	// XYGubun = "3"
-        	dccSearchPerformance.setsIOType("2");
+        	if(dccSearchPerformance.getsIOType() == null || dccSearchPerformance.getsIOType().isEmpty()) {
+        		dccSearchPerformance.setsIOType("2");
+        	}
+        	
         	getCompareXY(dccSearchPerformance, mav);
-        	
-        	dccSearchPerformance.setMenuName(this.menuName);
-        	
+        	dccSearchPerformance.setsPer(preSPer);        	
+        	        	
         	mav.addObject("BaseSearch", dccSearchPerformance);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
         	
@@ -828,7 +923,7 @@ public class DccPerformanceContentsController {
 	
 	private void getCompareXY(DccSearchPerformance dccSearchPerformance, ModelAndView mav) {
 		
-		if(dccSearchPerformance.getsIOType() != null && !dccSearchPerformance.getsIOType().isEmpty()) {
+if(dccSearchPerformance.getsIOType() != null && !dccSearchPerformance.getsIOType().isEmpty()) {
     		
     		//*** START X GUBUN
     		String pSCanTimeX = "";
@@ -912,7 +1007,7 @@ public class DccPerformanceContentsController {
 				   java.util.Date date = format.parse(pSCanTimeY);
 
 				   java.text.SimpleDateFormat format1 = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				   pSCanTimeX = format1.format(date);
+				   pSCanTimeY = format1.format(date);
 
 			 } catch (java.text.ParseException ex) {
 			   ex.printStackTrace();
@@ -980,6 +1075,7 @@ public class DccPerformanceContentsController {
 			List<Map> aryValueList = new ArrayList<Map>();
 			
 			int j=0;
+			int idx=1;
 			String fldNoX ="";
 			String xValue = "";
 			String fldNoY="";
@@ -988,8 +1084,7 @@ public class DccPerformanceContentsController {
 			for(Map pRs:pRsList) {
 
 				switch(dccSearchPerformance.getsIOType()) {
-	    				case "0": 
-			    					
+	    				case "0": 			    					
 			    					for(j=0;j<varValueX.size();j++) {
 			    	                    if(pRs.get("TBLNO").equals(varValueX.get(j).get("SEQ"))){
 			    	                    	break;
@@ -997,16 +1092,24 @@ public class DccPerformanceContentsController {
 			    					 }
 			    					 fldNoX = pRs.get("FLDNO").toString();
 			    	                 xValue = varValueX.get(j).get("TVALUE" + (Integer.parseInt(fldNoX))).toString();
-			    					
-				    				 for(j=0;j<varValueY.size();j++) {
+			    	                 
+			    	                 for(j=0;j<varValueY.size();j++) {
 				    					 if(pRs.get("B_TBLNO").equals(varValueY.get(j).get("SEQ"))){
 				    	                    	break;
 				    	                 }
 				    				 }
-				    				 fldNoY= pRs.get("B_TBLNO").toString();
+				    				 fldNoY= pRs.get("B_FLDNO").toString();
 				    	             yValue = varValueY.get(j).get("TVALUE" + (Integer.parseInt(fldNoY))).toString();
-				    	                 
+				    	             /*
+				    	             BigDecimal yBigValue = new BigDecimal(Double.parseDouble(yValue));
+				    	             
+				    	             if(yBigValue.toString().length() > 10) {      
+				    	                 yValue = yBigValue.toString().substring(0, 10);
+				    	                 System.out.println("yValue = " + yValue);
+			    	                 }	
+				    	             */
 				    	             double xyValue = Double.parseDouble(xValue) - Double.parseDouble(yValue);
+
 				    	             if(xyValue < 0 ) {
 				    	            	 xyValue = xyValue * -1;
 				    	             }
@@ -1015,10 +1118,11 @@ public class DccPerformanceContentsController {
 					                 if(value10 < 0) {
 					                     value10 = value10 * -1;
 					                 }
-					                 
+				    	             
 					                 if(xyValue > value10) {
 					                	 
 					                	 Map aryValue = new HashMap();
+					                	 aryValue.put("INDEX", idx);
 					                	 aryValue.put("LOOPNAME", pRs.get("LOOPNAME"));
 					                	 aryValue.put("TBLNO", pRs.get("TBLNO"));
 					                	 aryValue.put("FLDNO", pRs.get("FLDNO"));
@@ -1038,6 +1142,7 @@ public class DccPerformanceContentsController {
 					                	 aryValue.put("B_WIBA", pRs.get("B_WIBA"));
 					                	 
 					                	 aryValueList.add(aryValue);
+					                	 idx++;
 					                 }
 					             	    					
 				    	             break;
@@ -1063,9 +1168,10 @@ public class DccPerformanceContentsController {
 				    	             String yBit = GetBitVal(yValue, pRs.get("IOBIT").toString());
 				    	             
 				    	             
-				    	             if(Double.parseDouble(xBit) > Double.parseDouble(yBit)) {
+				    	             if(Double.parseDouble(xBit) != Double.parseDouble(yBit)) {
 				    	            	 
 				    	            	 Map aryValue = new HashMap();
+				    	            	 aryValue.put("INDEX", idx);
 					                	 aryValue.put("LOOPNAME", pRs.get("LOOPNAME"));
 					                	 aryValue.put("TBLNO", pRs.get("TBLNO"));
 					                	 aryValue.put("FLDNO", pRs.get("FLDNO"));
@@ -1084,7 +1190,8 @@ public class DccPerformanceContentsController {
 					                	 aryValue.put("WIBA", pRs.get("WIBA"));
 					                	 aryValue.put("B_WIBA", pRs.get("B_WIBA"));
 					                	 
-					                	 aryValueList.add(aryValue);					    	            	 
+					                	 aryValueList.add(aryValue);	
+					                	 idx++;
 				    	             }
 	    	             
 	    							break;   							
@@ -1109,6 +1216,7 @@ public class DccPerformanceContentsController {
 				    	            if(Double.parseDouble(xValue) <= -32768 ||  Double.parseDouble(yValue) <= -32768) {
 				    	            	
 				    	            	 Map aryValue = new HashMap();
+				    	            	 aryValue.put("INDEX", idx);
 				    	            	 aryValue.put("LOOPNAME", pRs.get("LOOPNAME"));
 					                	 aryValue.put("TBLNO", pRs.get("TBLNO"));
 					                	 aryValue.put("FLDNO", pRs.get("FLDNO"));
@@ -1128,6 +1236,7 @@ public class DccPerformanceContentsController {
 					                	 aryValue.put("B_WIBA", pRs.get("B_WIBA"));
 					                	 
 					                	 aryValueList.add(aryValue);
+					                	 idx++;
 				    	            }
 	    					
 	    							break;
@@ -1139,7 +1248,7 @@ public class DccPerformanceContentsController {
 			mav.addObject("PageCnt", (pRsListTotalCnt/30) + 1);
 			mav.addObject("PageTotal", pRsListTotalCnt);
 			
-    	} // end iotype        	
+    	} // end iotype             	
 		
 	}
 	
@@ -1179,9 +1288,39 @@ public class DccPerformanceContentsController {
 
         	Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
         	
+        	List<Map> lblDataList = (ArrayList)dccVal.get("lblDataList");
+        	
+        	String SteamData_1 = "";
+        	String SteamData_0 = "";
+        	Map lblSCM = new HashMap();
+        	double fValue;
+        	
+        	for(int i=0;i<4;i++) {        		
+        		
+        		if(lblDataList.get(32 + i * 2).get("fValue").equals("***IRR")) {
+        			SteamData_1 = "***IRR";
+        		}else {
+        			 fValue = Double.parseDouble(lblDataList.get(32 + i * 2).get("fValue").toString());
+ 				     SteamData_1 = (fValue > -32768? String.format(gFormat[tagDccInfoList.get(i).getBScale()], fValue) : "***IRR");
+        		}
+        		
+        		if(lblDataList.get(32 + i * 2 + 1).get("fValue").equals("***IRR")) {
+        			lblSCM.put(i, "***IRR");
+        		}else {
+			            fValue = Double.parseDouble(lblDataList.get(32 + i * 2 + 1).get("fValue").toString());
+			            SteamData_0 = (fValue > -32768? String.format(gFormat[tagDccInfoList.get(i).getBScale()], fValue) : "***IRR");
+			            double vSCM = getSaturationMargin(Double.parseDouble(SteamData_1), Double.parseDouble(SteamData_0));
+			            lblSCM.put("idx" + i,(vSCM > -32768? String.format("%.3f", vSCM): "***IRR"));
+
+        		}
+        		
+        	}
+        	
+        	
         	mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
-        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("lblDataList", lblDataList);
+        	mav.addObject("lblSCM", lblSCM);
         	
         	mav.addObject("BaseSearch", dccSearchPerformance);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
@@ -1191,7 +1330,368 @@ public class DccPerformanceContentsController {
         return mav;
     }
 	
+	//'- SCM값을 계산한다.
+	private double getSaturationMargin(double pressure, double temperature) {
+		
+		double saturationTemp = 0;
+		double saturationMargin = 0;
+		
+		double[] TempTable = new double[276];
+		
+	    TempTable[0] = 95.01;
+	    TempTable[1] = 96.63;
+	    TempTable[2] = 98.17;
+	    TempTable[3] = 99.64;
+	    TempTable[4] = 101.05;
+	    TempTable[5] = 101.42;
+	    TempTable[6] = 102.4;
+	    TempTable[7] = 103.71;
+	    TempTable[8] = 104.96;
+	    TempTable[9] = 106.17;
+	    TempTable[10] = 107.33;
+	    TempTable[11] = 108.46;
+	    TempTable[12] = 109.56;
+	    TempTable[13] = 110.62;
+	    TempTable[14] = 111.65;
+	    TempTable[15] = 112.65;
+	    TempTable[16] = 113.63;
+	    TempTable[17] = 114.58;
+	    TempTable[18] = 115.5;
+	    TempTable[19] = 116.41;
+	    TempTable[20] = 117.29;
+	    TempTable[21] = 118.15;
+	    TempTable[22] = 118.99;
+	    TempTable[23] = 119.81;
+	    TempTable[24] = 120.62;
+	    TempTable[25] = 121.41;
+	    TempTable[26] = 122.18;
+	    TempTable[27] = 122.94;
+	    TempTable[28] = 123.68;
+	    TempTable[29] = 124.41;
+	    TempTable[30] = 125.13;
+	    TempTable[31] = 125.83;
+	    TempTable[32] = 126.52;
+	    TempTable[33] = 127.2;
+	    TempTable[34] = 127.87;
+	    TempTable[35] = 128.52;
+	    TempTable[36] = 129.17;
+	    TempTable[37] = 129.81;
+	    TempTable[38] = 130.43;
+	    TempTable[39] = 131.05;
+	    TempTable[40] = 131.65;
+	    TempTable[41] = 132.25;
+	    TempTable[42] = 132.84;
+	    TempTable[43] = 133.42;
+	    TempTable[44] = 134;
+	    TempTable[45] = 134.56;
+	    TempTable[46] = 135.12;
+	    TempTable[47] = 135.67;
+	    TempTable[48] = 136.21;
+	    TempTable[49] = 136.75;
+	    TempTable[50] = 137.28;
+	    TempTable[51] = 137.8;
+	    TempTable[52] = 138.32;
+	    TempTable[53] = 138.83;
+	    TempTable[54] = 139.34;
+	    TempTable[55] = 139.83;
+	    TempTable[56] = 140.33;
+	    TempTable[57] = 140.82;
+	    TempTable[58] = 141.3;
+	    TempTable[59] = 141.77;
+	    TempTable[60] = 142.25;
+	    TempTable[61] = 142.71;
+	    TempTable[62] = 143.17;
+	    TempTable[63] = 143.63;
+	    TempTable[64] = 144.08;
+	    TempTable[65] = 144.53;
+	    TempTable[66] = 145.41;
+	    TempTable[67] = 146.28;
+	    TempTable[68] = 147.13;
+	    TempTable[69] = 147.96;
+	    TempTable[70] = 148.78;
+	    TempTable[71] = 149.58;
+	    TempTable[72] = 150.37;
+	    TempTable[73] = 151.14;
+	    TempTable[74] = 151.91;
+	    TempTable[75] = 152.66;
+	    TempTable[76] = 153.4;
+	    TempTable[77] = 154.12;
+	    TempTable[78] = 154.84;
+	    TempTable[79] = 155.54;
+	    TempTable[80] = 156.24;
+	    TempTable[81] = 156.92;
+	    TempTable[82] = 157.6;
+	    TempTable[83] = 158.27;
+	    TempTable[84] = 158.92;
+	    TempTable[85] = 159.57;
+	    TempTable[86] = 160.21;
+	    TempTable[87] = 160.84;
+	    TempTable[88] = 161.46;
+	    TempTable[89] = 162.08;
+	    TempTable[90] = 162.69;
+	    TempTable[91] = 163.29;
+	    TempTable[92] = 163.88;
+	    TempTable[93] = 164.47;
+	    TempTable[94] = 165.05;
+	    TempTable[95] = 165.62;
+	    TempTable[96] = 166.19;
+	    TempTable[97] = 166.75;
+	    TempTable[98] = 167.3;
+	    TempTable[99] = 167.85;
+	    
+	    TempTable[100] = 168.39;
+	    TempTable[101] = 168.93;
+	    TempTable[102] = 169.46;
+	    TempTable[103] = 169.98;
+	    TempTable[104] = 170.5;
+	    TempTable[105] = 171.02;
+	    TempTable[106] = 171.53;
+	    TempTable[107] = 172.03;
+	    TempTable[108] = 172.53;
+	    TempTable[109] = 173.03;
+	    TempTable[110] = 173.52;
+	    TempTable[111] = 174;
+	    TempTable[112] = 174.48;
+	    TempTable[113] = 174.96;
+	    TempTable[114] = 175.44;
+	    TempTable[115] = 175.9;
+	    TempTable[116] = 176.37;
+	    TempTable[117] = 176.83;
+	    TempTable[118] = 177.29;
+	    TempTable[119] = 177.74;
+	    TempTable[120] = 178.19;
+	    TempTable[121] = 178.63;
+	    TempTable[122] = 179.08;
+	    TempTable[123] = 179.51;
+	    TempTable[124] = 179.95;
+	    TempTable[125] = 180.38;
+	    TempTable[126] = 181.23;
+	    TempTable[127] = 182.07;
+	    TempTable[128] = 182.9;
+	    TempTable[129] = 183.71;
+	    TempTable[130] = 184.52;
+	    TempTable[131] = 185.31;
+	    TempTable[132] = 186.09;
+	    TempTable[133] = 186.86;
+	    TempTable[134] = 187.62;
+	    TempTable[135] = 188.37;
+	    TempTable[136] = 189.11;
+	    TempTable[137] = 189.84;
+	    TempTable[138] = 190.56;
+	    TempTable[139] = 191.27;
+	    TempTable[140] = 191.97;
+	    TempTable[141] = 192.67;
+	    TempTable[142] = 193.35;
+	    TempTable[143] = 194.03;
+	    TempTable[144] = 194.7;
+	    TempTable[145] = 195.37;
+	    TempTable[146] = 196.02;
+	    TempTable[147] = 196.67;
+	    TempTable[148] = 197.31;
+	    TempTable[149] = 197.95;
+	    TempTable[150] = 198.58;
+	    TempTable[151] = 200.12;
+	    TempTable[152] = 201.63;
+	    TempTable[153] = 203.1;
+	    TempTable[154] = 204.53;
+	    TempTable[155] = 205.93;
+	    TempTable[156] = 207.3;
+	    TempTable[157] = 208.65;
+	    TempTable[158] = 209.96;
+	    TempTable[159] = 211.25;
+	    TempTable[160] = 212.51;
+	    TempTable[161] = 213.75;
+	    TempTable[162] = 214.96;
+	    TempTable[163] = 216.16;
+	    TempTable[164] = 217.33;
+	    TempTable[165] = 218.48;
+	    TempTable[166] = 219.61;
+	    TempTable[167] = 220.72;
+	    TempTable[168] = 221.82;
+	    TempTable[169] = 222.89;
+	    TempTable[170] = 223.95;
+	    TempTable[171] = 226.03;
+	    TempTable[172] = 228.04;
+	    TempTable[173] = 229.99;
+	    TempTable[174] = 231.9;
+	    TempTable[175] = 233.75;
+	    TempTable[176] = 235.55;
+	    TempTable[177] = 237.31;
+	    TempTable[178] = 239.03;
+	    TempTable[179] = 240.71;
+	    TempTable[180] = 242.36;
+	    TempTable[181] = 243.96;
+	    TempTable[182] = 245.54;
+	    TempTable[183] = 247.08;
+	    TempTable[184] = 248.59;
+	    TempTable[185] = 250.07;
+	    TempTable[186] = 251.52;
+	    TempTable[187] = 252.95;
+	    TempTable[188] = 254.35;
+	    TempTable[189] = 255.72;
+	    TempTable[190] = 257.08;
+	    TempTable[191] = 258.4;
+	    TempTable[192] = 259.71;
+	    TempTable[193] = 261;
+	    TempTable[194] = 262.26;
+	    TempTable[195] = 263.51;
+	    TempTable[196] = 264.74;
+	    TempTable[197] = 265.95;
+	    TempTable[198] = 267.14;
+	    TempTable[199] = 268.31;
+
+	    TempTable[200] = 269.47;
+	    TempTable[201] = 270.61;
+	    TempTable[202] = 271.74;
+	    TempTable[203] = 272.85;
+	    TempTable[204] = 273.95;
+	    TempTable[205] = 275.03;
+	    TempTable[206] = 276.1;
+	    TempTable[207] = 277.15;
+	    TempTable[208] = 278.2;
+	    TempTable[209] = 279.23;
+	    TempTable[210] = 280.25;
+	    TempTable[211] = 281.25;
+	    TempTable[212] = 282.25;
+	    TempTable[213] = 283.23;
+	    TempTable[214] = 284.2;
+	    TempTable[215] = 285.16;
+	    TempTable[216] = 286.11;
+	    TempTable[217] = 287.06;
+	    TempTable[218] = 287.99;
+	    TempTable[219] = 288.91;
+	    TempTable[220] = 289.82;
+	    TempTable[221] = 290.72;
+	    TempTable[222] = 291.62;
+	    TempTable[223] = 292.5;
+	    TempTable[224] = 293.38;
+	    TempTable[225] = 294.24;
+	    TempTable[226] = 295.1;
+	    TempTable[227] = 295.95;
+	    TempTable[228] = 296.8;
+	    TempTable[229] = 297.63;
+	    TempTable[230] = 298.46;
+	    TempTable[231] = 299.28;
+	    TempTable[232] = 300.09;
+	    TempTable[233] = 300.9;
+	    TempTable[234] = 301.7;
+	    TempTable[235] = 302.49;
+	    TempTable[236] = 303.28;
+	    TempTable[237] = 304.05;
+	    TempTable[238] = 304.83;
+	    TempTable[239] = 305.59;
+	    TempTable[240] = 306.35;
+	    TempTable[241] = 307.1;
+	    TempTable[242] = 307.85;
+	    TempTable[243] = 308.59;
+	    TempTable[244] = 309.33;
+	    TempTable[245] = 310.06;
+	    TempTable[246] = 310.78;
+	    TempTable[247] = 311.5;
+	    TempTable[248] = 312.21;
+	    TempTable[249] = 312.92;
+	    TempTable[250] = 313.62;
+	    TempTable[251] = 314.32;
+	    TempTable[252] = 315.01;
+	    TempTable[253] = 315.7;
+	    TempTable[254] = 316.38;
+	    TempTable[255] = 317.06;
+	    TempTable[256] = 317.73;
+	    TempTable[257] = 318.4;
+	    TempTable[258] = 319.06;
+	    TempTable[259] = 319.72;
+	    TempTable[260] = 320.38;
+	    TempTable[261] = 321.03;
+	    TempTable[262] = 321.67;
+	    TempTable[263] = 322.31;
+	    TempTable[264] = 322.95;
+	    TempTable[265] = 323.58;
+	    TempTable[266] = 324.21;
+	    TempTable[267] = 324.83;
+	    TempTable[268] = 325.45;
+	    TempTable[268] = 326.07;
+	    TempTable[270] = 326.68;
+	    TempTable[271] = 327.29;
+	    TempTable[272] = 327.9;
+	    TempTable[273] = 328.5;
+	    TempTable[274] = 329.09;
+	    TempTable[275] = 329.69;
+		
+		Map rtnMap = getPressIndex(pressure);
+		
+		int idx = Integer.parseInt(rtnMap.get("idx").toString());		
+		double PressTableVal = Double.parseDouble(rtnMap.get("value").toString());
+		double PressTableVal2 = Double.parseDouble(rtnMap.get("value2").toString());
+		
+		if(idx == -1) {
+			saturationMargin= -9999;
+		}else {
+			saturationTemp = TempTable[idx] + (pressure - PressTableVal) * (TempTable[idx + 1] - TempTable[idx]) / (PressTableVal2 - PressTableVal);
+			saturationMargin = saturationTemp - temperature;			
+		}	
+		
+		return saturationMargin;
+		
+	}
 	
+	private Map getPressIndex(Double pressure) {
+		
+		int totalCnt;
+		
+		Map rtnMap = new HashMap();
+		
+		double[] PressTable = new double[276];
+		DecimalFormat df = new DecimalFormat("#.###");
+		
+		// '- Pressure Table값 생성
+		for(int i=0;i<276;i++) {
+			if(i == 5) {
+				PressTable[i] = 0.101325;
+			}else if(i <= 4) { 
+				PressTable[i] = Double.parseDouble(String.format("%.3f", 0.08 + (i * 0.005)));
+			}else if(i > 4 && i <= 65) { 
+				PressTable[i] = Double.parseDouble(String.format("%.3f", 0.08 + ((i-1) * 0.005)));
+			}else if(i > 65 && i <= 125) { 
+				PressTable[i] = Double.parseDouble(String.format("%.3f", PressTable[i-1] + 0.01));
+			}else if(i > 125 && i <= 150) { 
+				PressTable[i] = Double.parseDouble(String.format("%.3f", PressTable[i-1] + 0.02));
+			}else if(i > 150 && i <= 170) { 
+				PressTable[i] = Double.parseDouble(String.format("%.3f", PressTable[i-1] + 0.05));
+			}else if(i > 170 && i <= 275) { 
+				PressTable[i] = Double.parseDouble(String.format("%.3f", PressTable[i-1] + 0.1));
+			}			
+		}
+		
+		int tolCnt = PressTable.length;
+		
+		pressure =  Double.parseDouble(String.format("%.2f", pressure));
+	
+		if((pressure < PressTable[0]) || (pressure >= PressTable[tolCnt-1])) { 
+	        rtnMap.put("idx", -1);
+	        rtnMap.put("value", -1);
+            rtnMap.put("value2", -1);
+		}else {
+			boolean chk = false;
+			for(int i=0;i<tolCnt;i++) {
+				if((pressure >= PressTable[i]) && (pressure < PressTable[i + 1])) {
+	               chk = true;
+	               
+	               rtnMap.put("idx", i);
+	               rtnMap.put("value", PressTable[i]);
+	               rtnMap.put("value2", PressTable[i+1]);
+	               break;
+	            }
+	        }
+
+			if(!chk) {
+				rtnMap.put("idx", -1);
+		        rtnMap.put("value", -1);
+	            rtnMap.put("value2", -1);
+			}
+		}		 
+		
+		return rtnMap;		
+	}
 	
 	@RequestMapping("dccselfcheck")
 	public ModelAndView dccselfcheck(DccSearchPerformance dccSearchPerformance, HttpServletRequest request) {
@@ -1643,7 +2143,7 @@ public class DccPerformanceContentsController {
         	
         	if(lblDataXList != null && lblDataXList.size() > 0) {
         	
-	        	for(int i=0;i<=lblDataXList.size();i++) {
+	        	for(int i=0;i<lblDataXList.size();i++) {
 	        		
 	        		Map lblDataX = lblDataXList.get(i);
 	        		lblDataX.put("ForeColor", "#80000012");

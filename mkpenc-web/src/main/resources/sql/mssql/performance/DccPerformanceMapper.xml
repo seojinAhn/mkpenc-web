@@ -44,7 +44,7 @@
 		                    	FROM LOG_3DCC_TREND_HIST
 		                    </if>
 		                    <if test="@org.apache.commons.lang3.StringUtils@isEmpty(chkHogi)">
-		                    	FROM LOG_${hogi}DCC_TREND_HIST
+		                    	FROM LOG_${hogi}DCC_TREND
 		                    </if>
                     </if>
                      <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(mskSpareEchk) and "2".equals(mskSpareEchk) '>
@@ -81,7 +81,7 @@
                     , AVG(TVALUE${fldno}) as avgTvalue
                     , STDEV(TVALUE${fldno}) as stdevTvalue
                   <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(chkHogi) and "T".equals(chkHogi)'>
-                  	FROM LOG_4DCC_TREND_HIST
+                  	FROM LOG_4DCC_TREND
                   </if>
                   <if test="@org.apache.commons.lang3.StringUtils@isEmpty(chkHogi)">
                   	FROM LOG_${hogi}DCC_TREND
@@ -195,19 +195,15 @@
     </select>  
     
     <select id="selectXYIOTypeAI" parameterType="java.util.Map" resultType="java.util.Map">
-      		SELECT ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS ROWNUM, *
-      		 FROM (    
-		       		 SELECT a.LOOPNAME, a.TBLNO, a.FLDNO, (a.EHIGH-a.ELOW) * (#{per} / 100) as Calc , a.ADDRESS, a.UNIT, a.BSCAL, b.TBLNO AS B_TBLNO, b.FLDNO AS B_FLDNO, a.DESCR, a.WIBA, b.WIBA AS B_WIBA
-		              FROM 
-		              	 (SELECT LOOPNAME, TBLNO, FLDNO, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC 
-		                    WHERE IHOGI = #{hogi} AND XYGUBUN = 'X' AND IOTYPE = 'AI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]> 400 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 3175)) a,
-		                 (SELECT LOOPNAME, TBLNO, FLDNO, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC 
-		                    WHERE IHOGI = #{hogi} AND XYGUBUN = 'Y' AND IOTYPE = 'AI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]> 400 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 3175)) b
-		             WHERE a.ADDRESS = b.ADDRESS
-  			    ) AAA 
-	  			ORDER BY ROWNUM
-		    	OFFSET (#{pageNum} - 1)  *  #{pageSize} ROWS
-				FETCH NEXT #{pageSize} ROWS ONLY		             
+  
+      		 SELECT a.LOOPNAME, a.TBLNO, a.FLDNO, ((a.EHIGH-a.ELOW) * #{per}) as Calc , a.ADDRESS, a.UNIT, a.BSCAL, b.TBLNO AS B_TBLNO, b.FLDNO AS B_FLDNO, a.DESCR, a.WIBA, b.WIBA AS B_WIBA
+             FROM 
+             	 (SELECT LOOPNAME, TBLNO, FLDNO, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC 
+                   WHERE IHOGI = #{hogi} AND XYGUBUN = 'X' AND IOTYPE = 'AI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]> 400 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 3175)) a,
+                (SELECT LOOPNAME, TBLNO, FLDNO, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC 
+                   WHERE IHOGI = #{hogi} AND XYGUBUN = 'Y' AND IOTYPE = 'AI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]> 400 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 3175)) b
+            WHERE a.ADDRESS = b.ADDRESS
+  			   		             
     </select>  
     
     <select id="selectXYIOTypeDITotalCnt" parameterType="java.util.Map" resultType="int">
@@ -217,23 +213,18 @@
                     WHERE IHOGI = #{hogi} AND XYGUBUN = 'X' AND IOTYPE = 'DI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]>40 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 77)) a,
                    (SELECT LOOPNAME, TBLNO, FLDNO, IOBIT, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC
                     WHERE IHOGI = #{hogi} AND XYGUBUN = 'Y' AND IOTYPE = 'DI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]>40 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 77)) b
-              WHERE a.ADDRESS = b.ADDRESS AND a.IOBIT = b.IOBIT ORDER BY a.ADDRESS, b.IOBIT
+              WHERE a.ADDRESS = b.ADDRESS AND a.IOBIT = b.IOBIT
     </select>       
     
     <select id="selectXYIOTypeDI" parameterType="java.util.Map" resultType="java.util.Map">
-      		SELECT ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS ROWNUM, *
-      		 FROM (
-		       		SELECT a.LOOPNAME, a.TBLNO, a.FLDNO, a.IOBIT, a.ADDRESS, a.UNIT, a.BSCAL, b.TBLNO AS B_TBLNO, b.FLDNO AS B_FLDNO, a.DESCR, a.WIBA, b.WIBA AS B_WIBA
-		              FROM
-		              	   (SELECT LOOPNAME, TBLNO, FLDNO, IOBIT, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC
-		                    WHERE IHOGI = #{hogi} AND XYGUBUN = 'X' AND IOTYPE = 'DI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]>40 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 77)) a,
-		                   (SELECT LOOPNAME, TBLNO, FLDNO, IOBIT, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC
-		                    WHERE IHOGI = #{hogi} AND XYGUBUN = 'Y' AND IOTYPE = 'DI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]>40 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 77)) b
-		              WHERE a.ADDRESS = b.ADDRESS AND a.IOBIT = b.IOBIT ORDER BY a.ADDRESS, b.IOBIT
-            ) AAA 
-            ORDER BY ROWNUM
-	    	OFFSET (#{pageNum} - 1)  *  #{pageSize} ROWS
-			FETCH NEXT #{pageSize} ROWS ONLY
+       		SELECT a.LOOPNAME, a.TBLNO, a.FLDNO, a.IOBIT, a.ADDRESS, a.UNIT, a.BSCAL, b.TBLNO AS B_TBLNO, b.FLDNO AS B_FLDNO, a.DESCR, a.WIBA, b.WIBA AS B_WIBA
+              FROM
+              	   (SELECT LOOPNAME, TBLNO, FLDNO, IOBIT, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC
+                    WHERE IHOGI = #{hogi} AND XYGUBUN = 'X' AND IOTYPE = 'DI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]>40 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 77)) a,
+                   (SELECT LOOPNAME, TBLNO, FLDNO, IOBIT, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC
+                    WHERE IHOGI = #{hogi} AND XYGUBUN = 'Y' AND IOTYPE = 'DI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]>40 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 77)) b
+              WHERE a.ADDRESS = b.ADDRESS AND a.IOBIT = b.IOBIT
+
     </select>      
     
     <select id="selectXYIOTypeAIWIBATotalCnt" parameterType="java.util.Map" resultType="int">
@@ -246,18 +237,12 @@
     </select>         
     
     <select id="selectXYIOTypeAIWIBA" parameterType="java.util.Map" resultType="java.util.Map">
-       		SELECT ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS ROWNUM, *
-      		 FROM (
-	       		SELECT a.LOOPNAME, a.TBLNO, a.FLDNO, a.ADDRESS, a.UNIT, a.BSCAL, b.TBLNO AS B_TBLNO, b.FLDNO AS B_FLDNO, a.DESCR, a.WIBA, b.WIBA AS B_WIBA
-	             FROM (SELECT LOOPNAME, TBLNO, FLDNO, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC 
-	                       WHERE IHOGI =#{hogi} AND XYGUBUN = 'X' AND IOTYPE = 'AI' AND WIBA = 1 AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]> 400 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 3175)) a,
-	                      (SELECT LOOPNAME, TBLNO, FLDNO, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC 
-	                       WHERE IHOGI = #{hogi} AND XYGUBUN = 'Y' AND IOTYPE = 'AI' AND WIBA = 1 AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]> 400 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 3175)) b
-	             WHERE a.ADDRESS = b.ADDRESS
-	        ) AAA 
-			ORDER BY ROWNUM
-	    	OFFSET (#{pageNum} - 1)  *  #{pageSize} ROWS
-			FETCH NEXT #{pageSize} ROWS ONLY
+       		SELECT a.LOOPNAME, a.TBLNO, a.FLDNO, a.ADDRESS, a.UNIT, a.BSCAL, b.TBLNO AS B_TBLNO, b.FLDNO AS B_FLDNO, a.DESCR, a.WIBA, b.WIBA AS B_WIBA
+             FROM (SELECT LOOPNAME, TBLNO, FLDNO, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC 
+                       WHERE IHOGI =#{hogi} AND XYGUBUN = 'X' AND IOTYPE = 'AI' AND WIBA = 1 AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]> 400 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 3175)) a,
+                      (SELECT LOOPNAME, TBLNO, FLDNO, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC 
+                       WHERE IHOGI = #{hogi} AND XYGUBUN = 'Y' AND IOTYPE = 'AI' AND WIBA = 1 AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]> 400 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 3175)) b
+             WHERE a.ADDRESS = b.ADDRESS
     </select>        
     
     
