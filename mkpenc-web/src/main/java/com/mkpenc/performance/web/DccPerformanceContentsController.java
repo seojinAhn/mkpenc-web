@@ -21,6 +21,7 @@ import com.mkpenc.common.service.BasDccOsmsService;
 import com.mkpenc.performance.model.DccSearchPerformance;
 import com.mkpenc.performance.model.GroupNameInfo;
 import com.mkpenc.performance.service.DccPerformanceService;
+import com.mkpenc.status.model.DccSearchStatus;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
@@ -1941,6 +1942,25 @@ if(dccSearchPerformance.getsIOType() != null && !dccSearchPerformance.getsIOType
 
         return mav;
     }
+	
+	@RequestMapping("dccstatus")
+	public ModelAndView dccstatus(DccSearchPerformance dccSearchPerformance, HttpServletRequest request) {
+       
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ dccstatus");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchPerformance.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchPerformance);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        }
+        
+        return mav;
+        
+	}
 	
 	@RequestMapping("programonoff")
 	public ModelAndView programonoff(DccSearchPerformance dccSearchPerformance, HttpServletRequest request) {
