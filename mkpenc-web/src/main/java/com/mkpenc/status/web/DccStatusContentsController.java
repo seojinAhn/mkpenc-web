@@ -1198,6 +1198,96 @@ public class DccStatusContentsController {
         return mav;
     }
 	
+	@RequestMapping("zonevalues")
+	public ModelAndView zonevalues(DccSearchStatus dccSearchStatus, HttpServletRequest request) {
+       
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ zonevalues");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        }
+        
+        return mav;
+        
+	}
+	
+	@RequestMapping("zonedeviations")
+	public ModelAndView zonedeviations(DccSearchStatus dccSearchStatus, HttpServletRequest request) {
+       
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ zonedeviations");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        }
+        
+        return mav;
+        
+	}
+	
+	@RequestMapping("zonecompare")
+	public ModelAndView zonecompare(DccSearchStatus dccSearchStatus, HttpServletRequest request) {
+       
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ zonecompare");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        }
+        
+        return mav;
+        
+	}
+	
+	@RequestMapping("adjrod")
+	public ModelAndView adjrod(DccSearchStatus dccSearchStatus, HttpServletRequest request) {
+       
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ adjrod");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        }
+        
+        return mav;
+        
+	}
+	
+	@RequestMapping("reactivity")
+	public ModelAndView reactivity(DccSearchStatus dccSearchStatus, HttpServletRequest request) {
+       
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ reactivity");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        }
+        
+        return mav;
+        
+	}
+	
 	@RequestMapping("phtpump")
 	public ModelAndView phtpump(DccSearchStatus dccSearchStatus, HttpServletRequest request) {
        

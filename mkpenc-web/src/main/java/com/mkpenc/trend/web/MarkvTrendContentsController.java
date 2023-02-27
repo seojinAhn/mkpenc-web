@@ -20,6 +20,44 @@ public class MarkvTrendContentsController {
 	
 	private String menuName = "TREND";
 	
+	@RequestMapping("realtimetrendfixed")
+	public ModelAndView realtimetrendfixed(MarkvSearchTrend markvSearchTrend, HttpServletRequest request) {
+       
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ realtimetrendfixed");       
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	markvSearchTrend.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", markvSearchTrend);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }	
+	
+	@RequestMapping("realtimetrendspare")
+	public ModelAndView realtimetrendspare(MarkvSearchTrend markvSearchTrend, HttpServletRequest request) {
+       
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ realtimetrendspare");       
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	markvSearchTrend.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", markvSearchTrend);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }		
+	
 	@RequestMapping("logfixed")
 	public ModelAndView logfixed(MarkvSearchTrend markvSearchTrend, HttpServletRequest request) {
        

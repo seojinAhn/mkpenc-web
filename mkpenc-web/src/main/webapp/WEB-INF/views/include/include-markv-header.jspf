@@ -99,8 +99,8 @@
                                   <li>          
                                       <a href="#none">TESTs</a>         
                                       <ul>          
-                                          <li><a href="#none">FRONT STANDARD</a></li>         
-                                          <li><a href="#none">FA SOLENOID</a></li>          
+                                          <li><a href="/markv/mimic/frontstandard">FRONT STANDARD</a></li>         
+                                          <li><a href="/markv/mimic/fasolenoids">FA SOLENOIDS</a></li>          
                                           <li><a href="/markv/mimic/hydraulictripsys">HYDRAULIC TRIP SYS</a></li>            
                                           <li><a href="/markv/mimic/valvetightness">VALVE TIGHTNESS</a></li>            
                                       </ul>         
@@ -122,8 +122,8 @@
                                   <li>          
                                       <a href="#none">TREND</a>         
                                       <ul>          
-                                          <li><a href="#none">FIXED</a></li>            
-                                          <li><a href="#none">SPARE</a></li>            
+                                          <li><a href="/markv/trend/realtimetrendfixed">FIXED</a></li>            
+                                          <li><a href="/markv/trend/realtimetrendspare">SPARE</a></li>            
                                       </ul>         
                                   </li>         
                               </ul>         

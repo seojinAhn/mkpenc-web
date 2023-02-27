@@ -236,27 +236,27 @@
                              </ul>         
                              <ul>          
                                  <li>          
-                                     <a href="#none">ZONE VALUES</a>           
+                                     <a href="/dcc/status/zonevalues">ZONE VALUES</a>           
                                  </li>         
                              </ul>         
                              <ul>          
                                  <li>          
-                                     <a href="#none">ZONE</a>          
+                                     <a href="/dcc/status/zonedeviations">ZONE DEVIATIONS</a>          
                                  </li>         
                              </ul>         
                              <ul>          
                                  <li>          
-                                     <a href="#none">ZONE COMPARE</a>          
+                                     <a href="/dcc/status/zonecompare">ZONE COMPARE</a>          
                                  </li>         
                              </ul>         
                              <ul>          
                                  <li>          
-                                     <a href="#none">ADJ ROD</a>           
+                                     <a href="/dcc/status/adjrod">ADJ ROD</a>           
                                  </li>         
                              </ul>         
                              <ul>          
                                  <li>          
-                                     <a href="#none">REACTIVITY</a>            
+                                     <a href="/dcc/status/reactivity">REACTIVITY</a>            
                                  </li>         
                              </ul>         
                              <ul>          
@@ -326,7 +326,7 @@
                                      <ul>          
                                          <li><a href="/dcc/performance/dccselfcheck">DCC SELF CHECK</a></li>           
                                          <li><a href="/dcc/performance/mainsysiostatus">중요계통 I/O 상태</a></li>            
-                                         <li><a href="#none">DCC Status</a></li>           
+                                         <li><a href="/dcc/performance/dccstatus">DCC Status</a></li>           
                                          <li><a href="/dcc/performance/programonoff">Programe ON/OFF</a></li>          
                                          <li><a href="/dcc/performance/aicheck">AI CHECK</a></li>         
                                      </ul>         
@@ -400,7 +400,7 @@
                              </ul>         
                              <ul>          
                                  <li>          
-                                     <a href="#none">시스템모니터링</a>            
+                                     <a href="/dcc/admin/sysmonitoring">시스템모니터링</a>            
                                  </li>         
                              </ul>         
                              <ul>          

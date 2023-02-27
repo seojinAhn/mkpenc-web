@@ -667,6 +667,23 @@ public class DccAdminContentsController {
 	    }// session end if		
 	}
 	
+	@RequestMapping("sysmonitoring")
+	public ModelAndView sysmonitoring(DccSearchAdmin dccSearchAdmin, HttpServletRequest request) {
+     
+        logger.info("############ sysmonitoring");
+		
+		ModelAndView mav = new ModelAndView();
+
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	mav.addObject("BaseSearch", dccSearchAdmin);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+        
+        return mav;
+    }
+	
 	@RequestMapping("sysimprovelist")
 	public ModelAndView sysimprovelist(DccSearchAdmin dccSearchAdmin, HttpServletRequest request) {
      
