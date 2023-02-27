@@ -9,5 +9,7 @@ import com.mkpenc.common.annotaion.Mapper;
 public interface BasCommonMapper {
 	
 	List<Map> selectGrpNameList(Map searchMapper);
+	
+	List<String> selectGrpNameListB(Map searchMapper);
 
 }

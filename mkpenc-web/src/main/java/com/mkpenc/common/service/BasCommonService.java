@@ -10,5 +10,7 @@ import org.springframework.stereotype.Service;
 public  interface BasCommonService {
 	
 	List<Map> selectGrpNameList(Map searchMap);
+	
+	List<String> selectGrpNameListB(Map searchMapper);
 
 }

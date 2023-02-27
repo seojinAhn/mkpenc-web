@@ -1916,101 +1916,7 @@ public class ExcelHelperUtil {
 				title = "Liquid Zone Control System(3단계)";
 				size = 42;
 				break;
-			case "pht":
-				prefix = "pht_";
-				title = "Primary Heat Transport System";
-				size = 32;
-				break;
-			case "phtctrl":
-				prefix = "pics_";
-				title = "Presure & Inventory Control System";
-				size = 27;
-				break;
-			case "moderator":
-				prefix = "mod_";
-				title = "Moderator System";
-				size = 21;
-				break;
-			case "phtpuri":
-				prefix = "puri_";
-				title = "PHT Purification System";
-				size = 7;
-				break;
-			case "ecc":
-				prefix = "ecc_";
-				title = "Emergency Code Cooling System";
-				size = 23;
-				break;	
-			case "mainsteam":
-				prefix = "msp_";
-				title = "Main Steam System";
-				size = 20;
-				break;
-			case "feedwater":
-				prefix = "sgfw_";
-				title = "Feed Water";
-				size = 41;
-				break;
-			case "condensate":
-				prefix = "condensate_";
-				title = "Condensate System";
-				size = 30;
-				break;
-			case "fuelhandlingmenu":
-				prefix = "fh_";
-				title = "Fuel Handling System";
-				size = 13;
-				break;
-			case "d2octrla":
-				prefix = "d2oa_";
-				title = "D2O Control System(A-Side)";
-				size = 15;
-				break;
-			case "d2octrlc":
-				prefix = "d2oc_";
-				title = "D2O Control System(C-Side)";
-				size = 14;
-				break;
-			case "radmain":
-				prefix = "rad_";
-				title = "Radiation System";
-				size = 18;
-				break;
-			case "rbbase":
-				prefix = "rbb_";
-				title = "RB Base";
-				size = 5;
-				break;
-			case "rb1f":
-				prefix = "rb1f_";
-				title = "RB 1F";
-				size = 8;
-				break;
-			case "rb2f":
-				prefix = "rb2f_";
-				title = "RB 2F";
-				size = 1;
-				break;
-			case "rb3f":
-				prefix = "rb3f_";
-				title = "RB 3F";
-				size = 5;
-				break;
-			case "rb4f":
-				prefix = "rb4f_";
-				title = "RB 4F";
-				size = 7;
-				break;
-			case "rb5f":
-				prefix = "rb5f_";
-				title = "RB 5F";
-				size = 2;
-				break;
-			case "sbbase":
-				prefix = "sbb_";
-				title = "SB Base";
-				size = 3;
-				break;
+			
 		}
 		
 		fileName = prefix+fileName;
@@ -2134,6 +2040,74 @@ public class ExcelHelperUtil {
 			case "stb":
 				//suffix = "stb_";
 				break;
+		}
+		fileName = fileName+suffix;
+		
+		String browser = WebUtil.getBrowser(request);
+		String encodedFilename = WebUtil.webEncoding(browser, fileName);
+		
+		response.setContentType("application/vnd.ms-excel");
+		response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
+		
+		//Excel File Output
+		ServletOutputStream output = response.getOutputStream();
+		output.flush();
+		wb.write(output);
+		output.flush();
+		output.close();
+		wb.close();
+		
+	}
+	
+	public void alarmEWExcelDownload(HttpServletRequest request, HttpServletResponse response, String prefix, String title,
+			List<Map> dccTagInfoList, String type) throws Exception{
+	
+		Workbook wb = new XSSFWorkbook();
+		Sheet sheet = wb.createSheet("User Alarm");
+		Row row = null;
+		Cell cell = null;
+		int rowNum = 0;
+		String fileName = prefix+"_";
+		String suffix = "";
+		
+		// Set Title
+		row = sheet.createRow(rowNum++);
+		cell = row.createCell(0);
+		cell.setCellValue(title);
+		// Set empty row
+		row = sheet.createRow(rowNum++);
+		// Set lblDate
+		row = sheet.createRow(rowNum++);
+		cell = row.createCell(0);
+		cell.setCellValue(dccTagInfoList.size() > 0 ? dccTagInfoList.get(0).get("SCANTIME").toString() : "");
+		// Set empty row
+		row = sheet.createRow(rowNum++);
+		
+		switch( type ) {
+			case "earlywarning":
+				suffix = new SimpleDateFormat("MM_dd").format(new Date())+".xlsx";
+		        
+		        int idx=0;
+		        for( Map dccTagInfo : dccTagInfoList ) {
+		        	row = sheet.createRow(rowNum++);
+					cell = row.createCell(0);
+					cell.setCellValue(idx+1);
+					cell = row.createCell(1);
+					cell.setCellValue(dccTagInfo.get("DataLoop").toString());
+					cell = row.createCell(2);
+					cell.setCellValue(dccTagInfo.get("Value").toString());
+					cell = row.createCell(3);
+					cell.setCellValue(dccTagInfo.get("Unit").toString());
+					cell = row.createCell(4);
+					cell.setCellValue(dccTagInfo.get("IOTYPE").toString());
+					cell = row.createCell(5);
+					cell.setCellValue(dccTagInfo.get("ADDRESS").toString());
+					cell = row.createCell(6);
+					cell.setCellValue(dccTagInfo.get("IoBit").toString());
+					
+					idx++;
+				}
+		        break;
 		}
 		fileName = fileName+suffix;
 		

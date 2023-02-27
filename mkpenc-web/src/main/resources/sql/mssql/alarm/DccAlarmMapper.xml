@@ -70,5 +70,308 @@
 		{ call almlist_skip (#{sHogi},  #{sDate},  #{sPageNo},  #{sCurPage}, #{sXYGubun},  #{sMovePage} ) }
     </select>     
     
+    <select id="selectAlarmTotalCnt" parameterType="DccSearchAlarm" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM LOG_${hogi}DCC_ALARM
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			AND SEQ >= Trim(Replace(Left(#{startDate},7),'-',''))
+			AND ALMHOGI = #{hogi}
+			AND ALMXYGUBUN = #{xyGubun}
+			AND CONVERT(VARCHAR(16), ALMDATE, 120) BETWEEN #{startDate} AND #{endDate}
+			<if test='!(@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(alarmGubun,"none"))'>
+				AND ALMGUBUN = #{alarmGubun}
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(alarmCode) and !(@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(alarmCode,"bsi"))'>
+				AND ALMCODE = #{alarmCode}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(address)">
+				AND ISNUMERIC(ALMADDRESS) = 1
+				AND CONVERT(INT, ALMADDRESS) IN ( #{address} )
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(alarmMsg)">
+				AND ALMMESG LIKE '%${alarmMsg}%'
+			</if>
+		</trim>
+	</select>
+	
+	<select id="selectAlarmSeq" parameterType="DccSearchAlarm" resultType="String">
+		<if test='@org.apache.commons.lang3.StringUtils@equals(currentPage,"0")'>
+			SELECT MAX(SEQ) AS SEQ FROM LOG_${hogi}DCC_ALARM WHERE ALMXYGUBUN = #{xyGubun}
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@equals(currentPage,"-9999")'>
+			SELECT MIN(SEQ) AS SEQ FROM LOG_${hogi}DCC_ALARM
+			WHERE ALMXYGUBUN = #{xyGubun} AND ALMDATE <![CDATA[>=]]> #{startDate}
+			AND SEQ >= Trim(Replace(Left(#{startDate},7),'-',''))
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@equals(currentPage,"-1")'>
+			SELECT MAX(SEQ) AS SEQ FROM LOG_${hogi}DCC_ALARM WHERE ALMXYGUBUN = #{xyGubun} AND SEQ <![CDATA[<]]> #{pagNo}
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@equals(currentPage,"1")'>
+			SELECT MIN(SEQ) AS SEQ FROM LOG_${hogi}DCC_ALARM WHERE ALMXYGUBUN = #{xyGubun} AND SEQ <![CDATA[>]]> #{pagNo}
+		</if>
+	</select>
+	
+	<select id="selectAlarmSeqSp" parameterType="DccSearchAlarm" resultType="String">
+		<if test='@org.apache.commons.lang3.StringUtils@isEmpty(moveDirection)'>
+			SELECT MAX(SEQ) AS SEQ FROM LOG_${hogi}DCC_ALARM WHERE ALMXYGUBUN = #{xyGubun} AND SEQ <![CDATA[<]]> #{pagNo} AND PAGNO <![CDATA[<=]]> #{currentPage}
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@equals(moveDirection,"N")'>
+			SELECT MIN(SEQ) AS SEQ FROM LOG_${hogi}DCC_ALARM WHERE ALMXYGUBUN = #{xyGubun} AND SEQ <![CDATA[>]]> #{pagNo} AND PAGNO <![CDATA[>=]]> #{currentPage}
+		</if>
+	</select>
+	
+	<select id="selectAlarmProc" parameterType="DccSearchAlarm" resultType="DccAlarmInfo">
+		SELECT
+			ALMGUBUN,
+			substring(ALMDATE,12,15) AS ALMTIME,
+			ALMMSECCHK,
+			ALMCODE,
+			ALMADDRESS,
+			ALMMESG,
+			CONVERT(CHAR(10),ALMDATE,111) AS ALMYEAR,
+			ALMMESGLINE,
+			CONVERT(CHAR(23),ALMDATE,21) AS ALMDATE,
+			PAGNO,
+			PAGLINE,
+			SEQ
+		FROM LOG_${hogi}DCC_ALARM
+		WHERE ALMXYGUBUN = #{xyGubun}
+		AND SEQ = #{seq}
+		ORDER BY PAGLINE
+	</select>
     
+    <select id="selectAlarmToRecord" parameterType="DccSearchAlarm" resultType="DccAlarmInfo">
+    	SELECT
+			ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS rowNum,
+			ALMGUBUN,
+			ALMCODE,
+			ALMADDRESS,
+			CONVERT(VARCHAR(23), ALMDATE, 21) AS ALMDATE,
+			ALMMESG,
+			ALMMSECCHK,
+			SEQ,
+			ALMHOGI,
+			ALMXYGUBUN,
+			ALMMESGLINE,
+			PAGNO,
+			PAGLINE,
+			'' AS ALMYEAR
+		FROM LOG_${hogi}DCC_ALARM
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			AND SEQ >= Trim(Replace(Left(#{startDate},7),'-',''))
+			AND ALMHOGI = #{hogi}
+			AND ALMXYGUBUN = #{xyGubun}
+			AND CONVERT(VARCHAR(16), ALMDATE, 120) BETWEEN #{startDate} AND #{endDate}
+			<if test='!(@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(alarmGubun,"none"))'>
+				AND ALMGUBUN = #{alarmGubun}
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(alarmCode) and !(@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(alarmCode,"bsi"))'>
+				AND ALMCODE = #{alarmCode}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(address)">
+				AND ISNUMERIC(ALMADDRESS) = 1
+				AND CONVERT(INT, ALMADDRESS) IN ( #{address} )
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(alarmMsg)">
+				AND ALMMESG LIKE '%${alarmMsg}%'
+			</if>
+		</trim>
+		ORDER BY ALMDATE DESC, PAGLINE DESC
+		OFFSET (#{pageNum} - 1)  *  #{pageSize} ROWS
+		FETCH NEXT #{pageSize} ROWS ONLY
+    </select>
+    
+    <select id="selectAlarmToExport" parameterType="DccSearchAlarm" resultType="DccAlarmInfo">
+		SELECT
+			ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS rowNum,
+			ALMGUBUN,
+			ALMCODE,
+			ALMADDRESS,
+			CONVERT(VARCHAR(23), ALMDATE, 21) AS ALMDATE,
+			ALMMESG,
+			ALMMSECCHK,
+			SEQ,
+			ALMHOGI,
+			ALMXYGUBUN,
+			ALMMESGLINE,
+			PAGNO,
+			PAGLINE,
+			'' AS ALMYEAR
+		FROM LOG_${hogi}DCC_ALARM
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			AND SEQ >= Trim(Replace(Left(#{startDate},7),'-',''))
+			AND ALMHOGI = #{hogi}
+			AND ALMXYGUBUN = #{xyGubun}
+			AND CONVERT(VARCHAR(16), ALMDATE, 120) BETWEEN #{startDate} AND #{endDate}
+			<if test='!(@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(alarmGubun,"none"))'>
+				AND ALMGUBUN = #{alarmGubun}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(alarmCode)">
+				AND ALMCODE = #{alarmCode}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(address)">
+				AND ISNUMERIC(ALMADDRESS) = 1
+				AND CONVERT(INT, ALMADDRESS) IN ( #{address} )
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(alarmMsg)">
+				AND ALMMESG LIKE '%${alarmMsg}%'
+			</if>
+		</trim>
+		ORDER BY ALMDATE ASC
+    </select>
+    
+    <select id="selectSummarySeq" parameterType="DccSearchAlarm" resultType="String">
+		<if test='@org.apache.commons.lang3.StringUtils@equals(currentPage,"0")'>
+			SELECT MAX(SEQ) AS SEQ FROM LOG_${hogi}DCC_SUMMARY WHERE ALMXYGUBUN = #{xyGubun}
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@equals(currentPage,"-1")'>
+			SELECT MAX(SEQ) AS SEQ FROM LOG_${hogi}DCC_SUMMARY WHERE ALMXYGUBUN = #{xyGubun} AND SEQ <![CDATA[<]]> #{pagNo}
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@equals(currentPage,"2")'>
+			SELECT MIN(SEQ) AS SEQ FROM LOG_${hogi}DCC_SUMMARY WHERE ALMXYGUBUN = #{xyGubun} AND ALMDATE <![CDATA[>=]]> #{startDate}
+		</if>
+		<if test='!@org.apache.commons.lang3.StringUtils@equals(currentPage,"0") and !@org.apache.commons.lang3.StringUtils@equals(currentPage,"-1") and !@org.apache.commons.lang3.StringUtils@equals(currentPage,"2")'>
+			SELECT MIN(SEQ) AS SEQ FROM LOG_${hogi}DCC_SUMMARY WHERE ALMXYGUBUN = #{xyGubun} AND SEQ <![CDATA[>]]> #{pagNo}
+		</if>
+	</select>
+	
+	<select id="selectSummaryList" parameterType="DccSearchAlarm" resultType="DccAlarmInfo">
+		SELECT
+			ALMGUBUN,
+			CASE ALMMSECCHK
+				WHEN 0 THEN LEFT(CONVERT(CHAR(23), ALMDATE,114),8)
+				ELSE LEFT(CONVERT(CHAR(23), ALMDATE,114),8)+'.'+IIF(LEN(RIGHT(CONVERT(CHAR(23), ALMDATE,114),3)) = 0,'000',RIGHT(CONVERT(CHAR(23), ALMDATE,114),3))
+			END AS ALMTIME,
+			ALMMSECCHK,
+			ALMCODE,
+			ALMADDRESS,
+			ALMMESG, 
+			CONVERT(CHAR(23), ALMDATE,111) ALMYEAR,
+			ALMMESGLINE,
+			CASE ALMMSECCHK
+				WHEN 0 THEN LEFT(CONVERT(CHAR(23), ALMDATE,21),19)
+				ELSE LEFT(CONVERT(CHAR(23), ALMDATE,21),19)+'.'+IIF(LEN(RIGHT(CONVERT(CHAR(23), ALMDATE,21),3)) = 0,'000',RIGHT(CONVERT(CHAR(23), ALMDATE,21),3))
+			END AS ALMDATE,
+			PAGNO,
+			PAGLINE,
+			SEQ
+		FROM LOG_${hogi}DCC_SUMMARY
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			AND ALMXYGUBUN = #{xyGubun}
+			AND SEQ = #{seq}
+		</trim>
+		ORDER BY PAGLINE
+	</select>
+	
+	<select id="selectSetIOList" parameterType="DccSearchAlarm" resultType="java.util.Map">
+		select
+			address,
+			loopName,
+			eHigh,
+			eLow,
+			iSeq,
+			FASTIOCHK
+		from MST_TAG_DCC
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			AND ihogi= #{sHogi}
+			AND xygubun= #{sXYGubun}
+			AND iotype = #{ioType}
+			AND address = #{address}
+			<if test='@org.apache.commons.lang3.StringUtils@equals(ioType,"DI") or @org.apache.commons.lang3.StringUtils@equals(ioType,"DO") or (@org.apache.commons.lang3.StringUtils@equals(ioType,"SC") and @org.apache.commons.lang3.StringUtils@equals(saveCore,"1"))'>
+				AND IOBIT = #{ioBit}
+			</if>
+		</trim>
+	</select>
+	
+	<select id="deleteGrpTagB" parameterType="DccSearchAlarm">
+		DELETE FROM MST_GrpTag_B
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			AND GrpHOGI = #{sHogi}
+			AND ID = #{sGrpID}
+			AND MenuNo = #{sMenuNo}
+			AND GrpNo = #{sUGrpNo}
+		</trim>
+	</select>
+	
+	<select id="selectISeqGrpTagB" parameterType="DccSearchAlarm" resultType="String">
+		SELECT iSeq FROM MST_TAG_DCC
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			AND IHOGI = #{hogiMod}
+			<if test='@org.apache.commons.lang3.StringUtils@equals(xyGubunMod,"X")'>
+				AND XYGUBUN = 'Y'
+			</if>
+			<if test='!@org.apache.commons.lang3.StringUtils@equals(xyGubunMod,"X")'>
+				AND XYGUBUN = 'X'
+			</if>
+				AND IOTYPE = #{ioTypeMod}
+				AND ADDRESS = #{addressMod}
+			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(ioBitMod)'>
+				AND IOBIT = #{ioBitMod}
+			</if>
+		</trim>
+	</select>
+	
+	<select id="insertGrpTagB" parameterType="DccSearchAlarm">
+		INSERT INTO MST_GrpTag_B
+		values (
+			#{sGrpID},
+			#{hogiMod},
+			#{sMenuNo},
+			#{sUGrpNo},
+			'D',
+			<if test='@org.apache.commons.lang3.StringUtils@equals(hogiMod,gHogi)'>
+				#{hogiMod},
+			</if>
+			<if test='!@org.apache.commons.lang3.StringUtils@equals(hogiMod,gHogi)'>
+				<if test='@org.apache.commons.lang3.StringUtils@equals(hogiMod,"3")'>
+					'4',
+				</if>
+				<if test='!@org.apache.commons.lang3.StringUtils@equals(hogiMod,"3")'>
+					'3',
+				</if>
+			</if>
+			${tagNo},
+			#{iSeqMod},
+			#{maxValMod},
+			#{minValMod},
+			#{ySeq},
+			#{maxValMod},
+			#{minValMod},
+			#{saveCoreMod},
+			#{descrMod}
+		)
+	</select>
+	
+	<select id="selectAlarmTagSearch" parameterType="DccSearchAlarm" resultType="java.util.Map">
+		SELECT
+			iSeq,
+			iHogi,
+			xyGubun,
+			loopName,
+			descr,
+			ioType,
+			address,
+			ioBit,
+			eLow,
+			eHigh,
+			'0' as saveCore
+		FROM MST_TAG_DCC
+		WHERE IHOGI = #{tagHogi}
+		<if test='!@org.apache.commons.lang3.StringUtils@equals(tagIOType,"All")'>
+			AND IOTYPE = #{tagIOType}
+		</if>
+		AND IOTYPE <![CDATA[<>]]> 'CI'
+		AND (ADDRESS like '%${findData}%'
+		<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(findData) and !@org.apache.commons.lang3.StringUtils@equals(bAll,"1")'>
+			<if test='@org.apache.commons.lang3.StringUtils@equals(chkOpt1,"1")'>
+				OR LOOPNAME like '%${findData}%'
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@equals(chkOpt2,"1")'>
+				OR DESCR like '%${findData}%'
+			</if>
+		</if>
+		)
+		ORDER BY ISEQ
+	</select>
 </mapper>

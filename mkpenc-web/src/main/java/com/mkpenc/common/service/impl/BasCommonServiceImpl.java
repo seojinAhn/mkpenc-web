@@ -19,6 +19,10 @@ public class BasCommonServiceImpl implements BasCommonService{
 	public List<Map> selectGrpNameList(Map searchMap){
 		return basCommonMapper.selectGrpNameList(searchMap);
 	}
+	
+	public List<String> selectGrpNameListB(Map searchMap){
+		return basCommonMapper.selectGrpNameListB(searchMap);
+	}
 
 }
 

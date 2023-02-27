@@ -19,5 +19,7 @@ public interface BasDccOsmsMapper {
 	List<Map>  selectTblNoFldNo(Map searchMapper);
 	
 	List<Map> selectLogDccTrend(Map selectMap);
+	
+	List<Map> selectDccGrpTagListB(Map selectMap);
 
 }
