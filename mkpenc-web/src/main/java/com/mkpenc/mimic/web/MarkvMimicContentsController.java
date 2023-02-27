@@ -192,6 +192,25 @@ public class MarkvMimicContentsController {
         return mav;
     }		
 	
+	@RequestMapping("hydraulicpower")
+	public ModelAndView hydraulicpower(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ hydraulicpower");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", markvSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }		
+	
 	@RequestMapping("drainvalvepos")
 	public ModelAndView drainvalvepos(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
         
@@ -228,7 +247,26 @@ public class MarkvMimicContentsController {
         }
 
         return mav;
-    }		
+    }	
+	
+	@RequestMapping("statorwatersys")
+	public ModelAndView statorwatersys(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ statorwatersys");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", markvSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }	
 	
 	@RequestMapping("gentcrtd1")
 	public ModelAndView gentcrtd1(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {

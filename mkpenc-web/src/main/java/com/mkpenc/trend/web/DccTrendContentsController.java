@@ -20,6 +20,120 @@ public class DccTrendContentsController {
 	
 	private String menuName = "TREND";
 	
+	@RequestMapping("realtimetrendfixed")
+	public ModelAndView realtimetrendfixed(DccSearchTrend dccSearchTrend, HttpServletRequest request) {
+       
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ realtimetrendfixed");       
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchTrend.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchTrend);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }
+	
+	@RequestMapping("realtimetrendspare")
+	public ModelAndView realtimetrendspare(DccSearchTrend dccSearchTrend, HttpServletRequest request) {
+       
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ realtimetrendspare");       
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchTrend.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchTrend);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }
+	
+	@RequestMapping("ftamtrend")
+	public ModelAndView ftamtrend(DccSearchTrend dccSearchTrend, HttpServletRequest request) {
+       
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ ftamtrend");       
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchTrend.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchTrend);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }
+	
+	@RequestMapping("dccmarkvtrend")
+	public ModelAndView dccmarkvtrend(DccSearchTrend dccSearchTrend, HttpServletRequest request) {
+       
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ dccmarkvtrend");       
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchTrend.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchTrend);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }	
+	
+	@RequestMapping("barchartfixed")
+	public ModelAndView barchartfixed(DccSearchTrend dccSearchTrend, HttpServletRequest request) {
+       
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ barchartfixed");       
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchTrend.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchTrend);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }		
+	
+	@RequestMapping("barchartspare")
+	public ModelAndView barchartspare(DccSearchTrend dccSearchTrend, HttpServletRequest request) {
+       
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ barchartspare");       
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchTrend.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchTrend);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }	
+	
 	@RequestMapping("logfixedlist")
 	public ModelAndView logfixedlist(DccSearchTrend dccSearchTrend, HttpServletRequest request) {
        

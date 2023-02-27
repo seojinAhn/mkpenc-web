@@ -115,10 +115,10 @@
                                  <li>          
                                      <a href="#none">TREND</a>         
                                      <ul>          
-                                         <li><a href="#none">FIXED</a></li>            
-                                         <li><a href="#none">SPARE</a></li>            
-                                         <li><a href="#none">FTAM TREND</a></li>           
-                                         <li><a href="#none">DCC & Mark-V</a></li>         
+                                         <li><a href="/dcc/trend/realtimetrendfixed">FIXED</a></li>            
+                                         <li><a href="/dcc/trend/realtimetrendspare">SPARE</a></li>            
+                                         <li><a href="/dcc/trend/ftamtrend">FTAM TREND</a></li>           
+                                         <li><a href="/dcc/trend/dccmarkvtrend">DCC & Mark-V</a></li>         
                                      </ul>         
                                  </li>         
                              </ul>         
@@ -126,8 +126,8 @@
                                  <li>          
                                      <a href="#none">BARCHART</a>          
                                      <ul>          
-                                         <li><a href="#none">FIXED</a></li>            
-                                         <li><a href="#none">SPARE</a></li>            
+                                         <li><a href="/dcc/trend/barchartfixed">FIXED</a></li>            
+                                         <li><a href="/dcc/trend/barchartspare">SPARE</a></li>            
                                      </ul>         
                                  </li>         
                              </ul>         
@@ -271,7 +271,7 @@
                              </ul>         
                              <ul>          
                                  <li>          
-                                     <a href="#none">CH TEMP</a>           
+                                     <a href="/dcc/status/chtemp">CH TEMP</a>           
                                  </li>         
                              </ul>         
                          </div>            
@@ -312,7 +312,7 @@
                              </ul>         
                              <ul>          
                                  <li>          
-                                     <a href="#none">SCM</a>           
+                                     <a href="/dcc/performance/scm">SCM</a>           
                                  </li>         
                              </ul>         
                              <ul>          

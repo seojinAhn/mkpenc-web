@@ -16,6 +16,7 @@ import com.mkpenc.status.model.DccSearchStatus;
 import com.mkpenc.status.model.DccTagInfo;
 import com.mkpenc.status.model.TblFldInfo;
 import com.mkpenc.status.service.DccStatusService;
+import com.mkpenc.trend.model.DccSearchTrend;
 import com.mkpenc.admin.model.MemberInfo;
 import com.mkpenc.common.module.ExcelHelperUtil;
 
@@ -41,6 +42,44 @@ public class DccStatusContentsController {
 
 	@Autowired
 	private ExcelHelperUtil excelHelperUtil;
+	
+	@RequestMapping("schematic")
+	public ModelAndView schematic(DccSearchStatus dccSearchStatus, HttpServletRequest request) {
+       
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ schematic");       
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }
+	
+	@RequestMapping("chtemp")
+	public ModelAndView chtemp(DccSearchStatus dccSearchStatus, HttpServletRequest request) {
+       
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ chtemp");       
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }
 	
 	@RequestMapping("htc")
 	public ModelAndView htc(DccSearchStatus dccSearchStatus, HttpServletRequest request) {

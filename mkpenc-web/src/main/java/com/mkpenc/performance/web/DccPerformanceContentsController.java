@@ -1252,6 +1252,22 @@ if(dccSearchPerformance.getsIOType() != null && !dccSearchPerformance.getsIOType
 		
 	}
 	
+	@RequestMapping("scm")
+	public ModelAndView scm(DccSearchPerformance dccSearchPerformance, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ scm");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	mav.addObject("BaseSearch", dccSearchPerformance);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));        	
+        }
+        
+        return mav;
+	}
+	
 	@RequestMapping("requiredsafevar")
 	public ModelAndView requiredsafevar(DccSearchPerformance dccSearchPerformance, HttpServletRequest request) {
         
