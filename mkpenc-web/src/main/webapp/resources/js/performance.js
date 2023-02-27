@@ -7,9 +7,9 @@ function mbr_DccGrpTagEventCallback(data){
 	var compareVarBodyStr = "";
 	
 	$.each(data.TagDccInfoList, function(key, value){
-			
+
 	  			compareVarBodyStr += "<tr>"
-                          					+ "  <td>"+  value.loopname  +"</td>";
+                          					+ "  <td>"+  value.dataLoop  +"</td>";
 
             	if( value.IOTYPE == "DT" && (value.alarmType == 4 || value.alarmType == 12)){
                 	   compareVarBodyStr	  += " <td class='tc'>%</td>";
@@ -32,7 +32,7 @@ function mbr_DccGrpTagEventCallback(data){
                     compareVarBodyStr	  += " <td class='tc'></td>";
                     break;
                 default : 
-                	compareVarBodyStr	  += ("<td class='tc'>("+  value.minVal  + "~" + value.minVal  + ")</td>");
+                	compareVarBodyStr	  += ("<td class='tc'>"+  value.minVal  + "~" + value.maxVal  + "</td>");
              } 
 
                 compareVarBodyStr	+= " <td class='tc'></td>"

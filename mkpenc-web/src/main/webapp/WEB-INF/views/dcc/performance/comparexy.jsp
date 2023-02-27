@@ -25,14 +25,17 @@ $(function () {
 		
  	$("#searchXY").click(function(){
  		
- 		if(!$.isNumeric( $("sPer").val())){
- 			alert("숫자형 데이터를 입력하세요".!!);
- 			 $("sPer").focus();
+ 		//alert("asdfasdf=" + $("#sPer").val());
+ 		
+ 		
+ 		if(!$.isNumeric( $("#sPer").val())){
+ 			alert("숫자형 데이터를 입력하세요.!!");
+ 			 $("#sPer").focus();
  			 return;
- 		}
+ 		} 		
  		
  		// 화면초기화
-		var	comSubmit	=	new ComSubmit("ompareXYFrm");
+		var	comSubmit	=	new ComSubmit("compareXYFrm");
 		comSubmit.setUrl("/dcc/performance/comparexy");
 		comSubmit.submit();
   		
@@ -61,7 +64,7 @@ $(function () {
 			<!-- fx_srch_wrap -->
 			<div class="fx_srch_wrap">	
 				<div class="fx_srch_form">
-				<form id="ompareXYFrm" name="ompareXYFrm">
+				<form id="compareXYFrm" name="compareXYFrm">
 				<input type = "hidden" id="sHogi" name="sHogi" value="${UserInfo.hogi }">
 				<input type = "hidden" id="sXYGubun" name="sXYGubun" value="${UserInfo.xyGubun }">
 					<div class="fx_srch_row">
@@ -106,6 +109,7 @@ $(function () {
 			<!-- list_wrap -->
 			<div class="list_wrap">
                 <!-- list_head -->
+                <!-- 
                 <div class="list_head">
                     <div class="list_info">
                         <div class="fx_form">
@@ -118,6 +122,7 @@ $(function () {
                         </div>
                     </div>
                 </div>
+                 -->
                 <!-- //list_head -->
                 <!-- list_table -->
                 <table class="list_table">
@@ -148,14 +153,28 @@ $(function () {
                     <tbody>
                     <c:forEach var="AryValue" items="${AryValueList}">
                         <tr>
-                            <td class="tc">${AryValue.ROWNUM}</td>
+                            <td class="tc">${AryValue.INDEX}</td>
                             <td class="tc">${AryValue.ADDRESS}</td>
                             <td class="tc">${AryValue.LOOPNAME}</td>
                             <td class="tc">${AryValue.DESCR}</td>
                             <td class="tc">${AryValue.xValue}</td>
                             <td class="tc">${AryValue.yValue}</td>
-                            <td class="tc">${AryValue.WIBA}</td>
-                            <td class="tc">${AryValue.B_WIBA}</td>
+                             <td class="tc">
+	                            <c:if test="${AryValue.WIBA eq '1' }">
+	                           			IN
+	                           	</c:if>
+	                           	<c:if test="${AryValue.WIBA eq '0' }">
+	                           			OUT
+	                           	</c:if>
+	                        </td>
+                            <td class="tc">
+                            	<c:if test="${AryValue.B_WIBA eq '1' }">
+	                           			IN
+	                           	</c:if>
+	                           	<c:if test="${AryValue.B_WIBA eq '0' }">
+	                           			OUT
+	                           	</c:if>
+	                        </td>
                             <td class="tc">${AryValue.UNIT}</td>
                         </tr>
                         </c:forEach>

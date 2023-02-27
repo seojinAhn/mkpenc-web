@@ -69,12 +69,13 @@ $(function () {
 	  	$("#sUGrpNo").change(function(){
 	  		
 	  		if($("#sUGrpNo option:selected").val() != ""){
-		  
+
 				var comAjax = new ComAjax("compareVarSearch");
 				comAjax.setUrl("/dcc/performance/getDccGrpTag");
 				comAjax.setCallback("mbr_DccGrpTagEventCallback");
 				comAjax.ajax();					  
 	  		}else {
+
 	  			// 화면초기화
 	  			var	comSubmit	=	new ComSubmit("compareVarSearch");
 				comSubmit.setUrl("/dcc/performance/fixed");
@@ -254,11 +255,11 @@ function DatetimepickerDefaults(opts) {
                             	<option  value="">그룹을 선택하세요</option>
                            		<c:forEach var="GroupName" items="${GroupNameList}">
                            			<c:choose>
-			                           		 <c:when test="${GroupName.uGrpNo eq BaseSearch.sUGrpNo }">
-			                            			<option  value="${GroupName.uGrpNo}" selected>${UserInfo.hogi } - ${GroupName.uGrpNo} ${GroupName.uGrpName}</option>
+			                           		 <c:when test="${GroupName.UGrpNo eq BaseSearch.sUGrpNo }">
+			                            			<option  value="${GroupName.UGrpNo}" selected>${UserInfo.hogi}-${GroupName.UGrpNo}&nbsp;${GroupName.UGrpName}</option>
 			                            	</c:when>
-			                            	<c:when test="${GroupName.uGrpNo ne BaseSearch.sUGrpNo }">
-			                            			<option  value="${GroupName.uGrpNo}">${UserInfo.hogi } - ${GroupName.uGrpNo} ${GroupName.uGrpName}</option>
+			                            	<c:when test="${GroupName.UGrpNo ne BaseSearch.sUGrpNo }">
+			                            			<option  value="${GroupName.UGrpNo}">${UserInfo.hogi}-${GroupName.UGrpNo}&nbsp;${GroupName.UGrpName}</option>
 			                            	</c:when>
                                 	</c:choose>
                                 </c:forEach>
@@ -356,7 +357,7 @@ function DatetimepickerDefaults(opts) {
                     <tbody id="compareVarList" name = "compareVarList">
                     <c:forEach var="tagDccInfo" items="${TagDccInfoList}">
                         <tr>
-                            <td>${tagDccInfo.LOOPNAME}- ${tagDccInfo.spareAvgFldNo}</td>
+                            <td>${tagDccInfo.dataLoop}</td>
                             <c:choose>
                             	   <c:when test="${tagDccInfo.IOTYPE eq 'DT' and (tagDccInfo.alarmType eq 4 or tagDccInfo.alarmType eq 12) }">
                             			<td class="tc">%</td>
@@ -415,7 +416,7 @@ function DatetimepickerDefaults(opts) {
                         </tr>
                         </c:if>
                     </tbody>
-                </table>
+                </table>                
                 <!-- //list_table -->
             </div>
             <!-- //list_wrap -->

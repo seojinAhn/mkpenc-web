@@ -22,16 +22,14 @@
 $(function () {
 	
 	var timer =0;
-	
 			
-		timer = setInterval(function () {
-			
-			// 화면초기화
-  			var	comSubmit	=	new ComSubmit("dccselfcheckFrm");
-			comSubmit.setUrl("/dcc/performance/dccselfcheck");
-			//comSubmit.submit();
-			
-			 }, 5000); 	  
+	timer = setInterval(function () {
+		
+		// 화면초기화
+ 		var	comSubmit	=	new ComSubmit("dccselfcheckFrm");
+		comSubmit.setUrl("/dcc/performance/dccselfcheck");
+		comSubmit.submit();
+	}, 5000); 	  
 
 });	
 

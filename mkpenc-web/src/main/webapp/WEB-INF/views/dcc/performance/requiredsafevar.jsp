@@ -26,11 +26,12 @@ $(function () {
 			
 	timer = setInterval(function () {
  				
-		var comAjax = new ComAjax("safeVarSearch");
-			 comAjax.setUrl("/dcc/performance/runtimer");
-	 		 comAjax.setCallback("mbr_RuntimerEventCallback");
-	 	}, 500); 	  
-				  
+		// 화면초기화
+		var	comSubmit	=	new ComSubmit("safeVarSearch");
+		comSubmit.setUrl("/dcc/performance/requiredsafevar");
+		comSubmit.submit();
+		
+	}, 5000); 	 
  
 });	
 
@@ -86,87 +87,87 @@ $(function () {
                                 <tr>
                                     <th>LIN POWER</th>
                                     <td class="tc">＜ 2</td>
-                                    <td class="tr">0.8581</td>
+                                    <td class="tr">${lblDataList[0].fValue}</td>
                                     <td class="tc">%FP</td>
                                 </tr>
                                 <tr>
                                     <th>RH2 Pressure</th>
                                     <td class="tc">7.2 ~ 10</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[1].fValue}</td>
                                     <td class="tc" rowspan="4">MPAG</td>
                                 </tr>
                                 <tr>
                                     <th>RH4 Pressure</th>
                                     <td class="tc">7.2 ~ 10</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[2].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>RH6 Pressure</th>
                                     <td class="tc">7.2 ~ 10</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[3].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>RH8 Pressure</th>
                                     <td class="tc">7.2 ~ 10</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[4].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>PZR Level 3A</th>
                                     <td class="tc">≥ 4</td>
-                                    <td class="tr">8.000</td>
+                                    <td class="tr">${lblDataList[5].fValue}</td>
                                     <td class="tc" rowspan="3">M</td>
                                 </tr>
                                 <tr>
                                     <th>PZR Level 3A</th>
                                     <td class="tc">≥ 4</td>
-                                    <td class="tr">8.000</td>
+                                    <td class="tr">${lblDataList[6].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>PZR Level 3A</th>
                                     <td class="tc">≥ 4</td>
-                                    <td class="tr">8.000</td>
+                                    <td class="tr">${lblDataList[7].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>RH2 Pressure</th>
                                     <td class="tc">(7.2 ~ 10)</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[8].fValue}</td>
                                     <td class="tc" rowspan="4">MPAG</td>
                                 </tr>
                                 <tr>
                                     <th>RH2 Pressure</th>
                                     <td class="tc">(7.2 ~ 10)</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[9].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>RH2 Pressure</th>
                                     <td class="tc">(7.2 ~ 10)</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[10].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>RH2 Pressure</th>
                                     <td class="tc">(7.2 ~ 10)</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[11].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>S/G #1 LEVEL</th>
                                     <td class="tc">-1 ~ 2.5</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[12].fValue}</td>
                                     <td class="tc" rowspan="4">M</td>
                                 </tr>
                                 <tr>
                                     <th>S/G #2 LEVEL</th>
                                     <td class="tc">-1 ~ 2.5</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[13].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>S/G #3 LEVEL</th>
                                     <td class="tc">-1 ~ 2.5</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[14].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>S/G #4 LEVEL</th>
                                     <td class="tc">-1 ~ 2.5</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[15].fValue}</td>
                                 </tr>                                  
                             </tbody>
                         </table>
@@ -197,87 +198,87 @@ $(function () {
                                 <tr>
                                     <th>LOG POWER</th>
                                     <td class="tc">(＜ -1.6990)</td>
-                                    <td class="tr">0.8581</td>
+                                    <td class="tr">${lblDataList[16].fValue}</td>
                                     <td class="tc">DECADE</td>
                                 </tr>
                                 <tr>
                                     <th>RH2 Temp</th>
                                     <td class="tc">(267~297)</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[17].fValue}</td>
                                     <td class="tc" rowspan="4">DEGC</td>
                                 </tr>
                                 <tr>
                                     <th>RH4 Temp</th>
                                     <td class="tc">(267~297)</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[18].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>RH6 Temp</th>
                                     <td class="tc">(267~297)</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[19].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>RH8 Temp</th>
                                     <td class="tc">(267~297)</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[20].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>R/B Pr CH-K</th>
                                     <td class="tc">＜ 3.45</td>
-                                    <td class="tr">8.000</td>
+                                    <td class="tr">${lblDataList[21].fValue}</td>
                                     <td class="tc" rowspan="3">KPAD</td>
                                 </tr>
                                 <tr>
                                     <th>R/B Pr CH-L</th>
                                     <td class="tc">＜ 3.45</td>
-                                    <td class="tr">8.000</td>
+                                    <td class="tr">${lblDataList[22].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>R/B Pr CH-M</th>
                                     <td class="tc">＜ 3.45</td>
-                                    <td class="tr">8.000</td>
+                                    <td class="tr">${lblDataList[23].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>ROH1 Temp</th>
                                     <td class="tc">(267~297)</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[24].fValue}</td>
                                     <td class="tc" rowspan="4">DEGC</td>
                                 </tr>
                                 <tr>
                                     <th>ROH3 Temp</th>
                                     <td class="tc">(267~297)</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[25].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>ROH5 Temp</th>
                                     <td class="tc">(267~297)</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[26].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>ROH7Temp</th>
                                     <td class="tc">(267~297)</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[27].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>S/G #1 Pr</th>
                                     <td class="tc">＞ 3.9</td>
-                                    <td class="tr">11.127</td>
-                                    <td class="tc" rowspan="4">KPAD</td>
+                                    <td class="tr">${lblDataList[28].fValue}</td>
+                                    <td class="tc" rowspan="4">MPAG</td>
                                 </tr>
                                 <tr>
                                     <th>S/G #2 Pr</th>
                                     <td class="tc">＞ 3.9</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[29].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>S/G #3 Pr</th>
                                     <td class="tc">＞ 3.9</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[30].fValue}</td>
                                 </tr>
                                 <tr>
                                     <th>S/G #4 Pr</th>
                                     <td class="tc">＞ 3.9</td>
-                                    <td class="tr">11.127</td>
+                                    <td class="tr">${lblDataList[31].fValue}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -308,7 +309,10 @@ $(function () {
                     <tbody>
                         <tr>
                             <th>SAFTY LIMIT > 20</th>
-                            <td></td>
+                            <td>RIH2 : ${lblSCM.idx0}</td>
+                            <td>RIH4 : ${lblSCM.idx1}</td>
+                            <td>RIH6 : ${lblSCM.idx2}</td>
+                            <td>RIH8 : ${lblSCM.idx3}</td>
                         </tr>
                     </tbody>
                 </table>
