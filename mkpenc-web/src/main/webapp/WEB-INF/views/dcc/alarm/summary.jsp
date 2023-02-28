@@ -17,6 +17,132 @@
 <script type="text/javascript" src="<c:url value="/resources/js/common.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/alarm.js" />" charset="utf-8"></script>
+
+<link rel="stylesheet" type="text/css" href="<c:url value="/resources/datetimepicker/jquery.datetimepicker.css" />">
+<script type="text/javascript" src="<c:url value="/resources/datetimepicker/jquery.datetimepicker.full.min.js" />" charset="utf-8"></script>
+
+<script type="text/javascript">
+	var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
+	var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
+
+	$(function(){
+		if( $("input:radio[id='4']").is(":checked") ) {
+			hogiHeader = "4";
+		} else {
+			hogiHeader = "3";
+		}
+		if( $("input:radio[id='Y']").is(":checked") ) {
+			xyHeader = "Y";
+		} else {
+			xyHeader = "X";
+		}
+		
+		if( '${BaseSearch.startDate}' != null ) {
+			var sDate = '${BaseSearch.startDate}'.split(' ')[0];
+			var sHour = '${BaseSearch.startDate}'.split(' ')[1].split(':')[0];
+			var sMin = '${BaseSearch.startDate}'.split(' ')[1].split(':')[1];
+			$("#selectDate").val(sDate+' '+sHour+':'+sMin);
+		}
+		
+		jQuery.datetimepicker.setLocale('ko');
+		
+		$('#selectDate').datetimepicker(DatetimepickerDefaults({}));
+
+		$(document.body).delegate('#3', 'click', function() {
+			sendPage(0,'3',xyHeader);
+		});
+		$(document.body).delegate('#4', 'click', function() {
+			sendPage(0,'4',xyHeader);
+		});
+		$(document.body).delegate('#X', 'click', function() {
+			sendPage(0,hogiHeader,'X');
+		});
+		$(document.body).delegate('#Y', 'click', function() {
+			sendPage(0,hogiHeader,'Y');
+		});
+		
+		$("#alarmSearch").click(function() {
+			sendPage(2,hogiHeader,xyHeader);
+		});
+		
+		$("#alarmSave").click(function() {
+			if( $("input:radio[id='4']").is(":checked") ) {
+				hogiHeader = $("#4").val();
+			} else {
+				hogiHeader = $("#3").val();
+			}
+			if( $("input:radio[id='Y']").is(":checked") ) {
+				xyHeader = $("#Y").val();
+			} else {
+				xyHeader = $("#X").val();
+			}
+			toTXT(hogiHeader,xyHeader);
+		});
+		
+		$("#btnCurrent").click(function() {
+			sendPage(0,hogiHeader,xyHeader);
+		});
+		
+		$("#btnPrev").click(function() {
+			sendPage(-1,hogiHeader,xyHeader);
+		});
+		
+		$("#btnNext").click(function() {
+			sendPage(1,hogiHeader,xyHeader);
+		});
+	});
+
+	function sendPage(pageNum,hogiHeader,xyHeader) {
+		var sDate,sHour,sMin;
+		var today = new Date();
+		if($("#selectDate").val() != null && $("#selectDate").val() != "") {
+			sDate = $("#selectDate").val();
+		} else {
+			sDate = today.getFullYear()+'-'+convNum(today.getMonth()+1,2)+'-'+convNum(today.getDate(),3)+' '+convNum(today.getHours(),0)+':'+convNum(today.getMinutes(),1);
+		}
+		
+		var comSubmit = new ComSubmit("searchForm");
+		comSubmit.setUrl("/dcc/alarm/summary");
+		comSubmit.addParam("startDate",sDate+':00.000');
+		comSubmit.addParam("hogiHeader", hogiHeader);
+		comSubmit.addParam("xyHeader", xyHeader);
+		comSubmit.addParam("currentPage", pageNum);
+		comSubmit.addParam("pagNo", '${DccSummaryList[0].seq}');
+		comSubmit.submit();
+	}
+	
+	function toTXT(hogiHeader,xyHeader) {
+		var sDate,sHour,sMin;
+		var today = new Date();
+		if($("#selectDate").val() != null && $("#selectDate").val() != "") {
+			sDate = $("#selectDate").val();
+		} else {
+			sDate = today.getFullYear()+'-'+convNum(today.getMonth()+1,2)+'-'+convNum(today.getDate(),3)+' '+convNum(today.getHours(),0)+':'+convNum(today.getMinutes(),1);
+		}
+		
+		var	comSubmit = new ComSubmit("searchForm");
+		comSubmit.setUrl("/dcc/alarm/summaryTxtExport");
+		comSubmit.addParam("pType", "S3");
+		comSubmit.addParam("hogiHeader", hogiHeader);
+		comSubmit.addParam("xyHeader", xyHeader);
+		comSubmit.addParam("startDate",sDate+':00.000');
+		comSubmit.addParam("currentPage", 2);
+		comSubmit.addParam("pagNo", '${DccSummaryList[0].seq}');
+		comSubmit.submit();
+	}
+
+	function DatetimepickerDefaults(opts) {
+	    return $.extend({},{
+	    format:'Y-m-d H:i',
+		formatTime:'H:i',
+	    formatDate:'Y-m-d',
+		step : 5,
+		monthChangeSpinner:true,
+	    sideBySide: true
+	    
+	    }, opts);
+	}
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -37,32 +163,23 @@
 			<div class="fx_srch_wrap">	
 				<div class="fx_srch_form">
 					<div class="fx_srch_row">
+					<form id="searchForm">
 						<div class="fx_srch_item double">
-							<label>검색기간 A</label>
+							<label>검색시작일자</label>
                             <div class="fx_form_multi">
-                                <div class="fx_form_date">
-                                    <input type="text">
-                                    <a href="#none"></a>
-                                </div>
                                 <div class="fx_form">
-                                    <select class="fx_none" style="width:60px;">
-                                        <option>11</option>
-                                    </select>
-                                    <label>:</label>
-                                    <select class="fx_none" style="width:60px;">
-                                        <option>51</option>
-                                    </select>
+                                    <input type="text" id="selectDate" name="selectDate" readonly>
                                 </div>
                             </div>
 						</div>
                         <div class="fx_srch_item"></div>
+                    </form>
 					</div>
 				</div>
 				<!-- fx_srch_button -->
 				<div class="fx_srch_button">
-					<a class="btn_srch">Search</a>
-					<a class="btn_list primary" href="#none">조건검색</a>
-					<a class="btn_list primary" href="#none">알람저장</a>
+					<a id="alarmSearch" name="alarmSearch" class="btn_srch">Search</a>
+					<a id="alarmSave" name="alarmSave" class="btn_list primary" href="#none">알람저장</a>
 				</div>
 				<!-- //fx_srch_button -->
 			</div>
@@ -73,11 +190,14 @@
 				<!-- list_head -->
 				<div class="list_head">
 					<div class="list_info">
-						<label>Total : <strong>10</strong></label>
+						<label>Total : <strong>${DccSummaryList.size()}</strong></label>
+						<label>Page : <strong>${DccSummaryList[0].pagNo}</strong></label>
 					</div>
 					<!-- button -->
-					<div class="button">						
-						<a class="btn_list primary" href="#none">이동</a>prompt()
+					<div class="button">
+						<a class="btn_list primary" id="btnCurrent" name="btnCurrent">현재</a>
+						<a class="btn_list primary" id="btnPrev" name="btnPrev">이전</a>	
+						<a class="btn_list primary" id="btnNext" name="btnNext">다음</a>
 					</div>
 					<!-- button -->
 				</div>
@@ -101,33 +221,34 @@
                         </tr>
                     </thead>
                     <tbody>
+                    <c:forEach var="dccSummaryInfo" items="${DccSummaryList}">
                         <tr>
-                            <td class="tc">1</td>
-                            <td class="tc">2022-00-00</td>
-                            <td class="tc">관리자</td>
-                            <td>마크파이브 경보 정상화</td>
-                            <td>내용입니다.</td>
+                        <c:if test="${dccSummaryInfo.almGubun eq 'X'}" >
+                            <td id="alarmGubun" name="alarmGubun" class="tc"></td>
+                        </c:if>
+                        <c:if test="${dccSummaryInfo.almGubun ne 'X'}" >
+                            <td id="alarmGubun" name="alarmGubun" class="tc">${dccSummaryInfo.almGubun}</td>
+                        </c:if>
+                            <td id="alarmDate" name="alarmDate" class="tc">${dccSummaryInfo.almDate}</td>
+                        <c:if test="${dccSummaryInfo.almCode eq 'X'}" >
+                            <td id="alarmCode" name="alarmCode" class="tc"></td>
+                        </c:if>
+                        <c:if test="${dccSummaryInfo.almCode ne 'X'}" >
+                            <td id="alarmCode" name="alarmCode" class="tc">${dccSummaryInfo.almCode}</td>
+                        </c:if>
+                        <c:if test="${dccSummaryInfo.almAddress eq 'X'}" >
+                            <td id="address" name="address" class="tc"></td>
+                        </c:if>
+                        <c:if test="${dccSummaryInfo.almAddress ne 'X'}" >
+                            <td id="address" name="address" class="tc">${dccSummaryInfo.almAddress}</td>
+                        </c:if>
+                            <td id="alarmMsg" name="alarmMsg">${dccSummaryInfo.almMesg}</td>
                         </tr>
+                    </c:forEach>
                     </tbody>
                 </table>
                 <!-- //list_table -->							
 				<!-- paginate -->
-				<div class="paginate">
-					<a class="first" href="#none" alt="첫페이지" title="첫페이지"></a>
-					<a class="pre" href="#none" alt="이전페이지"  title="이전페이지"></a>
-					<a href="#none">1</a>
-					<strong>2</strong>
-					<a href="#none">3</a>
-					<a href="#none">4</a>
-					<a href="#none">5</a>
-					<a href="#none">6</a>
-					<a href="#none">7</a>
-					<a href="#none">8</a>
-					<a href="#none">9</a>
-					<a href="#none">10</a>
-					<a class="next" href="#none" alt="다음페이지" title="다음페이지"></a>
-					<a class="last" href="#none" alt="마지막페이지" title="마지막페이지"></a>
-				</div>
 				<!-- //paginate -->
 			</div>
 			<!-- //list_wrap -->
