@@ -18,6 +18,7 @@ public  interface BasDccOsmsService {
 	
 	public Map getDccValue(Map searchMap, List<ComTagDccInfo> tagDccInfoList,  ModelAndView mav);
 
+	// added by jhlee(23.02.28)
 	List<Map> selectDccGrpTagListB(Map selectMap);
 
 }

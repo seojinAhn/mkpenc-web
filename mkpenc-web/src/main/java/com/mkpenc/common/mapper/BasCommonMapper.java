@@ -10,6 +10,7 @@ public interface BasCommonMapper {
 	
 	List<Map> selectGrpNameList(Map searchMapper);
 	
+	// added by jhlee(23.02.28)
 	List<String> selectGrpNameListB(Map searchMapper);
 
 }

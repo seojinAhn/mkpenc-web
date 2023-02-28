@@ -456,6 +456,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		
 	}
 	
+	// added by jhlee(23.02.28)
 	public List<Map> selectDccGrpTagListB(Map searchMap) {
 		List<Map> rtnMap = new ArrayList<Map>();
 		

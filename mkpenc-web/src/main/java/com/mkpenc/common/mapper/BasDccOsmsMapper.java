@@ -20,6 +20,7 @@ public interface BasDccOsmsMapper {
 	
 	List<Map> selectLogDccTrend(Map selectMap);
 	
+	// added by jhlee(23.02.28)
 	List<Map> selectDccGrpTagListB(Map selectMap);
 
 }
