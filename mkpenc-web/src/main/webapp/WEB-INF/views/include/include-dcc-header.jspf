@@ -435,7 +435,10 @@
 </c:if>
              </ul>         
          </div>            
-         <div class="lnb_status">    
+         <div class="lnb_status">
+			<div class="lnb_dp">
+				<label id="lblDate"></label>
+			</div>
           	<div class="toggle_reactor">          	
           	    <c:if test="${(UserInfo eq null) || (UserInfo ne null &&  UserInfo.hogi eq '3') }">  
 					<input id="3" name="view_reactor" type="radio" value="3" checked>

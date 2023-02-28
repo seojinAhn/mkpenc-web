@@ -18,4 +18,6 @@ public  interface BasDccOsmsService {
 	
 	public Map getDccValue(Map searchMap, List<ComTagDccInfo> tagDccInfoList,  ModelAndView mav);
 
+	List<Map> selectDccGrpTagListB(Map selectMap);
+
 }
