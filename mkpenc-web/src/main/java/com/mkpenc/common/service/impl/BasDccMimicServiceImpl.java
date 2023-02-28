@@ -27,6 +27,8 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 	@Autowired
 	private BasDccMimicMapper basDccMimicMapper;
 	
+	
+	// by sohe 2023.02.28
 	public List<ComTagDccInfo> getDccGrpTagNoUnitConvList(Map searchMap) {
 		List<ComDccGrpTagInfo> dccGrpTagInfoList = basDccMimicMapper.selectDccGrpTagList(searchMap);
 		
