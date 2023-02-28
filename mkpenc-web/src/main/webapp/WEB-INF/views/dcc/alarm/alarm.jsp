@@ -4,7 +4,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page trimDirectiveWhitespaces="true" %>
 
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,89 +15,199 @@
 <script type="text/javascript" src="<c:url value="/resources/js/modal.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/common.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
-<script type="text/javascript" src="<c:url value="/resources/js/alarm.js" />" charset="utf-8"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/status.js" />" charset="utf-8"></script>
 
 <link rel="stylesheet" type="text/css" href="<c:url value="/resources/datetimepicker/jquery.datetimepicker.css" />">
 <script type="text/javascript" src="<c:url value="/resources/datetimepicker/jquery.datetimepicker.full.min.js" />" charset="utf-8"></script>
 
-<script type="text/javascript">
+<script type="text/javascript" >
+	var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
+	var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
 
-$(function () {
-	
-	jQuery.datetimepicker.setLocale('ko');
-	
-	$('#sdate').datetimepicker(DatetimepickerDefaults({}));
-	
-	
-	$("#fncSearch").click(function() {
-		$("#sType").val("serh");
-		moveSubmit();
-	});
-	
-	$("#moveCur").click(function() {
-		$("#sType").val("");
-		moveSubmit();
-	});
-	
-	$("#movePrev").click(function() {
-		$("#sType").val("prev");
-		moveSubmit();
-	});
-	
-	$("#moveNext").click(function() {
-		$("#sType").val("next");
-		moveSubmit();
-	});	
-		
-	$("#fncMove").click(function() {
-		
-		var inputPage = prompt('이동하려는 페이지를 입력하세요', '이동페이지');
-		
-		if(inputPage < -200 || inputPage > 200) {
-		    alert("-200 ~ 200 범위을 벗어났습니다.");
-		    return;
+	$(function () {
+		if( $("input:radio[id='4']").is(":checked") ) {
+			hogiHeader = "4";
+		} else {
+			hogiHeader = "3";
+		}
+		if( $("input:radio[id='Y']").is(":checked") ) {
+			xyHeader = "Y";
+		} else {
+			xyHeader = "X";
 		}
 		
-		$("#sMovPage").val(inputPage);
-		$("#sType").val("move");
-		moveSubmit();	
-	});
+		if( '${BaseSearch.startDate}' != null ) {
+			var sDate = '${BaseSearch.startDate}'.split(' ')[0];
+			var sHour = '${BaseSearch.startDate}'.split(' ')[1].split(':')[0];
+			var sMin = '${BaseSearch.startDate}'.split(' ')[1].split(':')[1];
+			$("#selectDate").val(sDate+' '+sHour+':'+sMin);
+		}
 
-});	
-
-
-function alarmExport(type){
-	
-	$("#saveType").val(type);
+		jQuery.datetimepicker.setLocale('ko');
 		
-	var	comSubmit	=	new ComSubmit("alarmFrm");
-	comSubmit.setUrl("/dcc/alarm/alarmExport");
-	comSubmit.submit();
-}
+		$('#selectDate').datetimepicker(DatetimepickerDefaults({}));
 
-
-function moveSubmit(){
+		$(document.body).delegate('#3', 'click', function() {
+			sendPage(0,0,'3',xyHeader);
+		});
+		$(document.body).delegate('#4', 'click', function() {
+			sendPage(0,0,'4',xyHeader);
+		});
+		$(document.body).delegate('#X', 'click', function() {
+			sendPage(0,0,hogiHeader,'X');
+		});
+		$(document.body).delegate('#Y', 'click', function() {
+			sendPage(0,0,hogiHeader,'Y');
+		});
+		
+		$("#alarmSearch").click(function() {
+			sendPage(-9999,0,hogiHeader,xyHeader);
+		});
+		
+		$("#alarmDetail").click(function() {
+			sendPage(1,1,hogiHeader,xyHeader);
+		});
+		
+		$("#alarmSave").click(function() {
+			if( $("input:radio[id='4']").is(":checked") ) {
+				hogiHeader = $("#4").val();
+			} else {
+				hogiHeader = $("#3").val();
+			}
+			if( $("input:radio[id='Y']").is(":checked") ) {
+				xyHeader = $("#Y").val();
+			} else {
+				xyHeader = $("#X").val();
+			}
+			toTXT(hogiHeader,xyHeader);
+		});
+		
+		$("#btnCurrent").click(function() {
+			sendPage(0,0,hogiHeader,xyHeader);
+		});
+		
+		$("#btnPrev").click(function() {
+			sendPage(-1,0,hogiHeader,xyHeader);
+		});
+		
+		$("#btnNext").click(function() {
+			sendPage(1,0,hogiHeader,xyHeader);
+		});
+		
+		$("#btnMove").click(function() {
+			var goPage = sql_injection($("#goPage").val()) == null ? 0 : sql_injection($("#goPage").val())*1;
+			if( goPage > 200 || goPage < -200 ) {
+				alert("-200 ~ 200 범위을 벗어났습니다.");
+				$("#goPage").val('');
+				return;
+			} else {
+				if( goPage == 0 ) goPage = -10;
+				if( sql_injection($("#goPage").val()) != null ) {
+					goPage = goPage + (sql_injection('${DccAlarmList[0].pagNo}') == null ? 0 : sql_injection('${DccAlarmList[0].pagNo}')*1);
+				}
+				if( sql_injection($("#goPage").val())*1 > 0 ) {
+					sendPage(goPage,2,hogiHeader,xyHeader);
+				} else {
+					sendPage(goPage,0,hogiHeader,xyHeader);
+				}
+			}
+		});
+		
+	});
 	
-	var	comSubmit	=	new ComSubmit("alarmFrm");
-	comSubmit.setUrl("/dcc/alarm/alarm");
-	comSubmit.submit();			
-}
-
-
-function DatetimepickerDefaults(opts) {
-    return $.extend({},{
-    format:'Y-m-d H:i',
-	formatTime:'H:i',
-    formatDate:'Y-m-d',
-	step : 5,
-	monthChangeSpinner:true,
-    sideBySide: true
-    
-    }, opts);
-}
-
-
+	function convNum(num,type) {
+		var tmp = num*1;
+		if( type == 0 ) {
+			if( tmp > 23 ) tmp = tmp - 24;
+			if( tmp < 10 ) {
+				num = '0'+tmp;
+			}
+		} else if( type == 1 ) {
+			if( tmp > 59 ) tmp = tmp - 60;
+			if( tmp < 10 ) {
+				num = '0'+tmp;
+			}
+		} else if( type == 2 ) {
+			if( tmp > 12 ) tmp = tmp - 12;
+			if( tmp < 10 ) {
+				num = '0'+tmp;
+			}
+		} else if( type == 3 ) {
+			if( tmp > 31 ) tmp = tmp - 31;
+			if( tmp < 10 ) {
+				num = '0'+tmp;
+			}
+		}
+		return num;
+	}
+	
+	function sendPage(pageNum,type,hogiHeader,xyHeader) {
+		var sDate,sHour,sMin;
+		var today = new Date();
+		if($("#selectDate").val() != null && $("#selectDate").val() != "") {
+			sDate = $("#selectDate").val();
+		} else {
+			sDate = today.getFullYear()+'-'+convNum(today.getMonth()+1,2)+'-'+convNum(today.getDate(),3)+' '+convNum(today.getHours(),0)+':'+convNum(today.getMinutes(),1);
+		}
+		
+		var comSubmit = new ComSubmit("searchForm");
+		if( type == 0 ) {
+			comSubmit.setUrl("/dcc/alarm/alarm");
+		} else if( type == 1 ) {
+			comSubmit.addParam("endDate",sDate+':00.000');
+			comSubmit.setUrl("/dcc/alarm/alarmsearch");
+		} else if( type == 2 ) {
+			comSubmit.setUrl("/dcc/alarm/alarm");
+			comSubmit.addParam("moveDirection","N");
+		}
+		comSubmit.addParam("startDate",sDate+':00.000');
+		comSubmit.addParam("endDate",sDate+':00.000');
+		comSubmit.addParam("hogiHeader", hogiHeader);
+		comSubmit.addParam("xyHeader", xyHeader);
+		comSubmit.addParam("currentPage", pageNum);
+		comSubmit.addParam("pagNo", '${DccAlarmList[0].seq}');
+		comSubmit.submit();
+	}
+	
+	function toTXT(hogiHeader,xyHeader) {
+		var goPage = sql_injection($("#goPage").val()) == null ? 0 : sql_injection($("#goPage").val())*1;
+		if( sql_injection($("#goPage").val()) != null ) {
+			goPage = goPage + (sql_injection('${DccAlarmList[0].pagNo}') == null ? 0 : sql_injection('${DccAlarmList[0].pagNo}')*1);
+		}
+		var	comSubmit = new ComSubmit("searchForm");
+		comSubmit.setUrl("/dcc/alarm/alarmTxtExport");
+		comSubmit.addParam("pType", "S1");
+		comSubmit.addParam("hogiHeader", hogiHeader);
+		comSubmit.addParam("xyHeader", xyHeader);
+		comSubmit.addParam("currentPage", goPage);
+		comSubmit.addParam("pagNo", '${DccAlarmList[0].seq}');
+		comSubmit.submit();
+	}
+	
+	function sql_injection(str) {
+		if( str != null && str != 'undefined' ) {
+			if( isNaN(str) ) {
+				return null;
+			} else {
+				return str;
+			}
+		}
+	}
+	
+	function DatetimepickerDefaults(opts) {
+	    return $.extend({},{
+	    format:'Y-m-d H:i',
+		formatTime:'H:i',
+	    formatDate:'Y-m-d',
+		step : 5,
+		monthChangeSpinner:true,
+	    sideBySide: true
+	    
+	    }, opts);
+	}
+	
 </script>
+
 </head>
 <body>
 <div class="wrap">
@@ -115,38 +224,31 @@ function DatetimepickerDefaults(opts) {
 				<div class="bc"><span>DCC</span><span>Alarm</span><strong>Alarm</strong></div>
 			</div>
 			<!-- //page_title -->
-			 <form id="alarmFrm" name="alarmFrm">
-			<input type="hidden" id="sType"  	name="sType">
-			<input type="hidden" id="sPage"  	name="sPage" value="${BaseSearch.sPage}"> <!-- sPage     hPage        hPage -->
-			<input type="hidden" id="sSeq"  	name="sSeq"  value="${BaseSearch.sSeq}">  <!--  sSeq      curpage      inpageno -->
-			<input type="hidden" id="sMinDate"  name="sMinDate" value="${BaseSearch.sMinDate}">
-			<input type="hidden" id="sMaxDate"  name="sMaxDate"  value="${BaseSearch.sMaxDate}">
-			<input type="hidden" id="sMovPage"  name="sMovPage" >
-			<input type="hidden" id="saveType"  name="saveType" >
 			<!-- fx_srch_wrap -->
 			<div class="fx_srch_wrap">	
 				<div class="fx_srch_form">
 					<div class="fx_srch_row">
+					<form id="searchForm">
 						<div class="fx_srch_item double">
 							<label>검색일자</label>
                             <div class="fx_form_multi">
                                 <div class="fx_form">
-                                    <input type="text" id=sdate name="sdate" readonly>
+                                    <input type="text" id="selectDate" name="selectDate" readonly>
                                 </div>
                             </div>
 						</div>
+					</form>
                         <div class="fx_srch_item"></div>
 					</div>
 				</div>
 				<!-- fx_srch_button -->
 				<div class="fx_srch_button">
-					<a class="btn_srch" id="fncSearch" name="fncSearch">Search</a>
-					<a class="btn_list primary" href="/dcc/alarm/alarmsearch">조건검색</a>
-					<a class="btn_list excel_down" href="javascript:alarmExport('S1')"  >알람저장</a>
+					<a id="alarmSearch" name="alarmSearch" class="btn_srch">Search</a>
+					<a id="alarmDetail" name="alarmDetail" class="btn_list primary" href="/dcc/alarm/alarmsearch">조건검색</a>
+					<a id="alarmSave" name="alarmSave" class="btn_list primary" href="#none">알람저장</a>
 				</div>
 				<!-- //fx_srch_button -->
 			</div>
-			</form>
 			<!-- //fx_srch_wrap -->
 
 			<!-- list_wrap -->
@@ -154,14 +256,21 @@ function DatetimepickerDefaults(opts) {
 				<!-- list_head -->
 				<div class="list_head">
 					<div class="list_info">
-						<label>Total : <strong>10</strong></label>
+						<label>Total : <strong>${DccAlarmList.size()}</strong></label>
+						<label>Page : <strong>${DccAlarmList[0].pagNo}</strong></label>
 					</div>
 					<!-- button -->
-					<div class="button">						
-						<a class="btn_list primary" id="moveCur" name="moveCur" >현재</a>
-						<a class="btn_list primary" id="movePrev" name="movePrev" >이전</a>						
-						<a class="btn_list primary" id="moveNext" name="moveNext" >다음</a>
-						<a class="btn_list primary"  id="fncMove" name="fncMove" >이동</a>
+					<div class="button">
+						<a class="btn_list primary" id="btnCurrent" name="btnCurrent">현재</a>
+						<a class="btn_list primary" id="btnPrev" name="btnPrev">이전</a>	
+						<a class="btn_list primary" id="btnNext" name="btnNext">다음</a>				
+						<a class="btn_list primary" id="btnMove" name="btnMove">이동</a>
+					</div>
+					<div>
+						&nbsp;
+					</div>
+					<div>
+						<input id="goPage" name="goPage" style="width:40px;" type="text">
 					</div>
 					<!-- button -->
 				</div>
@@ -185,25 +294,35 @@ function DatetimepickerDefaults(opts) {
                         </tr>
                     </thead>
                     <tbody>
-                    	<c:forEach var="LogDccAlarm" items="${LogDccAlarmList}">
-                    	<c:if test="${LogDccAlarm.ALMMESGLINE <= 1}">
+                    <c:forEach var="dccAlarmInfo" items="${DccAlarmList}">
                         <tr>
-                        	<c:if test="${LogDccAlarm.ALMGUBUN != 'X'}">
-                            	<td class="tc">${LogDccAlarm.ALMGUBUN}</td>
-                            </c:if>
-                            <c:if test="${LogDccAlarm.ALMGUBUN == 'X'}">
-                            	<td class="tc"></td>
-                            </c:if>
-                            <td class="tc">${LogDccAlarm.ALMTIME}</td>
-                            <td class="tc">${LogDccAlarm.ALMCODE}</td>
-                            <td>${LogDccAlarm.ALMADDRESS}</td>
-                            <td>${LogDccAlarm.ALMMESG}</td>
-                        </tr>
+                        <c:if test="${dccAlarmInfo.almGubun eq 'X'}" >
+                            <td id="alarmGubun" name="alarmGubun" class="tc"></td>
                         </c:if>
-                        </c:forEach>
+                        <c:if test="${dccAlarmInfo.almGubun ne 'X'}" >
+                            <td id="alarmGubun" name="alarmGubun" class="tc">${dccAlarmInfo.almGubun}</td>
+                        </c:if>
+                            <td id="alarmDate" name="alarmDate" class="tc">${dccAlarmInfo.almDate}</td>
+                        <c:if test="${dccAlarmInfo.almCode eq 'X'}" >
+                            <td id="alarmCode" name="alarmCode" class="tc"></td>
+                        </c:if>
+                        <c:if test="${dccAlarmInfo.almCode ne 'X'}" >
+                            <td id="alarmCode" name="alarmCode" class="tc">${dccAlarmInfo.almCode}</td>
+                        </c:if>
+                        <c:if test="${dccAlarmInfo.almAddress eq 'X'}" >
+                            <td id="address" name="address" class="tc"></td>
+                        </c:if>
+                        <c:if test="${dccAlarmInfo.almAddress ne 'X'}" >
+                            <td id="address" name="address" class="tc">${dccAlarmInfo.almAddress}</td>
+                        </c:if>
+                            <td id="alarmMsg" name="alarmMsg">${dccAlarmInfo.almMesg}</td>
+                        </tr>
+                    </c:forEach>
                     </tbody>
                 </table>
                 <!-- //list_table -->							
+				<!-- paginate -->
+				<!-- //paginate -->
 			</div>
 			<!-- //list_wrap -->
 		</div>
@@ -217,3 +336,4 @@ function DatetimepickerDefaults(opts) {
 <!--  //wrap  -->
 </body>
 </html>
+
