@@ -2775,7 +2775,9 @@ public class DccMimicContentsController {
         return mav;
     }
 	
-	public ModelAndView tagSearch(ModelAndView mav, DccSearchMimic dccSearchMimic, HttpServletRequest request) {
+	
+	// create by sohee 20230228
+	private ModelAndView tagSearch(ModelAndView mav, DccSearchMimic dccSearchMimic, HttpServletRequest request) {
 
 		List<ComShowTagInfo> dccTagSearchList = basDccMimicService.selectTagSearch(dccSearchMimic);
     	dccSearchMimic.setMenuName(this.menuName);
@@ -2786,8 +2788,9 @@ public class DccMimicContentsController {
     	
         return mav;
     }
-
-	public ModelAndView tagFind(ModelAndView mav,DccSearchMimic dccSearchMimic, HttpServletRequest request) {
+	
+	// create by sohee 20230228
+	private ModelAndView tagFind(ModelAndView mav,DccSearchMimic dccSearchMimic, HttpServletRequest request) {
 
 		List<ComShowTagInfo> dccTagFindList = basDccMimicService.selectTagFind(dccSearchMimic);
 		dccSearchMimic.setMenuName(this.menuName);
