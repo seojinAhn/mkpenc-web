@@ -216,8 +216,8 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	
 		Map rtnMap = new HashMap();
 		
-		String[] varValue = sqlQueryDcc(searchMap).split("|");
-		
+		String[] varValue = sqlQueryDcc(searchMap).split("\\|");
+
 		//*** Start getDccValue 에 포함 된 로직
     	if(varValue != null && varValue.length != 0) {
     		if(varValue[0].length() == 19) {
@@ -374,8 +374,8 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	       }
 	    }
 	    
-	    di_val = Long.parseLong(digitalValue);
-	    bit_no = Integer.parseInt(digitalBit);;
+	    di_val = Math.round(Double.parseDouble(digitalValue));	    
+	    bit_no = Integer.parseInt(digitalBit);
 
 	    for(int i = 0;i < bit_no;i++) {
 	        Rest = (di_val % 2);
@@ -404,6 +404,8 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		if(scantime != null && scantime.get("SCANTIME") != null) {
 			pSCanTime = scantime.get("SCANTIME") .toString();
 		}
+		
+		searchMap.put("pSCanTime", pSCanTime);
 	
 		List<Map> tblNoFldNoList = basDccOsmsMapper.selectTblNoFldNo(searchMap);
 		
@@ -445,13 +447,13 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	    		 pStr = pStr + "|";
 	    	 }else {
 	    		 // *** field 명 확인 필요 ***
-	    		 pStr = pStr + vValue.get(j).get("TVALUE"+ Integer.parseInt(iFLDNO)+ 1) +  "|";
+	    		 pStr = pStr + vValue.get(j).get("TVALUE"+ Integer.parseInt(iFLDNO)) +  "|";
 	    	 }
 	    	
 	    }
 	    	   
 	    pStr = pStr + "}";    
-		
+
 		return pStr;
 		
 	}

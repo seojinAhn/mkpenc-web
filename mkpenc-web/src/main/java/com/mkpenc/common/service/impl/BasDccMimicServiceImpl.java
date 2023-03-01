@@ -27,7 +27,6 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 	@Autowired
 	private BasDccMimicMapper basDccMimicMapper;
 	
-	
 	// by sohe 2023.02.28
 	public List<ComTagDccInfo> getDccGrpTagNoUnitConvList(Map searchMap) {
 		List<ComDccGrpTagInfo> dccGrpTagInfoList = basDccMimicMapper.selectDccGrpTagList(searchMap);
@@ -137,7 +136,7 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 		
 	}
 	
-	public List<ComTagDccInfo> getDccGrpTagList(Map searchMap) {
+public List<ComTagDccInfo> getDccGrpTagList(Map searchMap) {
 		
 		List<ComDccGrpTagInfo> dccGrpTagInfoList = basDccMimicMapper.selectDccGrpTagList(searchMap);
 		
@@ -171,6 +170,9 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 				tagDccInfo.setLOOPNAME(dccGrpTagInfo.getLOOPNAME() == null? "": dccGrpTagInfo.getLOOPNAME());
 				tagDccInfo.setUnit(ConvertUnit(dccGrpTagInfo.getUNIT()));
 				tagDccInfo.setAlarmType(dccGrpTagInfo.getTYPE() == null? "0": dccGrpTagInfo.getTYPE());
+				
+				//NULL EXIST
+				dccGrpTagInfo.setTYPE(dccGrpTagInfo.getTYPE() == null? "0": dccGrpTagInfo.getTYPE());
 				
 				switch(dccGrpTagInfo.getTYPE()) {
 						case "1":        			//HI, LO
@@ -245,89 +247,94 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 	}
 	
 	private String ConvertUnit(String strUnit) {
-	      String strConUnit;
 	    
-			    switch (strUnit.toUpperCase()) {
-			        case "G:SEC" : 
-			            strConUnit = "G/S"; break;
-			        case "KG:HR" :
-			            strConUnit = "KG/HR"; break;
-			        case "L:MIN" :
-			            strConUnit = "L/MIN"; break;
-			        case "L:SEC" :
-			            strConUnit = "L/S"; break;
-			        case "M3:HR" :
-			            strConUnit = "M3/H"; break;
-			        case "ML:S":
-			            strConUnit = "ML/S";    break;
-			        case "DECADE" :
-			            strConUnit = "DEC";    break;
-			        case "FP:HR" :
-			            strConUnit = "FP/HR";    break;
-			        case "VOLTS" :
-			            strConUnit = "V";    break;
-			        case "DEGC:H" :
-			            strConUnit = "DEGC/H";    break;
-			        case "M:MIN" :
-			            strConUnit = "M/MIN";    break;
-			        case "MM:HR" :
-			            strConUnit = "MM/HR";    break;
-			        case "MM:SEC" :
-			            strConUnit = "MM/S";    break;
-			        case "MW:MIN" :
-			            strConUnit = "MW/MIN";    break;
-			        case "METERS":
-			        case "METRES":
-			            strConUnit = "M";    break;
-			        case "MS:M" :
-			            strConUnit = "MSIE/M";    break;
-			        case "US:M" :
-			            strConUnit = "USIE/M";    break;
-			        case "CI:M3" :
-			            strConUnit = "CI/M3";    break;
-			        case "DEC:S" :
-			            strConUnit = "DEC/S";    break;
-			        case "KCNT:M" :
-			            strConUnit = "KCNT/M";    break;
-			        case "KCNT:S" :
-			            strConUnit = "KCNT/S";    break;
-			        case "MCI:M3" :
-			            strConUnit = "MCI/M3";    break;
-			        case "MGY:HR":
-			        case "MGY/HR" :
-			            strConUnit = "mGy/hr";    break;
-			        case "MILLIK" :
-			            strConUnit = "MK";    break;
-			        case "MR:HR" :
-			            strConUnit = "MREM/H";    break;
-			        case "R:HR" :
-			            strConUnit = "REM/H";    break;
-			        case "DEGC"  :
-			        case "DEG C" :
-			            strConUnit = "°C";    break;
-			        case "LD:LG" :
-			            strConUnit = "KD/LAG";    break;
-			        case "NOTAVL" :
-			            strConUnit = "N/A";    break;
-			        case "PERU" :
-			            strConUnit = "P.U.";    break;
-			        default  :
-			            strConUnit = strUnit;    break;
-			    }
+		String strConUnit;
+	      
+	    if(strUnit == null || strUnit.isEmpty()) {
+	    	strUnit = "";
+	    }
+	    
+	    switch (strUnit.toUpperCase()) {
+	        case "G:SEC" : 
+	            strConUnit = "G/S"; break;
+	        case "KG:HR" :
+	            strConUnit = "KG/HR"; break;
+	        case "L:MIN" :
+	            strConUnit = "L/MIN"; break;
+	        case "L:SEC" :
+	            strConUnit = "L/S"; break;
+	        case "M3:HR" :
+	            strConUnit = "M3/H"; break;
+	        case "ML:S":
+	            strConUnit = "ML/S";    break;
+	        case "DECADE" :
+	            strConUnit = "DEC";    break;
+	        case "FP:HR" :
+	            strConUnit = "FP/HR";    break;
+	        case "VOLTS" :
+	            strConUnit = "V";    break;
+	        case "DEGC:H" :
+	            strConUnit = "DEGC/H";    break;
+	        case "M:MIN" :
+	            strConUnit = "M/MIN";    break;
+	        case "MM:HR" :
+	            strConUnit = "MM/HR";    break;
+	        case "MM:SEC" :
+	            strConUnit = "MM/S";    break;
+	        case "MW:MIN" :
+	            strConUnit = "MW/MIN";    break;
+	        case "METERS":
+	        case "METRES":
+	            strConUnit = "M";    break;
+	        case "MS:M" :
+	            strConUnit = "MSIE/M";    break;
+	        case "US:M" :
+	            strConUnit = "USIE/M";    break;
+	        case "CI:M3" :
+	            strConUnit = "CI/M3";    break;
+	        case "DEC:S" :
+	            strConUnit = "DEC/S";    break;
+	        case "KCNT:M" :
+	            strConUnit = "KCNT/M";    break;
+	        case "KCNT:S" :
+	            strConUnit = "KCNT/S";    break;
+	        case "MCI:M3" :
+	            strConUnit = "MCI/M3";    break;
+	        case "MGY:HR":
+	        case "MGY/HR" :
+	            strConUnit = "mGy/hr";    break;
+	        case "MILLIK" :
+	            strConUnit = "MK";    break;
+	        case "MR:HR" :
+	            strConUnit = "MREM/H";    break;
+	        case "R:HR" :
+	            strConUnit = "REM/H";    break;
+	        case "DEGC"  :
+	        case "DEG C" :
+	            strConUnit = "°C";    break;
+	        case "LD:LG" :
+	            strConUnit = "KD/LAG";    break;
+	        case "NOTAVL" :
+	            strConUnit = "N/A";    break;
+	        case "PERU" :
+	            strConUnit = "P.U.";    break;
+	        default  :
+	            strConUnit = strUnit;    break;
+	    }
 	    
 	    return strConUnit;
 
 	}
 	
 	public String[] getDccValueReturn(Map searchMap) {
-		return sqlQueryDcc(searchMap).split("|");
+		return sqlQueryDcc(searchMap).split("\\|");
 	}
 	
 	public Map getDccValue(Map searchMap, List<ComTagDccInfo> tagDccInfoList,  ModelAndView mav){
 	
 		Map rtnMap = new HashMap();
 		
-		String[] varValue = sqlQueryDcc(searchMap).split("|");
+		String[] varValue = sqlQueryDcc(searchMap).split("\\|");
 		
 		//*** Start getDccValue 에 포함 된 로직
     	if(varValue != null && varValue.length != 0) {
@@ -485,8 +492,8 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 	       }
 	    }
 	    
-	    di_val = Long.parseLong(digitalValue);
-	    bit_no = Integer.parseInt(digitalBit);;
+	    di_val = Math.round(Double.parseDouble(digitalValue));	    
+	    bit_no = Integer.parseInt(digitalBit);
 
 	    for(int i = 0;i < bit_no;i++) {
 	        Rest = (di_val % 2);
@@ -514,7 +521,8 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 		
 		if(scantime != null && scantime.get("SCANTIME") != null) {
 			pSCanTime = scantime.get("SCANTIME") .toString();
-		}
+		}		
+		searchMap.put("pSCanTime", pSCanTime);
 	
 		List<Map> tblNoFldNoList = basDccMimicMapper.selectTblNoFldNo(searchMap);
 		
@@ -533,7 +541,7 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 			iTagCnt = iTagCnt + 1;			
 		}
 		*/
-		
+
 		List<Map> vValue = basDccMimicMapper.selectLogDccTrend(searchMap);
 		
 	    String pStr = pSCanTime + "|";
@@ -556,7 +564,7 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 	    		 pStr = pStr + "|";
 	    	 }else {
 	    		 // *** field 명 확인 필요 ***
-	    		 pStr = pStr + vValue.get(j).get("TVALUE"+ Integer.parseInt(iFLDNO)+ 1) +  "|";
+	    		 pStr = pStr + vValue.get(j).get("TVALUE"+ Integer.parseInt(iFLDNO)) +  "|";
 	    	 }
 	    	
 	    }
