@@ -9,7 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mkpenc.common.model.ComShowTagInfo;
 import com.mkpenc.common.model.ComTagDccInfo;
 import com.mkpenc.mimic.model.DccSearchMimic;
-
+ 
 @Service
 public  interface BasDccMimicService {
 	

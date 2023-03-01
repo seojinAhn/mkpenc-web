@@ -15,7 +15,7 @@ public class ComTagMarkInfo {
 	    private String Offset;
 	    private String IOTYPE;
 	    private String Register;
-	    private String IOBIT;
+	    private String IOBIT; 
 	    private int TBLNO;
 	    private int FLDNO;
 	    private int BScale; 

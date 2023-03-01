@@ -18,7 +18,7 @@ import com.mkpenc.common.model.ComTagDccInfo;
 import com.mkpenc.common.service.BasDccMimicService;
 import com.mkpenc.mimic.model.DccSearchMimic;
 
-
+ 
 @Service("basDccMimicService")
 public class BasDccMimicServiceImpl implements BasDccMimicService{
 	

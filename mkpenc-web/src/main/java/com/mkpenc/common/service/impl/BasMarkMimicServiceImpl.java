@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.mkpenc.common.mapper.BasMarkMimicMapper;
 import com.mkpenc.common.service.BasMarkMimicService;
-
+ 
 @Service("basMarkMimicService")
 public class BasMarkMimicServiceImpl implements BasMarkMimicService{
 	

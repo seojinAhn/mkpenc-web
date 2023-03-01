@@ -8,7 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.mkpenc.common.model.ComTagDccInfo;
 
-
+ 
 @Service
 public  interface BasDccOsmsService {
 	

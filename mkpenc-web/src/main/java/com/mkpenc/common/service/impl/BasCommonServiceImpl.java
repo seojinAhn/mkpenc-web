@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.mkpenc.common.mapper.BasCommonMapper;
 import com.mkpenc.common.service.BasCommonService;
 
-
+ 
 @Service("basCommonService")
 public class BasCommonServiceImpl implements BasCommonService{
 	

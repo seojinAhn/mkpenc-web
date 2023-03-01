@@ -11,6 +11,6 @@ public interface BasMarkMimicMapper {
 	
 	Map distinctMstCodeMark();
 	
-	List<Map> selectMstCodeMark();
+	List<Map> selectMstCodeMark(); 
 
 }

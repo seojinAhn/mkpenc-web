@@ -14,6 +14,6 @@ public interface BasMarkOsmsMapper {
 	
 	List<Map>  selectTblNoFldNo(Map searchMapper);
 	
-	List<Map> selectLogMarkTrend(Map selectMap);
+	List<Map> selectLogMarkTrend(Map selectMap); 
 
 }

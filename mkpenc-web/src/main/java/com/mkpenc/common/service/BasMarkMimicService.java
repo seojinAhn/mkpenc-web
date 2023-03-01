@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public  interface BasMarkMimicService {
-	
+	 
 	public String[][] AnalogCharacter();
 
 }
