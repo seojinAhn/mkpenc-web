@@ -14,6 +14,7 @@ import com.mkpenc.common.mapper.BasCommonMapper;
 import com.mkpenc.common.mapper.BasDccOsmsMapper;
 import com.mkpenc.common.model.ComDccGrpTagInfo;
 import com.mkpenc.common.model.ComTagDccInfo;
+import com.mkpenc.common.service.BasCommonService;
 import com.mkpenc.common.service.BasDccOsmsService;
 import com.mkpenc.performance.model.DccSearchPerformance;
 
@@ -25,6 +26,9 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	
 	@Autowired
 	private BasDccOsmsMapper basDccOsmsMapper;
+	
+	@Autowired
+	private BasCommonService basCommonService;
 	
 	public List<ComTagDccInfo> getDccGrpTagList(Map searchMap) {
 		
@@ -286,11 +290,11 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		// '- IOTYPE에 대한 설정
 	    if( tagDccInfo.getIOTYPE().equals("DI") ||  tagDccInfo.getIOTYPE().equals("DO")){
 	        if(tagDccInfo.getIOBIT() != 0) {
-	            fValue = Double.parseDouble(GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
+	            fValue = Double.parseDouble(basCommonService.GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
 	        }
 	    }else if(tagDccInfo.getIOTYPE().equals("SC")) {
 	    	 if( tagDccInfo.getSaveCore() == 1 &&  tagDccInfo.getIOBIT() != 0) {
-	 	            fValue = Double.parseDouble(GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
+	 	            fValue = Double.parseDouble(basCommonService.GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
 	    	 }else if( tagDccInfo.getBScale() != 0 && tagDccInfo.getSaveCore() != 1) {
 	 	            fValue = fValue / (2 ^ (15 - tagDccInfo.getBScale() ));
 	 	     }
@@ -357,34 +361,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		}		
 	}
 	
-	// - 디지털 값을 가져온다.(16bit -> 1bit)
-	//private int GetBitVal(ByVal DigitalValue As String, ByVal DigitalBit As String) As String
-	private String GetBitVal(String digitalValue, String digitalBit) {
-	    
-	    long Rest = 0;
-	    
-	    long di_val;
-	    int bit_no;	    
-	    
-	    if(digitalBit.isEmpty()) {
-	       if(digitalValue == null) {
-	    	   return "";
-	       }else {
-	    	   return digitalValue;
-	       }
-	    }
-	    
-	    di_val = Math.round(Double.parseDouble(digitalValue));	    
-	    bit_no = Integer.parseInt(digitalBit);
-
-	    for(int i = 0;i < bit_no;i++) {
-	        Rest = (di_val % 2);
-	        //di_val = di_val \ 2;
-	    	di_val = di_val / 2;
-		}
-	    
-	    return Rest +"";
-	}
+	
 	
 	private String sqlQueryDcc(Map searchMap) {
 		

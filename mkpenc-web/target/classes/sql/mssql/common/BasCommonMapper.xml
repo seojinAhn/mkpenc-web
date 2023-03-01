@@ -43,5 +43,34 @@
 			        </if>      
 		        </trim>        
     </select>
+    
+    <select id="selectMaxGrpNameB" parameterType="java.util.Map" resultType="String">
+		SELECT
+			MAX(UGrpNo) as MAX_UGrpNo
+		FROM MST_GrpName_B
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpID)">
+				AND ID = #{grpID}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(menuNo)">
+				AND MenuNo = #{menuNo}
+			</if>
+		</trim>
+    </select>
+    
+    <select id="selectGrpNameListB" parameterType="java.util.Map" resultType="String">
+		SELECT UGrpName FROM MST_GrpName_B
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpID)">
+				AND ID = #{grpID}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(menuNo)">
+				AND MenuNo = #{menuNo}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(uGrpNo)">
+				AND UGrpNo = #{uGrpNo}
+			</if>
+		</trim>
+	</select>
 
 </mapper>

@@ -3,7 +3,7 @@
 
 <mapper namespace="com.mkpenc.common.mapper.BasDccOsmsMapper">
 
-<select id="selectDccGrpTagList" parameterType="java.util.Map" resultType="DccGrpTagInfo">
+<select id="selectDccGrpTagList" parameterType="java.util.Map" resultType="ComDccGrpTagInfo">
         
 			      SELECT 
 			         		 C.iSeq
@@ -140,4 +140,71 @@
       	 </if>
     </select>           
 
+	<select id="selectDccGrpTagListB" parameterType="java.util.Map" resultType="java.util.Map">
+		<if test='@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(dive,"d")'>
+			SELECT
+				b.Iseq iSeq,
+				b.gubun,
+				b.hogi,
+				c.xyGubun,
+				b.Descr,
+				c.ioType,
+				c.address,
+				c.ioBit,
+				b.minVal,
+				b.maxVal,
+				b.saveCoreChk
+			FROM MST_GrpTag_B B, MST_TAG_DCC C
+			<trim prefix="WHERE" prefixOverrides="AND | OR">
+			AND B.HOGI = C.IHOGI
+			AND B.ISEQ = C.ISEQ
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpID)">
+				AND B.ID = #{grpID}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(hogi)">
+				AND B.GrpHOGI = #{hogi}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(menuNo)">
+				AND B.MenuNo = #{menuNo}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(uGrpNo)">
+				AND B.GrpNo = #{uGrpNo}
+			</if>
+			</trim>
+			AND B.Gubun = 'D'
+		</if>
+		<if test='!@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(dive,"d")'>
+			SELECT
+				b.Iseq iSeq_M,
+				b.gubun gubun_M,
+				b.hogi hogi_M,
+				'' xyGubun_M,
+				b.Descr Descr_M,
+				c.iotype ioType_M,
+				c.register register_M,
+				c.iobit ioBit_M,
+				b.minval minVal_M,
+				b.maxval maxVal_M,
+				'' saveCoreChk_M
+			FROM mst_grptag_b b, markdb.dbo.mst_tag_mark c
+			<trim prefix="WHERE" prefixOverrides="AND | OR">
+			AND B.HOGI = C.HOGI
+			AND B.ISEQ = C.ISEQ
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpID)">
+				AND B.GrpHOGI = #{grpID}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(hogi)">
+				AND B.ID = #{hogi}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(menuNo)">
+				AND B.MenuNo = #{menuNo}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(uGrpNo)">
+				AND B.GrpNo = #{uGrpNo}
+			</if>
+			</trim>
+			AND B.Gubun = 'M'
+		</if>
+		ORDER BY B.TagNo
+	</select>
 </mapper>

@@ -24,6 +24,35 @@ public class BasCommonServiceImpl implements BasCommonService{
 	public List<String> selectGrpNameListB(Map searchMap){
 		return basCommonMapper.selectGrpNameListB(searchMap);
 	}
+	
+	// - 디지털 값을 가져온다.(16bit -> 1bit)
+	//private int GetBitVal(ByVal DigitalValue As String, ByVal DigitalBit As String) As String
+	public String GetBitVal(String digitalValue, String digitalBit) {
+		    
+		    long Rest = 0;
+		    
+		    long di_val;
+		    int bit_no;	    
+		    
+		    if(digitalBit.isEmpty()) {
+		       if(digitalValue == null) {
+		    	   return "";
+		       }else {
+		    	   return digitalValue;
+		       }
+		    }
+		    
+		    di_val = Math.round(Double.parseDouble(digitalValue));	    
+		    bit_no = Integer.parseInt(digitalBit);
+
+		    for(int i = 0;i < bit_no;i++) {
+		        Rest = (di_val % 2);
+		        //di_val = di_val \ 2;
+		    	di_val = di_val / 2;
+			}
+		    
+		    return Rest +"";
+		}
 
 }
 

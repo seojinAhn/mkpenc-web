@@ -211,7 +211,7 @@ function DatetimepickerDefaults(opts) {
     format:'Y-m-d H:i',
 	formatTime:'H:i',
     formatDate:'Y-m-d',
-	step : 5,
+	step : 1,
 	monthChangeSpinner:true,
     sideBySide: true
     
