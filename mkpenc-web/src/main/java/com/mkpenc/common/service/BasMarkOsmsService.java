@@ -10,7 +10,7 @@ import com.mkpenc.common.model.ComTagMarkInfo;
 
 @Service
 public  interface BasMarkOsmsService {
-	
+	 
 	public List<ComTagMarkInfo> getMarkGrpTagList(Map searchMap); 
 	
 	public Map getMarkValue(Map searchMap, List<ComTagMarkInfo> tagMarkInfoList,  ModelAndView mav);
