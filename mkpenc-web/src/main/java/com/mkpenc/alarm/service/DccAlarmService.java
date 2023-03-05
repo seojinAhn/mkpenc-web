@@ -38,4 +38,7 @@ public interface DccAlarmService {
 	Integer insertGrpTagB(DccSearchAlarm dccSearchAlarm);
 	
 	List<Map> selectAlarmTagSearch(DccSearchAlarm dccSearchAlarm);
+	
+	//fixedtimecontrol
+	List<DccAlarmInfo> selectFixedAlarm(DccSearchAlarm dccSearchAlarm);
 }

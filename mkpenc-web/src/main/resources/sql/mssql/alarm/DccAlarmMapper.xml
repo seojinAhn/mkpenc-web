@@ -374,4 +374,48 @@
 		)
 		ORDER BY ISEQ
 	</select>
+	
+	<select id="selectFixedAlarm" parameterType="DccSearchAlarm" resultType="DccAlarmInfo">
+		SELECT
+		<if test='!@org.apache.commons.lang3.StringUtils@equals(pType,"1140") and !@org.apache.commons.lang3.StringUtils@equals(pType,"1180") and !@org.apache.commons.lang3.StringUtils@equals(pType,"2760") and !@org.apache.commons.lang3.StringUtils@equals(pType,"5500") and !@org.apache.commons.lang3.StringUtils@equals(pType,"2850")'>
+			TOP 2 
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"5500")'>
+			TOP 1 
+		</if>
+			CONVERT(CHAR(23), ALMDATE,121) AS ALMDATE,
+			ALMADDRESS,
+			ALMGUBUN
+		FROM LOG_${sHogi}DCC_ALARM
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"0030") or @org.apache.commons.lang3.StringUtils@equals(pType,"0320") or @org.apache.commons.lang3.StringUtils@equals(pType,"1140") or @org.apache.commons.lang3.StringUtils@equals(pType,"1180") or @org.apache.commons.lang3.StringUtils@equals(pType,"2760")'>
+				AND SEQ <![CDATA[>=]]> Trim(Replace(Left(#{startDate},7),'-',''))
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"core1")'>
+				AND CONVERT(VARCHAR(23), ALMDATE, 121) <![CDATA[>]]> #{startDate}
+			</if>
+			<if test='!@org.apache.commons.lang3.StringUtils@equals(pType,"core1")'>
+				AND CONVERT(VARCHAR(23), ALMDATE, 121) BETWEEN #{startDate} AND #{endDate}
+			</if>
+				AND ALMHOGI = #{sHogi}
+				AND ALMXYGUBUN = #{sXYGubun}
+			<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"5500")'>
+				AND ALMGUBUN = #{alarmGubun}
+			</if>
+				AND ALMCODE = 'CI'
+				AND ISNUMERIC(ALMADDRESS) = 1
+			<if test='!@org.apache.commons.lang3.StringUtils@equals(pType,"1140") and !@org.apache.commons.lang3.StringUtils@equals(pType,"1181") and !@org.apache.commons.lang3.StringUtils@equals(pType,"2760") and !@org.apache.commons.lang3.StringUtils@equals(pType,"2850")'>
+				AND CONVERT(INT,ALMADDRESS) = #{address}
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"1140") or @org.apache.commons.lang3.StringUtils@equals(pType,"1181") or @org.apache.commons.lang3.StringUtils@equals(pType,"2760") or @org.apache.commons.lang3.StringUtils@equals(pType,"2850")'>
+				AND CONVERT(INT,ALMADDRESS) in (${address})
+			</if>
+		</trim>
+		<if test='!@org.apache.commons.lang3.StringUtils@equals(pType,"0032") and !@org.apache.commons.lang3.StringUtils@equals(pType,"core1") and !@org.apache.commons.lang3.StringUtils@equals(pType,"5500")'>
+			ORDER BY ALMDATE DESC
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"0032") or @org.apache.commons.lang3.StringUtils@equals(pType,"core1") or @org.apache.commons.lang3.StringUtils@equals(pType,"5500")'>
+			ORDER BY ALMDATE ASC
+		</if>
+	</select>
 </mapper>

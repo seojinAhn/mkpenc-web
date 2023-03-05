@@ -247,3 +247,729 @@ function mbr_tagSearchCallback(data){
 	tagDccInfoListBody.append(tagDccInfoListBodyStr);
 	
 }
+
+function mbr_FixedTimeControlCallback(data){
+	
+	var tagDccInfoListBody;
+	var tagDccInfoListBodyStr = "";
+	
+	if( data.BaseSearch.pType == '003' ) {
+		if( typeof data.FixedAlarmList[0][0] != 'undefined' ) {
+			tagDccInfoListBody = $("#003Body1");
+			
+			for( var idx=0;idx<36;idx++ ) {
+				if( idx < 18 ) {
+					tagDccInfoListBodyStr += '<tr>';
+					if( idx == 0 ) {
+						tagDccInfoListBodyStr += '<td id="0lblTitle003" class="tc" rowspan="6">채널 "G"</td>'
+					}
+					if( idx == 6 ) {
+						tagDccInfoListBodyStr += '<td id="1lblTitle003" class="tc" rowspan="6">채널 "H"</td>'
+					}
+					if( idx == 12 ) {
+						tagDccInfoListBodyStr += '<td id="2lblTitle003" class="tc" rowspan="6">채널 "J"</td>'
+					}
+	                tagDccInfoListBodyStr += '<td id="'+idx+'lblCI003" class="tc"></td>'
+	                					   + '	<td id="'+idx+'lblStart003" class="tc">'+data.FixedAlarmList[0][idx]+'</td>'
+	                					   + '	<td id="'+idx+'lblEnd003" class="tc">'+data.FixedAlarmList[1][idx]+'</td>'
+	                					   + '	<td id="'+idx+'lblCha003" class="tc">'+data.FixedAlarmList[2][idx]+'</td>'
+	                					   + '</tr>';
+				} else {
+					if( idx == 18 ) {
+						tagDccInfoListBody.empty();
+						tagDccInfoListBody.append(tagDccInfoListBodyStr);
+						
+						tagDccInfoListBodyStr = '';
+					}
+					tagDccInfoListBodyStr += '<tr>';
+					if( idx == 18 ) {
+						tagDccInfoListBodyStr += '<td id="3lblTitle003" class="tc" rowspan="6">채널 "G"</td>'
+					}
+					if( idx == 24 ) {
+						tagDccInfoListBodyStr += '<td id="4lblTitle003" class="tc" rowspan="6">채널 "H"</td>'
+					}
+					if( idx == 30 ) {
+						tagDccInfoListBodyStr += '<td id="5lblTitle003" class="tc" rowspan="6">채널 "J"</td>'
+					}
+	                tagDccInfoListBodyStr += '<td id="'+idx+'lblCI003" class="tc"></td>'
+	                					   + '	<td id="'+idx+'lblStart003" class="tc">'+data.FixedAlarmList[0][idx]+'</td>'
+	                					   + '	<td id="'+idx+'lblEnd003" class="tc">'+data.FixedAlarmList[1][idx]+'</td>'
+	                					   + '	<td id="'+idx+'lblCha003" class="tc">'+data.FixedAlarmList[2][idx]+'</td>'
+	                					   + '</tr>';
+				}
+			}
+			var tagDccInfoListBody2 = $("#003Body2");
+
+			tagDccInfoListBody2.empty();
+			tagDccInfoListBody2.append(tagDccInfoListBodyStr);
+		} else {
+			tagDccInfoListBody = $("#003Body1");
+			
+			for( var idx=0;idx<36;idx++ ) {
+				if( idx < 18 ) {
+					tagDccInfoListBodyStr += '<tr>';
+					if( idx == 0 ) {
+						tagDccInfoListBodyStr += '<td id="0lblTitle003" class="tc" rowspan="6">채널 "G"</td>'
+					}
+					if( idx == 6 ) {
+						tagDccInfoListBodyStr += '<td id="1lblTitle003" class="tc" rowspan="6">채널 "H"</td>'
+					}
+					if( idx == 12 ) {
+						tagDccInfoListBodyStr += '<td id="2lblTitle003" class="tc" rowspan="6">채널 "J"</td>'
+					}
+	                tagDccInfoListBodyStr += '<td id="'+idx+'lblCI003" class="tc"></td>'
+	                					   + '	<td id="'+idx+'lblStart003" class="tc"></td>'
+	                					   + '	<td id="'+idx+'lblEnd003" class="tc"></td>'
+	                					   + '	<td id="'+idx+'lblCha003" class="tc"></td>'
+	                					   + '</tr>';
+				} else {
+					if( idx == 18 ) {
+						tagDccInfoListBody.empty();
+						tagDccInfoListBody.append(tagDccInfoListBodyStr);
+						
+						tagDccInfoListBodyStr = '';
+					}
+					tagDccInfoListBodyStr += '<tr>';
+					if( idx == 18 ) {
+						tagDccInfoListBodyStr += '<td id="3lblTitle003" class="tc" rowspan="6">채널 "G"</td>'
+					}
+					if( idx == 24 ) {
+						tagDccInfoListBodyStr += '<td id="4lblTitle003" class="tc" rowspan="6">채널 "H"</td>'
+					}
+					if( idx == 30 ) {
+						tagDccInfoListBodyStr += '<td id="5lblTitle003" class="tc" rowspan="6">채널 "J"</td>'
+					}
+	                tagDccInfoListBodyStr += '<td id="'+idx+'lblCI003" class="tc"></td>'
+	                					   + '	<td id="'+idx+'lblStart003" class="tc"></td>'
+	                					   + '	<td id="'+idx+'lblEnd003" class="tc"></td>'
+	                					   + '	<td id="'+idx+'lblCha003" class="tc"></td>'
+	                					   + '</tr>';
+				}
+			}
+			var tagDccInfoListBody2 = $("#003Body2");
+
+			tagDccInfoListBody2.empty();
+			tagDccInfoListBody2.append(tagDccInfoListBodyStr);
+		}
+	} else if( data.BaseSearch.pType == '032') {
+		if( typeof data.FixedAlarmList[0][0] != 'undefined' ) { 
+			tagDccInfoListBody = $("#032Body");
+			
+			for( var idx=0;idx<12;idx++ ) {
+				tagDccInfoListBodyStr += '<tr>';
+				if( idx == 0 ) {
+					tagDccInfoListBodyStr += '	<td id="0lblTitle032" class="tc" rowspan="4">채널 "D"</td>';
+				}
+				if( idx == 4 ) {
+					tagDccInfoListBodyStr += '	<td id="1lblTitle032" class="tc" rowspan="4">채널 "E"</td>';
+				}
+				if( idx == 8 ) {
+					tagDccInfoListBodyStr += '	<td id="2lblTitle032" class="tc" rowspan="4">채널 "F"</td>';
+				}
+                tagDccInfoListBodyStr += '	<td id="'+idx+'lblCI032" class="tc"></td>'
+									   + '	<td id="'+idx+'lblStart032" class="tc">'+data.FixedAlarmList[0][idx]+'</td>'
+									   + '	<td id="'+idx+'lblEnd032" class="tc">'+data.FixedAlarmList[1][idx]+'</td>'
+									   + '	<td id="'+idx+'lblCha032" class="tc">'+data.FixedAlarmList[2][idx]+'</td>'
+                                	   + '</tr>';
+			}
+			
+			tagDccInfoListBody.empty();
+			tagDccInfoListBody.append(tagDccInfoListBodyStr);
+		} else {
+			tagDccInfoListBody = $("#032Body");
+			
+			for( var idx=0;idx<12;idx++ ) {
+				tagDccInfoListBodyStr += '<tr>';
+				if( idx == 0 ) {
+					tagDccInfoListBodyStr += '	<td id="0lblTitle032" class="tc" rowspan="4">채널 "D"</td>';
+				}
+				if( idx == 4 ) {
+					tagDccInfoListBodyStr += '	<td id="1lblTitle032" class="tc" rowspan="4">채널 "E"</td>';
+				}
+				if( idx == 8 ) {
+					tagDccInfoListBodyStr += '	<td id="2lblTitle032" class="tc" rowspan="4">채널 "F"</td>';
+				}
+                tagDccInfoListBodyStr += '	<td id="'+idx+'lblCI032" class="tc"></td>'
+									   + '	<td id="'+idx+'lblStart032" class="tc"></td>'
+									   + '	<td id="'+idx+'lblEnd032" class="tc"></td>'
+									   + '	<td id="'+idx+'lblCha032" class="tc"></td>'
+                                	   + '</tr>';
+			}
+			
+			tagDccInfoListBody.empty();
+			tagDccInfoListBody.append(tagDccInfoListBodyStr);
+		}
+	} else if( data.BaseSearch.pType == '114') {
+		if( typeof data.FixedAlarmList[0][0] != 'undefined' ) {
+			tagDccInfoListBody = $("#114Body1");
+			
+			for( var idx=0;idx<36;idx++ ) {
+				if( idx < 18 ) {
+					tagDccInfoListBodyStr += '<tr>';
+					if( idx%3 == 0 ) {
+						tagDccInfoListBodyStr += '	<td id="'+(idx/3)+'lblVal" class="tc" rowspan="3"></td>';
+					}
+	                tagDccInfoListBodyStr += '	<td id="'+idx+'lblCI" class="tc"></td>'
+	                					   + '	<td id="'+idx+'lblStart" class="tc">'+data.FixedAlarmList[0][idx]+'</td>'
+	                					   + '	<td id="'+idx+'lblEnd" class="tc">'+data.FixedAlarmList[1][idx]+'</td>'
+	                					   + '	<td id="'+idx+'lblCha" class="tc">'+data.FixedAlarmList[2][idx]+'</td>'
+	                					   + '</tr>';
+	        	} else {
+					if( idx == 18 ) {
+						tagDccInfoListBody.empty();
+						tagDccInfoListBody.append(tagDccInfoListBodyStr);
+						
+						tagDccInfoListBodyStr = '';
+					}
+					tagDccInfoListBodyStr += '<tr>';
+					if( idx%3 == 0 ) {
+						tagDccInfoListBodyStr += '	<td id="'+(idx/3)+'lblVal" class="tc" rowspan="3"></td>';
+					}
+	                tagDccInfoListBodyStr += '	<td id="'+idx+'lblCI" class="tc"></td>'
+	                					   + '	<td id="'+idx+'lblStart" class="tc">'+data.FixedAlarmList[0][idx]+'</td>'
+	                					   + '	<td id="'+idx+'lblEnd" class="tc">'+data.FixedAlarmList[1][idx]+'</td>'
+	                					   + '	<td id="'+idx+'lblCha" class="tc">'+data.FixedAlarmList[2][idx]+'</td>'
+	                					   + '</tr>';
+				}
+			}
+			var tagDccInfoListBody2 = $("#114Body2");
+			
+			tagDccInfoListBody2.empty();
+			tagDccInfoListBody2.append(tagDccInfoListBodyStr);
+		} else {
+			tagDccInfoListBody = $("#114Body1");
+			
+			for( var idx=0;idx<36;idx++ ) {
+				if( idx < 18 ) {
+					tagDccInfoListBodyStr += '<tr>';
+					if( idx%3 == 0 ) {
+						tagDccInfoListBodyStr += '	<td id="'+(idx/3)+'lblVal" class="tc" rowspan="3"></td>';
+					}
+	                tagDccInfoListBodyStr += '	<td id="'+idx+'lblCI" class="tc"></td>'
+	                					   + '	<td id="'+idx+'lblStart" class="tc"></td>'
+	                					   + '	<td id="'+idx+'lblEnd" class="tc"></td>'
+	                					   + '	<td id="'+idx+'lblCha" class="tc"></td>'
+	                					   + '</tr>';
+	        	} else {
+					if( idx == 18 ) {
+						tagDccInfoListBody.empty();
+						tagDccInfoListBody.append(tagDccInfoListBodyStr);
+						
+						tagDccInfoListBodyStr = '';
+					}
+					tagDccInfoListBodyStr += '<tr>';
+					if( idx%3 == 0 ) {
+						tagDccInfoListBodyStr += '	<td id="'+(idx/3)+'lblVal" class="tc" rowspan="3"></td>';
+					}
+	                tagDccInfoListBodyStr += '	<td id="'+idx+'lblCI" class="tc"></td>'
+	                					   + '	<td id="'+idx+'lblStart" class="tc"></td>'
+	                					   + '	<td id="'+idx+'lblEnd" class="tc"></td>'
+	                					   + '	<td id="'+idx+'lblCha" class="tc"></td>'
+	                					   + '</tr>';
+				}
+			}
+			var tagDccInfoListBody2 = $("#114Body2");
+			
+			tagDccInfoListBody2.empty();
+			tagDccInfoListBody2.append(tagDccInfoListBodyStr);
+		}
+	} else if( data.BaseSearch.pType == '118') {
+		if( typeof data.FixedAlarmList[0][0] != 'undefined' ) {
+			tagDccInfoListBody = $("#118Body1");
+			
+			for( var idx=0;idx<72;idx++ ) {
+				if( idx < 24 ) {
+					tagDccInfoListBodyStr += '<tr>'
+	             						   + '	<td id="'+idx+'lblTitle118" class="tc" style="color:'+data.FixedAlarmList[2][idx]+'"></td>'
+	           							   + '	<td id="'+idx+'lblCI118" class="tc" style="color:'+data.FixedAlarmList[2][idx]+'"></td>'
+	            						   + '	<td id="'+idx+'lblStart118" class="tc" style="color:'+data.FixedAlarmList[2][idx]+'">'+data.FixedAlarmList[0][idx]+'</td>'
+	           							   + '	<td id="'+idx+'lblBigo118" class="tc" style="color:'+data.FixedAlarmList[2][idx]+'">'+data.FixedAlarmList[1][idx]+'</td>'
+	            						   + '</tr>';
+	            } else if( idx < 48 ) {
+					if( idx == 24 ) {
+						tagDccInfoListBody.empty();
+						tagDccInfoListBody.append(tagDccInfoListBodyStr);
+						
+						tagDccInfoListBodyStr = '';
+					}
+					tagDccInfoListBodyStr += '<tr>'
+	             						   + '	<td id="'+idx+'lblTitle118" class="tc" style="color:'+data.FixedAlarmList[2][idx]+'"></td>'
+	           							   + '	<td id="'+idx+'lblCI118" class="tc" style="color:'+data.FixedAlarmList[2][idx]+'"></td>'
+	            						   + '	<td id="'+idx+'lblStart118" class="tc" style="color:'+data.FixedAlarmList[2][idx]+'">'+data.FixedAlarmList[0][idx]+'</td>'
+	           							   + '	<td id="'+idx+'lblBigo118" class="tc" style="color:'+data.FixedAlarmList[2][idx]+'">'+data.FixedAlarmList[1][idx]+'</td>'
+	            						   + '</tr>';
+	        	} else {
+					if( idx == 48 ) {
+						var tagDccInfoListBody2 = $("#118Body2");
+						
+						tagDccInfoListBody2.empty();
+						tagDccInfoListBody2.append(tagDccInfoListBodyStr);
+						
+						tagDccInfoListBodyStr = '';
+					}
+					tagDccInfoListBodyStr += '<tr>'
+	             						   + '	<td id="'+idx+'lblTitle118" class="tc" style="color:'+data.FixedAlarmList[2][idx]+'"></td>'
+	           							   + '	<td id="'+idx+'lblCI118" class="tc" style="color:'+data.FixedAlarmList[2][idx]+'"></td>'
+	            						   + '	<td id="'+idx+'lblStart118" class="tc" style="color:'+data.FixedAlarmList[2][idx]+'">'+data.FixedAlarmList[0][idx]+'</td>'
+	           							   + '	<td id="'+idx+'lblBigo118" class="tc" style="color:'+data.FixedAlarmList[2][idx]+'">'+data.FixedAlarmList[1][idx]+'</td>'
+	            						   + '</tr>';
+				}
+			}
+			var tagDccInfoListBody3 = $("#118Body3");
+			
+			tagDccInfoListBody3.empty();
+			tagDccInfoListBody3.append(tagDccInfoListBodyStr);
+		} else {
+			tagDccInfoListBody = $("#118Body1");
+			for( var idx=0;idx<24;idx++ ) {
+				tagDccInfoListBodyStr += '<tr>'
+             						   + '	<td id="'+idx+'lblTitle118" class="tc"></td>'
+           							   + '	<td id="'+idx+'lblCI118" class="tc"></td>'
+            						   + '	<td id="'+idx+'lblStart118" class="tc"></td>'
+           							   + '	<td id="'+idx+'lblBigo118" class="tc"></td>'
+            						   + '</tr>';
+            }
+            tagDccInfoListBody.empty();
+			tagDccInfoListBody.append(tagDccInfoListBodyStr);
+			tagDccInfoListBodyStr = '';
+			for( var idx=24;idx<48;idx++ ) {
+				tagDccInfoListBodyStr += '<tr>'
+             						   + '	<td id="'+idx+'lblTitle118" class="tc"></td>'
+           							   + '	<td id="'+idx+'lblCI118" class="tc"></td>'
+            						   + '	<td id="'+idx+'lblStart118" class="tc"></td>'
+           							   + '	<td id="'+idx+'lblBigo118" class="tc"></td>'
+            						   + '</tr>';
+            }
+            var tagDccInfoListBody2 = $("#118Body2");
+            tagDccInfoListBody2.empty();
+			tagDccInfoListBody2.append(tagDccInfoListBodyStr);
+			tagDccInfoListBodyStr = '';
+			for( var idx=48;idx<72;idx++ ) {
+				tagDccInfoListBodyStr += '<tr>'
+             						   + '	<td id="'+idx+'lblTitle118" class="tc"></td>'
+           							   + '	<td id="'+idx+'lblCI118" class="tc"></td>'
+            						   + '	<td id="'+idx+'lblStart118" class="tc"></td>'
+           							   + '	<td id="'+idx+'lblBigo118" class="tc"></td>'
+            						   + '</tr>';
+            }
+            var tagDccInfoListBody2 = $("#118Body3");
+            tagDccInfoListBody2.empty();
+			tagDccInfoListBody2.append(tagDccInfoListBodyStr);
+		}
+	} else if( data.BaseSearch.pType == '276') {
+		if( typeof data.FixedAlarmList[0][0] != 'undefined' ) {
+			tagDccInfoListBody = $("#276Body1");
+			
+			for( var idx=0;idx<24;idx++ ) {
+				if( idx < 12 ) {
+					tagDccInfoListBodyStr += '<tr>';
+					if( idx%2 == 0 ) {
+						tagDccInfoListBodyStr += '	<td id="'+(idx/2)+'lblTitle276" class="tc" rowspan="2"></td>';
+					}
+					tagDccInfoListBodyStr += '	<td id="'+idx+'lblCI276" class="tc"></td>'
+										   + '	<td id="'+idx+'lblStart276" class="tc">'+data.FixedAlarmList[0][idx]+'</td>'
+										   + '	<td id="'+idx+'lblEnd276" class="tc">'+data.FixedAlarmList[1][idx]+'</td>'
+										   + '	<td id="'+idx+'lblCha276" class="tc">'+data.FixedAlarmList[2][idx]+'</td>'
+										   + '</tr>';
+				} else {
+					if( idx == 12 ) {
+						tagDccInfoListBody.empty();
+						tagDccInfoListBody.append(tagDccInfoListBodyStr);
+						
+						tagDccInfoListBodyStr = '';
+					}
+					tagDccInfoListBodyStr += '<tr>';
+					if( idx%2 == 0 ) {
+						tagDccInfoListBodyStr += '	<td id="'+(idx/2)+'lblTitle276" class="tc" rowspan="2"></td>';
+					}
+					tagDccInfoListBodyStr += '	<td id="'+idx+'lblCI276" class="tc"></td>'
+										   + '	<td id="'+idx+'lblStart276" class="tc">'+data.FixedAlarmList[0][idx]+'</td>'
+										   + '	<td id="'+idx+'lblEnd276" class="tc">'+data.FixedAlarmList[1][idx]+'</td>'
+										   + '	<td id="'+idx+'lblCha276" class="tc">'+data.FixedAlarmList[2][idx]+'</td>'
+										   + '</tr>';
+				}
+			}
+			var tagDccInfoListBody2 = $("#276Body2");
+		
+			tagDccInfoListBody2.empty();
+			tagDccInfoListBody2.append(tagDccInfoListBodyStr);
+		} else {
+			tagDccInfoListBody = $("#276Body1");
+			
+			for( var idx=0;idx<24;idx++ ) {
+				if( idx < 12 ) {
+					tagDccInfoListBodyStr += '<tr>';
+					if( idx%2 == 0 ) {
+						tagDccInfoListBodyStr += '	<td id="'+(idx/2)+'lblTitle276" class="tc" rowspan="2"></td>';
+					}
+					tagDccInfoListBodyStr += '	<td id="'+idx+'lblCI276" class="tc"></td>'
+										   + '	<td id="'+idx+'lblStart276" class="tc"></td>'
+										   + '	<td id="'+idx+'lblEnd276" class="tc"></td>'
+										   + '	<td id="'+idx+'lblCha276" class="tc"></td>'
+										   + '</tr>';
+				} else {
+					if( idx == 12 ) {
+						tagDccInfoListBody.empty();
+						tagDccInfoListBody.append(tagDccInfoListBodyStr);
+						
+						tagDccInfoListBodyStr = '';
+					}
+					tagDccInfoListBodyStr += '<tr>';
+					if( idx%2 == 0 ) {
+						tagDccInfoListBodyStr += '	<td id="'+(idx/2)+'lblTitle276" class="tc" rowspan="2"></td>';
+					}
+					tagDccInfoListBodyStr += '	<td id="'+idx+'lblCI276" class="tc"></td>'
+										   + '	<td id="'+idx+'lblStart276" class="tc"></td>'
+										   + '	<td id="'+idx+'lblEnd276" class="tc"></td>'
+										   + '	<td id="'+idx+'lblCha276" class="tc"></td>'
+										   + '</tr>';
+				}
+			}
+			var tagDccInfoListBody2 = $("#276Body2");
+			
+			tagDccInfoListBody2.empty();
+			tagDccInfoListBody2.append(tagDccInfoListBodyStr);
+		}
+	} else if( data.BaseSearch.pType == '550') {
+		if( typeof data.FixedAlarmList[0][0] != 'undefined' ) {
+			tagDccInfoListBody = $("#550Body1");
+			
+			tagDccInfoListBodyStr += '<tr>'
+								   + '	<td class="tc" rowspan="6">1회</td>'
+								   + '	<td class="tc" rowspan="2">기계적 구동시간</td>'
+								   + '	<td id="0lblTitle550" class="tc"></td>'
+								   + '	<td id="0lblStartS550" class="tc">'+data.FixedAlarmList[0][0]+'</td>'
+								   + '	<td id="0lblChaS550" class="tc" rowspan="2" style="color:"'+data.FixedAlarmList[7][0]+'">'+data.FixedAlarmList[6][0]+'</td>'
+								   + '	<td class="tc" rowspan="2">≤ 2.25</td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td id="1lblTitle550" class="tc"></td>'
+								   + '	<td id="0lblEndS550" class="tc">'+data.FixedAlarmList[1][0]+'</td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td class="tc" rowspan="2">밸브 열림시간<br>(루프응답시간 포함)</td>'
+								   + '	<td id="2lblTitle550" class="tc"></td>'
+								   + '	<td id="0lblStartA550" class="tc">'+data.FixedAlarmList[2][0]+'</td>'
+								   + '	<td id="0lblChaA550" class="tc" rowspan="2" style="color:"'+data.FixedAlarmList[9][0]+'">'+data.FixedAlarmList[8][0]+'</td>'
+								   + '	<td class="tc" rowspan="2">≤ 4.75</td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td id="3lblTitle550" class="tc"></td>'
+								   + '	<td id="0lblEndA550" class="tc">'+data.FixedAlarmList[3][0]+'</td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td class="tc" rowspan="2">밸브 닫힘시간</td>'
+								   + '	<td id="4lblTitle550" class="tc"></td>'
+								   + '	<td id="0lblStartB550" class="tc">'+data.FixedAlarmList[4][0]+'</td>'
+								   + '	<td id="0lblChaB550" class="tc" rowspan="2" style="color:"'+data.FixedAlarmList[11][0]+'">'+data.FixedAlarmList[10][0]+'</td>'
+								   + '	<td class="tc" rowspan="2">7~15</td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td id="5lblTitle550" class="tc"></td>'
+								   + '	<td id="0lblEndB550" class="tc">'+data.FixedAlarmList[5][0]+'</td>'
+								   + '</tr>';
+								   
+			tagDccInfoListBody.empty();
+			tagDccInfoListBody.append(tagDccInfoListBodyStr);
+			
+			var tagDccInfoListBody2 = $("#550Body2");
+			var tagDccInfoListBodyStr2 = '';
+			
+			for( var ai=1;ai<10;ai++ ) {
+				tagDccInfoListBodyStr2 += '<tr>'
+									   + '	<td class="tc">'+(ai+1)+'회</td>'
+									   + '	<td id="'+ai+'lblStartA550" class="tc">'+data.FixedAlarmList[2][ai]+'</td>'
+									   + '	<td id="'+ai+'1lblEndA550" class="tc">'+data.FixedAlarmList[3][ai]+'</td>'
+									   + '	<td id="'+ai+'lblChaA550" class="tc" style="color:"'+data.FixedAlarmList[9][ai]+'">'+data.FixedAlarmList[8][ai]+'</td>'
+									   + '	<td class="tc">≤ 7</td>'
+									   + '</tr>';
+			}
+			tagDccInfoListBody2.empty();
+			tagDccInfoListBody2.append(tagDccInfoListBodyStr2);
+			
+			var tagDccInfoListBody3 = $("#550Body3");
+			var tagDccInfoListBodyStr3 = '';
+			
+			for( var bi=1;bi<10;bi++ ) {
+				tagDccInfoListBodyStr3 += '<tr>'
+									   + '	<td class="tc">'+(bi+1)+'회</td>'
+									   + '	<td id="'+bi+'lblStartB550" class="tc">'+data.FixedAlarmList[4][bi]+'</td>'
+									   + '	<td id="'+bi+'1lblEndB550" class="tc">'+data.FixedAlarmList[5][bi]+'</td>'
+									   + '	<td id="'+bi+'lblChaB550" class="tc" style="color:"'+data.FixedAlarmList[11][bi]+'">'+data.FixedAlarmList[10][bi]+'</td>'
+									   + '	<td class="tc">7~15</td>'
+									   + '</tr>';
+			}
+			tagDccInfoListBody3.empty();
+			tagDccInfoListBody3.append(tagDccInfoListBodyStr3);
+		} else {
+			tagDccInfoListBody = $("#550Body1");
+			
+			tagDccInfoListBodyStr += '<tr>'
+								   + '	<td class="tc" rowspan="6">1회</td>'
+								   + '	<td class="tc" rowspan="2">기계적 구동시간</td>'
+								   + '	<td id="0lblTitle550" class="tc"></td>'
+								   + '	<td id="0lblStartS550" class="tc"></td>'
+								   + '	<td id="0lblChaS550" class="tc" rowspan="2"></td>'
+								   + '	<td class="tc" rowspan="2">≤ 2.25</td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td id="1lblTitle550" class="tc"></td>'
+								   + '	<td id="0lblEndS550" class="tc"></td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td class="tc" rowspan="2">밸브 열림시간<br>(루프응답시간 포함)</td>'
+								   + '	<td id="2lblTitle550" class="tc"></td>'
+								   + '	<td id="0lblStartA550" class="tc"></td>'
+								   + '	<td id="0lblChaA550" class="tc" rowspan="2"></td>'
+								   + '	<td class="tc" rowspan="2">≤ 4.75</td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td id="3lblTitle550" class="tc"></td>'
+								   + '	<td id="0lblEndA550" class="tc"></td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td class="tc" rowspan="2">밸브 닫힘시간</td>'
+								   + '	<td id="4lblTitle550" class="tc"></td>'
+								   + '	<td id="0lblStartB550" class="tc"></td>'
+								   + '	<td id="0lblChaB550" class="tc" rowspan="2"></td>'
+								   + '	<td class="tc" rowspan="2">7~15</td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td id="5lblTitle550" class="tc"></td>'
+								   + '	<td id="0lblEndB550" class="tc"></td>'
+								   + '</tr>';
+								   
+			tagDccInfoListBody.empty();
+			tagDccInfoListBody.append(tagDccInfoListBodyStr);
+			
+			var tagDccInfoListBody2 = $("#550Body2");
+			var tagDccInfoListBodyStr2 = '';
+			
+			for( var ai=1;ai<10;ai++ ) {
+				tagDccInfoListBodyStr2 += '<tr>'
+									   + '	<td class="tc">'+(ai+1)+'회</td>'
+									   + '	<td id="'+ai+'lblStartA550" class="tc"></td>'
+									   + '	<td id="'+ai+'1lblEndA550" class="tc"></td>'
+									   + '	<td id="'+ai+'lblChaA550" class="tc"></td>'
+									   + '	<td class="tc">≤ 7</td>'
+									   + '</tr>';
+			}
+			tagDccInfoListBody2.empty();
+			tagDccInfoListBody2.append(tagDccInfoListBodyStr2);
+			
+			var tagDccInfoListBody3 = $("#550Body3");
+			var tagDccInfoListBodyStr3 = '';
+			
+			for( var bi=1;bi<10;bi++ ) {
+				tagDccInfoListBodyStr3 += '<tr>'
+									   + '	<td class="tc">'+(bi+1)+'회</td>'
+									   + '	<td id="'+bi+'lblStartB550" class="tc"></td>'
+									   + '	<td id="'+bi+'1lblEndB550" class="tc"></td>'
+									   + '	<td id="'+bi+'lblChaB550" class="tc"></td>'
+									   + '	<td class="tc">7~15</td>'
+									   + '</tr>';
+			}
+			tagDccInfoListBody3.empty();
+			tagDccInfoListBody3.append(tagDccInfoListBodyStr3);
+		}
+	} else if( data.BaseSearch.pType == 'core' ) {
+		if( typeof data.FixedAlarmList[0][0] != 'undefined' ) {
+			for( var idx=0;idx<24;idx ++ ) {
+				if( idx%2 == 0 ) {
+					tagDccInfoListBodyStr += '<tr>';
+					if( idx == 0 ) {
+						tagDccInfoListBodyStr += '	<td id="0lblTitleCha" class="tc" rowspan="12">채널 "G"</td>';
+					} else if( idx == 0 ) {
+						tagDccInfoListBodyStr += '	<td id="1lblTitleCha" class="tc" rowspan="12">채널 "H"</td>';
+					} else if( idx == 16 ) {
+						tagDccInfoListBody.empty();
+						tagDccInfoListBody.append(tagDccInfoListBodyStr);
+						
+						tagDccInfoListBodyStr = '<tr>'
+											  + '	<td id="2lblTitleCha" class="tc" rowspan="12">채널 "J"</td>';
+					}
+					tagDccInfoListBodyStr += '	<td id="'+(idx/2)+'lblLoop" class="tc" rowspan="3"></td>'
+										   + '	<td id="'+idx+'lblCICh" class="tc"></td>'
+										   + '	<td id="'+idx+'lblStartCha" class="tc">'+data.FixedAlarmList[0][idx]+'</td>'
+										   + '	<td id="'+idx+'lblEndCha" class="tc">'+data.FixedAlarmList[1][idx]+'</td>'
+										   + '	<td id="'+idx+'lblValCha" class="tc">'+data.FixedAlarmList[2][idx]+'</td>'
+										   + '</tr>'
+										   + '<tr>'
+										   + '	<td id="'+(idx+1)+'lblCICh" class="tc"></td>'
+										   + '	<td id="'+(idx+1)+'lblStartCha" class="tc">'+data.FixedAlarmList[0][idx+1]+'</td>'
+										   + '	<td id="'+(idx+1)+'lblEndCha" class="tc">'+data.FixedAlarmList[1][idx+1]+'</td>'
+										   + '	<td id="'+(idx+1)+'lblValCha" class="tc">'+data.FixedAlarmList[2][idx+1]+'</td>'
+										   + '</tr>'
+										   + '<tr>'
+										   + '	<td class="tc"></td>'
+										   + '	<td id="'+(idx/2)+'lblLoopDescr" class="tc" colspan="2"></td>'
+										   + '	<td id="'+(idx/2)+'lblValChaCha" class="tc">'+data.FixedAlarmList[3][idx/2]+'</td>'
+										   + '</tr>';
+				}
+				
+				if( idx == size-1 ) {
+					var tagDccInfoListBody2 = $("#coreBody2");
+					
+					tagDccInfoListBody2.empty();
+					tagDccInfoListBody2.append(tagDccInfoListBodyStr);
+				}
+			}
+		} else {
+			for( var idx=0;idx<24;idx++ ) {
+				if( idx < 16 ) {
+					tagDccInfoListBody = $("#coreBody1");
+					
+					if( idx%2 == 0 ) {
+						tagDccInfoListBodyStr += '<tr>'
+						if( idx == 0 ) {
+							tagDccInfoListBodyStr += '	<td id="0lblTitleCha" class="tc" rowspan="12">채널 "G"</td>';
+						} else if( idx == 0 ) {
+							tagDccInfoListBodyStr += '	<td id="1lblTitleCha" class="tc" rowspan="12">채널 "H"</td>';
+						} else if( idx == 16 ) {
+							tagDccInfoListBody.empty();
+							tagDccInfoListBody.append(tagDccInfoListBodyStr);
+							
+							tagDccInfoListBodyStr = '<tr>'
+												  + '	<td id="1lblTitleCha" class="tc" rowspan="12">채널 "J"</td>';
+						}
+						tagDccInfoListBodyStr += '	<td id="'+(idx/2)+'lblLoop" class="tc" rowspan="3"></td>'
+											   + '	<td id="'+idx+'lblCICh" class="tc"></td>'
+											   + '	<td id="'+idx+'lblStartCha" class="tc"></td>'
+											   + '	<td id="'+idx+'lblEndCha" class="tc"></td>'
+											   + '	<td id="'+idx+'lblValCha" class="tc"></td>'
+											   + '</tr>'
+											   + '<tr>'
+											   + '	<td id="'+(idx+1)+'lblCICh" class="tc"></td>'
+											   + '	<td id="'+(idx+1)+'lblStartCha" class="tc"></td>'
+											   + '	<td id="'+(idx+1)+'lblEndCha" class="tc"></td>'
+											   + '	<td id="'+(idx+1)+'lblValCha" class="tc"></td>'
+											   + '</tr>'
+											   + '<tr>'
+											   + '	<td class="tc"></td>'
+											   + '	<td id="'+(idx/2)+'lblLoopDescr" class="tc" colspan="2"></td>'
+											   + '	<td id="'+(idx/2)+'lblValChaCha" class="tc"></td>'
+											   + '</tr>';
+					}
+				}
+			}
+			var tagDccInfoListBody2 = $("#coreBody2");
+
+			tagDccInfoListBody2.empty();
+			tagDccInfoListBody2.append(tagDccInfoListBodyStr);
+		}
+	} else if( data.BaseSearch.pType == '285' ) {
+		tagDccInfoListBody = $("#285Body");
+		
+		if( typeof data.FixedAlarmList[0][0] != 'undefined' ) {
+			tagDccInfoListBodyStr += '<tr>'
+								   + '	<td class="tc" rowspan="2">K</td>'
+								   + '	<td class="tc">5#1, 6#1, 7#1</td>'
+								   + '	<td id="0lblMOI" class="tc" rowspan="2"></td>'
+								   + '	<td id="0lblMOIDate" class="tc" rowspan="2">'+data.FixedAlarmList[0][0]+'</td>'
+								   + '	<td id="0lblRelay" class="tc"></td>'
+								   + '	<td id="0lblLRF" class="tc"></td>'
+								   + '	<td id="0lblLRFDate" class="tc">'+data.FixedAlarmList[1][0]+'</td>'
+								   + '	<td id="0lblResult" class="tc">'+data.FixedAlarmList[2][0]+'</td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td class="tc">5#4, 6#4, 8#4</td>'
+								   + '	<td id="1lblRelay" class="tc"></td>'
+								   + '	<td id="1lblLRF" class="tc"></td>'
+								   + '	<td id="1lblLRFDate" class="tc">'+data.FixedAlarmList[1][1]+'</td>'
+								   + '	<td id="1lblResult" class="tc">'+data.FixedAlarmList[2][1]+'</td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td class="tc" rowspan="2">L</td>'
+								   + '	<td class="tc">7#4, 8#2</td>'
+								   + '	<td id="1lblMOI" class="tc" rowspan="2"></td>'
+								   + '	<td id="1lblMOIDate" class="tc" rowspan="2">'+data.FixedAlarmList[0][1]+'</td>'
+								   + '	<td id="2lblRelay" class="tc"></td>'
+								   + '	<td id="2lblLRF" class="tc"></td>'
+								   + '	<td id="2lblLRFDate" class="tc">'+data.FixedAlarmList[1][2]+'</td>'
+								   + '	<td id="2lblResult" class="tc">'+data.FixedAlarmList[2][2]+'</td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td class="tc">5#2, 7#2, 6#2</td>'
+								   + '	<td id="3lblRelay" class="tc"></td>'
+								   + '	<td id="3lblLRF" class="tc"></td>'
+								   + '	<td id="3lblLRFDate" class="tc">'+data.FixedAlarmList[1][3]+'</td>'
+								   + '	<td id="3lblResult" class="tc">'+data.FixedAlarmList[2][3]+'</td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td class="tc" rowspan="2">M</td>'
+								   + '	<td class="tc">6#3, 7#3, 8#3</td>'
+								   + '	<td id="2lblMOI" class="tc" rowspan="2"></td>'
+								   + '	<td id="2lblMOIDate" class="tc" rowspan="2">'+data.FixedAlarmList[0][2]+'</td>'
+								   + '	<td id="4lblRelay" class="tc"></td>'
+								   + '	<td id="4lblLRF" class="tc"></td>'
+								   + '	<td id="4lblLRFDate" class="tc">'+data.FixedAlarmList[1][4]+'</td>'
+								   + '	<td id="4lblResult" class="tc">'+data.FixedAlarmList[2][4]+'</td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td class="tc">8#4, 5#3</td>'
+								   + '	<td id="5lblRelay" class="tc"></td>'
+								   + '	<td id="5lblLRF" class="tc"></td>'
+								   + '	<td id="5lblLRFDate" class="tc">'+data.FixedAlarmList[1][5]+'</td>'
+								   + '	<td id="5lblResult" class="tc">'+data.FixedAlarmList[2][5]+'</td>'
+								   + '</tr>';
+	
+			tagDccInfoListBody.empty();
+			tagDccInfoListBody.append(tagDccInfoListBodyStr);
+    	} else {
+			tagDccInfoListBodyStr += '<tr>'
+								   + '	<td class="tc" rowspan="2">K</td>'
+								   + '	<td class="tc">5#1, 6#1, 7#1</td>'
+								   + '	<td id="0lblMOI" class="tc" rowspan="2"></td>'
+								   + '	<td id="0lblMOIDate" class="tc" rowspan="2"></td>'
+								   + '	<td id="0lblRelay" class="tc"></td>'
+								   + '	<td id="0lblLRF" class="tc"></td>'
+								   + '	<td id="0lblLRFDate" class="tc"></td>'
+								   + '	<td id="0lblResult" class="tc"></td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td class="tc">5#4, 6#4, 8#4</td>'
+								   + '	<td id="1lblRelay" class="tc"></td>'
+								   + '	<td id="1lblLRF" class="tc"></td>'
+								   + '	<td id="1lblLRFDate" class="tc"></td>'
+								   + '	<td id="1lblResult" class="tc"></td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td class="tc" rowspan="2">L</td>'
+								   + '	<td class="tc">7#4, 8#2</td>'
+								   + '	<td id="1lblMOI" class="tc" rowspan="2"></td>'
+								   + '	<td id="1lblMOIDate" class="tc" rowspan="2"></td>'
+								   + '	<td id="2lblRelay" class="tc"></td>'
+								   + '	<td id="2lblLRF" class="tc"></td>'
+								   + '	<td id="2lblLRFDate" class="tc"></td>'
+								   + '	<td id="2lblResult" class="tc"></td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td class="tc">5#2, 7#2, 6#2</td>'
+								   + '	<td id="3lblRelay" class="tc"></td>'
+								   + '	<td id="3lblLRF" class="tc"></td>'
+								   + '	<td id="3lblLRFDate" class="tc"></td>'
+								   + '	<td id="3lblResult" class="tc"></td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td class="tc" rowspan="2">M</td>'
+								   + '	<td class="tc">6#3, 7#3, 8#3</td>'
+								   + '	<td id="2lblMOI" class="tc" rowspan="2"></td>'
+								   + '	<td id="2lblMOIDate" class="tc" rowspan="2"></td>'
+								   + '	<td id="4lblRelay" class="tc"></td>'
+								   + '	<td id="4lblLRF" class="tc"></td>'
+								   + '	<td id="4lblLRFDate" class="tc"></td>'
+								   + '	<td id="4lblResult" class="tc"></td>'
+								   + '</tr>'
+								   + '<tr>'
+								   + '	<td class="tc">8#4, 5#3</td>'
+								   + '	<td id="5lblRelay" class="tc"></td>'
+								   + '	<td id="5lblLRF" class="tc"></td>'
+								   + '	<td id="5lblLRFDate" class="tc"></td>'
+								   + '	<td id="5lblResult" class="tc"></td>'
+								   + '</tr>';
+								   
+			tagDccInfoListBody.empty();
+			tagDccInfoListBody.append(tagDccInfoListBodyStr);
+		}
+	}
+}
