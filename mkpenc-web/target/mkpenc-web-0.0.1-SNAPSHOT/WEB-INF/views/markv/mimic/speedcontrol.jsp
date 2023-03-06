@@ -386,7 +386,7 @@
 	<!-- //footer -->
 </div>
 <!--  //wrap  -->
-
+<script type="text/javascript" src="<c:url value="/resources/js/range_control.js" />" charset="utf-8"></script>
 </body>
 </html>
 

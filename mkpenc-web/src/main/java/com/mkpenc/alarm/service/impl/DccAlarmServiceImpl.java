@@ -89,4 +89,14 @@ public class DccAlarmServiceImpl  implements DccAlarmService {
 	public List<DccAlarmInfo> selectFixedAlarm(DccSearchAlarm dccSearchAlarm) {
 		return dccAlarmMapper.selectFixedAlarm(dccSearchAlarm);
 	}
+	
+	@Override
+	public List<Map> selectGasInfo(DccSearchAlarm dccSearchAlarm) {
+		return dccAlarmMapper.selectGasInfo(dccSearchAlarm);
+	}
+	
+	@Override
+	public List<Map> selectStreamAIInfo(DccSearchAlarm dccSearchAlarm) {
+		return dccAlarmMapper.selectStreamAIInfo(dccSearchAlarm);
+	}
 }

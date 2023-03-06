@@ -65,6 +65,8 @@ public class DccSearchAlarm  extends BaseSearch {
 	private String loop;
 	private String ci;
 	
+	private String tValue;
+	
 	/**
 	 * @return the hogiHeader
 	 */
@@ -640,5 +642,17 @@ public class DccSearchAlarm  extends BaseSearch {
 	 */
 	public void setCi(String ci) {
 		this.ci = ci;
+	}
+	/**
+	 * @return the tValue
+	 */
+	public String gettValue() {
+		return tValue;
+	}
+	/**
+	 * @param tValue the tValue to set
+	 */
+	public void settValue(String tValue) {
+		this.tValue = tValue;
 	}
 }

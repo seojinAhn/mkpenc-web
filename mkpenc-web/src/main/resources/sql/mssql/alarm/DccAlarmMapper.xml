@@ -418,4 +418,59 @@
 			ORDER BY ALMDATE ASC
 		</if>
 	</select>
+	
+	<select id="selectGasInfo" parameterType="DccSearchAlarm" resultType="java.util.Map">
+		SELECT
+		<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"0")'>
+			TOP 1
+		</if>
+			SCANTIME,
+		<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"2")'>
+			${tValue} AS TVALUE
+		</if>
+		<if test='!@org.apache.commons.lang3.StringUtils@equals(pType,"2")'>
+			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and "X".equals(sXYGubun)'>
+				TVALUE13 AS TVALUE
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and !"X".equals(sXYGubun)'>
+				TVALUE14 AS TVALUE
+			</if>
+		</if>
+			FROM LOG_${sHogi}DCC_TREND
+		<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"2")'>
+			WHERE SEQ = #{seq}
+		</if>
+		<if test='!@org.apache.commons.lang3.StringUtils@equals(pType,"2")'>
+			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and "X".equals(sXYGubun)'>
+				WHERE SEQ = 60
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and !"X".equals(sXYGubun)'>
+				WHERE SEQ = 70
+			</if>
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"0") or @org.apache.commons.lang3.StringUtils@equals(pType,"2")'>
+			AND SCANTIME = #{endDate}
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"1")'>
+			AND SCANTIME between #{startDate} AND #{endDate}
+		</if>
+		<if test='!@org.apache.commons.lang3.StringUtils@equals(pType,"2")'>
+			ORDER BY SCANTIME DESC
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"2")'>
+			ORDER BY SCANTIME ASC
+		</if>
+	</select>
+	
+	<select id="selectStreamAIInfo" parameterType="DccSearchAlarm" resultType="java.util.Map">
+		SELECT
+			TBLNO,
+			FLDNO,
+			BSCAL
+		FROM MST_TAG_DCC
+		WHERE IHOGI = #{sHogi}
+		AND XYGUBUN = #{sXYGubun}
+		AND IOTYPE = 'AI'
+		AND CONVERT(INT, ADDRESS) = #{address}
+	</select>
 </mapper>

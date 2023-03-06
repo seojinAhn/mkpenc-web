@@ -267,15 +267,31 @@
 		});
 		
 		$(document.body).delegate('#3', 'click', function() {
-			if( $("#cboUGrpName").val() == '7' ) {
-				setConst('285');
-			}
+			var uGrpName = $("#cboUGrpName option:selected").val();
+			hogiHeader = '3';
+			
+			callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
 		});
 		
 		$(document.body).delegate('#4', 'click', function() {
-			if( $("#cboUGrpName").val() == '7' ) {
-				setConst('285');
-			}
+			var uGrpName = $("#cboUGrpName option:selected").val();
+			hogiHeader = '4';
+			
+			callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
+		});
+		
+		$(document.body).delegate('#X', 'click', function() {
+			var uGrpName = $("#cboUGrpName option:selected").val();
+			xyHeader = 'X';
+			
+			callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
+		});
+		
+		$(document.body).delegate('#Y', 'click', function() {
+			var uGrpName = $("#cboUGrpName option:selected").val();
+			xyHeader = 'Y';
+			
+			callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
 		});
 		
 		$("#cboUGrpName").change(function () {
@@ -426,6 +442,8 @@
 	}
 	
 	function callBody(uGrpName) {
+		console.log(hogiHeader);
+		console.log(xyHeader);
 		var startDate = $("#selectSDate").val()+':00.000';
 		var endDate = $("#selectEDate").val()+':00.000';
 		

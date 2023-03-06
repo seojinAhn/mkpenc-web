@@ -87,7 +87,7 @@
 		if( tooltipText.indexOf(":]") > -1 ) {
 			tooltipText = tooltipText.replace(":]","]");
 		}
-		$("#"+id).attr("title",tooltipText);
+		$("#val"+id).attr("title",tooltipText);
 	}
 	
 	function toCSV() {
@@ -97,13 +97,12 @@
 	}
 
 	$(function(){
-		if( $("#hogiHeader4").attr("class") == 'current' && $("#hogiHeader4").attr("class") != 'undefined' && $("#hogiHeader4").attr("class") != '') {
+		if( $("input:radio[id='4']").is(":checked") ) {
 			hogiHeader = "4";
 		} else {
 			hogiHeader = "3";
 		}
-		
-		if( $("input:checkbox[id='xy']").is(":checked") ) {
+		if( $("input:radio[id='Y']").is(":checked") ) {
 			xyHeader = "Y";
 		} else {
 			xyHeader = "X";
@@ -112,29 +111,27 @@
 		var lblDateVal = '${BaseSearch.hogi}'+'${BaseSearch.xyGubun}'+' '+'${DccLogTrendInfoList[0].SCANTIME}';
 		$("#lblDate").text(lblDateVal);
 		
-		$(document.body).delegate('#hogiHeader3', 'click', function() {
+		$(document.body).delegate('#3', 'click', function() {
 			setTimer('3',xyHeader,0);
 		});
-		$(document.body).delegate('#hogiHeader4', 'click', function() {
+		$(document.body).delegate('#4', 'click', function() {
 			setTimer('4',xyHeader,0);
 		});
-		$(document.body).delegate('#xy', 'click', function() {
-			if( $("input:checkbox[id='xy']").is(":checked") ) {
-				xyHeader = "Y";
-			} else {
-				xyHeader = "X";
-			}
-			setTimer(hogiHeader,xyHeader,0);
+		$(document.body).delegate('#X', 'click', function() {
+			setTimer(hogiHeader,'X',0);
+		});
+		$(document.body).delegate('#Y', 'click', function() {
+			setTimer(hogiHeader,'Y',0);
 		});
 		
 		$(document.body).delegate('#dccStatusSGP label', 'dblclick', function() {
-			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
+			var cId = this.id.replaceAll('unit','').replaceAll('val','');
 			if( cId != null && cId != '' && cId != 'undefined' ) {
 				showTag(cId,tDccTagSeq[cId]);
 			}
 		});
 		$(document.body).delegate('#dccStatusSGP label', 'mouseover focus', function() {
-			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
+			var cId = this.id.replaceAll('unit','').replaceAll('val','');
 			showTooltip(cId);
 		});
 		
@@ -364,7 +361,7 @@
                             <th>SG PRESSURE SETPOINT</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="1" class="full flex_end">${DccLogTrendInfoList[0].TVALUE2}</label>
+                                    <label id="val1" class="full flex_end">${DccLogTrendInfoList[0].TVALUE2}</label>
                                     <label id="unit1" class="full">${DccTagInfoList[1].unit}</label>
                                 </div>
                             </td>
@@ -373,7 +370,7 @@
                             <th>SG PRESSURE SETPOINT</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="2" class="full flex_end">${DccLogTrendInfoList[0].TVALUE3}</label>
+                                    <label id="val2" class="full flex_end">${DccLogTrendInfoList[0].TVALUE3}</label>
                                     <label id="unit2" class="full">${DccTagInfoList[2].unit}</label>
                                 </div>
                             </td>
@@ -382,7 +379,7 @@
                             <th>SG PRESSURE ERROR</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="3" class="full flex_end">${DccLogTrendInfoList[0].TVALUE4}</label>
+                                    <label id="val3" class="full flex_end">${DccLogTrendInfoList[0].TVALUE4}</label>
                                     <label id="unit3" class="full">${DccTagInfoList[3].unit}</label>
                                 </div>
                             </td>
@@ -391,7 +388,7 @@
                             <th>SGP CONTROL TURBINE</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="4" class="full flex_end">${DccLogTrendInfoList[0].TVALUE5}</label>
+                                    <label id="val4" class="full flex_end">${DccLogTrendInfoList[0].TVALUE5}</label>
                                     <label id="unit4" class="full">${DccTagInfoList[4].unit}</label>
                                 </div>
                             </td>
@@ -400,9 +397,9 @@
                             <th>MK-V:AVAIL FOR DCC/MODE</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="5" class="full flex_end">${DccLogTrendInfoList[0].TVALUE6}</label>
+                                    <label id="val5" class="full flex_end">${DccLogTrendInfoList[0].TVALUE6}</label>
                                     <label id="unit5" class="full">${DccTagInfoList[5].unit}</label>
-                                    <label id="6" class="full flex_end">${DccLogTrendInfoList[0].TVALUE6}</label>
+                                    <label id="val6" class="full flex_end">${DccLogTrendInfoList[0].TVALUE6}</label>
                                     <label id="unit6" class="full">${DccTagInfoList[6].unit}</label>
                                 </div>
                             </td>
@@ -411,7 +408,7 @@
                             <th>REACTOR POWER SETPOINT</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="7" class="full flex_end">${DccLogTrendInfoList[0].TVALUE8}</label>
+                                    <label id="val7" class="full flex_end">${DccLogTrendInfoList[0].TVALUE8}</label>
                                     <label id="unit7" class="full">${DccTagInfoList[7].unit}</label>
                                 </div>
                             </td>
@@ -420,7 +417,7 @@
                             <th>SETPOINT INTEGRAL</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="8" class="full flex_end">${DccLogTrendInfoList[0].TVALUE8}</label>
+                                    <label id="val8" class="full flex_end">${DccLogTrendInfoList[0].TVALUE8}</label>
                                     <label id="unit8" class="full">${DccTagInfoList[8].unit}</label>
                                 </div>
                             </td>
@@ -429,7 +426,7 @@
                             <th>REACTOR POWER</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="9" class="full flex_end">${DccLogTrendInfoList[0].TVALUE10}</label>
+                                    <label id="val9" class="full flex_end">${DccLogTrendInfoList[0].TVALUE10}</label>
                                     <label id="unit9" class="full">${DccTagInfoList[9].unit}</label>
                                 </div>
                             </td>
@@ -438,7 +435,7 @@
                             <th>TURBINE LOAD</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="10" class="full flex_end">${DccLogTrendInfoList[0].TVALUE11}</label>
+                                    <label id="val10" class="full flex_end">${DccLogTrendInfoList[0].TVALUE11}</label>
                                     <label id="unit10" class="full">${DccTagInfoList[10].unit}</label>
                                 </div>
                             </td>
@@ -447,7 +444,7 @@
                             <th>SDV TOTAL LOAD</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="11" class="full flex_end">${DccLogTrendInfoList[0].TVALUE12}</label>
+                                    <label id="val11" class="full flex_end">${DccLogTrendInfoList[0].TVALUE12}</label>
                                     <label id="unit11" class="full">${DccTagInfoList[11].unit}</label>
                                 </div>
                             </td>
@@ -456,7 +453,7 @@
                             <th>CSDV OPENING</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="12" class="full flex_end">${DccLogTrendInfoList[0].TVALUE13}</label>
+                                    <label id="val12" class="full flex_end">${DccLogTrendInfoList[0].TVALUE13}</label>
                                     <label id="unit12" class="full">${DccTagInfoList[12].unit}</label>
                                 </div>
                             </td>
@@ -465,7 +462,7 @@
                             <th>ASDV OPENING</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="13" class="full flex_end">${DccLogTrendInfoList[0].TVALUE14}</label>
+                                    <label id="val13" class="full flex_end">${DccLogTrendInfoList[0].TVALUE14}</label>
                                     <label id="unit13" class="full">${DccTagInfoList[13].unit}</label>
                                 </div>
                             </td>
@@ -474,7 +471,7 @@
                             <th># OF VALVES ON MANUAL</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="14" class="full flex_end">${DccLogTrendInfoList[0].TVALUE15}</label>
+                                    <label id="val14" class="full flex_end">${DccLogTrendInfoList[0].TVALUE15}</label>
                                     <label id="unit14" class="full">${DccTagInfoList[14].unit}</label>
                                 </div>
                             </td>
@@ -483,9 +480,9 @@
                             <th>POISON PREVENT MODE</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="15" class="full flex_end">${DccLogTrendInfoList[0].TVALUE16}</label>
+                                    <label id="val15" class="full flex_end">${DccLogTrendInfoList[0].TVALUE16}</label>
                                     <label id="unit15" class="full">${DccTagInfoList[15].unit}</label>
-                                    <label id="16" class="full flex_end">${DccLogTrendInfoList[0].TVALUE17}</label>
+                                    <label id="val16" class="full flex_end">${DccLogTrendInfoList[0].TVALUE17}</label>
                                     <label id="unit16" class="full">${DccTagInfoList[16].unit}</label>
                                 </div>
                             </td>
@@ -494,9 +491,9 @@
                             <th>PRESSURE SETPOINT MODE</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="17" class="full flex_end">${DccLogTrendInfoList[0].TVALUE18}</label>
+                                    <label id="val17" class="full flex_end">${DccLogTrendInfoList[0].TVALUE18}</label>
                                     <label id="unit17" class="full">${DccTagInfoList[17].unit}</label>
-                                    <label id="18" class="full flex_end">${DccLogTrendInfoList[0].TVALUE19}</label>
+                                    <label id="val18" class="full flex_end">${DccLogTrendInfoList[0].TVALUE19}</label>
                                     <label id="unit18" class="full">${DccTagInfoList[18].unit}</label>
                                 </div>
                             </td>
@@ -505,7 +502,7 @@
                             <th>RATE OF SETPOINT CHANGE</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="19" class="full flex_end">${DccLogTrendInfoList[0].TVALUE20}</label>
+                                    <label id="val19" class="full flex_end">${DccLogTrendInfoList[0].TVALUE20}</label>
                                     <label id="unit19" class="full">${DccTagInfoList[19].unit}</label>
                                 </div>
                             </td>
@@ -812,4 +809,3 @@
 <script type="text/javascript" src="<c:url value="/resources/js/context_menu.js" />" charset="utf-8"></script>
 </body>
 </html>
-

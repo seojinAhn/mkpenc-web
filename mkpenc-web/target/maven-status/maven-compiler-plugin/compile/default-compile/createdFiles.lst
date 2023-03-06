@@ -16,6 +16,7 @@ com\mkpenc\admin\model\RestartCodeInfo.class
 com\mkpenc\common\mapper\BasDccMimicMapper.class
 com\mkpenc\common\annotaion\Model.class
 com\mkpenc\mimic\model\MarkvSearchMimic.class
+com\mkpenc\alarm\model\DccAlarmInfo.class
 com\mkpenc\tip\service\impl\DccTipServiceImpl.class
 com\mkpenc\tip\model\DccSearchTip.class
 com\mkpenc\trend\web\DccTrendContentsController.class

@@ -40,4 +40,9 @@ public interface DccAlarmMapper {
 	
 	//fixedtimecontrol
 	List<DccAlarmInfo> selectFixedAlarm(DccSearchAlarm dccSearchAlarm);
+	
+	//gaschromatograthy
+	List<Map> selectGasInfo(DccSearchAlarm dccSearchAlarm);
+	
+	List<Map> selectStreamAIInfo(DccSearchAlarm dccSearchAlarm);
 }

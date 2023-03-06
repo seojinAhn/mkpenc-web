@@ -215,7 +215,7 @@
 			}
 			
 			if( id != 'undefined' && id != null && id != '' ) {
-				$("#"+id).attr("title",tooltipText);
+				$("#val"+id).attr("title",tooltipText);
 			}
 		}
 	}
@@ -353,13 +353,12 @@
 	}
 	
 	$(function(){
-		if( $("#hogiHeader4").attr("class") == 'current' && $("#hogiHeader4").attr("class") != 'undefined' && $("#hogiHeader4").attr("class") != '') {
+		if( $("input:radio[id='4']").is(":checked") ) {
 			hogiHeader = "4";
 		} else {
 			hogiHeader = "3";
 		}
-		
-		if( $("input:checkbox[id='xy']").is(":checked") ) {
+		if( $("input:radio[id='Y']").is(":checked") ) {
 			xyHeader = "Y";
 		} else {
 			xyHeader = "X";
@@ -370,29 +369,27 @@
 		
 		setConst();
 		
-		$(document.body).delegate('#hogiHeader3', 'click', function() {
+		$(document.body).delegate('#3', 'click', function() {
 			setTimer('3',xyHeader,0);
 		});
-		$(document.body).delegate('#hogiHeader4', 'click', function() {
+		$(document.body).delegate('#4', 'click', function() {
 			setTimer('4',xyHeader,0);
 		});
-		$(document.body).delegate('#xy', 'click', function() {
-			if( $("input:checkbox[id='xy']").is(":checked") ) {
-				xyHeader = "Y";
-			} else {
-				xyHeader = "X";
-			}
-			setTimer(hogiHeader,xyHeader,0);
+		$(document.body).delegate('#X', 'click', function() {
+			setTimer(hogiHeader,'X',0);
+		});
+		$(document.body).delegate('#Y', 'click', function() {
+			setTimer(hogiHeader,'Y',0);
 		});
 		$(document.body).delegate('#dccStatusSTBForm label', 'dblclick', function() {
-			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
+			var cId = this.id.replaceAll('unit','').replaceAll('val','');
 			cId = getToolTipText(cId).split("||")[0];
 			if( cId != null && cId != '' && cId != 'undefined' && cId.indexOf('lbl') == -1 && cId.indexOf('shp') == -1 ) {
 				showTag(cId,tDccTagSeq[cId]);
 			}
 		});
 		$(document.body).delegate('#dccStatusSTBForm label', 'mouseover focus', function() {
-			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
+			var cId = this.id.replaceAll('unit','').replaceAll('val','');
 			showTooltip(cId);
 		});
 		$(document.body).delegate('#tagSearchTable tr', 'click', function() {
@@ -655,9 +652,9 @@
                             </th>
                             <td class="tc">-----------</td>
                             <th class="tc">SDS #1</th>
-                            <td class="tc"><label id="0">${DccLogTrendInfoList[0].TVALUE1}</label></td>
+                            <td class="tc"><label id="val0">${DccLogTrendInfoList[0].TVALUE1}</label></td>
                             <th class="tc">SDS #2</th>
-                            <td class="tc"><label id="3">${DccLogTrendInfoList[0].TVALUE4}</label></td>
+                            <td class="tc"><label id="val3">${DccLogTrendInfoList[0].TVALUE4}</label></td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
@@ -693,9 +690,9 @@
                             </th>
                             <td class="tc">-----------</td>
                             <th class="tc">PHP #3</th>
-                            <td class="tc"><label id="8">${DccLogTrendInfoList[0].TVALUE9}</label></td>
+                            <td class="tc"><label id="val8">${DccLogTrendInfoList[0].TVALUE9}</label></td>
                             <th class="tc">PHP #4</th>
-                            <td class="tc"><label id="9">${DccLogTrendInfoList[0].TVALUE10}</label></td>
+                            <td class="tc"><label id="val9">${DccLogTrendInfoList[0].TVALUE10}</label></td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
@@ -718,7 +715,7 @@
                             </td>
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
-                                    <label id="10" class="double flex_end">${DccLogTrendInfoList[0].TVALUE11}</label>
+                                    <label id="val10" class="double flex_end">${DccLogTrendInfoList[0].TVALUE11}</label>
                                     <label class="full"></label>
                                 </div>   
                             </td>
@@ -744,7 +741,7 @@
                             </td>
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
-                                    <label id="11" class="double flex_end">${DccLogTrendInfoList[0].TVALUE12}</label>
+                                    <label id="val11" class="double flex_end">${DccLogTrendInfoList[0].TVALUE12}</label>
                                     <label class="full"></label>
                                 </div>   
                             </td>
@@ -764,21 +761,21 @@
                             </th>
                             <td class="tc" rowspan="2">
                                 <div class="fx_form">
-                                    <label id="61" class="full flex_end">${DccLogTrendInfoList[0].TVALUE62}</label>
+                                    <label id="val61" class="full flex_end">${DccLogTrendInfoList[0].TVALUE62}</label>
                                     <label id="lblSPUnit2" class="full"></label>
                                 </div>                                  
                             </td>
                             <th class="tc">SG #1</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="12" class="double flex_end">${DccLogTrendInfoList[0].TVALUE13}</label>
+                                    <label id="val12" class="double flex_end">${DccLogTrendInfoList[0].TVALUE13}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">SG #2</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="15" class="double flex_end">${DccLogTrendInfoList[0].TVALUE16}</label>
+                                    <label id="val15" class="double flex_end">${DccLogTrendInfoList[0].TVALUE16}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -793,14 +790,14 @@
                             <th class="tc bd_l_line">SG #3</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="18" class="double flex_end">${DccLogTrendInfoList[0].TVALUE19}</label>
+                                    <label id="val18" class="double flex_end">${DccLogTrendInfoList[0].TVALUE19}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">SG #4</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="21" class="double flex_end">${DccLogTrendInfoList[0].TVALUE22}</label>
+                                    <label id="val21" class="double flex_end">${DccLogTrendInfoList[0].TVALUE22}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -821,14 +818,14 @@
                             <th class="tc">ROH #1</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="24" class="double flex_end">${DccLogTrendInfoList[0].TVALUE25}</label>
+                                    <label id="val24" class="double flex_end">${DccLogTrendInfoList[0].TVALUE25}</label>
                                     <label class="full"></label>
                                 </div>                                  
                             </td>
                             <th class="tc">ROH #2</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="25" class="double flex_end">${DccLogTrendInfoList[0].TVALUE26}</label>
+                                    <label id="val25" class="double flex_end">${DccLogTrendInfoList[0].TVALUE26}</label>
                                     <label class="full"></label>
                                 </div>                                  
                             </td>
@@ -843,14 +840,14 @@
                             <th class="tc bd_l_line">ROH #3</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="26" class="double flex_end">${DccLogTrendInfoList[0].TVALUE27}</label>
+                                    <label id="val26" class="double flex_end">${DccLogTrendInfoList[0].TVALUE27}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">ROH #4</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="27" class="double flex_end">${DccLogTrendInfoList[0].TVALUE28}</label>
+                                    <label id="val27" class="double flex_end">${DccLogTrendInfoList[0].TVALUE28}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -879,14 +876,14 @@
                             <th class="tc">Z #01</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="28" class="double flex_end">${DccLogTrendInfoList[0].TVALUE29}</label>
+                                    <label id="val28" class="double flex_end">${DccLogTrendInfoList[0].TVALUE29}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">Z #08</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="42" class="double flex_end">${DccLogTrendInfoList[0].TVALUE43}</label>
+                                    <label id="val42" class="double flex_end">${DccLogTrendInfoList[0].TVALUE43}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -901,14 +898,14 @@
                             <th class="tc bd_l_line">Z #02</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="30" class="double flex_end">${DccLogTrendInfoList[0].TVALUE31}</label>
+                                    <label id="val30" class="double flex_end">${DccLogTrendInfoList[0].TVALUE31}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">Z #09</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="44" class="double flex_end">${DccLogTrendInfoList[0].TVALUE45}</label>
+                                    <label id="val44" class="double flex_end">${DccLogTrendInfoList[0].TVALUE45}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -917,14 +914,14 @@
                             <th class="tc bd_l_line">Z #03</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="32" class="double flex_end">${DccLogTrendInfoList[0].TVALUE33}</label>
+                                    <label id="val32" class="double flex_end">${DccLogTrendInfoList[0].TVALUE33}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">Z #10</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="46" class="double flex_end">${DccLogTrendInfoList[0].TVALUE47}</label>
+                                    <label id="val46" class="double flex_end">${DccLogTrendInfoList[0].TVALUE47}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -933,14 +930,14 @@
                             <th class="tc bd_l_line">Z #04</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="34" class="double flex_end">${DccLogTrendInfoList[0].TVALUE35}</label>
+                                    <label id="val34" class="double flex_end">${DccLogTrendInfoList[0].TVALUE35}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">Z #11</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="48" class="double flex_end">${DccLogTrendInfoList[0].TVALUE49}</label>
+                                    <label id="val48" class="double flex_end">${DccLogTrendInfoList[0].TVALUE49}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -949,14 +946,14 @@
                             <th class="tc bd_l_line">Z #05</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="36" class="double flex_end">${DccLogTrendInfoList[0].TVALUE37}</label>
+                                    <label id="val36" class="double flex_end">${DccLogTrendInfoList[0].TVALUE37}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">Z #12</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="50" class="double flex_end">${DccLogTrendInfoList[0].TVALUE51}</label>
+                                    <label id="val50" class="double flex_end">${DccLogTrendInfoList[0].TVALUE51}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -965,14 +962,14 @@
                             <th class="tc bd_l_line">Z #06</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="38" class="double flex_end">${DccLogTrendInfoList[0].TVALUE39}</label>
+                                    <label id="val38" class="double flex_end">${DccLogTrendInfoList[0].TVALUE39}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">Z #13</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="52" class="double flex_end">${DccLogTrendInfoList[0].TVALUE53}</label>
+                                    <label id="val52" class="double flex_end">${DccLogTrendInfoList[0].TVALUE53}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -981,14 +978,14 @@
                             <th class="tc bd_l_line">Z #07</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="40" class="double flex_end">${DccLogTrendInfoList[0].TVALUE41}</label>
+                                    <label id="val40" class="double flex_end">${DccLogTrendInfoList[0].TVALUE41}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">Z #14</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="54" class="double flex_end">${DccLogTrendInfoList[0].TVALUE55}</label>
+                                    <label id="val54" class="double flex_end">${DccLogTrendInfoList[0].TVALUE55}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>

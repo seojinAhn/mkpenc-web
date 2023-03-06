@@ -282,15 +282,14 @@
 	}
 	
 	$(function() {
-		if( $("#hogiHeader4").attr("class") == 'current' && $("#hogiHeader4").attr("class") != 'undefined' && $("#hogiHeader4").attr("class") != '') {
+		if( $("input:radio[id='4']").is(":checked") ) {
 			hogiHeader = "4";
 			$("#iHogi").val("4").prop("selected",true);
 		} else {
 			hogiHeader = "3";
 			$("#iHogi").val("3").prop("selected",true);
 		}
-		
-		if( $("input:checkbox[id='xy']").is(":checked") ) {
+		if( $("input:radio[id='Y']").is(":checked") ) {
 			xyHeader = "Y";
 			$("#xyGubunX").prop("checked",false);
 			$("#xyGubunY").prop("checked",true);
@@ -326,43 +325,45 @@
 			createSelect("wiba",wibaList);
 		}
 		
-		$(document.body).delegate('#hogiHeader3', 'click', function() {
+		$(document.body).delegate('#3', 'click', function() {
 			hogiHeader = "3";
 			sendPage(1);
 		});
-		$(document.body).delegate('#hogiHeader4', 'click', function() {
+		$(document.body).delegate('#4', 'click', function() {
 			hogiHeader = "4";
 			sendPage(1);
 		});
-		$(document.body).delegate('#xy', 'click', function() {
-			if( $("input:checkbox[id='xy']").is(":checked") ) {
-				xyHeader = "Y";
-				$("#xyGubunY").prop("checked",true);
-				$("#xyGubunX").prop("checked",false);
-				$("#xyGubunY").val("Y");
-				$("#xyGubunX").val("");
-				$("#FTAI").css("display","none");
-				$("#FTDT").css("display","none");
-			} else {
-				xyHeader = "X";
-				$("#xyGubunX").prop("checked",true);
-				$("#xyGubunY").prop("checked",false);
-				$("#xyGubunY").val("");
-				$("#xyGubunX").val("X");
-				$("#FTAI").css("display","");
-				$("#FTDT").css("display","");
-			}
+		$(document.body).delegate('#X', 'click', function() {
+			xyHeader = "X";
+			$("#xyGubunX").prop("checked",true);
+			$("#xyGubunY").prop("checked",false);
+			$("#xyGubunY").val("");
+			$("#xyGubunX").val("X");
+			$("#FTAI").css("display","");
+			$("#FTDT").css("display","");
+			sendPage(1);
+		});
+		$(document.body).delegate('#Y', 'click', function() {
+			xyHeader = "Y";
+			$("#xyGubunY").prop("checked",true);
+			$("#xyGubunX").prop("checked",false);
+			$("#xyGubunY").val("Y");
+			$("#xyGubunX").val("");
+			$("#FTAI").css("display","none");
+			$("#FTDT").css("display","none");
 			sendPage(1);
 		});
 		$(document.body).delegate('#xyGubunX', 'click', function() {
-			$("input:checkbox[id='xy']").prop("checked",false);
+			$("input:radio[id='X']").prop("checked",true);
+			$("input:radio[id='Y']").prop("checked",false);
 			$("#xyGubunX").val("X");
 			$("#xyGubunY").val("");
 			$("#FTAI").css("display","");
 			$("#FTDT").css("display","");
 		});
 		$(document.body).delegate('#xyGubunY', 'click', function() {
-			$("input:checkbox[id='xy']").prop("checked",true);
+			$("input:radio[id='xyHeaderX']").prop("checked",false);
+			$("input:radio[id='xyHeaderY']").prop("checked",true);
 			$("#xyGubunX").val("");
 			$("#xyGubunY").val("Y");
 			$("#FTAI").css("display","none");
@@ -541,11 +542,11 @@
 			if($("#iHogi option:selected").val() == ""){
 				$("#iHogi").val("");
 			} else if( $("#iHogi option:selected").val() == "3" ){
-				$("#hogiHeader3").attr("class","current");
-				$("#hogiHeader4").attr("class","");
+				$("input:radio[id='3']").prop("checked",true);
+				$("input:radio[id='4']").prop("checked",false);
 			} else if( $("#iHogi option:selected").val() == "4" ){
-				$("#hogiHeader3").attr("class","");
-				$("#hogiHeader4").attr("class","current");
+				$("input:radio[id='3']").prop("checked",false);
+				$("input:radio[id='4']").prop("checked",true);
 			}
 		});
 		

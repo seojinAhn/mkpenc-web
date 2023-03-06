@@ -83,11 +83,11 @@
                                       <a href="#none">AUX</a>          
                                       <ul>          
                                           <li><a href="#none">STEAM VALVE</a></li>         
-                                          <li><a href="#none">TBN STEAM SEAL SYS</a></li>          
-                                          <li><a href="#none">LUBE OIL SYS</a></li>          
+                                          <li><a href="/markv/mimic/tbnstemsealsys">TBN STEAM SEAL SYS</a></li>          
+                                          <li><a href="/markv/mimic/lubeoilsys">LUBE OIL SYS</a></li>          
                                           <li><a href="#none">HYDRAULIC POWE</a></li>          
                                           <li><a href="/markv/mimic/drainvalvespos">DRAIN VALVES POS</a></li>          
-                                          <li><a href="#none">SEAL OIL SYS</a></li>          
+                                          <li><a href="/markv/mimic/sealoilsys">SEAL OIL SYS</a></li>          
                                           <li><a href="#none">STATOR WATER SYS</a></li>          
                                           <li><a href="#none">COLLING GAS SYS</a></li>          
                                           <li><a href="/markv/mimic/gentcrtd1">GEN TC/RTD-1</a></li>          
@@ -101,7 +101,7 @@
                                       <ul>          
                                           <li><a href="#none">FRONT STANDARD</a></li>         
                                           <li><a href="#none">FA SOLENOID</a></li>          
-                                          <li><a href="#none">HYDRAULIC TRIP SYS</a></li>            
+                                          <li><a href="/markv/mimic/hydraulictripsys">HYDRAULIC TRIP SYS</a></li>            
                                           <li><a href="/markv/mimic/valvetightness">VALVE TIGHTNESS</a></li>            
                                       </ul>         
                                   </li>         

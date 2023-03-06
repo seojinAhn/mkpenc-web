@@ -973,3 +973,78 @@ function mbr_FixedTimeControlCallback(data){
 		}
 	}
 }
+
+function mbr_RuntimerGCCallback(data){
+	
+	var tagDccInfoListBody = $("#lblTitle");
+	var tagDccInfoListBody1 = $("#gasSummary");
+	var tagDccInfoListBody2 = $("#gasDensityBody");
+	var tagDccInfoListBodyStr = "";
+	
+	tagDccInfoListBody.empty();
+	tagDccInfoListBody.append('<strong>'+data.LblTitle+'</strong>');
+	
+	if( typeof data.DccTagList[0] != 'undefined' ) {
+		tagDccInfoListBodyStr += '<label>[ 수소<strong>'+data.DccTagList[0].Value+'</strong>%] ,</label>'
+							   + '<label>[ 수소<strong>'+data.DccTagList[1].Value+'</strong>%] ,</label>'
+							   + '<label>[ 수소<strong>'+data.DccTagList[2].Value+'</strong>%] ,</label>'
+							   + '<label>[ 수소<strong>'+data.DccTagList[3].Value+'</strong>%]</label>';
+	} else {
+		tagDccInfoListBodyStr += '<label>[ 수소<strong></strong>%] ,</label>'
+							   + '<label>[ 수소<strong></strong>%] ,</label>'
+							   + '<label>[ 수소<strong></strong>%] ,</label>'
+							   + '<label>[ 수소<strong></strong>%]</label>';
+	}
+	
+	tagDccInfoListBody1.empty();
+	tagDccInfoListBody1.append(tagDccInfoListBodyStr);
+	
+	tagDccInfoListBodyStr = '';
+	if( typeof data.LblH2[0] != 'undefined' ) {
+		for( var idx=0;idx<6;idx++ ) {
+			tagDccInfoListBodyStr += '<tr>';
+			if( idx == 0 ) {
+	        	tagDccInfoListBodyStr += '	<td>LZC RU 전단</td>';
+	        } else if( idx == 1 ) {
+	        	tagDccInfoListBodyStr += '	<td>LZC RU 후단</td>';
+			} else if( idx == 2 ) {
+	        	tagDccInfoListBodyStr += '	<td>MOD RU 전단</td>';
+			} else if( idx == 3 ) {
+	        	tagDccInfoListBodyStr += '	<td>MOD RU 후단</td>';
+			} else if( idx == 4 ) {
+	        	tagDccInfoListBodyStr += '	<td>HI COLLECTION</td>';
+			} else if( idx == 5 ) {
+	        	tagDccInfoListBodyStr += '	<td>HT DST</td>';
+			}
+			tagDccInfoListBodyStr += '	<td class="tc"><label id="lblH25">'+data.LblH2[idx]+'</label></td>'
+								   + '	<td class="tc"><label id="lblO25">'+data.LblO2[idx]+'</label></td>'
+								   + '	<td class="tc"><label id="lblN25">'+data.LblN2[idx]+'</label></td>'
+								   + '	<td class="tc"><label id="lblD25">'+data.LblD2[idx]+'</label></td>'
+								   + '</tr>';
+		}
+	} else {
+		for( var idx=0;idx<6;idx++ ) {
+			tagDccInfoListBodyStr += '<tr>';
+			if( idx == 0 ) {
+	        	tagDccInfoListBodyStr += '	<td>LZC RU 전단</td>';
+	        } else if( idx == 1 ) {
+	        	tagDccInfoListBodyStr += '	<td>LZC RU 후단</td>';
+			} else if( idx == 2 ) {
+	        	tagDccInfoListBodyStr += '	<td>MOD RU 전단</td>';
+			} else if( idx == 3 ) {
+	        	tagDccInfoListBodyStr += '	<td>MOD RU 후단</td>';
+			} else if( idx == 4 ) {
+	        	tagDccInfoListBodyStr += '	<td>HI COLLECTION</td>';
+			} else if( idx == 5 ) {
+	        	tagDccInfoListBodyStr += '	<td>HT DST</td>';
+			}
+			tagDccInfoListBodyStr += '	<td class="tc"><label id="lblH25"></label></td>'
+								   + '	<td class="tc"><label id="lblO25"></label></td>'
+								   + '	<td class="tc"><label id="lblN25"></label></td>'
+								   + '	<td class="tc"><label id="lblD25"></label></td>'
+								   + '</tr>';
+		}
+	}
+	tagDccInfoListBody2.empty();
+	tagDccInfoListBody2.append(tagDccInfoListBodyStr);
+}

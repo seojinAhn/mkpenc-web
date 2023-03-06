@@ -24,303 +24,138 @@
 	<!-- header_wrap -->
 	<%@ include file="/WEB-INF/views/include/include-dcc-header.jspf" %>
 	<!-- header_wrap -->
-<!-- container -->
+	<!-- container -->
 	<div class="container">
 		<!-- contents -->
 		<div class="contents">
 			<!-- page_title -->
 			<div class="page_title">
 				<h3>FUEL HANDLING SYSTEM</h3>
-				<div class="bc"><span>DCC</span><span>Mimic</span><span>FUEL HANDLING</span><strong>F_H_MAIN</strong></div>				
+				<div class="bc"><span>DCC</span><span>Mimic</span><span>FUEL</span><strong>FUEL HANDLING SYSTEM</strong></div>
 			</div>
 			<!-- //page_title -->
-			<div class="img_wrap condensate_system">
+			<div class="img_wrap fuel_handling">
                 <!-- range_slider -->
                 <div class="range_slider">
                     <input type="range" id="opacity-change" value="100" min="20" max="100">
                     <span>1</span>
                 </div>
                 <div class="img_mask"></div>
-                <a href="#none" class="link_txt" style="top:60px;right:350px;">Main System<br>Pressure System</a>
-                <a href="#none" class="link_txt" style="top:166px;left:146px;">S/G F/W System</a>
-                <!-- ///range_slider -->              
-                <div class="chart_block small" style="top:30px;left:140px;">
-                    <h4>Dearator</h4>
+                <a href="" class="link_txt" style="top:150px;left:540px;">F/M (A)</a>
+                <a href="" class="link_txt" style="top:150px;right:490px;">F/M (C)</a>
+                <!-- ///range_slider -->         
+                <div class="chart_block small wide" style="top:180px;left:140px;">
+                    <h4>Control Pressure (A side)</h4>
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <span>T</span>
-                                <label>122.03</label>
-                                <span>DEG C</span>
+                                <span>Mag.Pr.</span>
+                                <span>0.422</span>
+                                <span>MPa</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <span>L</span>
-                                <label>3302.8</label>
-                                <span>MM</span>
+                                <span>C-Ram Pr.</span>
+                                <span>0.000</span>
+                                <span>MPa</span>
                             </p>
                         </div>
                     </div>
                 </div>
-                <div class="chart_block small" style="top:204px;left:140px;">
-                    <h4>COND Outlet Temp(℃)</h4>
+                <div class="chart_block small wide" style="top:180px;right:100px;">
+                    <h4>Control Pressure (C side)</h4>
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <span>CD 1 A</span>
-                                <label>29.30</label>
+                                <span>Mag.Pr.</span>
+                                <span>0.422</span>
+                                <span>MPa</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <span>CD 1 B</span>
-                                <label>29.30</label>
-                            </p>
-                        </div>
-                        <div class="summary">
-                            <p>
-                                <span>CD 2 A</span>
-                                <label>29.30</label>
-                            </p>
-                        </div>
-                        <div class="summary">
-                            <p>
-                                <span>CD 2 B</span>
-                                <label>29.30</label>
-                            </p>
-                        </div>
-                        <div class="summary">
-                            <p>
-                                <span>CD 3 A</span>
-                                <label>29.30</label>
-                            </p>
-                        </div>
-                        <div class="summary">
-                            <p>
-                                <span>CD 3 B</span>
-                                <label>29.30</label>
+                                <span>C-Ram Pr.</span>
+                                <span>0.000</span>
+                                <span>MPa</span>
                             </p>
                         </div>
                     </div>
-                </div>
-                <div class="chart_block small" style="top:30px;right:160px;">
-                    <h4>COND</h4>
+                </div>                
+                <div class="chart_block small wide" style="top:230px;left:420px;">
+                    <h4>Ram Position (A side)</h4>
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <span>L</span>
-                                <label>536.2</label>
-                                <span>MM</span>
+                                <span>B-Ram Position</span>
+                                <span>-0.9</span>
+                                <span>CM</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <span>VAC</span>
-                                <label>5.12</label>
-                                <span>KPAA</span>
+                                <span>C-Ram Position</span>
+                                <span>0.5</span>
+                                <span>CM</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <span>1T</span>
-                                <label>30.75</label>
-                                <span>DEG C</span>
-                            </p>
-                        </div>
-                        <div class="summary">
-                            <p>
-                                <span>1T</span>
-                                <label>30.75</label>
-                                <span>DEG C</span>
-                            </p>
-                        </div>
-                        <div class="summary">
-                            <p>
-                                <span>1T</span>
-                                <label>30.75</label>
-                                <span>DEG C</span>
+                                <span>L-Ram Position</span>
+                                <span>-0.990</span>
+                                <span>CM</span>
                             </p>
                         </div>
                     </div>
                 </div>
-                <div class="chart_block small" style="top:196px;right:160px;">
-                    <h4>CEP Disch</h4>
+                <div class="chart_block small wide" style="top:230px;right:370px;">
+                    <h4>Ram Position (C side)</h4>
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <span>T</span>
-                                <label>33.88</label>
-                                <span>DEG C</span>
+                                <span>B-Ram Position</span>
+                                <span>-0.3</span>
+                                <span>CM</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <span>F</span>
-                                <label>325.09</label>
-                                <span>KG/S</span>
+                                <span>C-Ram Position</span>
+                                <span>2.5</span>
+                                <span>CM</span>
                             </p>
                         </div>
-                    </div>
-                </div>
-                <div class="chart_block mini" style="top:116px;left:600px;">
-                    <div class="chart_block_contents only_box">
                         <div class="summary">
-                            <p>DEG C</p>
                             <p>
-                                <span>T</span>
-                                <label>103.75</label>
+                                <span>L-Ram Position</span>
+                                <span>-0.854</span>
+                                <span>CM</span>
                             </p>
                         </div>
                     </div>
                 </div>
-                <div class="chart_block mini" style="top:170px;left:600px;">
-                    <div class="chart_block_contents only_box">
-                        <div class="summary">
-                            <p>DEG C</p>
-                            <p>
-                                <span>T</span>
-                                <label>103.75</label>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart_block mini" style="top:226px;left:600px;">
-                    <div class="chart_block_contents only_box">
-                        <div class="summary">
-                            <p>DEG C</p>
-                            <p>
-                                <span>T</span>
-                                <label>103.75</label>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart_block mini" style="top:116px;left:730px;">
-                    <div class="chart_block_contents only_box">
-                        <div class="summary">
-                            <p>DEG C</p>
-                            <p>
-                                <span>T</span>
-                                <label>103.75</label>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart_block mini" style="top:170px;left:730px;">
-                    <div class="chart_block_contents only_box">
-                        <div class="summary">
-                            <p>DEG C</p>
-                            <p>
-                                <span>T</span>
-                                <label>103.75</label>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart_block mini" style="top:226px;left:730px;">
-                    <div class="chart_block_contents only_box">
-                        <div class="summary">
-                            <p>DEG C</p>
-                            <p>
-                                <span>T</span>
-                                <label>103.75</label>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart_block small" style="top:279px;left:640px;">
-                    <div class="chart_block_contents only_box">
+                <div class="chart_block small wide" style="bottom:110px;right:250px;">
+                    <h4>D2O Supply Pressure</h4>
+                    <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <span>T</span>
-                                <label>103.75</label>
-                                <span>DEG C</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart_block small" style="top:310px;right:170px;">
-                    <div class="chart_block_contents only_box">
-                        <div class="summary">
-                            <p>
-                                <span>T</span>
-                                <label>103.75</label>
-                                <span>MPAG</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart_block small" style="top:400px;left:160px;">
-                    <div class="chart_block_contents only_box">
-                        <div class="summary">
-                            <p>
-                                <span>T</span>
-                                <label>103.75</label>
-                                <span>DEG C</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart_block small" style="top:456px;left:160px;">
-                    <div class="chart_block_contents only_box">
-                        <div class="summary">
-                            <p>
-                                <span>T</span>
-                                <label>103.75</label>
-                                <span>DEG C</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart_block small" style="top:474px;left:390px;">
-                    <div class="chart_block_contents only_box">
-                        <div class="summary">
-                            <p>
-                                <span>T</span>
-                                <label>103.75</label>
-                                <span>KPAA</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart_block small" style="top:474px;left:640px;">
-                    <div class="chart_block_contents only_box">
-                        <div class="summary">
-                            <p>
-                                <span>T</span>
-                                <label>103.75</label>
-                                <span>KPAA</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart_block small" style="top:474px;left:880px;">
-                    <div class="chart_block_contents only_box">
-                        <div class="summary">
-                            <p>
-                                <span>T</span>
-                                <label>103.75</label>
-                                <span>KPAA</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart_block small" style="top:570px;left:140px;">
-                    <h4>RFT Level</h4>
-                    <div class="chart_block_contents only_box">
-                        <div class="summary">
-                            <p>
-                                <span>A</span>
-                                <label>103.75</label>
-                                <span>MM</span>
+                                <span>Common Pr.</span>
+                                <span>0.457</span>
+                                <span>MPa</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <span>B</span>
-                                <label>103.75</label>
-                                <span>MM</span>
+                                <span>A-Side Pr.</span>
+                                <span>0.393</span>
+                                <span>MPa</span>
+                            </p>
+                        </div>
+                        <div class="summary">
+                            <p>
+                                <span>C-Side Pr.</span>
+                                <span>0.403</span>
+                                <span>MPa</span>
                             </p>
                         </div>
                     </div>
@@ -335,7 +170,7 @@
 	<!-- //footer -->
 </div>
 <!--  //wrap  -->
-<script type="text/javascript" src="<c:url value="/resources/js/context_menu.js" />" charset="utf-8"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/range_control.js" />" charset="utf-8"></script>
 </body>
 </html>
 

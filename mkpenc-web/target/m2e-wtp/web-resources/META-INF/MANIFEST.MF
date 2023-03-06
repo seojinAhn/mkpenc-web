@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
-Built-By: MAG
-Build-Jdk: 17.0.3
+Built-By: opc
+Build-Jdk: 17.0.5
 Implementation-Title: mkpenc-web
 Implementation-Version: 0.0.1-SNAPSHOT
 Implementation-Vendor-Id: kr.co.mkpenc
