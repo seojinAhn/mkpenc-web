@@ -36,8 +36,8 @@
      <!-- lnb_menu -->         
      <div class="lnb_wrap">            
          <div class="lnb_tab">         
-             <a href="/dcc/admin/memberlist" class="current">DCC</a>           
-             <a href="/markv/admin/taginfo" >MARK_V</a>           
+             <a href="/dcc/mimic/lzc_1" class="current">DCC</a>           
+             <a href="/markv/mimic/loadcontrol" >MARK_V</a>           
          </div>            
          <div class="lnb_menu">            
              <ul>

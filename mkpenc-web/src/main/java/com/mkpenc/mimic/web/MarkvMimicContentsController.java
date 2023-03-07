@@ -58,6 +58,44 @@ public class MarkvMimicContentsController {
         return mav;
     }		
 	
+	@RequestMapping("rotorprewarm")
+	public ModelAndView rotorprewarm(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ rotorprewarm");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", markvSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }	
+	
+	@RequestMapping("chestprewarm")
+	public ModelAndView chestprewarm(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ chestprewarm");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", markvSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }		
+	
 	@RequestMapping("prepforrolloff")
 	public ModelAndView prepforrolloff(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
         
@@ -94,7 +132,45 @@ public class MarkvMimicContentsController {
         }
 
         return mav;
+    }	
+	
+	@RequestMapping("gensynchroniz")
+	public ModelAndView gensynchroniz(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ gensynchroniz");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", markvSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
     }		
+	
+	@RequestMapping("limiter")
+	public ModelAndView limiter(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ limiter");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", markvSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }	
 	
 	@RequestMapping("generaldata")
 	public ModelAndView generaldata(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
@@ -114,6 +190,25 @@ public class MarkvMimicContentsController {
 
         return mav;
     }		
+	
+	@RequestMapping("compositedata")
+	public ModelAndView compositedata(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ compositedata");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", markvSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }	
 
 	
 	@RequestMapping("tbnoverview")

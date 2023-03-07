@@ -36,8 +36,8 @@
      <!-- lnb_menu -->         
      <div class="lnb_wrap">            
          <div class="lnb_tab">         
-             <a href="/dcc/admin/memberlist" >DCC</a>           
-             <a href="/markv/admin/taginfo" class="current">MARK_V</a>           
+             <a href="/dcc/mimic/lzc_1" >DCC</a>           
+             <a href="/markv/mimic/loadcontrol" class="current">MARK_V</a>           
          </div>            
          <div class="lnb_menu">            
              <ul>
@@ -56,12 +56,12 @@
                                       <ul>          
                                           <li><a href="/markv/mimic/loadcontrol">LOAD CONTROL</a></li>            
                                           <li><a href="/markv/mimic/modeselection">MODE SELECTION</a></li>           
-                                          <li><a href="#none">ROTO REPWARM</a></li>          
-                                          <li><a href="#none">SHEST PREWARM</a></li>         
+                                          <li><a href="/markv/mimic/rotorprewarm">ROTOR PREPWARM</a></li>          
+                                          <li><a href="/markv/mimic/chestprewarm">CHEST PREWARM</a></li>         
                                           <li><a href="/markv/mimic/prepforrolloff">PREP FOR ROLLOFF</a></li>            
                                           <li><a href="/markv/mimic/speedcontrol">SPEED CONTROL</a></li>         
-                                          <li><a href="#none">GEN SYNCHRONIZA</a></li>         
-                                          <li><a href="#none">LIMITERS</a></li>          
+                                          <li><a href="/markv/mimic/gensynchroniz">GEN SYNCHRONIZ</a></li>         
+                                          <li><a href="/markv/mimic/limiter">LIMITER</a></li>          
                                       </ul>         
                                   </li>         
                               </ul>         
@@ -70,7 +70,7 @@
                                       <a href="#none">MONITOR</a>         
                                       <ul>          
                                           <li><a href="/markv/mimic/generaldata">GENERAL DATA</a></li>            
-                                          <li><a href="#none">COMPOSITE DATA</a></li>           
+                                          <li><a href="/markv/mimic/compositedata">COMPOSITE DATA</a></li>           
                                           <li><a href="#none">BEARING DATA</a></li>           
                                           <li><a href="#none">LP TBN TEMP</a></li>           
                                           <li><a href="/markv/mimic/tbnoverview">TBN OVERVIEW-1</a></li>           
