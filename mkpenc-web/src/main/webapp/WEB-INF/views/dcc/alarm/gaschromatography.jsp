@@ -18,6 +18,68 @@
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/alarm.js" />" charset="utf-8"></script>
 
+<script type="text/javascript">
+	var hogiHeader = '${UserInfo.hogi}' != "undefined" ? '${UserInfo.hogi}' : "3";
+	var xyHeader = '${UserInfo.xyGubun}' != "undefined" ? '${UserInfo.xyGubun}' : "X";
+	
+	$(function() {
+		var lblDateVal = hogiHeader+xyHeader+' '+'${DccTagList[0].SCANTIME}';
+		$("#lblDate").text(lblDateVal);
+		
+		if( $("input:radio[id='4']").is(":checked") ) {
+			hogiHeader = "4";
+		} else {
+			hogiHeader = "3";
+		}
+		if( $("input:radio[id='Y']").is(":checked") ) {
+			xyHeader = "Y";
+		} else {
+			xyHeader = "X";
+		}
+		
+		$(document.body).delegate('#3', 'click', function() {
+			var uGrpName = $("#cboUGrpName option:selected").val();
+			hogiHeader = '3';
+			reloadAjax(0);
+		});
+		
+		$(document.body).delegate('#4', 'click', function() {
+			var uGrpName = $("#cboUGrpName option:selected").val();
+			hogiHeader = '4';
+			reloadAjax(0);
+		});
+		
+		$(document.body).delegate('#X', 'click', function() {
+			var uGrpName = $("#cboUGrpName option:selected").val();
+			xyHeader = 'X';
+			reloadAjax(0);
+		});
+		
+		$(document.body).delegate('#Y', 'click', function() {
+			var uGrpName = $("#cboUGrpName option:selected").val();
+			xyHeader = 'Y';
+			reloadAjax(0);
+		});
+		
+		var timer =0;
+		
+		timer = setInterval(function () {
+			reloadAjax(1);
+		}, 5000);
+	});
+	
+	function reloadAjax(type) {
+		var comAjax = new ComAjax("reloadForm");
+		comAjax.setUrl("/dcc/alarm/runtimerGC");
+		comAjax.addParam("hogiHeader", hogiHeader);
+		comAjax.addParam("xyHeader", xyHeader);
+		comAjax.setCallback("mbr_RuntimerGCCallback");
+		if( type == 0 ) {
+			comAjax.ajax();
+		}
+	}
+</script>
+
 </head>
 <body>
 <div class="wrap">
@@ -30,7 +92,7 @@
 		<div class="contents">
 			<!-- page_title -->
 			<div class="page_title">
-				<h3>가스크로마토그래프</h3>
+				<h3><a href="#none" onclick="javascript:reloadAjax(0)">가스크로마토그래프</a></h3>
 				<div class="bc"><span>DCC</span><span>Alarm</span><strong>가스크로마토그래프</strong></div>
 			</div>
 			<!-- //page_title -->
@@ -41,16 +103,16 @@
 						<div class="fx_srch_item">
 							<label class="dp_title">현재분석계통</label>
                             <div class="fx_form">
-                                <label><strong>N/A</strong></label>
+                                <label id="lblTitle"><strong>${LblTitle}</strong></label>
                             </div>
 						</div>
 						<div class="fx_srch_item">
 							<label class="dp_title">기체농도</label>
-                            <div class="fx_form">
-                                <label>[ 수소<strong>-0.006</strong>%] ,</label>
-                                <label>[ 수소<strong>0.651</strong>%] ,</label>
-                                <label>[ 수소<strong>0.773</strong>%] ,</label>
-                                <label>[ 수소<strong>-0.004</strong>%]</label>
+                            <div id="gasSummary" class="fx_form">
+                                <label>[ 수소<strong>${DccTagList[0].Value}</strong>%] ,</label>
+                                <label>[ 수소<strong>${DccTagList[1].Value}</strong>%] ,</label>
+                                <label>[ 수소<strong>${DccTagList[2].Value}</strong>%] ,</label>
+                                <label>[ 수소<strong>${DccTagList[3].Value}</strong>%]</label>
                             </div>
 						</div>
                     </div>
@@ -59,6 +121,7 @@
 			<!-- //fx_srch_wrap -->
             <!-- list_wrap -->
             <div class="list_wrap">
+            <form id="reloadForm"></form>
 				<!-- list_head -->
 				<div class="list_head">
 					<h4>직전분석값</h4>
@@ -82,48 +145,48 @@
                             <th>중수소농도</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="gasDensityBody">
                         <tr>
                             <td>LZC RU 전단</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
+                            <td class="tc"><label id="lblH20">${LblH2[0]}</label></td>
+                            <td class="tc"><label id="lblO20">${LblO2[0]}</label></td>
+                            <td class="tc"><label id="lblN20">${LblN2[0]}</label></td>
+                            <td class="tc"><label id="lblD20">${LblD2[0]}</label></td>
                         </tr>
                         <tr>
                             <td>LZC RU 후단</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
+                            <td class="tc"><label id="lblH21">${LblH2[1]}</label></td>
+                            <td class="tc"><label id="lblO21">${LblO2[1]}</label></td>
+                            <td class="tc"><label id="lblN21">${LblN2[1]}</label></td>
+                            <td class="tc"><label id="lblD21">${LblD2[1]}</label></td>
                         </tr>
                         <tr>
                             <td>MOD RU 전단</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
+                            <td class="tc"><label id="lblH22">${LblH2[2]}</label></td>
+                            <td class="tc"><label id="lblO22">${LblO2[2]}</label></td>
+                            <td class="tc"><label id="lblN22">${LblN2[2]}</label></td>
+                            <td class="tc"><label id="lblD22">${LblD2[2]}</label></td>
                         </tr>
                         <tr>
                             <td>MOD RU 후단</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
+                            <td class="tc"><label id="lblH23">${LblH2[3]}</label></td>
+                            <td class="tc"><label id="lblO23">${LblO2[3]}</label></td>
+                            <td class="tc"><label id="lblN23">${LblN2[3]}</label></td>
+                            <td class="tc"><label id="lblD23">${LblD2[3]}</label></td>
                         </tr>
                         <tr>
                             <td>HI COLLECTION</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
+                            <td class="tc"><label id="lblH24">${LblH2[4]}</label></td>
+                            <td class="tc"><label id="lblO24">${LblO2[4]}</label></td>
+                            <td class="tc"><label id="lblN24">${LblN2[4]}</label></td>
+                            <td class="tc"><label id="lblD24">${LblD2[4]}</label></td>
                         </tr>
                         <tr>
                             <td>HT DST</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
-                            <td class="tc">0.263</td>
+                            <td class="tc"><label id="lblH25">${LblH2[5]}</label></td>
+                            <td class="tc"><label id="lblO25">${LblO2[5]}</label></td>
+                            <td class="tc"><label id="lblN25">${LblN2[5]}</label></td>
+                            <td class="tc"><label id="lblD25">${LblD2[5]}</label></td>
                         </tr>
                     </tbody>
                 </table>

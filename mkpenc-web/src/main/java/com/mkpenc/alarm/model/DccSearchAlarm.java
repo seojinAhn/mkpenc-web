@@ -61,6 +61,12 @@ public class DccSearchAlarm  extends BaseSearch {
 	private String chkOpt2;
 	private String findData;
 	
+	private String title;
+	private String loop;
+	private String ci;
+	
+	private String tValue;
+	
 	/**
 	 * @return the hogiHeader
 	 */
@@ -600,5 +606,53 @@ public class DccSearchAlarm  extends BaseSearch {
 	 */
 	public void setFindData(String findData) {
 		this.findData = findData;
+	}
+	/**
+	 * @return the title
+	 */
+	public String getTitle() {
+		return title;
+	}
+	/**
+	 * @param title the title to set
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	/**
+	 * @return the loop
+	 */
+	public String getLoop() {
+		return loop;
+	}
+	/**
+	 * @param loop the loop to set
+	 */
+	public void setLoop(String loop) {
+		this.loop = loop;
+	}
+	/**
+	 * @return the ci
+	 */
+	public String getCi() {
+		return ci;
+	}
+	/**
+	 * @param ci the ci to set
+	 */
+	public void setCi(String ci) {
+		this.ci = ci;
+	}
+	/**
+	 * @return the tValue
+	 */
+	public String gettValue() {
+		return tValue;
+	}
+	/**
+	 * @param tValue the tValue to set
+	 */
+	public void settValue(String tValue) {
+		this.tValue = tValue;
 	}
 }

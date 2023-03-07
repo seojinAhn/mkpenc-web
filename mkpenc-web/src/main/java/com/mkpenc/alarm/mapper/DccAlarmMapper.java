@@ -37,4 +37,12 @@ public interface DccAlarmMapper {
 	Integer insertGrpTagB(DccSearchAlarm dccSearchAlarm);
 	
 	List<Map> selectAlarmTagSearch(DccSearchAlarm dccSearchAlarm);
+	
+	//fixedtimecontrol
+	List<DccAlarmInfo> selectFixedAlarm(DccSearchAlarm dccSearchAlarm);
+	
+	//gaschromatograthy
+	List<Map> selectGasInfo(DccSearchAlarm dccSearchAlarm);
+	
+	List<Map> selectStreamAIInfo(DccSearchAlarm dccSearchAlarm);
 }

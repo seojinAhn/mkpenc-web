@@ -2126,5 +2126,181 @@ public class ExcelHelperUtil {
 		wb.close();
 		
 	}
+	
+	public void alarmFTCExcelDownload(HttpServletRequest request, HttpServletResponse response, String prefix, String title,
+									String startDate, String endDate, List<Map> fixedAlarmList,
+									String[] lblTitles, String[] lblLoops, String[] lblCIs, String type) throws Exception{
+	
+		Workbook wb = new XSSFWorkbook();
+		Sheet sheet = wb.createSheet("ALARMTEST");
+		Row row = null;
+		Cell cell = null;
+		int rowNum = 0;
+		String fileName = prefix+"_";
+		String suffix = new SimpleDateFormat("MM_dd").format(new Date())+".xlsx";
+		
+		// Set Title
+		row = sheet.createRow(rowNum++);
+		cell = row.createCell(0);
+		cell.setCellValue(title);
+		// Set empty row
+		row = sheet.createRow(rowNum++);
+		// Set lblDate
+		row = sheet.createRow(rowNum++);
+		cell = row.createCell(0);
+		cell.setCellValue(startDate+" ~ "+endDate);
+		// Set empty row
+		row = sheet.createRow(rowNum++);
+		
+		if( fixedAlarmList.get(0).size() > 0 ) {
+			switch( type ) {
+				case "003":
+			        for( int idx=0;idx<fixedAlarmList.get(0).size();idx++ ) {
+			        	row = sheet.createRow(rowNum++);
+						cell = row.createCell(0);
+						if( idx%6 == 0 ) {
+							cell.setCellValue(lblTitles[idx/6]);
+						} else {
+							cell.setCellValue("");
+						}
+						cell = row.createCell(1);
+						cell.setCellValue(lblCIs[idx]);
+						cell = row.createCell(2);
+						cell.setCellValue(fixedAlarmList.get(0).get(idx).toString());
+						cell = row.createCell(3);
+						cell.setCellValue(fixedAlarmList.get(1).get(idx).toString());
+						cell = row.createCell(4);
+						cell.setCellValue(fixedAlarmList.get(2).get(idx).toString());
+					}
+			        break;
+				case "032":
+					for( int idx=0;idx<fixedAlarmList.get(0).size();idx++ ) {
+			        	row = sheet.createRow(rowNum++);
+						cell = row.createCell(0);
+						if( idx%4 == 0 ) {
+							cell.setCellValue(lblTitles[idx/4]);
+						} else {
+							cell.setCellValue("");
+						}
+						cell = row.createCell(1);
+						cell.setCellValue(lblCIs[idx]);
+						cell = row.createCell(2);
+						cell.setCellValue(fixedAlarmList.get(0).get(idx).toString());
+						cell = row.createCell(3);
+						cell.setCellValue(fixedAlarmList.get(1).get(idx).toString());
+						cell = row.createCell(4);
+						cell.setCellValue(fixedAlarmList.get(2).get(idx).toString());
+					}
+			        break;
+				case "114":
+			        for( int idx=0;idx<fixedAlarmList.get(0).size();idx++ ) {
+			        	row = sheet.createRow(rowNum++);
+						cell = row.createCell(0);
+						if( idx%3 == 0 ) {
+							cell.setCellValue(lblTitles[idx/3]);
+						} else {
+							cell.setCellValue("");
+						}
+						cell = row.createCell(1);
+						cell.setCellValue(lblCIs[idx]);
+						cell = row.createCell(2);
+						cell.setCellValue(fixedAlarmList.get(0).get(idx).toString());
+						cell = row.createCell(3);
+						cell.setCellValue(fixedAlarmList.get(1).get(idx).toString());
+						cell = row.createCell(4);
+						cell.setCellValue(fixedAlarmList.get(2).get(idx).toString());
+					}
+			        break;
+				case "118":
+			        for( int idx=0;idx<fixedAlarmList.get(0).size();idx++ ) {
+			        	row = sheet.createRow(rowNum++);
+						cell = row.createCell(0);
+						cell.setCellValue(lblTitles[idx]);
+						cell = row.createCell(1);
+						cell.setCellValue(lblCIs[idx]);
+						cell = row.createCell(2);
+						cell.setCellValue(fixedAlarmList.get(0).get(idx).toString());
+						cell = row.createCell(3);
+						cell.setCellValue(fixedAlarmList.get(1).get(idx).toString());
+					}
+			        break;
+				case "276":
+			        for( int idx=0;idx<fixedAlarmList.get(0).size();idx++ ) {
+			        	row = sheet.createRow(rowNum++);
+						cell = row.createCell(0);
+						if( idx%2 == 0 ) {
+							cell.setCellValue(lblTitles[idx/2]);
+						} else {
+							cell.setCellValue("");
+						}
+						cell = row.createCell(1);
+						cell.setCellValue(lblCIs[idx]);
+						cell = row.createCell(2);
+						cell.setCellValue(fixedAlarmList.get(0).get(idx).toString());
+						cell = row.createCell(3);
+						cell.setCellValue(fixedAlarmList.get(1).get(idx).toString());
+						cell = row.createCell(4);
+						cell.setCellValue(fixedAlarmList.get(2).get(idx).toString());
+					}
+			        break;
+				case "cor":
+			        for( int idx=0;idx<fixedAlarmList.get(0).size();idx++ ) {
+			        	row = sheet.createRow(rowNum++);
+						cell = row.createCell(0);
+						if( idx%8 == 0 ) {
+							cell.setCellValue(lblTitles[idx/8]);
+						} else {
+							cell.setCellValue("");
+						}
+						cell = row.createCell(1);
+						if( idx%2 == 0 ) {
+							cell.setCellValue(lblLoops[idx/2].split("\\|")[0]);
+						} else {
+							cell.setCellValue("");
+						}
+						cell = row.createCell(2);
+						cell.setCellValue(lblCIs[idx]);
+						cell = row.createCell(3);
+						cell.setCellValue(fixedAlarmList.get(0).get(idx).toString());
+						cell = row.createCell(4);
+						cell.setCellValue(fixedAlarmList.get(1).get(idx).toString());
+						cell = row.createCell(5);
+						cell.setCellValue(fixedAlarmList.get(2).get(idx).toString());
+						if( idx%2 == 1 ) {
+							row = sheet.createRow(rowNum++);
+							cell = row.createCell(0);
+							cell.setCellValue("");
+							cell = row.createCell(1);
+							cell.setCellValue("");
+							cell = row.createCell(2);
+							cell.setCellValue("");
+							cell = row.createCell(3);
+							cell.setCellValue(lblLoops[idx/2].split("\\|")[1]);
+							cell = row.createCell(4);
+							cell.setCellValue("");
+							cell = row.createCell(5);
+							cell.setCellValue(fixedAlarmList.get(3).get(idx/2).toString());
+						}
+					}
+			        break;
+			}
+		}
+		fileName = fileName+suffix;
+		
+		String browser = WebUtil.getBrowser(request);
+		String encodedFilename = WebUtil.webEncoding(browser, fileName);
+		
+		response.setContentType("application/vnd.ms-excel");
+		response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
+		
+		//Excel File Output
+		ServletOutputStream output = response.getOutputStream();
+		output.flush();
+		wb.write(output);
+		output.flush();
+		output.close();
+		wb.close();
+		
+	}
 
 }
