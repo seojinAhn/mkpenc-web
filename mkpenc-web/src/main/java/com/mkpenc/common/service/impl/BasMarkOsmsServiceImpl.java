@@ -158,7 +158,6 @@ public class BasMarkOsmsServiceImpl implements BasMarkOsmsService{
     		}
     	}
 		
-		
 		return rtnMap;
 	}
 	
