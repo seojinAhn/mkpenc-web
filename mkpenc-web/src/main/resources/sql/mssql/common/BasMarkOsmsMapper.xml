@@ -57,7 +57,7 @@
     <select id="selectTblNoFldNo" parameterType="java.util.Map" resultType="java.util.Map">
         	SELECT C.TBLNO, C.FLDNO 
         	 FROM MST_GrpTag B, MST_TAG_MARK C
-        	WHERE B.HOGI = C.IHOGI
+        	WHERE B.HOGI = C.HOGI
        			AND B.ISEQ = C.ISEQ
          	<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(dive)">
            			AND B.Gubun = #{dive}
@@ -84,7 +84,7 @@
     	  AND Seq in (
     						SELECT C.TBLNO 
     						 FROM MST_GrpTag B, MST_TAG_MARK C
-     					   WHERE B.HOGI = C.IHOGI 
+     					   WHERE B.HOGI = C.HOGI 
      					     <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(xyGubun) and "Y".equals(xyGubun)'>
 		           					AND B.YSEQ = C.ISEQ
 				           	</if>  

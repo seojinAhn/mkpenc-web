@@ -1,11 +1,17 @@
 package com.mkpenc.mimic.web;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.mkpenc.common.model.ComTagMarkInfo;
+import com.mkpenc.common.service.BasMarkOsmsService;
 import com.mkpenc.mimic.model.MarkvSearchMimic;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,6 +25,10 @@ public class MarkvMimicContentsController {
 	private static Logger logger = LoggerFactory.getLogger(MarkvMimicContentsController.class);
 	
 	private String menuName = "MIMIC";
+	
+	@Autowired	
+	private BasMarkOsmsService basMarkOsmsService;
+	
 	
 	@RequestMapping("loadcontrol")
 	public ModelAndView loadcontrol(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
@@ -411,6 +421,21 @@ public class MarkvMimicContentsController {
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	
+        	//getMarkGrpTagList
+        	
+        	Map markGrpTagSearchMap = new HashMap();
+        	markGrpTagSearchMap.put("xyGubun",markvSearchMimic.getsXYGubun()==null?  "": markvSearchMimic.getsXYGubun());
+        	markGrpTagSearchMap.put("hogi",markvSearchMimic.getsHogi()==null?  "": markvSearchMimic.getsHogi());
+        	markGrpTagSearchMap.put("dive",markvSearchMimic.getsDive()==null?  "": markvSearchMimic.getsDive());
+        	markGrpTagSearchMap.put("grpID", markvSearchMimic.getsGrpID()==null?  "": markvSearchMimic.getsGrpID());
+        	markGrpTagSearchMap.put("menuNo", markvSearchMimic.getsMenuNo()==null?  "": markvSearchMimic.getsMenuNo());
+        	markGrpTagSearchMap.put("uGrpNo", markvSearchMimic.getsUGrpNo()==null?  "": markvSearchMimic.getsUGrpNo());
+
+        	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
+        	
+        	Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
         	
         	mav.addObject("BaseSearch", markvSearchMimic);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
