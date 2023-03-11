@@ -148,45 +148,45 @@
                     <tbody id="gasDensityBody">
                         <tr>
                             <td>LZC RU 전단</td>
-                            <td class="tc"><label id="lblH20">${LblH2[0]}</label></td>
-                            <td class="tc"><label id="lblO20">${LblO2[0]}</label></td>
-                            <td class="tc"><label id="lblN20">${LblN2[0]}</label></td>
-                            <td class="tc"><label id="lblD20">${LblD2[0]}</label></td>
+                            <td class="tc"><label id="lblH20">${LblH2.idx0}</label></td>
+                            <td class="tc"><label id="lblO20">${LblO2.idx0}</label></td>
+                            <td class="tc"><label id="lblN20">${LblN2.idx0}</label></td>
+                            <td class="tc"><label id="lblD20">${LblD2.idx0}</label></td>
                         </tr>
                         <tr>
                             <td>LZC RU 후단</td>
-                            <td class="tc"><label id="lblH21">${LblH2[1]}</label></td>
-                            <td class="tc"><label id="lblO21">${LblO2[1]}</label></td>
-                            <td class="tc"><label id="lblN21">${LblN2[1]}</label></td>
-                            <td class="tc"><label id="lblD21">${LblD2[1]}</label></td>
+                            <td class="tc"><label id="lblH21">${LblH2.idx1}</label></td>
+                            <td class="tc"><label id="lblO21">${LblO2.idx1}</label></td>
+                            <td class="tc"><label id="lblN21">${LblN2.idx1}</label></td>
+                            <td class="tc"><label id="lblD21">${LblD2.idx1}</label></td>
                         </tr>
                         <tr>
                             <td>MOD RU 전단</td>
-                            <td class="tc"><label id="lblH22">${LblH2[2]}</label></td>
-                            <td class="tc"><label id="lblO22">${LblO2[2]}</label></td>
-                            <td class="tc"><label id="lblN22">${LblN2[2]}</label></td>
-                            <td class="tc"><label id="lblD22">${LblD2[2]}</label></td>
+                            <td class="tc"><label id="lblH22">${LblH2.idx2}</label></td>
+                            <td class="tc"><label id="lblO22">${LblO2.idx2}</label></td>
+                            <td class="tc"><label id="lblN22">${LblN2.idx2}</label></td>
+                            <td class="tc"><label id="lblD22">${LblD2.idx2}</label></td>
                         </tr>
                         <tr>
                             <td>MOD RU 후단</td>
-                            <td class="tc"><label id="lblH23">${LblH2[3]}</label></td>
-                            <td class="tc"><label id="lblO23">${LblO2[3]}</label></td>
-                            <td class="tc"><label id="lblN23">${LblN2[3]}</label></td>
-                            <td class="tc"><label id="lblD23">${LblD2[3]}</label></td>
+                            <td class="tc"><label id="lblH23">${LblH2.idx3}</label></td>
+                            <td class="tc"><label id="lblO23">${LblO2.idx3}</label></td>
+                            <td class="tc"><label id="lblN23">${LblN2.idx3}</label></td>
+                            <td class="tc"><label id="lblD23">${LblD2.idx3}</label></td>
                         </tr>
                         <tr>
                             <td>HI COLLECTION</td>
-                            <td class="tc"><label id="lblH24">${LblH2[4]}</label></td>
-                            <td class="tc"><label id="lblO24">${LblO2[4]}</label></td>
-                            <td class="tc"><label id="lblN24">${LblN2[4]}</label></td>
-                            <td class="tc"><label id="lblD24">${LblD2[4]}</label></td>
+                            <td class="tc"><label id="lblH24">${LblH2.idx4}</label></td>
+                            <td class="tc"><label id="lblO24">${LblO2.idx4}</label></td>
+                            <td class="tc"><label id="lblN24">${LblN2.idx4}</label></td>
+                            <td class="tc"><label id="lblD24">${LblD2.idx4}</label></td>
                         </tr>
                         <tr>
                             <td>HT DST</td>
-                            <td class="tc"><label id="lblH25">${LblH2[5]}</label></td>
-                            <td class="tc"><label id="lblO25">${LblO2[5]}</label></td>
-                            <td class="tc"><label id="lblN25">${LblN2[5]}</label></td>
-                            <td class="tc"><label id="lblD25">${LblD2[5]}</label></td>
+                            <td class="tc"><label id="lblH25">${LblH2.idx5}</label></td>
+                            <td class="tc"><label id="lblO25">${LblO2.idx5}</label></td>
+                            <td class="tc"><label id="lblN25">${LblN2.idx5}</label></td>
+                            <td class="tc"><label id="lblD25">${LblD2.idx5}</label></td>
                         </tr>
                     </tbody>
                 </table>

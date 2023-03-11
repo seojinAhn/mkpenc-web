@@ -234,7 +234,7 @@
 			$("#selectEDate").val(eDtm.getFullYear()+'-'+convNum(eDtm.getMonth()+1,2)+'-'+convNum(eDtm.getDate(),3)+' '+convNum(eDtm.getHours(),0)+':'+convNum(eDtm.getMinutes(),1));
 		}
 		
-		$("#cboUGrpName").val('2');
+		$("#cboUGrpName").val('0');
 		
 		setConst('003,032,114,118,276,550,cor,285');
 		setValveVal(typeof $("#selectValveOpt option:selected").val() == 'undefined' ? "3431-PV1" : $("#selectValveOpt option:selected").val());
