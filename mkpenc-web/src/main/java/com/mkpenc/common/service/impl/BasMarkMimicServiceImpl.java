@@ -23,10 +23,13 @@ public class BasMarkMimicServiceImpl implements BasMarkMimicService{
 		int iCY = 0;
 		if(disCodeMark != null) {
 			iCX = disCodeMark.get("CX") != null? Integer.parseInt(disCodeMark.get("CX").toString()):0;
-			iCX = disCodeMark.get("CY") != null? Integer.parseInt(disCodeMark.get("CY").toString()):0;
+			iCY = disCodeMark.get("CY") != null? Integer.parseInt(disCodeMark.get("CY").toString()):0;
 		}
 		
-		String[][] tAnalogChar = new String[iCX][iCY];
+		String[][] tAnalogChar = new String[iCX+1][iCY+1];
+		
+		//System.out.println("iCX = " + (iCX+1));
+		//System.out.println("iCY = " + (iCY+1));
 		
 		List<Map> codeMarkList = basMarkMimicMapper.selectMstCodeMark();
 		
@@ -37,6 +40,9 @@ public class BasMarkMimicServiceImpl implements BasMarkMimicService{
 					int x = codeMark.get("CODE2") != null? Integer.parseInt(codeMark.get("CODE2").toString()):0;
 					int y = codeMark.get("CODE3") != null? Integer.parseInt(codeMark.get("CODE3").toString()):0;
 					String desc = codeMark.get("CODEDESC") != null? codeMark.get("CODEDESC").toString():"";
+					
+					//System.out.println("x = " + x);
+					//System.out.println("y = " + y);
 					
 					tAnalogChar[x][y] = desc;
 				}				

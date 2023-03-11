@@ -18,7 +18,8 @@
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/status.js" />" charset="utf-8"></script>
 <script type="text/javascript">
-var timerOn = false; //true로 변경
+
+var timerOn = true; //true로 변경
 var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
 var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
 
@@ -32,22 +33,16 @@ var tDccTagXy = [
 	'${DccTagInfoList[5].XYGubun}','${DccTagInfoList[6].XYGubun}','${DccTagInfoList[7].XYGubun}','${DccTagInfoList[8].XYGubun}','${DccTagInfoList[9].XYGubun}',
 	'${DccTagInfoList[10].XYGubun}','${DccTagInfoList[11].XYGubun}','${DccTagInfoList[12].XYGubun}','${DccTagInfoList[13].XYGubun}'
 ];
+
+
 var tToolTipText = [
-	"${DccTagInfoList[0].Descr}[${DccTagInfoList[0].Hogi}:${DccTagInfoList[0].IOTYPE}-${DccTagInfoList[0].ADDRESS}:${DccTagInfoList[0].IOBIT}]"
-	,"${DccTagInfoList[1].Descr}[${DccTagInfoList[1].Hogi}:${DccTagInfoList[1].IOTYPE}-${DccTagInfoList[1].ADDRESS}:${DccTagInfoList[1].IOBIT}]"
-	,"${DccTagInfoList[2].Descr}[${DccTagInfoList[2].Hogi}:${DccTagInfoList[2].IOTYPE}-${DccTagInfoList[2].ADDRESS}:${DccTagInfoList[2].IOBIT}]"
-	,"${DccTagInfoList[3].Descr}[${DccTagInfoList[3].Hogi}:${DccTagInfoList[3].IOTYPE}-${DccTagInfoList[3].ADDRESS}:${DccTagInfoList[3].IOBIT}]"
-	,"${DccTagInfoList[4].Descr}[${DccTagInfoList[4].Hogi}:${DccTagInfoList[4].IOTYPE}-${DccTagInfoList[4].ADDRESS}:${DccTagInfoList[4].IOBIT}]"
-	,"${DccTagInfoList[5].Descr}[${DccTagInfoList[5].Hogi}:${DccTagInfoList[5].IOTYPE}-${DccTagInfoList[5].ADDRESS}:${DccTagInfoList[5].IOBIT}]"
-	,"${DccTagInfoList[6].Descr}[${DccTagInfoList[6].Hogi}:${DccTagInfoList[6].IOTYPE}-${DccTagInfoList[6].ADDRESS}:${DccTagInfoList[6].IOBIT}]"
-	,"${DccTagInfoList[7].Descr}[${DccTagInfoList[7].Hogi}:${DccTagInfoList[7].IOTYPE}-${DccTagInfoList[7].ADDRESS}:${DccTagInfoList[7].IOBIT}]"
-	,"${DccTagInfoList[8].Descr}[${DccTagInfoList[8].Hogi}:${DccTagInfoList[8].IOTYPE}-${DccTagInfoList[8].ADDRESS}:${DccTagInfoList[8].IOBIT}]"
-	,"${DccTagInfoList[9].Descr}[${DccTagInfoList[9].Hogi}:${DccTagInfoList[9].IOTYPE}-${DccTagInfoList[9].ADDRESS}:${DccTagInfoList[9].IOBIT}]"
-	,"${DccTagInfoList[10].Descr}[${DccTagInfoList[10].Hogi}:${DccTagInfoList[10].IOTYPE}-${DccTagInfoList[10].ADDRESS}:${DccTagInfoList[10].IOBIT}]"
-	,"${DccTagInfoList[11].Descr}[${DccTagInfoList[11].Hogi}:${DccTagInfoList[11].IOTYPE}-${DccTagInfoList[11].ADDRESS}:${DccTagInfoList[11].IOBIT}]"
-	,"${DccTagInfoList[12].Descr}[${DccTagInfoList[12].Hogi}:${DccTagInfoList[12].IOTYPE}-${DccTagInfoList[12].ADDRESS}:${DccTagInfoList[12].IOBIT}]"
-	,"${DccTagInfoList[13].Descr}[${DccTagInfoList[13].Hogi}:${DccTagInfoList[13].IOTYPE}-${DccTagInfoList[13].ADDRESS}:${DccTagInfoList[13].IOBIT}]"
+	"${DccTagInfoList[0].toolTip}"	,"${DccTagInfoList[1].toolTip}"	,"${DccTagInfoList[2].toolTip}"	,"${DccTagInfoList[3].toolTip}"
+	,"${DccTagInfoList[4].toolTip}"	,"${DccTagInfoList[5].toolTip}"	,"${DccTagInfoList[6].toolTip}"	,"${DccTagInfoList[7].toolTip}"
+	,"${DccTagInfoList[8].toolTip}"	,"${DccTagInfoList[9].toolTip}"	,"${DccTagInfoList[10].toolTip}"	,"${DccTagInfoList[11].toolTip}"
+	,"${DccTagInfoList[12].toolTip}"	,"${DccTagInfoList[13].toolTip}"
 ];
+
+
 
 $(function () {
 
@@ -69,90 +64,95 @@ $(function () {
 	$(document.body).delegate('#3', 'click', function() {
 		setTimer('3',xyHeader,0);
 	});
+	
 	$(document.body).delegate('#4', 'click', function() {
 		setTimer('4',xyHeader,0);
 	});
+	
 	$(document.body).delegate('#X', 'click', function() {
 		setTimer(hogiHeader,'X',0);
 	});
+	
 	$(document.body).delegate('#Y', 'click', function() {
 		setTimer(hogiHeader,'Y',0);
 	});
-		$(document.body).delegate('#lzc_1div span', 'dblclick', function() {
-			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
-			if( cId != null && cId != '' && cId != 'undefined' ) {
-				showTag(cId,tDccTagSeq[cId]);
-			}
-		});
+	
+	$(document.body).delegate('#lzc_1div span', 'dblclick', function() {
+		var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
+		if( cId != null && cId != '' && cId != 'undefined' ) {
+			showTag(cId,tDccTagSeq[cId]);
+		}
+	});
 		
-		$(document.body).delegate('#tagSearchTable tr', 'click', function() {
-			for( var t=0;t<selectTag.length;t++ ) {
-				for( var c=0;c<7;c++ ) {
-					if( selectTag[t].name == "hogi" ) {
-						if( $(this).children()[c].id == "tagHogi" ) {
-							selectTag[t].value = $(this).children()[c].innerText;
-						}
+	$(document.body).delegate('#tagSearchTable tr', 'click', function() {
+		for( var t=0;t<selectTag.length;t++ ) {
+			for( var c=0;c<7;c++ ) {
+				if( selectTag[t].name == "hogi" ) {
+					if( $(this).children()[c].id == "tagHogi" ) {
+						selectTag[t].value = $(this).children()[c].innerText;
 					}
-					if( selectTag[t].name == "xyGubun" ) {
-						if( $(this).children()[c].id == "tagXyGubun" ) {
-							selectTag[t].value = $(this).children()[c].innerText;
-						}
+				}
+				if( selectTag[t].name == "xyGubun" ) {
+					if( $(this).children()[c].id == "tagXyGubun" ) {
+						selectTag[t].value = $(this).children()[c].innerText;
 					}
-					if( selectTag[t].name == "loopName" ) {
-						if( $(this).children()[c].id == "tagLoopName" ) {
-							selectTag[t].value = $(this).children()[c].innerText;
-						}
+				}
+				if( selectTag[t].name == "loopName" ) {
+					if( $(this).children()[c].id == "tagLoopName" ) {
+						selectTag[t].value = $(this).children()[c].innerText;
 					}
-					if( selectTag[t].name == "ioType" ) {
-						if( $(this).children()[c].id == "tagIoType" ) {
-							selectTag[t].value = $(this).children()[c].innerText;
-						}
+				}
+				if( selectTag[t].name == "ioType" ) {
+					if( $(this).children()[c].id == "tagIoType" ) {
+						selectTag[t].value = $(this).children()[c].innerText;
 					}
-					if( selectTag[t].name == "address" ) {
-						if( $(this).children()[c].id == "tagAddress" ) {
-							selectTag[t].value = $(this).children()[c].innerText;
-						}
+				}
+				if( selectTag[t].name == "address" ) {
+					if( $(this).children()[c].id == "tagAddress" ) {
+						selectTag[t].value = $(this).children()[c].innerText;
 					}
-					if( selectTag[t].name == "ioBit" ) {
-						if( $(this).children()[c].id == "tagIoBit" ) {
-							selectTag[t].value = $(this).children()[c].innerText;
-						}
+				}
+				if( selectTag[t].name == "ioBit" ) {
+					if( $(this).children()[c].id == "tagIoBit" ) {
+						selectTag[t].value = $(this).children()[c].innerText;
 					}
-					if( selectTag[t].name == "descr" ) {
-						if( $(this).children()[c].id == "tagDescr" ) {
-							selectTag[t].value = $(this).children()[c].innerText;
-						}
+				}
+				if( selectTag[t].name == "descr" ) {
+					if( $(this).children()[c].id == "tagDescr" ) {
+						selectTag[t].value = $(this).children()[c].innerText;
 					}
 				}
 			}
-		});
-		
-		$("#tagSearch").click(function() {
-			tagSearchEvent();
-		});
-		$("#saveVarTable").click(function() {
-			saveTag();
-		});
-		$("#tagFind").click(function() {
-			tagFind(0);
-		});
-		$("#tagFindAll").click(function() {
-			tagFind(1);
-		});
-		$("#tagSearchSelect").click(function() {
-			tagSelect();
-		});
-		
-		$(document.body).delegate('#tagSearchList tr', 'dblclick', function() {
-			tagSelect();
-		});
-		
-		setTimer(hogiHeader,xyHeader,5000);
+		}
+	});
+	
+	$("#tagSearch").click(function() {
+		tagSearchEvent();
+	});
+	$("#saveVarTable").click(function() {
+		saveTag();
+	});
+	$("#tagFind").click(function() {
+		tagFind(0);
+	});
+	$("#tagFindAll").click(function() {
+		tagFind(1);
+	});
+	$("#tagSearchSelect").click(function() {
+		tagSelect();
+	});
+	
+	$(document.body).delegate('#tagSearchList tr', 'dblclick', function() {
+		tagSelect();
+	});
+	
+	setTimer(hogiHeader,xyHeader,5000);
 
 });	
 
 
 function setTimer(hogiHeader,xyHeader,interval) {
+	
 	if( interval > 0 ) {
 		setTimeout(function() {
 			if( timerOn ) {
@@ -327,10 +327,9 @@ function toCSV() {
                 <div class="chart_block" style="top:20px;left:150px;">
                     <div class="chart_block_contents only_box">
                         <div class="summary">
-                            <p>${DccTagInfoList[0].Unit}</p>
-                            <p>
-                                <span>P</span>
-                                <span id="0">${lblDataList[0].fValue}</span>
+                             <p>
+                                <span>P : </span>
+                                <span id="0">${lblDataList[0].fValue} &nbsp;${DccTagInfoList[0].unit}</span>
                             </p>
                         </div>
                     </div>
@@ -338,10 +337,19 @@ function toCSV() {
                 <div class="chart_block" style="top:200px;left:270px;">
                     <div class="chart_block_contents only_box">
                         <div class="summary">
-                            <p>${DccTagInfoList[1].Unit}</p>
+	                          <p>
+	                             <span>P : </span>
+	                             <span id="0">${lblDataList[1].fValue} &nbsp;${DccTagInfoList[1].unit}</span>
+	                          </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart_block" style="bottom:120px;left:320px;">
+                    <div class="chart_block_contents only_box">
+                        <div class="summary">
                             <p>
-                                <span>P</span>
-                                <span id="1">${lblDataList[1].fValue}</span>
+                                <span>T : </span>
+                                <span id="10">${lblDataList[10].fValue} &nbsp;${DccTagInfoList[10].unit}</span>
                             </p>
                         </div>
                     </div>
@@ -349,21 +357,9 @@ function toCSV() {
                 <div class="chart_block" style="bottom:120px;left:320px;">
                     <div class="chart_block_contents only_box">
                         <div class="summary">
-                            <p>${DccTagInfoList[10].Unit}</p>
                             <p>
-                                <span>T</span>
-                                <span id="10">${lblDataList[10].fValue}</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart_block" style="bottom:120px;left:320px;">
-                    <div class="chart_block_contents only_box">
-                        <div class="summary">
-                            <p>${DccTagInfoList[8].Unit}</p>
-                            <p>
-                                <span>C</span>
-                                <span id="8">${lblDataList[8].fValue}</span>
+                                <span>C : </span>
+                                <span id="8">${lblDataList[8].fValue} &nbsp;${DccTagInfoList[8].unit}</span>
                             </p>
                         </div>
                     </div>
@@ -372,17 +368,15 @@ function toCSV() {
                     <h4>R.U</h4>
                     <div class="chart_block_contents">
                         <div class="summary">
-                            <p>${DccTagInfoList[2].Unit}</p>
                             <p>
-                                <span>In T</span>
-                                <span id="2">${lblDataList[2].fValue}</span>
+                                <span>In T : </span>
+                                <span id="2">${lblDataList[2].fValue} &nbsp;${DccTagInfoList[2].unit}</span>
                             </p>
                         </div>
                         <div class="summary">
-                            <p>${DccTagInfoList[4].Unit}</p>
                             <p>
                                 <span>Out T</span>
-                                <span id="4">${lblDataList[4].fValue}</span>
+                                <span id="4">${lblDataList[4].fValue} &nbsp;${DccTagInfoList[4].unit}</span>
                             </p>
                         </div>
                     </div>
@@ -391,17 +385,15 @@ function toCSV() {
                     <h4>Delay Tank</h4>
                     <div class="chart_block_contents">
                         <div class="summary">
-                            <p>${DccTagInfoList[6].Unit}</p>
                             <p>
                                 <span>L</span>
-                                <span id="6">${lblDataList[6].fValue}</span>
+                                <span id="6">${lblDataList[6].fValue} &nbsp;${DccTagInfoList[6].unit}</span>
                             </p>
                         </div>
                         <div class="summary">
-                            <p>${DccTagInfoList[7].Unit}</p>
                             <p>
                                 <span>P</span>
-                                <span id="7">${lblDataList[7].fValue}</span>
+                                <span id="7">${lblDataList[7].fValue} &nbsp;${DccTagInfoList[7].unit}</span>
                             </p>
                         </div>
                     </div>
@@ -410,17 +402,15 @@ function toCSV() {
                     <h4>He Tank</h4>
                     <div class="chart_block_contents">
                         <div class="summary">
-                            <p>${DccTagInfoList[3].Unit}</p>
                             <p>
-                                <span>P</span>
-                                <span id="3">${lblDataList[3].fValue}</span>
+                                <span>P : </span>
+                                <span id="3">${lblDataList[3].fValue} &nbsp;${DccTagInfoList[3].unit}</span>
                             </p>
                         </div>
                         <div class="summary">
-                            <p>${DccTagInfoList[5].Unit}</p>
                             <p>
                                 <span>L</span>
-                                <span id="5">${lblDataList[5].fValue}</span>
+                                <span id="5">${lblDataList[5].fValue} &nbsp;${DccTagInfoList[5].unit}</span>
                             </p>
                         </div>
                     </div>
@@ -429,31 +419,27 @@ function toCSV() {
                     <h4>H2O Pp Disch</h4>
                     <div class="chart_block_contents">
                         <div class="summary">
-                            <p>${DccTagInfoList[11].Unit}</p>
                             <p>
                                 <span>Pr. A</span>
-                                <span id="11">${lblDataList[11].fValue}</span>
+                                <span id="11">${lblDataList[11].fValue} &nbsp;${DccTagInfoList[11].unit}</span>
                             </p>
                         </div>
                         <div class="summary">
-                            <p>${DccTagInfoList[12].Unit}</p>
                             <p>
                                 <span>B</span>
-                                <span id="12">${lblDataList[12].fValue}</span>
+                                <span id="12">${lblDataList[12].fValue} &nbsp;${DccTagInfoList[12].unit}</span>
                             </p>
                         </div>
                         <div class="summary">
-                            <p>${DccTagInfoList[13].Unit}</p>
                             <p>
                                 <span>C</span>
-                                <span id="13">${lblDataList[13].fValue}</span>
+                                <span id="13">${lblDataList[13].fValue} &nbsp;${DccTagInfoList[13].unit}</span>
                             </p>
                         </div>
                         <div class="summary">
-                            <p>${DccTagInfoList[9].Unit}</p>
                             <p>
                                 <span>T</span>
-                                <span id="9">${lblDataList[9].fValue}</span>
+                                <span id="9">${lblDataList[9].fValue} &nbsp;${DccTagInfoList[9].unit}</span>
                             </p>
                         </div>
                     </div>

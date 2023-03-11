@@ -29,9 +29,9 @@ var tDccTagXy = [
 	'${DccTagInfoList[0].XYGubun}','${DccTagInfoList[1].XYGubun}'
 ];
 var tToolTipText = [
-	"${DccTagInfoList[0].Descr}[${DccTagInfoList[0].Hogi}:${DccTagInfoList[0].IOTYPE}-${DccTagInfoList[0].ADDRESS}:${DccTagInfoList[0].IOBIT}]"
-	,"${DccTagInfoList[1].Descr}[${DccTagInfoList[1].Hogi}:${DccTagInfoList[1].IOTYPE}-${DccTagInfoList[1].ADDRESS}:${DccTagInfoList[1].IOBIT}]"
+	"${DccTagInfoList[0].toolTip}"	,"${DccTagInfoList[1].toolTip}"	
 ];
+
 
 $(function () {
 
@@ -311,7 +311,7 @@ function toCSV() {
                             <p>
                                 <span>Actual Value</span>
                                 <span id="0">${lblDataList[0].fValue}</span>
-                                <span>${DccTagInfoList[0].Unit}</span>
+                                <span>${DccTagInfoList[0].unit}</span>
                             </p>
                         </div>
                         <ul>
@@ -339,7 +339,7 @@ function toCSV() {
                             <p>
                                 <span>Actual Value</span>
                                 <span id="1">${lblDataList[1].fValue}</span>
-                                <span>${DccTagInfoList[1].Unit}</span>
+                                <span>${DccTagInfoList[1].unit}</span>
                             </p>
                         </div>
                         <ul>

@@ -58,7 +58,7 @@ public class BasMarkOsmsServiceImpl implements BasMarkOsmsService{
 			tMarkTag.setD0(markGrpTagInfo.get("D0") !=null? markGrpTagInfo.get("D0").toString():"");
 			tMarkTag.setD1(markGrpTagInfo.get("D1") !=null? markGrpTagInfo.get("D1").toString():"");
 			
-			tMarkTag.setSaveCoreChk(markGrpTagInfo.get("SaveCoreChk") !=null? Integer.parseInt(markGrpTagInfo.get("iSeSaveCoreChkq").toString()):0);
+			tMarkTag.setSaveCoreChk(markGrpTagInfo.get("SaveCoreChk") !=null? Integer.parseInt(markGrpTagInfo.get("SaveCoreChk").toString()):0);
 			tMarkTag.setMinVal(markGrpTagInfo.get("MinVal") !=null? Integer.parseInt(markGrpTagInfo.get("MinVal").toString()):-1);
 			tMarkTag.setMaxVal(markGrpTagInfo.get("MaxVal") !=null? Integer.parseInt(markGrpTagInfo.get("MaxVal").toString()):-1);
 			
@@ -198,6 +198,8 @@ public class BasMarkOsmsServiceImpl implements BasMarkOsmsService{
 			iTagCnt = iTagCnt + 1;			
 		}
 		*/
+		
+		searchMap.put("pSCanTime", pSCanTime);
 		
 		List<Map> vValue = basMarkOsmsMapper.selectLogMarkTrend(searchMap);
 		

@@ -13,13 +13,17 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mkpenc.admin.model.EquipInfo;
 import com.mkpenc.admin.model.MemberInfo;
 import com.mkpenc.admin.service.DccAdminService;
+import com.mkpenc.common.model.ComTagDccInfo;
 import com.mkpenc.common.model.Upload;
 import com.mkpenc.common.module.PageHtmlUtil;
+import com.mkpenc.common.service.BasDccOsmsService;
 import com.mkpenc.main.model.NoticeInfo;
 import com.mkpenc.main.model.SearchMain;
 import com.mkpenc.main.service.MainService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -37,6 +41,9 @@ public class MainContentsController {
 	
 	@Autowired
 	private PageHtmlUtil pageHtmlUtil;
+	
+	@Autowired	
+	private BasDccOsmsService basDccOsmsService;
 	
 	private String menuName = "MAIN";
 	
@@ -148,7 +155,36 @@ public class MainContentsController {
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
-        	//Get Session User Info        	
+        	
+        	if(searchMain.getsMenuNo() == null || searchMain.getsMenuNo().isEmpty()) {
+            	
+        		searchMain.setsDive("D");
+        		searchMain.setsMenuNo("0");
+        		searchMain.setsGrpID("mimic");
+        		searchMain.setsUGrpNo("0");
+        		
+        		//Get Session User Info   	        	
+	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+	        	searchMain.setsHogi(member.getHogi());
+	        	searchMain.setsXYGubun(member.getXyGubun());
+        	}
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",searchMain.getsXYGubun()==null?  "": searchMain.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",searchMain.getsHogi()==null?  "": searchMain.getsHogi());
+    		dccGrpTagSearchMap.put("dive",searchMain.getsDive()==null?  "": searchMain.getsDive());
+    		dccGrpTagSearchMap.put("grpID", searchMain.getsGrpID()==null?  "": searchMain.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", searchMain.getsMenuNo()==null?  "": searchMain.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", searchMain.getsUGrpNo()==null?  "": searchMain.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+    		
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);  
         	
         	mav.addObject("BashSearch", searchMain);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));

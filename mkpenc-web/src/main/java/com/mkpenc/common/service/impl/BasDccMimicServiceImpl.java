@@ -18,7 +18,7 @@ import com.mkpenc.common.model.ComTagDccInfo;
 import com.mkpenc.common.service.BasDccMimicService;
 import com.mkpenc.mimic.model.DccSearchMimic;
 
- 
+
 @Service("basDccMimicService")
 public class BasDccMimicServiceImpl implements BasDccMimicService{
 	
@@ -28,115 +28,115 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 	private BasDccMimicMapper basDccMimicMapper;
 	
 	// by sohe 2023.02.28
-	public List<ComTagDccInfo> getDccGrpTagNoUnitConvList(Map searchMap) {
-		List<ComDccGrpTagInfo> dccGrpTagInfoList = basDccMimicMapper.selectDccGrpTagList(searchMap);
-		
-		List<ComTagDccInfo> tagDccInfoList = new ArrayList();
-		
-		for(ComDccGrpTagInfo dccGrpTagInfo:dccGrpTagInfoList) {
+		public List<ComTagDccInfo> getDccGrpTagNoUnitConvList(Map searchMap) {
+			List<ComDccGrpTagInfo> dccGrpTagInfoList = basDccMimicMapper.selectDccGrpTagList(searchMap);
 			
-			ComTagDccInfo tagDccInfo = new ComTagDccInfo();
-						
-			tagDccInfo.setHogi(dccGrpTagInfo.getHogi());
-			tagDccInfo.setADDRESS(dccGrpTagInfo.getADDRESS() == null? "": dccGrpTagInfo.getADDRESS());
-			tagDccInfo.setFASTIOCHK(dccGrpTagInfo.getFASTIOCHK());
+			List<ComTagDccInfo> tagDccInfoList = new ArrayList();
 			
-			if(dccGrpTagInfo.getFASTIOCHK() == 1){
+			for(ComDccGrpTagInfo dccGrpTagInfo:dccGrpTagInfoList) {
 				
-				String fldNo = basDccMimicMapper.selectFastIoChk(dccGrpTagInfo) ;
+				ComTagDccInfo tagDccInfo = new ComTagDccInfo();
+							
+				tagDccInfo.setHogi(dccGrpTagInfo.getHogi());
+				tagDccInfo.setADDRESS(dccGrpTagInfo.getADDRESS() == null? "": dccGrpTagInfo.getADDRESS());
+				tagDccInfo.setFASTIOCHK(dccGrpTagInfo.getFASTIOCHK());
 				
-				if(fldNo == null || fldNo.isEmpty()) {
-					tagDccInfo.setFLDNO_FAST(0);
-				}else {
-					tagDccInfo.setFLDNO_FAST(Integer.parseInt(fldNo));
+				if(dccGrpTagInfo.getFASTIOCHK() == 1){
+					
+					String fldNo = basDccMimicMapper.selectFastIoChk(dccGrpTagInfo) ;
+					
+					if(fldNo == null || fldNo.isEmpty()) {
+						tagDccInfo.setFLDNO_FAST(0);
+					}else {
+						tagDccInfo.setFLDNO_FAST(Integer.parseInt(fldNo));
+					}
 				}
+				
+				if(tagDccInfo.getFASTIOCHK() == 0 || (tagDccInfo.getFASTIOCHK() == 1 &&  tagDccInfo.getFLDNO_FAST() > 0)){
+					
+					tagDccInfo.setiSeq(dccGrpTagInfo.getiSeq());
+					tagDccInfo.setGrpHogi(dccGrpTagInfo.getGrpHogi());
+					tagDccInfo.setXYGubun(dccGrpTagInfo.getXYGubun());
+					tagDccInfo.setBScale(dccGrpTagInfo.getBSCAL());
+					tagDccInfo.setLOOPNAME(dccGrpTagInfo.getLOOPNAME() == null? "": dccGrpTagInfo.getLOOPNAME());
+					tagDccInfo.setUnit(dccGrpTagInfo.getUNIT());
+					tagDccInfo.setAlarmType(dccGrpTagInfo.getTYPE() == null? "0": dccGrpTagInfo.getTYPE());
+					
+					switch(dccGrpTagInfo.getTYPE()) {
+							case "1":        			//HI, LO
+							case "2":   
+								tagDccInfo.setDataLimit1((dccGrpTagInfo.getLIMIT1() == null? -32768: dccGrpTagInfo.getLIMIT1()));
+								break;
+							case "3":        			//HI/LO, HI/VH, LO/VL
+							case "7":   
+							case "8":
+								tagDccInfo.setDataLimit1((dccGrpTagInfo.getLIMIT1() == null? -32768: dccGrpTagInfo.getLIMIT1()));
+								tagDccInfo.setDataLimit2((dccGrpTagInfo.getLIMIT2() == null? -32768: dccGrpTagInfo.getLIMIT2()));
+								break;
+							case "4":   				// HI(DTAB), LO(DTAB)
+							case "5":
+								tagDccInfo.setDataLimit1((dccGrpTagInfo.getLIMIT1() == null? -32768:1));
+								break;
+							case "6":					//HI/LO(DTAB)
+								tagDccInfo.setDataLimit1((dccGrpTagInfo.getLIMIT1() == null? -32768:1));
+								if(dccGrpTagInfo.getLIMIT2() == null) {
+									tagDccInfo.setDataLimit1(-32768);
+								} else {
+									tagDccInfo.setDataLimit2(1);
+								}
+								break;
+							 default :
+									tagDccInfo.setDataLimit1((dccGrpTagInfo.getLIMIT1() == null? -32768: dccGrpTagInfo.getLIMIT1()));
+									tagDccInfo.setDataLimit2((dccGrpTagInfo.getLIMIT2() == null?-32768: dccGrpTagInfo.getLIMIT2()));
+								 
+					} // end switch
+					
+					tagDccInfo.setSaveCore(dccGrpTagInfo.getSaveCoreChk());
+		            tagDccInfo.setIOTYPE(dccGrpTagInfo.getIOTYPE() == null? "": dccGrpTagInfo.getIOTYPE());
+		            tagDccInfo.setIOBIT(dccGrpTagInfo.getIOBIT());
+		            tagDccInfo.setTBLNO(dccGrpTagInfo.getTBLNO() == 0? -32768: dccGrpTagInfo.getTBLNO());
+		            tagDccInfo.setFLDNO(dccGrpTagInfo.getFLDNO() == 0? -32768: dccGrpTagInfo.getFLDNO());
+		            tagDccInfo.setDescr(dccGrpTagInfo.getDescr() == null? "": dccGrpTagInfo.getDescr());
+		            tagDccInfo.setMinVal(dccGrpTagInfo.getMinVal());
+		            tagDccInfo.setMaxVal(dccGrpTagInfo.getMaxVal());
+		            tagDccInfo.setDataLoop(dccGrpTagInfo.getTYPE() == null? "": dccGrpTagInfo.getDataLoop());
+		            tagDccInfo.setELOW(dccGrpTagInfo.getELOW());
+		            tagDccInfo.setEHIGH(dccGrpTagInfo.getEHIGH());
+		            tagDccInfo.setVLOW(dccGrpTagInfo.getVLOW());
+		            tagDccInfo.setVHIGH(dccGrpTagInfo.getVHIGH());
+					  
+					
+					// '-* AI2010, AI2140
+//					if( tagDccInfo.getIOTYPE().equals("AI") &&  (tagDccInfo.getADDRESS().equals("2010") ||  tagDccInfo.getADDRESS().equals("2140"))){
+//						tagDccInfo.setUnit("DAC");
+	//
+//				    //   '-* AI2753, AI2754 (MPAG > KPAG)
+//					}else 
+						if( tagDccInfo.getIOTYPE().equals("AI") &&  (tagDccInfo.getADDRESS().equals("2753") ||  tagDccInfo.getADDRESS().equals("2754"))){
+						//tagDccInfo.setUnit("KPAG"); 
+						tagDccInfo.setMinVal(tagDccInfo.getMinVal() * 1000);
+						tagDccInfo.setMaxVal(tagDccInfo.getMaxVal() * 1000);
+					}
+//						else {
+//						tagDccInfo.setUnit(dccGrpTagInfo.getUNIT());
+//					}
+					
+					if(tagDccInfo.getIOBIT() != 0) {
+						tagDccInfo.setToolTip(tagDccInfo.getDescr() + "[" +tagDccInfo.getHogi() +":" + tagDccInfo.getIOTYPE() +"-" + tagDccInfo.getADDRESS() + ":" + tagDccInfo.getIOBIT() + "]" );
+					}else {
+						tagDccInfo.setToolTip(tagDccInfo.getDescr() + "[" +tagDccInfo.getHogi() +":" + tagDccInfo.getIOTYPE() +"-" + tagDccInfo.getADDRESS() + "]" );
+					}
+													
+				}// end if
+				
+				tagDccInfoList.add(tagDccInfo);		
 			}
 			
-			if(tagDccInfo.getFASTIOCHK() == 0 || (tagDccInfo.getFASTIOCHK() == 1 &&  tagDccInfo.getFLDNO_FAST() > 0)){
-				
-				tagDccInfo.setiSeq(dccGrpTagInfo.getiSeq());
-				tagDccInfo.setGrpHogi(dccGrpTagInfo.getGrpHogi());
-				tagDccInfo.setXYGubun(dccGrpTagInfo.getXYGubun());
-				tagDccInfo.setBScale(dccGrpTagInfo.getBSCAL());
-				tagDccInfo.setLOOPNAME(dccGrpTagInfo.getLOOPNAME() == null? "": dccGrpTagInfo.getLOOPNAME());
-				tagDccInfo.setUnit(dccGrpTagInfo.getUNIT());
-				tagDccInfo.setAlarmType(dccGrpTagInfo.getTYPE() == null? "0": dccGrpTagInfo.getTYPE());
-				
-				switch(dccGrpTagInfo.getTYPE()) {
-						case "1":        			//HI, LO
-						case "2":   
-							tagDccInfo.setDataLimit1((dccGrpTagInfo.getLIMIT1() == null? -32768: dccGrpTagInfo.getLIMIT1()));
-							break;
-						case "3":        			//HI/LO, HI/VH, LO/VL
-						case "7":   
-						case "8":
-							tagDccInfo.setDataLimit1((dccGrpTagInfo.getLIMIT1() == null? -32768: dccGrpTagInfo.getLIMIT1()));
-							tagDccInfo.setDataLimit2((dccGrpTagInfo.getLIMIT2() == null? -32768: dccGrpTagInfo.getLIMIT2()));
-							break;
-						case "4":   				// HI(DTAB), LO(DTAB)
-						case "5":
-							tagDccInfo.setDataLimit1((dccGrpTagInfo.getLIMIT1() == null? -32768:1));
-							break;
-						case "6":					//HI/LO(DTAB)
-							tagDccInfo.setDataLimit1((dccGrpTagInfo.getLIMIT1() == null? -32768:1));
-							if(dccGrpTagInfo.getLIMIT2() == null) {
-								tagDccInfo.setDataLimit1(-32768);
-							} else {
-								tagDccInfo.setDataLimit2(1);
-							}
-							break;
-						 default :
-								tagDccInfo.setDataLimit1((dccGrpTagInfo.getLIMIT1() == null? -32768: dccGrpTagInfo.getLIMIT1()));
-								tagDccInfo.setDataLimit2((dccGrpTagInfo.getLIMIT2() == null?-32768: dccGrpTagInfo.getLIMIT2()));
-							 
-				} // end switch
-				
-				tagDccInfo.setSaveCore(dccGrpTagInfo.getSaveCoreChk());
-	            tagDccInfo.setIOTYPE(dccGrpTagInfo.getIOTYPE() == null? "": dccGrpTagInfo.getIOTYPE());
-	            tagDccInfo.setIOBIT(dccGrpTagInfo.getIOBIT());
-	            tagDccInfo.setTBLNO(dccGrpTagInfo.getTBLNO() == 0? -32768: dccGrpTagInfo.getTBLNO());
-	            tagDccInfo.setFLDNO(dccGrpTagInfo.getFLDNO() == 0? -32768: dccGrpTagInfo.getFLDNO());
-	            tagDccInfo.setDescr(dccGrpTagInfo.getDescr() == null? "": dccGrpTagInfo.getDescr());
-	            tagDccInfo.setMinVal(dccGrpTagInfo.getMinVal());
-	            tagDccInfo.setMaxVal(dccGrpTagInfo.getMaxVal());
-	            tagDccInfo.setDataLoop(dccGrpTagInfo.getTYPE() == null? "": dccGrpTagInfo.getDataLoop());
-	            tagDccInfo.setELOW(dccGrpTagInfo.getELOW());
-	            tagDccInfo.setEHIGH(dccGrpTagInfo.getEHIGH());
-	            tagDccInfo.setVLOW(dccGrpTagInfo.getVLOW());
-	            tagDccInfo.setVHIGH(dccGrpTagInfo.getVHIGH());
-				  
-				
-				// '-* AI2010, AI2140
-//				if( tagDccInfo.getIOTYPE().equals("AI") &&  (tagDccInfo.getADDRESS().equals("2010") ||  tagDccInfo.getADDRESS().equals("2140"))){
-//					tagDccInfo.setUnit("DAC");
-//
-//			    //   '-* AI2753, AI2754 (MPAG > KPAG)
-//				}else 
-					if( tagDccInfo.getIOTYPE().equals("AI") &&  (tagDccInfo.getADDRESS().equals("2753") ||  tagDccInfo.getADDRESS().equals("2754"))){
-					//tagDccInfo.setUnit("KPAG"); 
-					tagDccInfo.setMinVal(tagDccInfo.getMinVal() * 1000);
-					tagDccInfo.setMaxVal(tagDccInfo.getMaxVal() * 1000);
-				}
-//					else {
-//					tagDccInfo.setUnit(dccGrpTagInfo.getUNIT());
-//				}
-				
-				if(tagDccInfo.getIOBIT() != 0) {
-					tagDccInfo.setToolTip(tagDccInfo.getDescr() + "[" +tagDccInfo.getHogi() +":" + tagDccInfo.getIOTYPE() +"-" + tagDccInfo.getADDRESS() + ":" + tagDccInfo.getIOBIT() + "]" );
-				}else {
-					tagDccInfo.setToolTip(tagDccInfo.getDescr() + "[" +tagDccInfo.getHogi() +":" + tagDccInfo.getIOTYPE() +"-" + tagDccInfo.getADDRESS() + "]" );
-				}
-												
-			}// end if
+			return tagDccInfoList;
 			
-			tagDccInfoList.add(tagDccInfo);		
 		}
-		
-		return tagDccInfoList;
-		
-	}
 	
-public List<ComTagDccInfo> getDccGrpTagList(Map searchMap) {
+	public List<ComTagDccInfo> getDccGrpTagList(Map searchMap) {
 		
 		List<ComDccGrpTagInfo> dccGrpTagInfoList = basDccMimicMapper.selectDccGrpTagList(searchMap);
 		
@@ -498,7 +498,7 @@ public List<ComTagDccInfo> getDccGrpTagList(Map searchMap) {
 	    for(int i = 0;i < bit_no;i++) {
 	        Rest = (di_val % 2);
 	        //di_val = di_val \ 2;
-	    	di_val = di_val / 2;
+	    	di_val = di_val >> 2;
 		}
 	    
 	    return Rest +"";

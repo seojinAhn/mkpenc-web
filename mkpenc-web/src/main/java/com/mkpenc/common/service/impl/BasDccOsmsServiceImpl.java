@@ -14,11 +14,10 @@ import com.mkpenc.common.mapper.BasCommonMapper;
 import com.mkpenc.common.mapper.BasDccOsmsMapper;
 import com.mkpenc.common.model.ComDccGrpTagInfo;
 import com.mkpenc.common.model.ComTagDccInfo;
-import com.mkpenc.common.service.BasCommonService;
 import com.mkpenc.common.service.BasDccOsmsService;
 import com.mkpenc.performance.model.DccSearchPerformance;
 
- 
+
 @Service("basDccOsmsService")
 public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	
@@ -26,9 +25,6 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	
 	@Autowired
 	private BasDccOsmsMapper basDccOsmsMapper;
-	
-	@Autowired
-	private BasCommonService basCommonService;
 	
 	public List<ComTagDccInfo> getDccGrpTagList(Map searchMap) {
 		
@@ -64,6 +60,9 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 				tagDccInfo.setLOOPNAME(dccGrpTagInfo.getLOOPNAME() == null? "": dccGrpTagInfo.getLOOPNAME());
 				tagDccInfo.setUnit(ConvertUnit(dccGrpTagInfo.getUNIT()));
 				tagDccInfo.setAlarmType(dccGrpTagInfo.getTYPE() == null? "0": dccGrpTagInfo.getTYPE());
+								
+				//NULL EXIST
+				dccGrpTagInfo.setTYPE(dccGrpTagInfo.getTYPE() == null? "0": dccGrpTagInfo.getTYPE());
 				
 				switch(dccGrpTagInfo.getTYPE()) {
 						case "1":        			//HI, LO
@@ -138,75 +137,80 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	}
 	
 	private String ConvertUnit(String strUnit) {
-	      String strConUnit;
+		
+		String strConUnit;
+	      
+		if(strUnit == null || strUnit.isEmpty()) {
+		    	strUnit = "";
+		}
 	    
-			    switch (strUnit.toUpperCase()) {
-			        case "G:SEC" : 
-			            strConUnit = "G/S"; break;
-			        case "KG:HR" :
-			            strConUnit = "KG/HR"; break;
-			        case "L:MIN" :
-			            strConUnit = "L/MIN"; break;
-			        case "L:SEC" :
-			            strConUnit = "L/S"; break;
-			        case "M3:HR" :
-			            strConUnit = "M3/H"; break;
-			        case "ML:S":
-			            strConUnit = "ML/S";    break;
-			        case "DECADE" :
-			            strConUnit = "DEC";    break;
-			        case "FP:HR" :
-			            strConUnit = "FP/HR";    break;
-			        case "VOLTS" :
-			            strConUnit = "V";    break;
-			        case "DEGC:H" :
-			            strConUnit = "DEGC/H";    break;
-			        case "M:MIN" :
-			            strConUnit = "M/MIN";    break;
-			        case "MM:HR" :
-			            strConUnit = "MM/HR";    break;
-			        case "MM:SEC" :
-			            strConUnit = "MM/S";    break;
-			        case "MW:MIN" :
-			            strConUnit = "MW/MIN";    break;
-			        case "METERS":
-			        case "METRES":
-			            strConUnit = "M";    break;
-			        case "MS:M" :
-			            strConUnit = "MSIE/M";    break;
-			        case "US:M" :
-			            strConUnit = "USIE/M";    break;
-			        case "CI:M3" :
-			            strConUnit = "CI/M3";    break;
-			        case "DEC:S" :
-			            strConUnit = "DEC/S";    break;
-			        case "KCNT:M" :
-			            strConUnit = "KCNT/M";    break;
-			        case "KCNT:S" :
-			            strConUnit = "KCNT/S";    break;
-			        case "MCI:M3" :
-			            strConUnit = "MCI/M3";    break;
-			        case "MGY:HR":
-			        case "MGY/HR" :
-			            strConUnit = "mGy/hr";    break;
-			        case "MILLIK" :
-			            strConUnit = "MK";    break;
-			        case "MR:HR" :
-			            strConUnit = "MREM/H";    break;
-			        case "R:HR" :
-			            strConUnit = "REM/H";    break;
-			        case "DEGC"  :
-			        case "DEG C" :
-			            strConUnit = "°C";    break;
-			        case "LD:LG" :
-			            strConUnit = "KD/LAG";    break;
-			        case "NOTAVL" :
-			            strConUnit = "N/A";    break;
-			        case "PERU" :
-			            strConUnit = "P.U.";    break;
-			        default  :
-			            strConUnit = strUnit;    break;
-			    }
+		switch (strUnit.toUpperCase()) {
+	        case "G:SEC" : 
+	            strConUnit = "G/S"; break;
+	        case "KG:HR" :
+	            strConUnit = "KG/HR"; break;
+	        case "L:MIN" :
+	            strConUnit = "L/MIN"; break;
+	        case "L:SEC" :
+	            strConUnit = "L/S"; break;
+	        case "M3:HR" :
+	            strConUnit = "M3/H"; break;
+	        case "ML:S":
+	            strConUnit = "ML/S";    break;
+	        case "DECADE" :
+	            strConUnit = "DEC";    break;
+	        case "FP:HR" :
+	            strConUnit = "FP/HR";    break;
+	        case "VOLTS" :
+	            strConUnit = "V";    break;
+	        case "DEGC:H" :
+	            strConUnit = "DEGC/H";    break;
+	        case "M:MIN" :
+	            strConUnit = "M/MIN";    break;
+	        case "MM:HR" :
+	            strConUnit = "MM/HR";    break;
+	        case "MM:SEC" :
+	            strConUnit = "MM/S";    break;
+	        case "MW:MIN" :
+	            strConUnit = "MW/MIN";    break;
+	        case "METERS":
+	        case "METRES":
+	            strConUnit = "M";    break;
+	        case "MS:M" :
+	            strConUnit = "MSIE/M";    break;
+	        case "US:M" :
+	            strConUnit = "USIE/M";    break;
+	        case "CI:M3" :
+	            strConUnit = "CI/M3";    break;
+	        case "DEC:S" :
+	            strConUnit = "DEC/S";    break;
+	        case "KCNT:M" :
+	            strConUnit = "KCNT/M";    break;
+	        case "KCNT:S" :
+	            strConUnit = "KCNT/S";    break;
+	        case "MCI:M3" :
+	            strConUnit = "MCI/M3";    break;
+	        case "MGY:HR":
+	        case "MGY/HR" :
+	            strConUnit = "mGy/hr";    break;
+	        case "MILLIK" :
+	            strConUnit = "MK";    break;
+	        case "MR:HR" :
+	            strConUnit = "MREM/H";    break;
+	        case "R:HR" :
+	            strConUnit = "REM/H";    break;
+	        case "DEGC"  :
+	        case "DEG C" :
+	            strConUnit = "°C";    break;
+	        case "LD:LG" :
+	            strConUnit = "KD/LAG";    break;
+	        case "NOTAVL" :
+	            strConUnit = "N/A";    break;
+	        case "PERU" :
+	            strConUnit = "P.U.";    break;
+	        default  :
+	            strConUnit = strUnit;    break;
+	    }
 	    
 	    return strConUnit;
 
@@ -281,7 +285,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	private Map setDataConv(double fValue, ComTagDccInfo tagDccInfo, Map searchMap) {
 		
 		Map dataConv = new HashMap();
-		
+		System.out.println("setDataConv setDataConv ::: IOTYPE = " + fValue + "::::" +  tagDccInfo.getIOTYPE());
 		if(fValue == 0) {
 			dataConv.put("fValue", "-");
 			return dataConv;
@@ -290,13 +294,21 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		// '- IOTYPE에 대한 설정
 	    if( tagDccInfo.getIOTYPE().equals("DI") ||  tagDccInfo.getIOTYPE().equals("DO")){
 	        if(tagDccInfo.getIOBIT() != 0) {
-	            fValue = Double.parseDouble(basCommonService.GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
+	            fValue = Double.parseDouble(GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
 	        }
 	    }else if(tagDccInfo.getIOTYPE().equals("SC")) {
 	    	 if( tagDccInfo.getSaveCore() == 1 &&  tagDccInfo.getIOBIT() != 0) {
-	 	            fValue = Double.parseDouble(basCommonService.GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
+	    		 
+	    		 System.out.println("setDataConv setDataConv ::: IOTYPE = " + fValue + "::::" +  tagDccInfo.getIOTYPE() + ";;;;" + tagDccInfo.getIOBIT());
+	 	            fValue = Double.parseDouble(GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
+	 	            
+	 	           System.out.println("setDataConv setDataConv ::: IOTYPE getbitval= " + fValue + "::::" +  tagDccInfo.getIOTYPE() + ";;;;" + tagDccInfo.getIOBIT());
 	    	 }else if( tagDccInfo.getBScale() != 0 && tagDccInfo.getSaveCore() != 1) {
-	 	            fValue = fValue / (2 ^ (15 - tagDccInfo.getBScale() ));
+	    		  System.out.println(Math.pow(2, (15 - tagDccInfo.getBScale())));   
+	    		 
+	    		 fValue = fValue / Math.pow(2, (15 - tagDccInfo.getBScale()));
+	 	            
+	 	           System.out.println("setDataConv setDataConv ::: IOTYPE not getbitval= " + fValue + "::::" +  tagDccInfo.getIOTYPE() + ";;;;" + tagDccInfo.getIOBIT());
 	 	     }
 	    	
 	    }else {
@@ -307,7 +319,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	    
 	    if(searchMap.get("menuNo").equals("21") || searchMap.get("menuNo").equals("22")) {
 	    	if(Double.parseDouble(searchMap.get("TimeGap").toString())  < 5000 && tagDccInfo.getFASTIOCHK() == 1 && tagDccInfo.getBScale() != 0 ) {
-	    		  fValue = fValue / (2 ^ (15 - tagDccInfo.getBScale() ));
+	    		  fValue = fValue / Math.pow(2, (15 - tagDccInfo.getBScale() ));
 	    	}
 	    }
 	    
@@ -361,7 +373,34 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		}		
 	}
 	
-	
+	// - 디지털 값을 가져온다.(16bit -> 1bit)
+	//private int GetBitVal(ByVal DigitalValue As String, ByVal DigitalBit As String) As String
+	private String GetBitVal(String digitalValue, String digitalBit) {
+	    
+	    long Rest = 0;
+	    
+	    long di_val;
+	    int bit_no;	    
+	    
+	    if(digitalBit.isEmpty()) {
+	       if(digitalValue == null) {
+	    	   return "";
+	       }else {
+	    	   return digitalValue;
+	       }
+	    }
+	    
+	    di_val = Math.round(Double.parseDouble(digitalValue));	    
+	    bit_no = Integer.parseInt(digitalBit);
+
+	    for(int i = 0;i < bit_no;i++) {
+	        Rest = (di_val % 2);
+	        di_val = di_val / 2;
+	    	//di_val = di_val >> 2;
+		}
+	    
+	    return Rest +"";
+	}
 	
 	private String sqlQueryDcc(Map searchMap) {
 		
@@ -420,6 +459,8 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	    		}
 	    	}
 	    	
+	    	System.out.println(j +  "::::" +iTBLNO  + "::::" + iFLDNO);
+	    	
 	    	 if(j >= vValue.size()) {
 	    		 pStr = pStr + "|";
 	    	 }else {
@@ -436,47 +477,47 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	}
 	
 	// added by jhlee(23.02.28)
-	public List<Map> selectDccGrpTagListB(Map searchMap) {
-		List<Map> rtnMap = new ArrayList<Map>();
-		
-		List<Map> tmpMapList = basDccOsmsMapper.selectDccGrpTagListB(searchMap);
-		tmpMapList.forEach(m -> {
-			Map tmpMap = new HashMap();
-			if( "D".equalsIgnoreCase(m.get("gubun").toString()) ) {
-				tmpMap.put("iSeq", m.get("iSeq"));
-				tmpMap.put("gubun", m.get("gubun"));
-				tmpMap.put("hogi", m.get("hogi"));
-				tmpMap.put("xyGubun", m.get("xyGubun"));
-				tmpMap.put("Descr", m.get("Descr"));
-				tmpMap.put("ioType", m.get("ioType"));
-				tmpMap.put("address", m.get("address"));
-				tmpMap.put("ioBit", m.get("ioBit"));
-				tmpMap.put("minVal", m.get("minVal"));
-				tmpMap.put("maxVal", m.get("maxVal"));
-				if( "0".equals(m.get("saveCoreChk")) && "SC".equalsIgnoreCase(m.get("ioType").toString()) ) {
-					tmpMap.put("saveCoreChk", "");
-				} else {
-					tmpMap.put("saveCoreChk", m.get("saveCoreChk"));
-				}
-			} else {
-				tmpMap.put("iSeq_m", m.get("iSeq_M"));
-				tmpMap.put("gubun", m.get("gubun_M"));
-				tmpMap.put("hogi_m", m.get("hogi_M"));
-				tmpMap.put("xyGubun", "");
-				tmpMap.put("Descr_m", m.get("Descr_M"));
-				tmpMap.put("ioType_m", m.get("ioType_M"));
-				tmpMap.put("register_m", m.get("register_M"));
-				tmpMap.put("ioBit_m", m.get("ioBit_M"));
-				tmpMap.put("minVal_m", m.get("minVal_M"));
-				tmpMap.put("maxVal_m", m.get("maxVal_M"));
-				tmpMap.put("saveCoreChk_m", "");
-			}
+		public List<Map> selectDccGrpTagListB(Map searchMap) {
+			List<Map> rtnMap = new ArrayList<Map>();
 			
-			rtnMap.add(tmpMap);
-		});
-		
-		return rtnMap;
-	}
+			List<Map> tmpMapList = basDccOsmsMapper.selectDccGrpTagListB(searchMap);
+			tmpMapList.forEach(m -> {
+				Map tmpMap = new HashMap();
+				if( "D".equalsIgnoreCase(m.get("gubun").toString()) ) {
+					tmpMap.put("iSeq", m.get("iSeq"));
+					tmpMap.put("gubun", m.get("gubun"));
+					tmpMap.put("hogi", m.get("hogi"));
+					tmpMap.put("xyGubun", m.get("xyGubun"));
+					tmpMap.put("Descr", m.get("Descr"));
+					tmpMap.put("ioType", m.get("ioType"));
+					tmpMap.put("address", m.get("address"));
+					tmpMap.put("ioBit", m.get("ioBit"));
+					tmpMap.put("minVal", m.get("minVal"));
+					tmpMap.put("maxVal", m.get("maxVal"));
+					if( "0".equals(m.get("saveCoreChk")) && "SC".equalsIgnoreCase(m.get("ioType").toString()) ) {
+						tmpMap.put("saveCoreChk", "");
+					} else {
+						tmpMap.put("saveCoreChk", m.get("saveCoreChk"));
+					}
+				} else {
+					tmpMap.put("iSeq_m", m.get("iSeq_M"));
+					tmpMap.put("gubun", m.get("gubun_M"));
+					tmpMap.put("hogi_m", m.get("hogi_M"));
+					tmpMap.put("xyGubun", "");
+					tmpMap.put("Descr_m", m.get("Descr_M"));
+					tmpMap.put("ioType_m", m.get("ioType_M"));
+					tmpMap.put("register_m", m.get("register_M"));
+					tmpMap.put("ioBit_m", m.get("ioBit_M"));
+					tmpMap.put("minVal_m", m.get("minVal_M"));
+					tmpMap.put("maxVal_m", m.get("maxVal_M"));
+					tmpMap.put("saveCoreChk_m", "");
+				}
+				
+				rtnMap.add(tmpMap);
+			});
+			
+			return rtnMap;
+		}
 
 }
 

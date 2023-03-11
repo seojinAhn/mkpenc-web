@@ -21,7 +21,16 @@
 
 $(function () {
 	
+	var timer = 0;
 	
+	timer = setInterval(function () {
+		
+			// 화면초기화
+			var	comSubmit	=	new ComSubmit("dashboardFrm");
+			comSubmit.setUrl("/main/dashboard");
+			comSubmit.submit();		
+		 }, 5000); 	  
+		
 });	
 
 </script>
@@ -36,6 +45,7 @@ $(function () {
 	<div class="container">
 		<!-- contents -->
 		<div class="contents">
+		<form id="dashboardFrm" name="dashboardFrm">	</form>
 			<div class="img_wrap dcc_main">
                 <!-- range_slider -->
                 <div class="range_slider">
@@ -54,7 +64,7 @@ $(function () {
                             <p>METER</p>
                             <p>
                                 <span>L</span>
-                                <span>8.630</span>
+                                <span>${lblDataList[0].fValue}</span>
                             </p>
                         </div>
                         <ul>
@@ -62,7 +72,7 @@ $(function () {
                                 <p>MPGA</p>
                                 <p>
                                     <span>P</span>
-                                    <span>9.667</span>
+                                    <span>${lblDataList[1].fValue}</span>
                                 </p>
                             </li>
                         </ul>
@@ -75,7 +85,7 @@ $(function () {
                             <p>FP</p>
                             <p>
                                 <span>PWR</span>
-                                <span>0.8584</span>
+                                <span>${lblDataList[2].fValue}</span>
                             </p>
                         </div>
                         <ul>
@@ -83,42 +93,42 @@ $(function () {
                                 <p>%</p>
                                 <p>
                                     <span>ZONE L</span>
-                                    <span>50.28</span>
+                                    <span>${lblDataList[3].fValue}</span>
                                 </p>
                             </li>
                             <li>
                                 <p>FP</p>
                                 <p>
                                     <span>PWR E</span>
-                                    <span>0.0010</span>
+                                    <span>${lblDataList[4].fValue}</span>
                                 </p>
                             </li>
                             <li>
                                 <p>DEC/S</p>
                                 <p>
                                     <span>LOG R</span>
-                                    <span>-0.00128</span>
+                                    <span>${lblDataList[5].fValue}</span>
                                 </p>
                             </li>
                             <li>
                                 <p>DECADE</p>
                                 <p>
                                     <span>PLOG</span>
-                                    <span>-0.618</span>
+                                    <span>${lblDataList[6].fValue}</span>
                                 </p>
                             </li>
                             <li>
                                 <p>FP</p>
                                 <p>
                                     <span>PTHM</span>
-                                    <span>0.8754</span>
+                                    <span>${lblDataList[7].fValue}</span>
                                 </p>
                             </li>
                             <li>
                                 <p>H/D P</p>
                                 <p>
                                     <span>MPAG</span>
-                                    <span>9.865</span>
+                                    <span>${lblDataList[8].fValue}</span>
                                 </p>
                             </li>
                         </ul>
@@ -131,7 +141,7 @@ $(function () {
                             <p>MM</p>
                             <p>
                                 <span>L</span>
-                                <span>7841.0</span>
+                                <span>${lblDataList[9].fValue}</span>
                             </p>
                         </div>
                         <ul>
@@ -139,7 +149,7 @@ $(function () {
                                 <p>MPGA</p>
                                 <p>
                                     <span>T</span>
-                                    <span>69.07</span>
+                                    <span>${lblDataList[10].fValue}</span>
                                 </p>
                             </li>
                         </ul>
@@ -152,7 +162,7 @@ $(function () {
                             <p>MPAG</p>
                             <p>
                                 <span>P</span>
-                                <span>4.595</span>
+                                <span>${lblDataList[11].fValue}</span>
                             </p>
                         </div>
                         <ul>
@@ -160,28 +170,28 @@ $(function () {
                                 <p>METER</p>
                                 <p>
                                     <span>#1L</span>
-                                    <span>2.369</span>
+                                    <span>${lblDataList[12].fValue}</span>
                                 </p>
                             </li>
                             <li>
                                 <p>METER</p>
                                 <p>
                                     <span>#2L</span>
-                                    <span>2.369</span>
+                                    <span>${lblDataList[13].fValue}</span>
                                 </p>
                             </li>
                             <li>
                                 <p>METER</p>
                                 <p>
                                     <span>#3L</span>
-                                    <span>2.369</span>
+                                    <span>${lblDataList[14].fValue}</span>
                                 </p>
                             </li>
                             <li>
                                 <p>METER</p>
                                 <p>
                                     <span>#4L</span>
-                                    <span>2.369</span>
+                                    <span>${lblDataList[15].fValue}</span>
                                 </p>
                             </li>
                         </ul>
@@ -194,7 +204,7 @@ $(function () {
                             <p>MW</p>
                             <p>
                                 <span>PWR</span>
-                                <span>642.9</span>
+                                <span>${lblDataList[16].fValue}</span>
                             </p>
                         </div>
                     </div>
@@ -206,26 +216,26 @@ $(function () {
                             <p>DEG C</p>
                             <p>
                                 <span>T</span>
-                                <span>17.78</span>
+                                <span>${lblDataList[17].fValue}</span>
                             </p>
                         </div>
                     </div>
                 </div>
                 <div class="toggle_block" style="top:350px;right:190px;">
-                    <h4>CCW</h4>
+                    <h4>COND</h4>
                     <div class="toggle_block_contents">
                         <div class="summary">
                             <p>KPAA</p>
                             <p>
                                 <span>VAC</span>
-                                <span>4.75</span>
+                                <span>${lblDataList[18].fValue}</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>DEG C</p>
                             <p>
                                 <span>T</span>
-                                <span>27.92</span>
+                                <span>${lblDataList[19].fValue}</span>
                             </p>
                         </div>
                     </div>
@@ -237,14 +247,14 @@ $(function () {
                             <p>MM</p>
                             <p>
                                 <span>L</span>
-                                <span>3301.5</span>
+                                <span>${lblDataList[20].fValue}</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>DEG C</p>
                             <p>
                                 <span>T</span>
-                                <span>122.55</span>
+                                <span>${lblDataList[21].fValue}</span>
                             </p>
                         </div>
                     </div>

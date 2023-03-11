@@ -31,14 +31,10 @@ var tDccTagXy = [
 	'${DccTagInfoList[5].XYGubun}','${DccTagInfoList[6].XYGubun}'
 ];
 var tToolTipText = [
-	"${DccTagInfoList[0].Descr}[${DccTagInfoList[0].Hogi}:${DccTagInfoList[0].IOTYPE}-${DccTagInfoList[0].ADDRESS}:${DccTagInfoList[0].IOBIT}]"
-	,"${DccTagInfoList[1].Descr}[${DccTagInfoList[1].Hogi}:${DccTagInfoList[1].IOTYPE}-${DccTagInfoList[1].ADDRESS}:${DccTagInfoList[1].IOBIT}]"
-	,"${DccTagInfoList[2].Descr}[${DccTagInfoList[2].Hogi}:${DccTagInfoList[2].IOTYPE}-${DccTagInfoList[2].ADDRESS}:${DccTagInfoList[2].IOBIT}]"
-	,"${DccTagInfoList[3].Descr}[${DccTagInfoList[3].Hogi}:${DccTagInfoList[3].IOTYPE}-${DccTagInfoList[3].ADDRESS}:${DccTagInfoList[3].IOBIT}]"
-	,"${DccTagInfoList[4].Descr}[${DccTagInfoList[4].Hogi}:${DccTagInfoList[4].IOTYPE}-${DccTagInfoList[4].ADDRESS}:${DccTagInfoList[4].IOBIT}]"
-	,"${DccTagInfoList[5].Descr}[${DccTagInfoList[5].Hogi}:${DccTagInfoList[5].IOTYPE}-${DccTagInfoList[5].ADDRESS}:${DccTagInfoList[5].IOBIT}]"
-	,"${DccTagInfoList[6].Descr}[${DccTagInfoList[6].Hogi}:${DccTagInfoList[6].IOTYPE}-${DccTagInfoList[6].ADDRESS}:${DccTagInfoList[6].IOBIT}]"
+	"${DccTagInfoList[0].toolTip}"	,"${DccTagInfoList[1].toolTip}"	,"${DccTagInfoList[2].toolTip}"	,"${DccTagInfoList[3].toolTip}"	,"${DccTagInfoList[4].toolTip}"
+	,"${DccTagInfoList[5].toolTip}"	,"${DccTagInfoList[6].toolTip}"	
 ];
+
 
 $(function () {
 
@@ -319,14 +315,14 @@ function toCSV() {
                             <p>
                                 <span>IN</span>
                                 <span id="1">${lblDataList[1].fValue}</span>
-                                <span>${DccTagInfoList[1].Unit}</span>
+                                <span>${DccTagInfoList[1].unit}</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
                                 <span>RTN</span>
                                 <span id="0">${lblDataList[0].fValue}</span>
-                                <span>${DccTagInfoList[0].Unit}</span>
+                                <span>${DccTagInfoList[0].unit}</span>
                             </p>
                         </div>
                     </div>
@@ -338,14 +334,14 @@ function toCSV() {
                             <p>
                                 <span>T</span>
                                 <span id="4">${lblDataList[4].fValue}</span>
-                                <span>${DccTagInfoList[4].Unit}</span>
+                                <span>${DccTagInfoList[4].unit}</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
                                 <span>F</span>
                                 <span id="3">${lblDataList[3].fValue}</span>
-                                <span>${DccTagInfoList[3].Unit}</span>
+                                <span>${DccTagInfoList[3].unit}</span>
                             </p>
                         </div>
                     </div>
@@ -357,7 +353,7 @@ function toCSV() {
                             <p>
                                 <span>△P</span>
                                 <span id="5">${lblDataList[5].fValue}</span>
-                                <span>${DccTagInfoList[5].Unit}</span>
+                                <span>${DccTagInfoList[5].unit}</span>
                             </p>
                         </div>
                     </div>
@@ -369,7 +365,7 @@ function toCSV() {
                             <p>
                                 <span>△P</span>
                                 <span id="6">${lblDataList[6].fValue}</span>
-                                <span>${DccTagInfoList[6].Unit}</span>
+                                <span>${DccTagInfoList[6].unit}</span>
                             </p>
                         </div>
                     </div>
@@ -380,7 +376,7 @@ function toCSV() {
                         <div class="summary">
                             <p>
                                 <span id="2">${lblDataList[2].fValue}</span>
-                                <span>${DccTagInfoList[2].Unit}</span>
+                                <span>${DccTagInfoList[2].unit}</span>
                             </p>
                         </div>
                     </div>

@@ -41,14 +41,15 @@ public class BasCommonServiceImpl implements BasCommonService{
 		    	   return digitalValue;
 		       }
 		    }
-		    
+		   // System.out.println("digitalValue=" + digitalValue);
 		    di_val = Math.round(Double.parseDouble(digitalValue));	    
 		    bit_no = Integer.parseInt(digitalBit);
 
 		    for(int i = 0;i < bit_no;i++) {
 		        Rest = (di_val % 2);
+		        //System.out.println("rest=" + Rest);
 		        //di_val = di_val \ 2;
-		    	di_val = di_val / 2;
+		    	di_val = di_val >> 2;
 			}
 		    
 		    return Rest +"";

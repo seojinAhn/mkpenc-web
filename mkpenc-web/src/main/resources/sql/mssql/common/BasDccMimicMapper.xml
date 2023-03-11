@@ -138,7 +138,8 @@
       	 <if test="@org.apache.commons.lang3.StringUtils@isEmpty(startDate)">
 	      	 WHERE WHERE Scantime = #{pSCanTime}
       	 </if>
-    </select>   
+    </select>     
+    
     
     <select id="selectTagSearch" parameterType="DccSearchMimic" resultType="ComShowTagInfo">
     	SELECT
@@ -226,6 +227,6 @@
 		AND GRPNO = #{grpNo}
 		AND GrpHOGI = #{hogi}
 		AND TAGNO = #{tagNo}
-    </update>        
+    </update>       
 
 </mapper>

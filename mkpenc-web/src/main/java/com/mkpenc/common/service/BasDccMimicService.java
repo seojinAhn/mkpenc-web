@@ -9,9 +9,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mkpenc.common.model.ComShowTagInfo;
 import com.mkpenc.common.model.ComTagDccInfo;
 import com.mkpenc.mimic.model.DccSearchMimic;
- 
+
 @Service
 public  interface BasDccMimicService {
+	
 	
 	public List<ComTagDccInfo> getDccGrpTagNoUnitConvList(Map searchMap);
 	
@@ -27,6 +28,6 @@ public  interface BasDccMimicService {
 	
 	List<ComShowTagInfo> selectTagSearch(DccSearchMimic searchMimic);
 
-	List<ComShowTagInfo> selectTagFind(DccSearchMimic searchMimic);	
+	List<ComShowTagInfo> selectTagFind(DccSearchMimic searchMimic);
 
 }

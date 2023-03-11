@@ -51,7 +51,6 @@
         	 FROM LOG_Timer
             WHERE GUBUN = 'M'
                AND HOGI = #{hogi}
-                AND DATATYPE = #{xyGubun}
     </select>
     
     <select id="selectTblNoFldNo" parameterType="java.util.Map" resultType="java.util.Map">
@@ -79,15 +78,13 @@
     
 	<select id="selectLogMarkTrend" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT * 
-         FROM LOG_${hogi}MARK_TREND
+         FROM LOG_${hogi}DCC_TREND   
     	 WHERE Scantime = #{pSCanTime}
     	  AND Seq in (
     						SELECT C.TBLNO 
     						 FROM MST_GrpTag B, MST_TAG_MARK C
-     					   WHERE B.HOGI = C.HOGI 
-     					     <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(xyGubun) and "Y".equals(xyGubun)'>
-		           					AND B.YSEQ = C.ISEQ
-				           	</if>  
+     					    WHERE B.HOGI = C.HOGI 
+     					      AND B.ISEQ = C.ISEQ 
 				            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(hogi)">
 				            		AND B.GrpHOGI = #{hogi}
 				            </if>
