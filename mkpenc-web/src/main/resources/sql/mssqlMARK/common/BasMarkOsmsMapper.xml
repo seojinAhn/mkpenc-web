@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.mkpenc.mark.common.mapper.BasMarkOsmsMapper">
+
+	<select id="selectMarkGrpTagList" parameterType="java.util.Map" resultType="java.util.Map">
+        
+			      SELECT SIGNAL_NAME, 
+								UNIT, 
+								GAIN, 
+								OFFSET, 
+								IOTYPE, 
+								REGISTER, 
+								IOBIT,
+								TBLNO, 
+								FLDNO, 
+								BSCAL, 
+								C.ISEQ ISEQ, 
+								Signal_Desc, 
+								D0, 
+								D1, 
+								SaveCoreChk,
+								UNIT_DIV,
+								MinVal, 
+								MaxVal, 
+								C.HOGI, 
+								DESCR
+     				FROM MST_GrpTag B, MST_TAG_MARK C
+				     WHERE B.ISEQ = C.ISEQ 
+				       AND B.HOGI = C.HOGI	
+				     <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(dive)">
+	            			AND B.Gubun = #{dive}
+	        		</if>
+		            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(hogi)">
+		            		AND B.GrpHOGI = #{hogi}
+		            </if>
+	        		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpID)">
+	            			AND B.ID = #{grpID}
+	        		</if>
+	        		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(menuNo)">
+	            			AND B.MenuNo = #{menuNo}
+	        		</if>      
+	        		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(uGrpNo)">
+	            			AND B.GrpNo = #{uGrpNo}
+	        		</if>		                  
+    </select>    
+    
+    <select id="selectScanTime" parameterType="java.util.Map" resultType="java.util.Map">
+        	SELECT Convert(varchar,ScanTime,120) as SCANTIME
+        	 FROM LOG_Timer
+            WHERE GUBUN = 'M'
+               AND HOGI = #{hogi}
+    </select>
+    
+    <select id="selectTblNoFldNo" parameterType="java.util.Map" resultType="java.util.Map">
+        	SELECT C.TBLNO, C.FLDNO 
+        	 FROM MST_GrpTag B, MST_TAG_MARK C
+        	WHERE B.HOGI = C.HOGI
+       			AND B.ISEQ = C.ISEQ
+         	<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(dive)">
+           			AND B.Gubun = #{dive}
+       		</if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(hogi)">
+            		AND B.GrpHOGI = #{hogi}
+            </if>
+       		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpID)">
+           			AND B.ID = #{grpID}
+       		</if>
+       		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(menuNo)">
+           			AND B.MenuNo = #{menuNo}
+       		</if>      
+       		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(uGrpNo)">
+           			AND B.GrpNo = #{uGrpNo}
+       		</if>		                          		
+        	ORDER BY B.TAGNO	                  
+    </select>   
+    
+	<select id="selectLogMarkTrend" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * 
+         FROM LOG_${hogi}MARK_TREND   
+    	 WHERE Scantime = #{pSCanTime}
+    	  AND Seq in (
+    						SELECT C.TBLNO 
+    						 FROM MST_GrpTag B, MST_TAG_MARK C
+     					    WHERE B.HOGI = C.HOGI 
+     					      AND B.ISEQ = C.ISEQ 
+				            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(hogi)">
+				            		AND B.GrpHOGI = #{hogi}
+				            </if>
+				         	<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(dive)">
+				           			AND B.Gubun = #{dive}
+				       		</if>
+				       		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpID)">
+				           			AND B.ID = #{grpID}
+				       		</if>
+				       		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(menuNo)">
+				           			AND B.MenuNo = #{menuNo}
+				       		</if>      
+				       		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(uGrpNo)">
+				           			AND B.GrpNo = #{uGrpNo}
+				       		</if>		             
+     					)
+    </select>             
+
+</mapper>

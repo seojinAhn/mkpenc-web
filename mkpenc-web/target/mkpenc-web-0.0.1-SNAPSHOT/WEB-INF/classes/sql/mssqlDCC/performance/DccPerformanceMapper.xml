@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mkpenc.common.mapper.Dcc.DccPerformanceMapper">
+    
+    <insert id="insertGrpName" parameterType="java.util.Map">
+    	  INSERT INTO MST_GrpName (Gubun, ID, MenuNo, UGrpNo, UGrpName) 
+    	  values ( #{gubun}, #{id}, #{menuNo}, #{uGrpNo}, #{uGrpName} )        
+    </insert>
+    
+    <update id="updateGrpName" parameterType="java.util.Map">
+          UPDATE MST_GrpName 
+        	    SET UGrpName = #{uGrpName}
+	       WHERE Gubun =#{gubun}
+	       	AND ID =#{id}
+	      	AND MenuNo = #{menuNo}
+			AND UGrpNo = #{uGrpNo}
+    </update>
+
+    
+    <select id="selectTrendInfoByUrlA" parameterType="java.util.Map" resultType="java.util.Map">
+    
+        	SELECT Min(TVALUE${fldno})
+        			, Max(TVALUE${fldno})
+                    , AVG(TVALUE${fldno})
+                    , STDEV(TVALUE${fldno})
+                   <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(chkHogi) and "T".equals(chkHogi)'>
+		                   	FROM LOG_3DCC_TREND${tlbno}
+                    </if>
+                    <if test="@org.apache.commons.lang3.StringUtils@isEmpty(chkHogi)">
+                    	FROM LOG_${hogi}DCC_TREND${tlbno}
+                    </if>
+                   WHERE SCANTIME BETWEEN #{mskSpareS}  AND #{mskSpareE}
+    </select>
+    
+    <select id="selectTrendInfoA" parameterType="java.util.Map" resultType="java.util.Map">
+    
+        	SELECT Min(TVALUE${fldno}) as minTvalue
+        			, Max(TVALUE${fldno}) as maxTvalue
+                    , AVG(TVALUE${fldno}) as avgTvalue
+                    , STDEV(TVALUE${fldno}) as stdevTvalue
+                    <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(mskSpareEchk) and "1".equals(mskSpareEchk) '>
+		                    <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(chkHogi) and "T".equals(chkHogi)'>
+		                    	FROM LOG_3DCC_TREND_HIST
+		                    </if>
+		                    <if test="@org.apache.commons.lang3.StringUtils@isEmpty(chkHogi)">
+		                    	FROM LOG_${hogi}DCC_TREND
+		                    </if>
+                    </if>
+                     <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(mskSpareEchk) and "2".equals(mskSpareEchk) '>
+		                      <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(chkHogi) and "T".equals(chkHogi)'>
+				                    	FROM LOG_3DCC_TREND
+				              </if>
+				              <if test="@org.apache.commons.lang3.StringUtils@isEmpty(chkHogi)">
+				              	     	FROM LOG_${hogi}DCC_TREND
+				              </if>
+                     </if>
+                   WHERE SCANTIME BETWEEN #{mskSpareS}  AND #{mskSpareE}
+                      AND SEQ = #{tblno}
+    </select>
+    
+    <select id="selectTrendInfoByUrlB" parameterType="java.util.Map" resultType="java.util.Map">
+    
+        	SELECT Min(TVALUE${fldno})
+        			, Max(TVALUE${fldno})
+                    , AVG(TVALUE${fldno})
+                    , STDEV(TVALUE${fldno})
+                    <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(chkHogi) and "T".equals(chkHogi)'>
+                    	FROM LOG_4DCC_TREND${tlbno}
+                    </if>
+                    <if test="@org.apache.commons.lang3.StringUtils@isEmpty(chkHogi)">
+                    	FROM LOG_${hogi}DCC_TREND${tlbno}
+                    </if>
+                   WHERE SCANTIME BETWEEN #{mskFixedS}  AND #{mskFixedE}
+    </select>    
+    
+    <select id="selectTrendInfoB" parameterType="java.util.Map" resultType="java.util.Map">
+    
+        	SELECT Min(TVALUE${fldno}) as minTvalue
+        			, Max(TVALUE${fldno}) as maxTvalue
+                    , AVG(TVALUE${fldno}) as avgTvalue
+                    , STDEV(TVALUE${fldno}) as stdevTvalue
+                  <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(chkHogi) and "T".equals(chkHogi)'>
+                  	FROM LOG_4DCC_TREND
+                  </if>
+                  <if test="@org.apache.commons.lang3.StringUtils@isEmpty(chkHogi)">
+                  	FROM LOG_${hogi}DCC_TREND
+                  </if>
+
+                   WHERE SCANTIME BETWEEN #{mskFixedS}  AND #{mskFixedE}
+                      AND SEQ = #{tblno}
+    </select>    
+    
+	<select id="selectTagSearch" parameterType="DccSearchPerformance" resultType="java.util.Map">
+        	SELECT * 
+        	 FROM MST_TAG_DCC 
+           <trim prefix="WHERE" prefixOverrides="AND | OR">
+			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sHogi)">
+			            AND IHOGI = #{sHogi}
+			        </if>
+			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sIOType)">
+			            AND IOTYPE = #{sIOType}
+			        </if>
+			        AND IOTYPE <![CDATA[<>]]> 'CI'
+			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(findData)">
+			            AND (ADDRESS LIKE '%' + #{findData} + '%'
+			        </if>  
+			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(chkOpt1)">
+			            OR LOOPNAME LIKE '%' + #{findData} + '%'
+			        </if>  
+			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(chkOpt2)">
+			            OR DESCR LIKE '%' + #{findData} + '%'
+			        </if>      
+			        )		        	        
+		        </trim>        
+                ORDER BY ISEQ
+    </select>    
+    
+	<select id="selectFastIOSearch" parameterType="DccSearchPerformance" resultType="java.util.Map">
+        	SELECT * 
+        	 FROM MST_TAG_DCC 
+           <trim prefix="WHERE" prefixOverrides="AND | OR">
+			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sHogi)">
+			            AND IHOGI = #{sIHogi}
+			        </if>
+			        AND FASTIOCHK = 1
+		        </trim>        
+                ORDER BY IOTYPE, convert(int, address)
+    </select>     
+    
+    <delete id="deleteGrpTag" parameterType="java.util.Map">
+    
+     		DELETE FROM MST_GRPTAG
+    		WHERE Gubun =#{gubun}
+               AND GrpHOGI = #{grpHOGI}
+   			   AND ID = #{id}
+               AND MenuNo = #{menuNo}
+    		   AND GrpNo =#{grpNo}
+    </delete>   
+    
+    <select id="selectISeqTagDccSearch" parameterType="java.util.Map" resultType="java.util.Map">
+        	SELECT ISEQ
+        	 FROM MST_TAG_DCC 
+			WHERE IHOGI = #{iHogi}
+			    AND XYGUBUN = #{xyGubun}
+			    AND IOTYPE = #{ioType}
+			    AND ADDRESS = #{address}
+			   <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ioBit)">
+			            AND IOBIT = #{ioBit}
+			   </if>
+    </select>     
+    
+    <insert id="insertGrpTag" parameterType="java.util.Map">
+    	  INSERT INTO MST_GRPTAG (Gubun, ID, GrpHogi, MenuNo, GrpNo, Hogi	, TagNo, ISeq, MaxVal, MinVal, YSeq, YMaxVal, YMinVal, SaveCoreChk, Descr)
+    	  VALUES ( #{gubun},  #{id}, #{grpHogi}, #{menuNo}, #{grpNo}, #{hogi}, #{tagNo}, #{iSeq}, #{maxVal}, #{minVal}, #{ySeq}, #{yMaxVal}, #{yMinVal}, #{saveCoreChk}, #{descr} )        
+    </insert>
+    
+   <select id="selectScanTime" parameterType="DccSearchPerformance" resultType="java.util.Map">
+        	SELECT Convert(varchar,ScanTime,120) as SCANTIME
+        	 FROM LOG_Timer
+            WHERE GUBUN = 'D'
+               AND HOGI = #{sHogi}
+                AND DATATYPE = #{sXYGubun}
+    </select>
+       
+    <select id="selectXYLogDccTrendByUrl" parameterType="java.util.Map" resultType="java.util.Map">
+      	 	SELECT SCANTIME, ${idx} SEQ, 
+		               TVALUE1, TVALUE2, TVALUE3, TVALUE4, TVALUE5, TVALUE6, TVALUE7, TVALUE8, TVALUE9, TVALUE10, 
+		               TVALUE11, TVALUE12, TVALUE13, TVALUE14, TVALUE15, TVALUE16, TVALUE17, TVALUE18, TVALUE19, TVALUE20, 
+		               TVALUE21, TVALUE22, TVALUE23, TVALUE24, TVALUE25, TVALUE26, TVALUE27, TVALUE28, TVALUE29, TVALUE30, 
+		               TVALUE31, TVALUE32, TVALUE33, TVALUE34, TVALUE35, TVALUE36, TVALUE37, TVALUE38, TVALUE39, TVALUE40, 
+		               TVALUE41, TVALUE42, TVALUE43, TVALUE44, TVALUE45, TVALUE46, TVALUE47, TVALUE48, TVALUE49, TVALUE50, 
+		               TVALUE51, TVALUE52, TVALUE53, TVALUE54, TVALUE55, TVALUE56, TVALUE57, TVALUE58, TVALUE59, TVALUE60, 
+		               TVALUE61, TVALUE62, TVALUE63, TVALUE64, TVALUE65, TVALUE66, TVALUE67, TVALUE68, TVALUE69, TVALUE70, 
+		               TVALUE71, TVALUE72, TVALUE73, TVALUE74, TVALUE75, TVALUE76, TVALUE77, TVALUE78, TVALUE79, TVALUE80, 
+		               TVALUE81, TVALUE82, TVALUE83, TVALUE84, TVALUE85, TVALUE86, TVALUE87, TVALUE88, TVALUE89, TVALUE90, 
+		               TVALUE91 , TVALUE92, TVALUE93, TVALUE94, TVALUE95, TVALUE96, TVALUE97, TVALUE98, TVALUE99, TVALUE100 
+               FROM LOG_${hogi}DCC_TREND${idx}   WHERE SCANTIME = #{pSCanTime}
+    </select>  
+
+    <select id="selectXYLogDccTrend" parameterType="java.util.Map" resultType="java.util.Map">
+       		SELECT *
+             FROM LOG_${hogi}DCC_TREND
+            WHERE SCANTIME = #{pSCanTime}
+    </select>  
+    
+   <select id="selectXYIOTypeAITotalCnt" parameterType="java.util.Map" resultType="int">
+       		 SELECT COUNT(*) AS CNT 
+              FROM 
+              	 (SELECT LOOPNAME, TBLNO, FLDNO, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC 
+                    WHERE IHOGI = #{hogi} AND XYGUBUN = 'X' AND IOTYPE = 'AI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]> 400 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 3175)) a,
+                 (SELECT LOOPNAME, TBLNO, FLDNO, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC 
+                    WHERE IHOGI = #{hogi} AND XYGUBUN = 'Y' AND IOTYPE = 'AI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]> 400 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 3175)) b
+             WHERE a.ADDRESS = b.ADDRESS
+    </select>  
+    
+    <select id="selectXYIOTypeAI" parameterType="java.util.Map" resultType="java.util.Map">
+  
+      		 SELECT a.LOOPNAME, a.TBLNO, a.FLDNO, ((a.EHIGH-a.ELOW) * #{per}) as Calc , a.ADDRESS, a.UNIT, a.BSCAL, b.TBLNO AS B_TBLNO, b.FLDNO AS B_FLDNO, a.DESCR, a.WIBA, b.WIBA AS B_WIBA
+             FROM 
+             	 (SELECT LOOPNAME, TBLNO, FLDNO, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC 
+                   WHERE IHOGI = #{hogi} AND XYGUBUN = 'X' AND IOTYPE = 'AI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]> 400 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 3175)) a,
+                (SELECT LOOPNAME, TBLNO, FLDNO, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC 
+                   WHERE IHOGI = #{hogi} AND XYGUBUN = 'Y' AND IOTYPE = 'AI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]> 400 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 3175)) b
+            WHERE a.ADDRESS = b.ADDRESS
+  			   		             
+    </select>  
+    
+    <select id="selectXYIOTypeDITotalCnt" parameterType="java.util.Map" resultType="int">
+       		SELECT COUNT(*) AS CNT 
+              FROM
+              	   (SELECT LOOPNAME, TBLNO, FLDNO, IOBIT, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC
+                    WHERE IHOGI = #{hogi} AND XYGUBUN = 'X' AND IOTYPE = 'DI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]>40 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 77)) a,
+                   (SELECT LOOPNAME, TBLNO, FLDNO, IOBIT, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC
+                    WHERE IHOGI = #{hogi} AND XYGUBUN = 'Y' AND IOTYPE = 'DI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]>40 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 77)) b
+              WHERE a.ADDRESS = b.ADDRESS AND a.IOBIT = b.IOBIT
+    </select>       
+    
+    <select id="selectXYIOTypeDI" parameterType="java.util.Map" resultType="java.util.Map">
+       		SELECT a.LOOPNAME, a.TBLNO, a.FLDNO, a.IOBIT, a.ADDRESS, a.UNIT, a.BSCAL, b.TBLNO AS B_TBLNO, b.FLDNO AS B_FLDNO, a.DESCR, a.WIBA, b.WIBA AS B_WIBA
+              FROM
+              	   (SELECT LOOPNAME, TBLNO, FLDNO, IOBIT, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC
+                    WHERE IHOGI = #{hogi} AND XYGUBUN = 'X' AND IOTYPE = 'DI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]>40 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 77)) a,
+                   (SELECT LOOPNAME, TBLNO, FLDNO, IOBIT, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC
+                    WHERE IHOGI = #{hogi} AND XYGUBUN = 'Y' AND IOTYPE = 'DI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]>40 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 77)) b
+              WHERE a.ADDRESS = b.ADDRESS AND a.IOBIT = b.IOBIT
+
+    </select>      
+    
+    <select id="selectXYIOTypeAIWIBATotalCnt" parameterType="java.util.Map" resultType="int">
+       		SELECT COUNT(*) AS CNT 
+             FROM (SELECT LOOPNAME, TBLNO, FLDNO, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC 
+                       WHERE IHOGI =#{hogi} AND XYGUBUN = 'X' AND IOTYPE = 'AI' AND WIBA = 1 AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]> 400 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 3175)) a,
+                      (SELECT LOOPNAME, TBLNO, FLDNO, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC 
+                       WHERE IHOGI = #{hogi} AND XYGUBUN = 'Y' AND IOTYPE = 'AI' AND WIBA = 1 AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]> 400 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 3175)) b
+             WHERE a.ADDRESS = b.ADDRESS
+    </select>         
+    
+    <select id="selectXYIOTypeAIWIBA" parameterType="java.util.Map" resultType="java.util.Map">
+       		SELECT a.LOOPNAME, a.TBLNO, a.FLDNO, a.ADDRESS, a.UNIT, a.BSCAL, b.TBLNO AS B_TBLNO, b.FLDNO AS B_FLDNO, a.DESCR, a.WIBA, b.WIBA AS B_WIBA
+             FROM (SELECT LOOPNAME, TBLNO, FLDNO, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC 
+                       WHERE IHOGI =#{hogi} AND XYGUBUN = 'X' AND IOTYPE = 'AI' AND WIBA = 1 AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]> 400 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 3175)) a,
+                      (SELECT LOOPNAME, TBLNO, FLDNO, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC 
+                       WHERE IHOGI = #{hogi} AND XYGUBUN = 'Y' AND IOTYPE = 'AI' AND WIBA = 1 AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]> 400 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 3175)) b
+             WHERE a.ADDRESS = b.ADDRESS
+    </select>        
+    
+    
+</mapper>

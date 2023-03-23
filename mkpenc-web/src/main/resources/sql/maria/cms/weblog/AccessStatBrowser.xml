@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onmakers.cms.module.weblog.accessstat.browser.mapper.AccessStatBrowserMapper">
+	
+	<resultMap id="accessStatBrowserSummary-result" type="AccessStatBrowserSummary">
+		<result property="maxBrowserPc" column="MAX_BROWSER_P" />
+		<result property="maxBrowserRatePc" column="MAX_BROWSER_RATE_P" />
+		<result property="maxBrowserMobile" column="MAX_BROWSER_M" />
+		<result property="maxBrowserRateMobile" column="MAX_BROWSER_RATE_M" />
+	</resultMap>
+		
+	<resultMap id="accessStatBrowser-result" type="AccessStatBrowser">
+		<result property="sttsDt" column="STTS_DT" />
+		<result property="vsitCnt" column="VSIT_CNT" />
+		<result property="vsitCnt1" column="VSIT_CNT_1" />
+		<result property="vsitCnt2" column="VSIT_CNT_2" />
+		<result property="vsitCnt3" column="VSIT_CNT_3" />
+		<result property="vsitCnt4" column="VSIT_CNT_4" />
+		<result property="vsitCnt5" column="VSIT_CNT_5" />
+		<result property="vsitCnt6" column="VSIT_CNT_6" />
+		<result property="vsitCnt7" column="VSIT_CNT_7" />
+	</resultMap>
+	
+	<sql id="selectAccessStatBrowserListWhere-fragment">
+		<where>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(startDate)">
+				STTS_DT <![CDATA[ >= ]]> #{startDate}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(endDate)">
+				AND STTS_DT <![CDATA[ <= ]]> #{endDate}
+			</if>
+		</where>
+	</sql>
+	
+	<sql id="selectAccessStatBrowserListAnd-fragment">
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(startDate)">
+			AND STTS_DT <![CDATA[ >= ]]> #{startDate}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(endDate)">
+			AND STTS_DT <![CDATA[ <= ]]> #{endDate}
+		</if>
+	</sql>
+	
+	<sql id="browserNameCase-fragment">
+		CASE
+			WHEN BROWSER_VRSN = 'unknown'
+				THEN 
+					CASE 
+						WHEN BROWSER_NM = 'ie'
+							THEN 'Internet Explorer'
+						WHEN BROWSER_NM = 'chrome'
+							THEN 'Chrome'
+						WHEN BROWSER_NM = 'safari'
+							THEN 'Safari'
+						WHEN BROWSER_NM = 'firefox'
+							THEN 'Firefox'
+						WHEN BROWSER_NM = 'opera'
+							THEN 'Oafari'
+						ELSE 
+							BROWSER_NM
+					END
+			ELSE
+				CONCAT(
+					CASE 
+						WHEN BROWSER_NM = 'ie'
+							THEN 'Internet Explorer'
+						WHEN BROWSER_NM = 'chrome'
+							THEN 'Chrome'
+						WHEN BROWSER_NM = 'safari'
+							THEN 'Safari'
+						WHEN BROWSER_NM = 'firefox'
+							THEN 'Firefox'
+						WHEN BROWSER_NM = 'opera'
+							THEN 'Oafari'
+						ELSE
+							BROWSER_NM
+					END
+					, ' '
+					, BROWSER_VRSN
+	            )
+		END AS BROWSER_NM
+	</sql>
+	
+	<select id="selectAccessStatBrowserSummary" parameterType="SearchAccessStatBrowser" resultMap="accessStatBrowserSummary-result">
+		SELECT /*+USE_NL(A B)*/
+			IFNULL(MAX_BROWSER_P, 'NONE') AS MAX_BROWSER_P
+			, IFNULL(ROUND(IF(SUM_VSIT_CNT_P = 0, 0, IFNULL(VSIT_CNT_P, 0) / SUM_VSIT_CNT_P), 4), 0) * 100 AS MAX_BROWSER_RATE_P
+			, IFNULL(MAX_BROWSER_M, 'NONE') AS MAX_BROWSER_M
+			, IFNULL(ROUND(IF(SUM_VSIT_CNT_M = 0, 0, IFNULL(VSIT_CNT_M, 0) / SUM_VSIT_CNT_M), 4), 0) * 100 AS MAX_BROWSER_RATE_M
+		FROM 
+			(
+				SELECT
+					BROWSER_NM AS MAX_BROWSER_P
+					, VSIT_CNT_P
+					, SUM_VSIT_CNT_P
+				FROM (
+					SELECT /*+INDEX_DESC(T1)*/
+						<include refid="browserNameCase-fragment" />
+						, SUM(VSIT_CNT) AS VSIT_CNT_P
+						, (
+							SELECT /*+INDEX_DESC(ST1)*/
+								SUM(VSIT_CNT) AS SUM_VSIT_CNT_P
+							FROM
+								TB_ACSS_STTS_BROWSER ST1
+							WHERE DEVICE_DIVN = 'pc'
+							<include refid="selectAccessStatBrowserListAnd-fragment" />
+						) AS SUM_VSIT_CNT_P
+					FROM
+						TB_ACSS_STTS_BROWSER T1
+					WHERE DEVICE_DIVN = 'pc'
+					<include refid="selectAccessStatBrowserListAnd-fragment" />
+					GROUP BY BROWSER_NM, BROWSER_VRSN
+					ORDER BY VSIT_CNT_P DESC
+					LIMIT 1
+				) SA
+			) A
+			LEFT OUTER JOIN
+			(
+				SELECT
+					BROWSER_NM AS MAX_BROWSER_M
+					, VSIT_CNT_M
+					, SUM_VSIT_CNT_M
+				FROM (
+					SELECT /*+INDEX_DESC(T1)*/
+						<include refid="browserNameCase-fragment" />
+						, SUM(VSIT_CNT) AS VSIT_CNT_M
+						, (
+							SELECT /*+INDEX_DESC(ST1)*/
+								SUM(VSIT_CNT) AS SUM_VSIT_CNT_M
+							FROM
+								TB_ACSS_STTS_BROWSER ST1
+							WHERE DEVICE_DIVN = 'mobile'
+							<include refid="selectAccessStatBrowserListAnd-fragment" />
+						) AS SUM_VSIT_CNT_M
+					FROM
+						TB_ACSS_STTS_BROWSER T1
+					WHERE DEVICE_DIVN = 'mobile'
+					<include refid="selectAccessStatBrowserListAnd-fragment" />
+					GROUP BY BROWSER_NM, BROWSER_VRSN
+					ORDER BY VSIT_CNT_M DESC
+					LIMIT 1   
+				) SB
+			) B
+			ON 1 = 1
+	</select>
+	
+	<select id="selectAccessStatBrowserListCount" parameterType="SearchAccessStatBrowser" resultType="integer">
+		SELECT COUNT(*) FROM (
+			SELECT
+				COUNT(*)
+			FROM 
+				TB_ACSS_STTS_BROWSER T1
+			<include refid="selectAccessStatBrowserListWhere-fragment" />
+			GROUP BY STTS_DT
+		) RS
+	</select>
+	
+	<select id="selectAccessStatBrowserList" parameterType="SearchAccessStatBrowser" resultMap="accessStatBrowser-result">
+		SELECT * FROM (
+			SELECT /*+USE_NL(A B C D E F G H)*/
+				A.STTS_DT,
+				IFNULL(A.VSIT_CNT, 0) AS VSIT_CNT,
+				IFNULL(B.VSIT_CNT_1, 0) AS VSIT_CNT_1,
+				IFNULL(C.VSIT_CNT_2, 0) AS VSIT_CNT_2,
+				IFNULL(D.VSIT_CNT_3, 0) AS VSIT_CNT_3,
+				IFNULL(E.VSIT_CNT_4, 0) AS VSIT_CNT_4,
+				IFNULL(F.VSIT_CNT_5, 0) AS VSIT_CNT_5,
+				IFNULL(G.VSIT_CNT_6, 0) AS VSIT_CNT_6,
+				IFNULL(H.VSIT_CNT_7, 0) AS VSIT_CNT_7
+			FROM
+				(
+					SELECT /*+INDEX_DESC(T1)*/
+						STTS_DT,
+						SUM(VSIT_CNT) AS VSIT_CNT
+					FROM
+						TB_ACSS_STTS_BROWSER T1
+					GROUP BY STTS_DT
+					ORDER BY STTS_DT DESC
+				) A
+				LEFT OUTER JOIN
+				(
+					SELECT * FROM (
+						SELECT /*+INDEX_DESC(T1)*/
+							STTS_DT
+							, <include refid="browserNameCase-fragment" />
+							, SUM(VSIT_CNT) AS VSIT_CNT_1
+						FROM
+							TB_ACSS_STTS_BROWSER T1
+						GROUP BY STTS_DT, BROWSER_NM, BROWSER_VRSN
+						ORDER BY STTS_DT DESC
+					) SB
+					WHERE BROWSER_NM = #{browserRowList[0]}
+				) B
+				ON A.STTS_DT = B.STTS_DT
+				LEFT OUTER JOIN
+				(
+					SELECT * FROM (
+						SELECT /*+INDEX_DESC(T1)*/
+							STTS_DT
+							, <include refid="browserNameCase-fragment" />
+							, SUM(VSIT_CNT) AS VSIT_CNT_2
+						FROM
+							TB_ACSS_STTS_BROWSER T1
+						GROUP BY STTS_DT, BROWSER_NM, BROWSER_VRSN
+						ORDER BY STTS_DT DESC
+					) SC
+					WHERE BROWSER_NM = #{browserRowList[1]}
+				) C
+				ON A.STTS_DT = C.STTS_DT
+				LEFT OUTER JOIN
+				(
+					SELECT * FROM (
+						SELECT /*+INDEX_DESC(T1)*/
+							STTS_DT
+							, <include refid="browserNameCase-fragment" />
+							, SUM(VSIT_CNT) AS VSIT_CNT_3
+						FROM
+							TB_ACSS_STTS_BROWSER T1
+						GROUP BY STTS_DT, BROWSER_NM, BROWSER_VRSN
+						ORDER BY STTS_DT DESC
+					) SD
+					WHERE BROWSER_NM = #{browserRowList[2]}
+				) D
+				ON A.STTS_DT = D.STTS_DT
+				LEFT OUTER JOIN
+				(
+					SELECT * FROM (
+						SELECT /*+INDEX_DESC(T1)*/
+							STTS_DT
+							, <include refid="browserNameCase-fragment" />
+							, SUM(VSIT_CNT) AS VSIT_CNT_4
+						FROM
+							TB_ACSS_STTS_BROWSER T1
+						GROUP BY STTS_DT, BROWSER_NM, BROWSER_VRSN
+						ORDER BY STTS_DT DESC
+					) SE
+					WHERE BROWSER_NM = #{browserRowList[3]}
+				) E
+				ON A.STTS_DT = E.STTS_DT
+				LEFT OUTER JOIN
+				(
+					SELECT * FROM (
+						SELECT /*+INDEX_DESC(T1)*/
+							STTS_DT
+							, <include refid="browserNameCase-fragment" />
+							, SUM(VSIT_CNT) AS VSIT_CNT_5
+						FROM
+							TB_ACSS_STTS_BROWSER T1
+						GROUP BY STTS_DT, BROWSER_NM, BROWSER_VRSN
+						ORDER BY STTS_DT DESC
+					) SF
+					WHERE BROWSER_NM = #{browserRowList[4]}
+				) F
+				ON A.STTS_DT = F.STTS_DT
+				LEFT OUTER JOIN
+				(
+					SELECT * FROM (
+						SELECT /*+INDEX_DESC(T1)*/
+							STTS_DT
+							, <include refid="browserNameCase-fragment" />
+							, SUM(VSIT_CNT) AS VSIT_CNT_6
+						FROM
+							TB_ACSS_STTS_BROWSER T1
+						GROUP BY STTS_DT, BROWSER_NM, BROWSER_VRSN
+						ORDER BY STTS_DT DESC
+					) SG
+					WHERE BROWSER_NM = #{browserRowList[5]}
+				) G
+				ON A.STTS_DT = G.STTS_DT
+				LEFT OUTER JOIN
+				(
+					SELECT * FROM (
+						SELECT /*+INDEX_DESC(T1)*/
+							STTS_DT
+							, <include refid="browserNameCase-fragment" />
+							, SUM(VSIT_CNT) AS VSIT_CNT_7
+						FROM
+							TB_ACSS_STTS_BROWSER T1
+						GROUP BY STTS_DT, BROWSER_NM, BROWSER_VRSN
+						ORDER BY STTS_DT DESC
+					) SH
+					WHERE BROWSER_NM NOT IN (
+						<foreach collection="browserRowList" separator="," item="browserRow">
+							#{browserRow}
+						</foreach>
+					)
+				) H
+				ON A.STTS_DT = H.STTS_DT
+		) RS
+		<include refid="selectAccessStatBrowserListWhere-fragment" />
+		LIMIT #{pageOffset}, #{pageSize}
+	</select>
+	
+	<select id="selectBrowserRowList" parameterType="SearchAccessStatBrowser" resultType="string">
+		SELECT BROWSER_NM FROM (
+			SELECT /*+INDEX_DESC(T1)*/     
+				<include refid="browserNameCase-fragment" />
+				, SUM(VSIT_CNT) AS VSIT_CNT
+			FROM
+				TB_ACSS_STTS_BROWSER T1
+			WHERE BROWSER_NM <![CDATA[ <> ]]> 'unknown'
+			<include refid="selectAccessStatBrowserListAnd-fragment" />
+			GROUP BY BROWSER_NM, BROWSER_VRSN
+			ORDER BY VSIT_CNT DESC
+		) RS
+		LIMIT 6
+	</select>
+	
+</mapper>

@@ -1,0 +1,26 @@
+sitemesh:
+  add-list:
+    -
+      contentPath: /admin/main
+      decoratorPath: /admin/decorator/mainDecorator
+    -
+      contentPath: /admin/*/*
+      decoratorPath: /admin/decorator/mainDecorator
+    -
+      contentPath: /admin/**
+      decoratorPath: /admin/decorator/topDecorator
+    -
+      contentPath: /admin/**
+      decoratorPath: /admin/decorator/leftDecorator
+    -
+      contentPath: /admin/**
+      decoratorPath: /admin/decorator/footDecorator
+    -
+      contentPath: /admin/**/popup/*
+      decoratorPath: /admin/decorator/popupDecorator
+
+  exclude-list:
+    -
+      path: /admin/auth/login
+    -
+      path: /admin/**/include/*

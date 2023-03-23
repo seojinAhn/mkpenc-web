@@ -1,0 +1,501 @@
+ <%@ page pageEncoding="utf-8"%>
+ 
+ 
+ <!-- header_wrap -->          
+ <div class="header_wrap">         
+     <div class="gnb_wrap">            
+         <h1 onclick="location.href='/main/dashboard'" title="월성 3,4 호기 원격감시시스템"></h1>            
+         <!-- fnc_menu_wrap -->            
+         <div class="fnc_menu_wrap">           
+             <a href="#none" target="_blank" class="link_site">EOF</a>         
+             <!-- fnc_menu -->         
+             <div class="fnc_menu">            
+                 <ul>          
+                     <li class="fnc_notice" onclick="location.href='/main/noticelist'" title="Topic"></li>            
+                     <li class="fnc_data" title="Data"></li>           
+                     <li class="fnc_sitemap" title="Site Map"></li>            
+                     <li class="fnc_help" title="Help"></li>           
+                     <li class="fnc_user">         
+                         <div class="fnc_user_detail">         
+<c:if test="${UserInfo eq null}">                         
+	                             <a class="btn_list" onclick="openLayer('modal_login');">Log In</a>
+</c:if>	                                       
+<c:if test="${UserInfo ne null}">
+	                             <span>${UserInfo.userName}</span>            
+	                             <a class="btn_list" href="#none">비밀번호 변경</a>            
+	                             <a class="btn_list" href="#none" id="logoutCheck">Log Out</a>
+</c:if>
+                         </div>            
+                     </li>         
+                 </ul>         
+             </div>            
+             <!-- //fnc_menu -->           
+         </div>            
+         <!-- //fnc_menu_wrap -->          
+     </div>            
+     <!-- lnb_menu -->         
+     <div class="lnb_wrap">            
+         <div class="lnb_tab">         
+             <a href="/dcc/mimic/lzc_1" class="current">DCC</a>           
+             <a href="/markv/mimic/loadcontrol" >MARK_V</a>           
+         </div>            
+         <div class="lnb_menu">            
+             <ul>
+<c:if test="${BaseSearch.menuName eq 'MIMIC'}">
+                 <li class="current">
+</c:if>
+<c:if test="${BaseSearch eq null || BaseSearch.menuName ne 'MIMIC'}">
+                 <li>
+</c:if>                                                  
+                     <a href="#none">Mimic</a>         
+                     <div class="lnb_menu_depth">          
+                         <div class="lnb_depth_wrap">          
+                             <ul>          
+                                 <li>          
+                                     <a href="#none">PRIMARY</a>           
+                                     <ul>          
+                                         <li><a href="/dcc/mimic/lzc_1">LZC I</a></li>            
+                                         <li><a href="/dcc/mimic/lzc_2"">LZC II</a></li>           
+                                         <li><a href="/dcc/mimic/pht">PHT</a></li>          
+                                         <li><a href="/dcc/mimic/phtctrl">PHT CTRL</a></li>         
+                                         <li><a href="/dcc/mimic/moderator">MODERATOR</a></li>            
+                                         <li><a href="/dcc/mimic/phtpuri">PHT PURI</a></li>         
+                                         <li><a href="/dcc/mimic/ecc">ECC</a></li>          
+                                     </ul>         
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="#none">SECONDARY</a>         
+                                     <ul>          
+                                         <li><a href="/dcc/mimic/mainsteam">MAIN STEAM</a></li>            
+                                         <li><a href="/dcc/mimic/feedwater">FEED WATER</a></li>           
+                                         <li><a href="/dcc/mimic/condensate">CONDENSATE</a></li>           
+                                     </ul>         
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="#none">FUEL</a>          
+                                     <ul>          
+                                         <li><a href="/dcc/mimic/fuelhandlingmenu">F/H MAIN</a></li>         
+                                         <li><a href="/dcc/mimic/d2octrla">D20 CTRL(A)</a></li>          
+                                         <li><a href="/dcc/mimic/d2octrlc">D20 CTRL(C)</a></li>          
+                                     </ul>         
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="#none">RADIATION</a>         
+                                     <ul>          
+                                         <li><a href="/dcc/mimic/radmain">RAD MAIN</a></li>         
+                                         <li><a href="/dcc/mimic/rbbase">RB BASE</a></li>          
+                                         <li><a href="/dcc/mimic/rb1f">RB 1F</a></li>            
+                                         <li><a href="/dcc/mimic/rb2f">RB 2F</a></li>            
+                                         <li><a href="/dcc/mimic/rb3f">RB 3F</a></li>            
+                                         <li><a href="/dcc/mimic/rb4f">RB 4F</a></li>            
+                                         <li><a href="/dcc/mimic/rb5f">RB 5F</a></li>            
+                                         <li><a href="/dcc/mimic/sbbase">SB BASE</a></li>          
+                                     </ul>         
+                                 </li>         
+                             </ul>         
+                         </div>            
+                     </div>            
+                 </li>         
+<c:if test="${BaseSearch.menuName eq 'TREND'}">
+                 <li class="current">
+</c:if>
+<c:if test="${BaseSearch eq null || BaseSearch.menuName ne 'TREND'}">
+                 <li>
+</c:if>       
+                     <a href="#none">Trend</a>         
+                     <div class="lnb_menu_depth">          
+                         <div class="lnb_depth_wrap">          
+                             <ul>          
+                                 <li>          
+                                     <a href="#none">TREND</a>         
+                                     <ul>          
+                                         <li><a href="/dcc/trend/realtimetrendfixed">FIXED</a></li>            
+                                         <li><a href="/dcc/trend/realtimetrendspare">SPARE</a></li>            
+                                         <li><a href="/dcc/trend/ftamtrend">FTAM TREND</a></li>           
+                                         <li><a href="/dcc/trend/dccmarkvtrend">DCC & Mark-V</a></li>         
+                                     </ul>         
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="#none">BARCHART</a>          
+                                     <ul>          
+                                         <li><a href="/dcc/trend/barchartfixed">FIXED</a></li>            
+                                         <li><a href="/dcc/trend/barchartspare">SPARE</a></li>            
+                                     </ul>         
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="#none">LOG</a>           
+                                     <ul>          
+                                         <li><a href="/dcc/trend/logfixedlist">FIXED</a></li>            
+                                         <li><a href="/dcc/trend/logsharelist">SPARE</a></li>            
+                                     </ul>         
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/trend/numericallist">NUMERICAL</a>         
+                                 </li>         
+                             </ul>         
+                         </div>            
+                     </div>            
+                 </li>         
+<c:if test="${BaseSearch.menuName eq 'ALARM'}">
+                 <li class="current">
+</c:if>
+<c:if test="${BaseSearch eq null || BaseSearch.menuName ne 'ALARM'}">
+                 <li>
+</c:if>          
+                     <a href="#none">Alarm</a>         
+                     <div class="lnb_menu_depth">          
+                         <div class="lnb_depth_wrap">          
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/alarm/alarm">ALARM</a>         
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/alarm/summary">SUMMARY</a>           
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/alarm/earlywarning">조기경보</a>          
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/alarm/fixedtimecontrol">정주기시험보조자료</a>            
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/alarm/gaschromatography">가스크로마토그래프</a>            
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="#none">연료프린트</a>            
+                                 </li>         
+                             </ul>         
+                         </div>            
+                     </div>            
+                 </li>         
+<c:if test="${BaseSearch.menuName eq 'STATUS'}">
+                 <li class="current">
+</c:if>
+<c:if test="${BaseSearch eq null || BaseSearch.menuName ne 'STATUS'}">
+                 <li>
+</c:if>       
+                     <a href="#none">Status</a>            
+                     <div class="lnb_menu_depth">          
+                         <div class="lnb_depth_wrap">          
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/status/schematic">SCHEMATIC</a>         
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/status/rss">RRS</a>           
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/status/htc">HTC</a>           
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/status/mtc">MTC</a>           
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/status/sgp">SGP</a>           
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/status/sgl">SGL</a>           
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/status/phtpump">PHT PUMP</a>          
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/status/zonevalues">ZONE VALUES</a>           
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/status/zonedeviations">ZONE DEVIATIONS</a>          
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/status/zonecompare">ZONE COMPARE</a>          
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/status/adjrod">ADJ ROD</a>           
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/status/reactivity">REACTIVITY</a>            
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/status/stepbackstatus">STEPBACK</a>          
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/status/setbackstatus">SETBACK</a>           
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/status/chtemp">CH TEMP</a>           
+                                 </li>         
+                             </ul>         
+                         </div>            
+                     </div>            
+                 </li>         
+<c:if test="${BaseSearch.menuName eq 'PERFORMANCE'}">
+                 <li class="current">
+</c:if>
+<c:if test="${BaseSearch eq null || BaseSearch.menuName ne 'PERFORMANCE'}">
+                 <li>
+</c:if>     
+                     <a href="#none">Performance</a>            
+                     <div class="lnb_menu_depth">          
+                         <div class="lnb_depth_wrap">          
+                             <ul>          
+                                 <li>          
+                                     <a href="#none">주요기기 성능감시</a>         
+                                     <ul>          
+                                         <li><a href="/dcc/performance/fixed">FIXED</a></li>            
+                                         <li><a href="/dcc/performance/spare">SPARE</a></li>            
+                                     </ul>         
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/performance/compare34">COMPARE 34</a>            
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/performance/comparexy">COMPARE XY</a>            
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/performance/irrationalai">Irrational AI</a>           
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/performance/scm">SCM</a>           
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/performance/requiredsafevar">필수안전변수</a>          
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="#none">DCC 관리</a>          
+                                     <ul>          
+                                         <li><a href="/dcc/performance/dccselfcheck">DCC SELF CHECK</a></li>           
+                                         <li><a href="/dcc/performance/mainsysiostatus">중요계통 I/O 상태</a></li>            
+                                         <li><a href="/dcc/performance/dccstatus">DCC Status</a></li>           
+                                         <li><a href="/dcc/performance/programonoff">Programe ON/OFF</a></li>          
+                                         <li><a href="/dcc/performance/aicheck">AI CHECK</a></li>         
+                                     </ul>         
+                                 </li>         
+                             </ul>         
+                         </div>            
+                     </div>            
+                 </li>				            
+<c:if test="${BaseSearch.menuName eq 'TIP'}">
+                 <li class="current">
+</c:if>
+<c:if test="${BaseSearch eq null || BaseSearch.menuName ne 'TIP'}">
+                 <li>
+</c:if>    
+                     <a href="#none">Tip</a>           
+                     <div class="lnb_menu_depth">          
+                         <div class="lnb_depth_wrap">          
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/tip/iolist">I/O LIST</a>          
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="#none">SETPOINT</a>          
+                                     <ul>          
+                                         <li><a href="/dcc/tip/sds1">SDS #1</a></li>           
+                                         <li><a href="/dcc/tip/sds2">SDS #2</a></li>           
+                                         <li><a href="/dcc/tip/setback">SETBACK</a></li>          
+                                         <li><a href="/dcc/tip/stepback">STEPBACK</a></li>         
+                                     </ul>         
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="#none">UNIT CONV</a>         
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/tip/unclearoutput">원자로출력환산표</a>          
+                                 </li>         
+                             </ul>         
+                         </div>            
+                     </div>            
+                 </li>         
+<c:if test="${(UserInfo ne null) && (UserInfo.grade eq '1')}">
+	<c:if test="${BaseSearch.menuName eq 'ADMIN'}">
+                 <li class="current">
+	</c:if>
+	<c:if test="${BaseSearch eq null || BaseSearch.menuName ne 'ADMIN'}">
+                 <li> 
+	</c:if>       
+                     <a href="#none">Admin</a>         
+                     <div class="lnb_menu_depth">          
+                         <div class="lnb_depth_wrap">          
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/admin/memberlist">사용자관리</a>          
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/admin/currentmbrlist">현재접속현황</a>          
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/admin/iolistmgnlist">I/O LIST 관리</a>         
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/admin/sysmonitoring">시스템모니터링</a>            
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="/dcc/admin/sysimprovelist">시스템개선사항</a>            
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="#none">DCC형상관리</a>           
+                                     <ul>          
+                                         <li><a href="/dcc/admin/swsmlist">S/W 형상관리</a></li>         
+                                         <li><a href="/dcc/admin/hwsmlist">H/W 형상관리</a></li>         
+                                         <li><a href="/dcc/admin/pcbmgmlist">PCB</a></li>          
+                                         <li><a href="/dcc/admin/restartcodelist">재기동관리</a></li>           
+                                     </ul>         
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="#none">자료실</a>            
+                                 </li>         
+                             </ul>         
+                             <ul>          
+                                 <li>          
+                                     <a href="#none">EOF 현황</a>          
+                                 </li>         
+                             </ul>         
+                         </div>            
+                     </div>            
+                 </li>   
+</c:if>
+             </ul>         
+         </div>            
+         <div class="lnb_status">
+			<div class="lnb_dp">
+				<label id="lblDate"></label>
+			</div>
+          	<div class="toggle_reactor">          	
+          	    <c:if test="${(UserInfo eq null) || (UserInfo ne null &&  UserInfo.hogi eq '3') }">  
+					<input id="3" name="view_reactor" type="radio" value="3" checked>
+				</c:if>
+				 <c:if test="${UserInfo ne null &&  UserInfo.hogi ne '3' }">        
+	             	<input id="3" name="view_reactor" type="radio" value="3" >
+	             </c:if>  
+				 <label for="3">3</label>
+				<c:if test="${UserInfo ne null &&  UserInfo.hogi eq '4' }">        
+					<input id="4" name="view_reactor" type="radio" value="4" checked>
+				</c:if>
+				 <c:if test="${(UserInfo eq null) || (UserInfo ne null &&  UserInfo.hogi ne '4') }">        
+				 	<input id="4" name="view_reactor" type="radio"  value="4">
+				 </c:if>
+				<label for="4">4</label>
+				<span class="button"></span>
+			</div>
+			<div class="toggle_xy">
+				  <c:if test="${(UserInfo eq null) || (UserInfo ne null &&  UserInfo.xyGubun eq 'X') }">       
+					<input id="X" name="view" type="radio" value="X" checked>
+				</c:if>
+				<c:if test="${UserInfo ne null &&  UserInfo.xyGubun ne 'X' }">
+					<input id="X" name="view" type="radio" value="X">     
+				</c:if>
+				<label for="X">X</label>
+				<c:if test="${UserInfo ne null &&  UserInfo.xyGubun eq 'Y' }">
+					<input id="Y" name="view" type="radio" value="Y" checked>        
+				</c:if>
+				<c:if test="${(UserInfo eq null) || (UserInfo ne null &&  UserInfo.xyGubun ne 'Y')}">        
+					<input id="Y" name="view" type="radio" value="Y">
+				</c:if>
+				<label for="Y">Y</label>
+				<span class="button"></span>
+				 </div>
+         </div>            
+     </div>            
+     <!-- //lnb_menu -->           
+ </div>            
+   <!-- //header_wrap -->           
+   <!-- layer_pop_wrap -->           
+   <div class="layer_pop_wrap login" id="modal_login">           
+       <!-- header_wrap -->           
+   	<div class="pop_header">           
+   	    <h3>Log In</h3>           
+           <a onclick="closeLayer('modal_login');" title="Close"></a>           
+       </div>           
+   	<!-- //header_wrap -->           
+   	<!-- pop_contents -->           
+   	<div class="pop_contents">           
+           <!-- login_wrap -->           
+           <div class="login_wrap">           
+               <input type="text" id="userId" name="userId" value="toasj" placeholder="아이디">           
+               <input type="password" id="userPwd" name="userPwd"  value="1qaz2wsx" placeholder="비밀번호">           
+               <a href="#" class="login_btn" id="loginCheck">로그인</a>           
+           </div>           
+           <!-- //login_wrap -->           
+   	</div>           
+   	<!-- pop_contents -->           
+   </div>           
+   <!-- //layer_pop_wrap -->           

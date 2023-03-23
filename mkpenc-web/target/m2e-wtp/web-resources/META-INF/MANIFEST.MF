@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Built-By: MAG
+Build-Jdk: 17.0.3
+Implementation-Title: mkpenc-web
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: kr.co.mkpenc
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-boot
+ -starter-parent/mkpenc-web
+Created-By: Maven Integration for Eclipse
+

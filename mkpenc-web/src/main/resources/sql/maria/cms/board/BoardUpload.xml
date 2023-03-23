@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onmakers.cms.module.board.mapper.BoardUploadMapper">
+	
+	<resultMap id="boardUpload-result" type="BoardUpload">
+		<result property="upldSeq" column="UPLD_SEQ" />
+		<result property="bbsKey" column="BBS_KEY" />
+		<result property="bbsId" column="BBS_ID" />
+		<result property="saveFileNm" column="SAVE_FILE_NM" />
+		<result property="realFileNm" column="REAL_FILE_NM" />
+		<result property="fileSize" column="FILE_SIZE" />
+		<result property="filePath" column="FILE_PATH" />
+		<result property="dwldCnt" column="DWLD_CNT" />
+		<result property="regDt" column="REG_DT" />
+	</resultMap>
+	
+	<sql id="boardUploadWhere-fragment">
+		<where>
+			<if test="upldSeq != null and upldSeq != 0">
+				UPLD_SEQ = #{upldSeq}
+			</if>
+			<if test="bbsKey != null and bbsKey != 0">
+				AND BBS_KEY = #{bbsKey}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(bbsId)">
+				AND BBS_ID = #{bbsId}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="selectBoardUploadList" parameterType="SearchBoard" resultMap="boardUpload-result">
+		SELECT
+			UPLD_SEQ
+			, BBS_KEY
+			, BBS_ID
+			, SAVE_FILE_NM
+			, REAL_FILE_NM
+			, FILE_SIZE
+			, FILE_PATH
+			, DWLD_CNT
+			, REG_DT
+		FROM
+			MOB_BBS_UPLD
+		WHERE BBS_KEY = #{bbsKey}
+		AND BBS_ID = #{bbsId}
+	</select>
+	
+	<insert id="insertBoardUpload" parameterType="BoardUpload">
+		INSERT INTO MOB_BBS_UPLD (
+			BBS_KEY
+			, BBS_ID
+			, SAVE_FILE_NM
+			, REAL_FILE_NM
+			, FILE_SIZE
+			, FILE_PATH
+			, REG_DT
+		) VALUES (
+			#{bbsKey}
+			, #{bbsId}
+			, #{saveFileNm}
+			, #{realFileNm}
+			, #{fileSize}
+			, #{filePath}
+			, SYSDATE
+		)
+	</insert>
+	
+	<update id="changeBbsUploadBbsKey" parameterType="SearchBoard">
+		UPDATE
+			MOB_BBS_UPLD
+		SET
+			BBS_KEY = BBS_KEY - 1
+		WHERE 
+			BBS_KEY <![CDATA[ < ]]> #{bbsKey}
+			AND BBS_KEY <![CDATA[ > ]]> (
+											SELECT 
+												* 
+											FROM 
+											(
+												SELECT
+													NVL(MAX(BBS_KEY), 0)
+												FROM
+													MOB_BBS
+												WHERE 
+													BBS_KEY <![CDATA[ < ]]> #{bbsKey}
+													AND DTH = 0
+											<!-- ) AS TEMP -->
+											) TEMP
+										)
+			AND BBS_ID = #{bbsId}
+	</update>
+	
+	<delete id="deleteBoardUpload" parameterType="BoardUpload">
+		DELETE FROM
+			MOB_BBS_UPLD
+		<include refid="boardUploadWhere-fragment" />
+	</delete>
+	
+	<!-- 첨부파일 단일 정보 -->
+	<select id="selectBoardUploadInfo" parameterType="BoardUpload" resultMap="boardUpload-result">
+		SELECT
+			UPLD_SEQ
+			, BBS_KEY
+			, BBS_ID
+			, SAVE_FILE_NM
+			, REAL_FILE_NM
+			, FILE_SIZE
+			, FILE_PATH
+			, DWLD_CNT
+			, REG_DT
+		FROM
+			MOB_BBS_UPLD
+		WHERE
+			UPLD_SEQ = #{upldSeq}
+	</select>
+	
+	<!-- 첨부파일 다운로드 수 증가 -->
+	<update id="updateBoardUpfileDownloadCount" parameterType="BoardUpload">
+		UPDATE
+			MOB_BBS_UPLD
+		SET
+			DWLD_CNT = (DWLD_CNT+1)
+		WHERE
+			UPLD_SEQ = #{upldSeq}
+	</update>
+	
+	<!-- Media용 첨부파일 단일 정보 -->
+	<select id="selectBoardUploadInfoForMedia" parameterType="BoardUpload" resultMap="boardUpload-result">
+        SELECT * FROM (
+			SELECT
+				UPLD_SEQ
+				, BBS_KEY
+				, BBS_ID
+				, SAVE_FILE_NM
+				, REAL_FILE_NM
+				, FILE_SIZE
+				, FILE_PATH
+				, DWLD_CNT
+				, REG_DT
+			FROM
+				MOB_BBS_UPLD
+			WHERE BBS_KEY = #{bbsKey}
+			AND BBS_ID = #{bbsId}
+        )
+        WHERE ROWNUM = 1
+	</select>
+</mapper>

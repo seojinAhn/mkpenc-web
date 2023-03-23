@@ -1,0 +1,11 @@
+spring:
+  profiles: local
+
+props:
+  domain: http://10.135.101.221:8080
+  url: http://10.135.101.221:8080
+  
+
+  # attach file dir
+  #  attach-path: /Users/JYH/Develop/temp/tdms_file/
+  attach-path: C:/temp/tdms_file

@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onmakers.cms.module.weblog.accessstat.os.mapper.AccessStatOsMapper">
+	
+	<resultMap id="accessStatOsSummary-result" type="AccessStatOsSummary">
+		<result property="maxOsPc" column="MAX_OS_P" />
+		<result property="maxOsRatePc" column="MAX_OS_RATE_P" />
+		<result property="maxOsMobile" column="MAX_OS_M" />
+		<result property="maxOsRateMobile" column="MAX_OS_RATE_M" />
+		<result property="deviceRatePc" column="DEVICE_RATE_P" />
+		<result property="deviceRateMobile" column="DEVICE_RATE_M" />
+	</resultMap>
+	
+	<resultMap id="accessStatOs-result" type="AccessStatOs">
+		<result property="sttsDt" column="STTS_DT" />
+		<result property="vsitCnt" column="VSIT_CNT" />
+		<result property="vsitCnt1" column="VSIT_CNT_1" />
+		<result property="vsitCnt2" column="VSIT_CNT_2" />
+		<result property="vsitCnt3" column="VSIT_CNT_3" />
+		<result property="vsitCnt4" column="VSIT_CNT_4" />
+		<result property="vsitCnt5" column="VSIT_CNT_5" />
+		<result property="vsitCnt6" column="VSIT_CNT_6" />
+		<result property="vsitCnt7" column="VSIT_CNT_7" />
+		<result property="devicePcRate" column="DEVICE_PC_RATE" />
+		<result property="deviceMobileRate" column="DEVICE_MOBILE_RATE" />
+	</resultMap>
+	
+	<sql id="selectAccessStatOsListWhere-fragment">
+		<where>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(startDate)">
+				STTS_DT <![CDATA[ >= ]]> #{startDate}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(endDate)">
+				AND STTS_DT <![CDATA[ <= ]]> #{endDate}
+			</if>
+		</where>
+	</sql>
+	
+	<sql id="selectAccessStatOsListAnd-fragment">
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(startDate)">
+			AND STTS_DT <![CDATA[ >= ]]> #{startDate}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(endDate)">
+			AND STTS_DT <![CDATA[ <= ]]> #{endDate}
+		</if>
+	</sql>
+	
+	<select id="selectAccessStatOsSummary" parameterType="SearchAccessStatOs" resultMap="accessStatOsSummary-result">
+		SELECT /*+USE_NL(DEVICE_RATE A B)*/
+			IFNULL(MAX_OS_P, 'NONE') AS MAX_OS_P
+			, IFNULL(ROUND(IF(SUM_VSIT_CNT_P = 0, 0, IFNULL(VSIT_CNT_P, 0) / SUM_VSIT_CNT_P), 4), 0) * 100 AS MAX_OS_RATE_P
+			, IFNULL(MAX_OS_M, 'NONE') AS MAX_OS_M
+			, IFNULL(ROUND(IF(SUM_VSIT_CNT_M = 0, 0, IFNULL(VSIT_CNT_M, 0) / SUM_VSIT_CNT_M), 4), 0) * 100 AS MAX_OS_RATE_M
+			, IFNULL(DEVICE_RATE_P, 0) AS DEVICE_RATE_P
+			, IFNULL(DEVICE_RATE_M, 0) AS DEVICE_RATE_M
+		FROM 
+			(
+				SELECT
+					ROUND(IF(VSIT_CNT = 0, 0, IFNULL(VSIT_CNT_P, 0) / VSIT_CNT), 4) * 100 AS DEVICE_RATE_P,
+					ROUND(IF(VSIT_CNT = 0, 0, IFNULL(VSIT_CNT_M, 0) / VSIT_CNT), 4) * 100 AS DEVICE_RATE_M
+				FROM
+					(
+						SELECT /*+INDEX_DESC(ST1)*/
+							IFNULL(SUM(VSIT_CNT), 0) AS VSIT_CNT
+						FROM 
+							TB_ACSS_STTS_OS ST1
+						<include refid="selectAccessStatOsListWhere-fragment" />
+					) T1,
+					(
+						SELECT /*+INDEX_DESC(ST1)*/
+							IFNULL(SUM(VSIT_CNT), 0) AS VSIT_CNT_P
+						FROM 
+							TB_ACSS_STTS_OS ST1
+						WHERE (DEVICE_DIVN = 'pc' OR DEVICE_DIVN = 'unknown')
+						<include refid="selectAccessStatOsListAnd-fragment" />
+					) T2,
+					(
+						SELECT /*+INDEX_DESC(ST1)*/
+							IFNULL(SUM(VSIT_CNT), 0) AS VSIT_CNT_M
+						FROM
+							TB_ACSS_STTS_OS ST1
+						WHERE DEVICE_DIVN = 'mobile'
+						<include refid="selectAccessStatOsListAnd-fragment" />
+					) T3
+			) DEVICE_RATE,
+			(
+				SELECT
+					MAX_OS_P
+					, VSIT_CNT_P
+					, SUM_VSIT_CNT_P
+				FROM (
+					SELECT /*+INDEX_DESC(T1)*/
+						OS_NM AS MAX_OS_P
+						, SUM(VSIT_CNT) AS VSIT_CNT_P
+						, (
+							SELECT /*+INDEX_DESC(ST1)*/
+								SUM(VSIT_CNT) AS SUM_VSIT_CNT_P
+							FROM
+								TB_ACSS_STTS_OS ST1
+							WHERE DEVICE_DIVN = 'pc'
+							<include refid="selectAccessStatOsListAnd-fragment" />
+						) AS SUM_VSIT_CNT_P
+					FROM
+						TB_ACSS_STTS_OS T1
+					WHERE DEVICE_DIVN = 'pc'
+					<include refid="selectAccessStatOsListAnd-fragment" />
+					GROUP BY OS_NM
+					ORDER BY VSIT_CNT_P DESC
+					LIMIT 1   
+				) SA
+			) A
+			LEFT OUTER JOIN
+			(
+				SELECT
+					MAX_OS_M
+					, VSIT_CNT_M
+					, SUM_VSIT_CNT_M
+				FROM (
+					SELECT /*+INDEX_DESC(T1)*/
+						OS_NM AS MAX_OS_M
+						, SUM(VSIT_CNT) AS VSIT_CNT_M
+						, (
+							SELECT /*+INDEX_DESC(ST1)*/
+								SUM(VSIT_CNT) AS SUM_VSIT_CNT_M
+							FROM
+								TB_ACSS_STTS_OS ST1
+							WHERE DEVICE_DIVN = 'mobile'
+							<include refid="selectAccessStatOsListAnd-fragment" />
+						) AS SUM_VSIT_CNT_M
+					FROM
+						TB_ACSS_STTS_OS T1
+					WHERE DEVICE_DIVN = 'mobile'
+					<include refid="selectAccessStatOsListAnd-fragment" />
+					GROUP BY OS_NM
+					ORDER BY VSIT_CNT_M DESC   
+				) SB
+			) B
+			ON 1 = 1
+			LIMIT 1
+	</select>
+	
+	<select id="selectAccessStatOsListCount" parameterType="SearchAccessStatOs" resultType="integer">
+		SELECT COUNT(*) FROM (
+			SELECT
+				COUNT(*)
+			FROM 
+				TB_ACSS_STTS_OS T1
+			<include refid="selectAccessStatOsListWhere-fragment" />
+			GROUP BY STTS_DT
+		) RS
+	</select>
+	
+	<select id="selectAccessStatOsList" parameterType="SearchAccessStatOs" resultMap="accessStatOs-result">
+		SELECT * FROM (
+			SELECT /*+USE_NL(A B C D E F G H I)*/
+				A.STTS_DT,
+				IFNULL(A.VSIT_CNT, 0) AS VSIT_CNT,
+				IFNULL(B.VSIT_CNT_1, 0) AS VSIT_CNT_1,
+				IFNULL(C.VSIT_CNT_2, 0) AS VSIT_CNT_2,
+				IFNULL(D.VSIT_CNT_3, 0) AS VSIT_CNT_3,
+				IFNULL(E.VSIT_CNT_4, 0) AS VSIT_CNT_4,
+				IFNULL(F.VSIT_CNT_5, 0) AS VSIT_CNT_5,
+				IFNULL(G.VSIT_CNT_6, 0) AS VSIT_CNT_6,
+				IFNULL(H.VSIT_CNT_7, 0) AS VSIT_CNT_7,
+				IFNULL(I.DEVICE_PC_RATE, 0) AS DEVICE_PC_RATE,
+				IFNULL(I.DEVICE_MOBILE_RATE, 0) AS DEVICE_MOBILE_RATE
+			FROM
+				(
+					SELECT /*+INDEX_DESC(T1)*/
+						STTS_DT,
+						SUM(VSIT_CNT) AS VSIT_CNT
+					FROM
+						TB_ACSS_STTS_OS T1
+					GROUP BY STTS_DT
+					ORDER BY STTS_DT DESC
+				) A
+				LEFT OUTER JOIN
+				(
+					SELECT /*+INDEX_DESC(T1)*/
+						STTS_DT,
+						SUM(VSIT_CNT) AS VSIT_CNT_1
+					FROM
+						TB_ACSS_STTS_OS T1
+					WHERE OS_NM = #{osRowList[0]}
+					GROUP BY STTS_DT
+					ORDER BY STTS_DT DESC
+				) B
+				ON A.STTS_DT = B.STTS_DT
+				LEFT OUTER JOIN
+				(
+					SELECT /*+INDEX_DESC(T1)*/
+						STTS_DT,
+						SUM(VSIT_CNT) AS VSIT_CNT_2
+					FROM
+						TB_ACSS_STTS_OS T1
+					WHERE OS_NM = #{osRowList[1]}
+					GROUP BY STTS_DT
+					ORDER BY STTS_DT DESC
+				) C
+				ON A.STTS_DT = C.STTS_DT
+				LEFT OUTER JOIN
+				(
+					SELECT /*+INDEX_DESC(T1)*/
+						STTS_DT,
+						SUM(VSIT_CNT) AS VSIT_CNT_3
+					FROM
+						TB_ACSS_STTS_OS T1
+					WHERE OS_NM = #{osRowList[2]}
+					GROUP BY STTS_DT
+					ORDER BY STTS_DT DESC
+				) D
+				ON A.STTS_DT = D.STTS_DT
+				LEFT OUTER JOIN
+				(
+					SELECT /*+INDEX_DESC(T1)*/
+						STTS_DT,
+						SUM(VSIT_CNT) AS VSIT_CNT_4
+					FROM
+						TB_ACSS_STTS_OS T1
+					WHERE OS_NM = #{osRowList[3]}
+					GROUP BY STTS_DT
+					ORDER BY STTS_DT DESC
+				) E
+				ON A.STTS_DT = E.STTS_DT
+				LEFT OUTER JOIN
+				(
+					SELECT /*+INDEX_DESC(T1)*/
+						STTS_DT,
+						SUM(VSIT_CNT) AS VSIT_CNT_5
+					FROM
+						TB_ACSS_STTS_OS T1
+					WHERE OS_NM = #{osRowList[4]}
+					GROUP BY STTS_DT
+					ORDER BY STTS_DT DESC
+				) F
+				ON A.STTS_DT = F.STTS_DT
+				LEFT OUTER JOIN
+				(
+					SELECT /*+INDEX_DESC(T1)*/
+						STTS_DT,
+						SUM(VSIT_CNT) AS VSIT_CNT_6
+					FROM
+						TB_ACSS_STTS_OS T1
+					WHERE OS_NM = #{osRowList[5]}
+					GROUP BY STTS_DT
+					ORDER BY STTS_DT DESC
+				) G
+				ON A.STTS_DT = G.STTS_DT
+				LEFT OUTER JOIN
+				(
+					SELECT /*+INDEX_DESC(T1)*/
+						STTS_DT,
+						SUM(VSIT_CNT) AS VSIT_CNT_7
+					FROM
+						TB_ACSS_STTS_OS T1
+					WHERE OS_NM NOT IN (
+						<foreach collection="osRowList" separator="," item="osRow">
+							#{osRow}
+						</foreach>
+					)
+					GROUP BY STTS_DT
+					ORDER BY STTS_DT DESC
+				) H
+				ON A.STTS_DT = H.STTS_DT
+				LEFT OUTER JOIN
+				(
+					SELECT
+						T1.STTS_DT,
+						ROUND(IF(VSIT_CNT = 0, 0, IFNULL(VSIT_CNT_PC, 0) / VSIT_CNT), 4) * 100 AS DEVICE_PC_RATE,
+						ROUND(IF(VSIT_CNT = 0, 0, IFNULL(VSIT_CNT_MOBILE, 0) / VSIT_CNT), 4) * 100 AS DEVICE_MOBILE_RATE
+					FROM
+						(
+							SELECT /*+INDEX_DESC(T1)*/
+								STTS_DT, SUM(VSIT_CNT) AS VSIT_CNT
+							FROM
+								TB_ACSS_STTS_OS T1
+							<!-- WHERE DEVICE_DIVN <![CDATA[ <> ]]> 'unknown' -->
+							GROUP BY STTS_DT
+							ORDER BY STTS_DT DESC
+						) T1
+						LEFT OUTER JOIN
+						(
+							SELECT /*+INDEX_DESC(T1)*/
+								STTS_DT, IFNULL(SUM(VSIT_CNT), 0) AS VSIT_CNT_PC 
+							FROM 
+								TB_ACSS_STTS_OS T1
+							WHERE (DEVICE_DIVN = 'pc' OR DEVICE_DIVN = 'unknown')
+							GROUP BY STTS_DT
+							ORDER BY STTS_DT DESC
+						) T2
+						ON T1.STTS_DT = T2.STTS_DT
+						LEFT OUTER JOIN
+						(
+							SELECT /*+INDEX_DESC(T1)*/
+								STTS_DT, IFNULL(SUM(VSIT_CNT), 0) AS VSIT_CNT_MOBILE
+							FROM
+								TB_ACSS_STTS_OS T1
+							WHERE DEVICE_DIVN = 'mobile'
+							GROUP BY STTS_DT
+							ORDER BY STTS_DT DESC
+						) T3
+						ON T1.STTS_DT = T3.STTS_DT
+						ORDER BY T1.STTS_DT DESC
+				) I
+				ON A.STTS_DT = I.STTS_DT
+		) RS
+		<include refid="selectAccessStatOsListWhere-fragment" />
+		LIMIT #{pageOffset}, #{pageSize}
+	</select>
+	
+	<select id="selectOsRowList" parameterType="SearchAccessStatOs" resultType="string">
+		SELECT OS_NM FROM (
+			SELECT /*+INDEX_DESC(T1)*/
+				OS_NM,
+				SUM(VSIT_CNT) AS VSIT_CNT
+			FROM
+				TB_ACSS_STTS_OS T1
+			WHERE OS_NM <![CDATA[ <> ]]> 'unknown'
+			-- AND OS_NM <![CDATA[ <> ]]> 'Search Bot'
+			<include refid="selectAccessStatOsListAnd-fragment" />
+			GROUP BY OS_NM
+			ORDER BY VSIT_CNT DESC
+		) RS
+		LIMIT 6
+	</select>
+</mapper>

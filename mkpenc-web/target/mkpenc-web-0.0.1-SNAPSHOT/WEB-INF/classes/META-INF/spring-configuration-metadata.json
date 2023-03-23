@@ -1,0 +1,39 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.mkpenc.configuration.DccDbConfiguration",
+      "name": "datasource.mssql-dcc",
+      "sourceMethod": "dccdataSource()",
+      "type": "javax.sql.DataSource"
+    },
+    {
+      "sourceType": "com.mkpenc.configuration.MarkDbConfiguration",
+      "name": "datasource.mssql-mark",
+      "sourceMethod": "markDataSource()",
+      "type": "javax.sql.DataSource"
+    },
+    {
+      "sourceType": "com.mkpenc.common.model.CommonConstant",
+      "name": "props",
+      "type": "com.mkpenc.common.model.CommonConstant"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.mkpenc.common.model.CommonConstant",
+      "name": "props.attach-path",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.mkpenc.common.model.CommonConstant",
+      "name": "props.domain",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.mkpenc.common.model.CommonConstant",
+      "name": "props.url",
+      "type": "java.lang.String"
+    }
+  ]
+}

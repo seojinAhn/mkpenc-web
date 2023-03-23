@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mkpenc.dcc.trend.mapper.DccTrendMapper">
+
+	<select id="selectGroupName" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT * FROM 
+		<if test='@org.apache.commons.lang3.StringUtils@equals(sDive,"B")'>
+			MST_GRPNAME_B
+		</if>
+		<if test='!@org.apache.commons.lang3.StringUtils@equals(sDive,"B")'>
+			MST_GRPNAME
+		</if>
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			<if test='!@org.apache.commons.lang3.StringUtils@equals(sDive,"B")'>
+				AND Gubun = #{sDive}
+			</if>
+			AND ID = #{sGrpID}
+			AND MenuNo = #{sMenuNo}
+		</trim>
+	</select>
+
+	<select id="selectTrendFldNo" parameterType="DccSearchTrend" resultType="java.util.Map">
+		SELECT
+			B.Hogi,
+			C.TBLNO,
+			FLDNO,
+			XYGubun
+		FROM MST_GrpTag B, MST_TAG_DCC C
+		WHERE B.HOGI = C.IHOGI
+		<if test='@org.apache.commons.lang3.StringUtils@equals(sXYGubun,"X") or @org.apache.commons.lang3.StringUtils@equals(sXYGubun,"x")'>
+			AND B.ISEQ = C.ISEQ
+		</if>
+		<if test='!@org.apache.commons.lang3.StringUtils@equals(sXYGubun,"X") or !@org.apache.commons.lang3.StringUtils@equals(sXYGubun,"x")'>
+			AND B.YSEQ = C.ISEQ
+		</if>
+		AND B.Gubun = 'D'
+		AND B.GrpHogi = #{sHogi}
+		AND B.ID = #{sGrpID}
+		AND B.MenuNo = #{sHogi}
+		AND B.GrpNo = #{sUGrpNo}
+		ORDER BY TagNo
+	</select>
+	
+	<select id="selectTrendData" parameterType="java.util.Map" resultType="java.util.Map">
+		Select
+			Convert(char(19),Scantime,120) AS SCANTIME,
+			TVALUE${rs2} AS TVALUE
+		from log_${rs0}dcc_trend
+		where scantime = (
+			select
+				scantime
+			from log_timer
+			where gubun = 'D'
+			and Hogi = #{rs0}
+			and DataType = #{rs3}
+		)
+		and SEQ = #{rs1}
+	</select>
+	
+	<select id="selectScanTime" parameterType="DccSearchTrend" resultType="String">
+		SELECT SCANTIME FROM LOG_Timer
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+		<if test='@org.apache.commons.lang3.StringUtils@equals(sDive,"B") or @org.apache.commons.lang3.StringUtils@equals(sDive,"b")'>
+			AND GUBUN = 'D'
+		</if>
+		<if test='!@org.apache.commons.lang3.StringUtils@equals(sDive,"B") and !@org.apache.commons.lang3.StringUtils@equals(sDive,"b")'>
+			AND GUBUN = #{sDive}
+		</if>
+			AND HOGI = #{sHogi}
+			AND DATATYPE = #{sXYGubun}
+		</trim>
+    </select>
+    
+    <select id="selectGrpTagList" parameterType="java.util.Map" resultType="java.util.Map">
+    	SELECT
+			C.iSeq, BSCAL, LOOPNAME, UNIT, LIMIT1, LIMIT2, TYPE, IOTYPE, ADDRESS
+			,IOBIT, C.TBLNO, FLDNO, SaveCoreChk, C.Descr, B.Descr DataLoop, GrpHogi
+			,B.MinVal, B.MaxVal, Hogi, XYGubun, ELOW, EHIGH, VLOW, VHIGH, FASTIOCHK
+			,'' SIGNAL_NAME, '' UNIT_M, '' GAIN, '' OFFSET,'' IOTYPE_M, '' REGISTER, '' IOBIT_M,'' TBLNO_M, '' FLDNO_M, '' BSCAL_M, '' ISEQ_M, '' Signal_Desc, '' D0, '' D1
+			,'' SaveCoreChk , '' UNIT_DIV, '' MinVal_M, '' MaxVal_M, '' Hogi_M, '' Descr_M, B.Gubun, B.TagNo
+		FROM MST_GrpTag_B B, MST_TAG_DCC C
+		WHERE B.HOGI = C.IHOGI
+		<if test='@org.apache.commons.lang3.StringUtils@equals(xyGubun,"X") or @org.apache.commons.lang3.StringUtils@equals(xyGubun,"x")'>
+			AND B.ISEQ = C.ISEQ
+		</if>
+		<if test='!@org.apache.commons.lang3.StringUtils@equals(xyGubun,"X") and !@org.apache.commons.lang3.StringUtils@equals(xyGubun,"x")'>
+			AND B.YSEQ = C.ISEQ
+		</if>
+		AND B.ID = #{grpID}
+		AND B.GrpHOGI = #{hogi}
+		AND B.MenuNo = #{menuNo}
+		AND B.GrpNo = #{uGrpNo}
+		AND B.Gubun = 'D'
+		UNION 
+		SELECT
+			'','','','','','','','','','','','','','','','','','','','','','','','',''
+			,SIGNAL_NAME, UNIT, GAIN, OFFSET,IOTYPE, REGISTER, IOBIT,TBLNO, FLDNO, BSCAL, C.ISEQ ISEQ, Signal_Desc, D0, D1
+			,SaveCoreChk , UNIT_DIV, B.MinVal, B.MaxVal, C.Hogi, Descr,B.Gubun,B.TagNo
+		FROM MST_GrpTag_B B,  MARKDB.dbo.MST_TAG_MARK C
+		Where B.HOGI = C.HOGI 
+		AND B.iSeq = C.iSeq
+		AND B.ID = #{grpID}
+		AND B.GrpHOGI = #{hogi}
+		AND B.MenuNo = #{menuNo}
+		AND B.GrpNo = #{uGrpNo}
+		AND B.Gubun = 'M'
+		ORDER BY B.TagNo
+    </select>
+    
+    <select id="selectMinScantime" parameterType="java.util.Map" resultType="String">
+    	SELECT
+			min(scantime) as SCANTIME
+		<if test='@org.apache.commons.lang3.StringUtils@equals(type,"0")'>
+			FROM LOG_${hogi}DCC_TREND
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@equals(type,"1")'>
+			FROM LOG_${hogi}DCC_TREND_FAST
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@equals(type,"2")'>
+			FROM LOG_${hogi}DCC_TREND_HIST
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@equals(type,"3")'>
+			FROM LOG_4DCC_TREND
+		</if>
+		<if test='!@org.apache.commons.lang3.StringUtils@equals(type,"3")'>
+			WHERE SCANTIME BETWEEN #{startDate} AND #{endDate}
+			AND SEQ = #{seq}
+		</if>
+    </select>
+    
+    <select id="selectTValueTrend" parameterType="java.util.Map" resultType="String">
+    	SELECT
+			TVALUE${FldNo}
+		<if test='@org.apache.commons.lang3.StringUtils@equals(type,"0")'>
+			FROM LOG_${hogi}DCC_TREND
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@equals(type,"1")'>
+			FROM LOG_${hogi}DCC_TREND_HIST
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@equals(type,"2")'>
+			FROM LOG_${hogi}DCC_TREND_FAST
+		</if>
+		WHERE SCANTIME = #{startDate}
+		AND SEQ = #{seq}
+    </select>
+</mapper>

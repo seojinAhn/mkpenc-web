@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onmakers.tdms.module.code.mapper.StdCodeTransMapper">
+    <select id="selectStdCodeTransList" parameterType="SearchStdCodeTrans" resultType="StdCodeTrans">
+        SELECT
+              T1.MAP_TYPE_CD
+            , T1.TEST_CD
+            , T1.SOURCE_CD
+            , T1.TARGET_CD
+            , T1.MAP_DESC
+            , T1.MAP_STATUS
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T2.CODE_GRP
+            , T2.CODE_GRP_NM
+            , T2.STD_CD
+            , T2.PRT_STD_CD
+            , T2.STD_NM
+            , T2.STD_DESC
+            , T2.STD_LV
+            , FN_GET_CODE_NM('STATUS', T1.MAP_STATUS) MAP_STATUS_NM
+            , FN_GET_CODE_NM('TESTCD', T1.TEST_CD) TEST_CD_NM
+        FROM MTA_STD_CODE_TRANS T1
+        LEFT OUTER JOIN MST_STD_CODE T2
+        ON T1.TARGET_CD = T2.STD_CD
+        WHERE 1=1
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchMapTypeCd)">
+          AND T1.MAP_TYPE_CD = #{searchMapTypeCd}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchMapTypeCdList)">
+            AND T1.MAP_TYPE_CD IN
+            <foreach collection="searchMapTypeCdList" item="item" open="(" close=")" separator=", ">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchMapStatus)">
+            AND T1.MAP_STATUS = #{searchMapStatus}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchText)">
+            <choose>
+                <when test='searchType eq "C"'>
+                    AND LOWER(T2.STD_CD) LIKE CONCAT('%', LOWER(#{searchText}), '%')
+                </when>
+                <when test='searchType eq "N"'>
+                    AND LOWER(T2.STD_NM) LIKE CONCAT('%', LOWER(#{searchText}), '%')
+                </when>
+                <when test='searchType eq "D"'>
+                    AND LOWER(T2.STD_DESC) LIKE CONCAT('%', LOWER(#{searchText}), '%')
+                </when>
+            </choose>
+        </if>
+        <if test="searchTestCd.toString() != 'NONE'">
+            AND T1.TEST_CD = #{searchTestCd}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchValidYn)">
+            AND T1.IS_VALID_YN = #{searchValidYn}
+        </if>
+        ORDER BY T1.TEST_CD, SUBSTR(STD_CD, 1, INSTR(STD_CD, '_')), CAST(SUBSTR(REPLACE(STD_CD, 'UNIT_', ''), INSTR(REPLACE(STD_CD, 'UNIT_', ''), '_') + 1) AS SIGNED)
+    </select>
+
+
+    <select id="selectStdCodeTrans" parameterType="SearchStdCodeTrans" resultType="StdCodeTrans">
+        SELECT
+            T1.MAP_TYPE_CD
+                , T1.TEST_CD
+                , T1.SOURCE_CD
+                , T1.TARGET_CD
+                , T1.MAP_DESC
+                , T1.MAP_STATUS
+                , T1.IS_VALID_YN
+                , T1.IS_VIEW_YN
+                , T2.CODE_GRP
+                , T2.CODE_GRP_NM
+                , T2.STD_CD
+                , T2.PRT_STD_CD
+                , T2.STD_NM
+                , T2.STD_DESC
+                , T2.STD_LV
+                , FN_GET_CODE_NM('STATUS', T1.MAP_STATUS) MAP_STATUS_NM
+                , FN_GET_CODE_NM('TESTCD', T1.TEST_CD) TEST_CD_NM
+        FROM MTA_STD_CODE_TRANS T1
+                 LEFT OUTER JOIN MST_STD_CODE T2
+                ON T1.TARGET_CD = T2.STD_CD
+        WHERE T1.MAP_TYPE_CD = #{searchMapTypeCd} AND T1.TEST_CD = #{searchTestCd} AND T1.SOURCE_CD = #{searchSourceCd}
+    </select>
+
+
+    <select id="selectStdCodeTransMapping" parameterType="SearchStdCodeTrans" resultType="StdCodeTrans">
+        SELECT
+              T1.REQ_NO
+            , T1.REV
+            , T1.MAP_TYPE_CD
+            , T1.TEST_CD
+            , T1.SOURCE_CD
+            , T1.TARGET_CD
+            , T1.MAP_DESC
+            , T1.MAP_STATUS
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T2.CODE_GRP
+            , T2.CODE_GRP_NM
+            , T2.STD_CD
+            , T2.PRT_STD_CD
+            , T2.STD_NM
+            , T2.STD_DESC
+            , T2.STD_LV
+            , FN_GET_CODE_NM('STATUS', T1.MAP_STATUS) MAP_STATUS_NM
+            , FN_GET_CODE_NM('TESTCD', T1.TEST_CD) TEST_CD_NM
+        FROM MTA_STD_CODE_TRANS_MAPPING T1
+                 LEFT OUTER JOIN MST_STD_CODE T2
+                ON T1.TARGET_CD = T2.STD_CD
+        WHERE T1.REQ_NO = #{searchReqNo} AND T1.REV = #{searchRev} AND T1.MAP_TYPE_CD = #{searchMapTypeCd} AND T1.TEST_CD = #{searchTestCd} AND T1.SOURCE_CD = #{searchSourceCd}
+    </select>
+
+
+    <update id="updateStdCodeTrans" parameterType="StdCodeTrans">
+        UPDATE MTA_STD_CODE_TRANS SET
+                  TARGET_CD = #{targetCd}
+                , MAP_STATUS = 'CON'
+                , UPT_ID = #{uptId}
+                , UPT_DT = NOW()
+                , IS_VALID_YN = #{isValidYn}
+        WHERE MAP_TYPE_CD = #{mapTypeCd} AND TEST_CD = #{testCd} AND SOURCE_CD = #{sourceCd}
+    </update>
+
+    <update id="updateStdCodeTransMapping" parameterType="StdCodeTrans">
+        UPDATE MTA_STD_CODE_TRANS_MAPPING SET
+                  TARGET_CD = #{targetCd}
+                , MAP_STATUS = 'CON'
+                , UPT_ID = #{uptId}
+                , UPT_DT = NOW()
+                , IS_VALID_YN = #{isValidYn}
+        WHERE REQ_NO = #{reqNo} AND REV = #{rev} AND MAP_TYPE_CD = #{mapTypeCd} AND TEST_CD = #{testCd} AND SOURCE_CD = #{sourceCd}
+    </update>
+
+    <update id="updateStdCodeTransMappingIsValid" parameterType="StdCodeTrans">
+        UPDATE MTA_STD_CODE_TRANS_MAPPING SET
+                  UPT_ID = #{uptId}
+                , UPT_DT = NOW()
+                , IS_VALID_YN = #{isValidYn}
+        WHERE REQ_NO = #{reqNo} AND REV = #{rev} AND MAP_TYPE_CD = #{mapTypeCd} AND TEST_CD = #{testCd} AND SOURCE_CD = #{sourceCd}
+    </update>
+
+
+    <update id="updateStdCodeTransIsValid" parameterType="StdCodeTrans">
+        UPDATE MTA_STD_CODE_TRANS SET
+                  UPT_ID = #{uptId}
+                , UPT_DT = NOW()
+                , IS_VALID_YN = #{isValidYn}
+        WHERE MAP_TYPE_CD = #{mapTypeCd} AND TEST_CD = #{testCd} AND SOURCE_CD = #{sourceCd}
+    </update>
+
+    <insert id="insertStdCodeTransMapping" parameterType="StdCodeTrans">
+        INSERT INTO MTA_STD_CODE_TRANS_MAPPING (
+              REQ_NO
+            , REV
+            , MAP_TYPE_CD
+            , TEST_CD
+            , SOURCE_CD
+            , MAP_STATUS
+            , IS_VALID_YN
+            , REG_ID
+            , REG_DT
+        ) VALUES (
+              #{reqNo}
+            , #{rev}
+            , #{mapTypeCd}
+            , #{testCd}
+            , #{sourceCd}
+            , 'REQ'
+            , 'Y'
+            , #{regId}
+            , NOW()
+        )
+    </insert>
+
+    <delete id="deleteStdCodeTransMapping" parameterType="StdCodeTrans">
+        DELETE FROM MTA_STD_CODE_TRANS_MAPPING
+        WHERE REQ_NO = #{reqNo} AND REV = #{rev} AND MAP_TYPE_CD = #{mapTypeCd} AND TEST_CD = #{testCd} AND SOURCE_CD = #{sourceCd}
+    </delete>
+</mapper>

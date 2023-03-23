@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mkpenc.common.mapper.Dcc.DccTipMapper">
+
+	<select id="selectIoList" parameterType="DccSearchTip" resultType="DccIolistInfo">
+		<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"FT")'>
+		<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"AI")'>
+		SELECT
+			ISNULL(a.ADDRESS,'') AS ADDRESS,
+			ISNULL(b.DESCR,'') AS DESCR,
+			ISNULL(b.REV,'') AS REV,
+			ISNULL(b.DRAWING,'') AS DRAWING,
+			ISNULL(b.LOOPNAME,'') AS LOOPNAME,
+			ISNULL(b.XYGUBUN,'') AS XYGUBUN,
+			ISNULL(b.DEVICE,'') AS DEVICE,
+			ISNULL(b.MESSAGE,'') AS MESSAGE,
+			ISNULL(b.PURPOSE,'') AS PURPOSE,
+			ISNULL(b.PROGRAM,'') AS PROGRAM,
+			ISNULL(b.VLOW,'') AS VLOW,
+			ISNULL(b.VHIGH,'') AS VHIGH,
+			ISNULL(b.ELOW,'') AS ELOW,
+			ISNULL(b.EHIGH,'') AS EHIGH,
+			ISNULL(b.UNIT,'') AS UNIT,
+			ISNULL(b.RTD,'') AS RTD,
+			ISNULL(b.WINDOW,'') AS WINDOW,
+			CASE ISNULL(b.CR,'')
+				WHEN 0 THEN 'None'
+				WHEN 1 THEN 'Conditioned'
+				ELSE ''
+			END AS CR,
+			ISNULL(b.LIMIT1,'') AS LIMIT1,
+			ISNULL(b.LIMIT2,'') AS LIMIT2,
+			ISNULL(b.J,'') AS J,
+			CASE ISNULL(b.N,'')
+				WHEN 0 THEN 'Commission'
+				WHEN 1 THEN 'Not Commission'
+				ELSE ''
+			END AS N,
+			ISNULL(b.EQU#,'') AS EQU,
+			ISNULL(b.BSCAL,'') AS BSCAL,
+			CASE ISNULL(RTRIM(LTRIM(STR(b.WIBA))),'')
+				WHEN 0 THEN 'OUT'
+				WHEN 1 THEN 'IN'
+				ELSE ''
+			END AS WIBA,
+			ISNULL(b.PRIORITY,'') AS PRIORITY,
+			ISNULL(b.ZTEXT1,'') AS ZTEXT1,
+			ISNULL(b.ZTEXT2,'') AS ZTEXT2,
+			ISNULL(b.ZTEXT3,'') AS ZTEXT3,
+			ISNULL(b.CONV,'') AS CONV,
+			CASE ISNULL(b.TYPE,'')
+				WHEN 0 THEN 'None'
+				WHEN 1 THEN 'High'
+				WHEN 2 THEN 'Low'
+				WHEN 3 THEN 'High/Low'
+				WHEN 4 THEN 'High DTAB'
+				WHEN 5 THEN 'Low DTAB'
+				WHEN 6 THEN 'High/Low DTAB'
+				WHEN 7 THEN 'High/Very High'
+				WHEN 8 THEN 'Low/Very Low'
+				WHEN 9 THEN 'Irrational'
+				ELSE ''
+			END AS TYPE,
+			CASE ISNULL(b.IOGROUP,'')
+				WHEN 0 THEN 'None'
+				WHEN 1 THEN 'Reactor and PHT'
+				WHEN 2 THEN 'Turbine and boilers'
+				WHEN 3 THEN 'Safety'
+				WHEN 4 THEN 'Electrical'
+				WHEN 8 THEN 'Auxiliaries'
+				ELSE ''
+			END AS IOGROUP,
+			CASE ISNULL(b.PRIORITY,'')
+				WHEN 0 THEN 'Printer only'
+				WHEN 1 THEN 'Minor'
+				WHEN 2 THEN 'Safety'
+				WHEN 3 THEN 'Major'
+				ELSE ''
+			END AS PRIORITY
+		FROM MST_TAG_DCC a, MST_TAG_DCC b
+		WHERE ISNULL(a.IOTYPE,'') = 'FTAI'
+		AND ISNULL(b.IOTYPE,'') = 'AI'
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"DT")'>
+		SELECT
+			ISNULL(a.ADDRESS,'') AS ADDRESS,
+			ISNULL(b.PROGRAM,'') AS PROGRAM,
+			ISNULL(b.DESCR,'') AS DESCR,
+			ISNULL(b.LOOPNAME,'') AS LOOPNAME
+		FROM MST_TAG_DCC a, MST_TAG_DCC b
+		WHERE ISNULL(a.IOTYPE,'') = 'FTDT'
+		AND ISNULL(b.IOTYPE,'') = 'DT'
+		</if>
+		AND ISNULL(b.IHOGI,'') = a.IHOGI
+		AND ISNULL(b.XYGUBUN,'') = a.XYGUBUN
+		AND ISNULL(b.ADDRESS,'') = a.ADDRESS
+		AND ISNULL(b.IHOGI,'') = #{iHogi}
+		AND ISNULL(b.XYGUBUN,'') = #{xyGubun}
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(address)">
+			<if test='@org.apache.commons.lang3.StringUtils@equals(addressType,"comma")'>
+			AND b.address in ( ${address} )
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@equals(addressType,"dash")'>
+			AND b.address between #{address} AND #{address2}
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@equals(addressType,"none")'>
+			AND b.address = #{address}
+			</if>
+        </if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchKey_1)">
+        	<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord_1)">
+            AND b.${searchKey_1} LIKE '%${searchWord_1}%'
+            </if>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchKey_2)">
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord_2)">
+            <if test="@org.apache.commons.lang3.StringUtils@compare(searchKey_1,searchKey_2)!=0">
+            AND b.${searchKey_2} LIKE '%${searchWord_2}%'
+            </if>
+            </if>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchKey_3)">
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord_3)">
+            <if test="@org.apache.commons.lang3.StringUtils@compare(searchKey_1,searchKey_3)!=0">
+            <if test="@org.apache.commons.lang3.StringUtils@compare(searchKey_2,searchKey_3)!=0">
+            AND b.${searchKey_3} LIKE '%${searchWord_3}$'
+            </if>
+            </if>
+            </if>
+        </if>
+		ORDER BY CONVERT(INT,b.ADDRESS) 
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@containsNone(ioType,"F")'>
+		SELECT c.* FROM (
+        SELECT
+			ISNULL(ADDRESS,'') AS ADDRESS,
+			ISNULL(DESCR,'') AS DESCR,
+			ISNULL(REV,'') AS REV,
+			ISNULL(DRAWING,'') AS DRAWING,
+			ISNULL(LOOPNAME,'') AS LOOPNAME,
+			ISNULL(XYGUBUN,'') AS XYGUBUN,
+			ISNULL(DEVICE,'') AS DEVICE,
+			ISNULL(MESSAGE,'') AS MESSAGE,
+			ISNULL(VLOW,'') AS VLOW,
+			ISNULL(VHIGH,'') AS VHIGH,
+			ISNULL(ELOW,'') AS ELOW,
+			ISNULL(EHIGH,'') AS EHIGH,
+			ISNULL(CONV,'') AS CONV,
+			<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"AI") or @org.apache.commons.lang3.StringUtils@equals(ioType,null)'>
+			CASE ISNULL(TYPE,'')
+				WHEN 0 THEN 'None'
+				WHEN 1 THEN 'High'
+				WHEN 2 THEN 'Low'
+				WHEN 3 THEN 'High/Low'
+				WHEN 4 THEN 'High DTAB'
+				WHEN 5 THEN 'Low DTAB'
+				WHEN 6 THEN 'High/Low DTAB'
+				WHEN 7 THEN 'High/Very High'
+				WHEN 8 THEN 'Low/Very Low'
+				WHEN 9 THEN 'Irrational'
+				ELSE ''
+			END AS TYPE,
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"CI")'>
+			CASE ISNULL(TYPE,'')
+				WHEN 0 THEN 'Alarm on Opening'
+				WHEN 1 THEN 'Alarm on Closing'
+				ELSE ''
+			END AS TYPE,
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"AO") or @org.apache.commons.lang3.StringUtils@contains(ioType,"DI") or @org.apache.commons.lang3.StringUtils@contains(ioType,"DO") or @org.apache.commons.lang3.StringUtils@contains(ioType,"DT")'>
+			ISNULL(TYPE,'') AS TYPE,
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"AI") or @org.apache.commons.lang3.StringUtils@equals(ioType,null)'>
+			CASE ISNULL(IOGROUP,'')
+				WHEN 0 THEN 'None'
+				WHEN 1 THEN 'Reactor and PHT'
+				WHEN 2 THEN 'Turbine and boilers'
+				WHEN 3 THEN 'Safety'
+				WHEN 4 THEN 'Electrical'
+				WHEN 8 THEN 'Auxiliaries'
+				ELSE ''
+			END AS IOGROUP,
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"CI")'>
+			CASE ISNULL(IOGROUP,'')
+				WHEN 0 THEN 'None'
+				WHEN 1 THEN 'Reactor and PHT'
+				WHEN 2 THEN 'SG/Turbine'
+				WHEN 3 THEN 'Safety'
+				WHEN 4 THEN 'Electrical'
+				WHEN 8 THEN 'Auxiliaries'
+				ELSE ''
+			END AS IOGROUP,
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"AO") or @org.apache.commons.lang3.StringUtils@contains(ioType,"DI") or @org.apache.commons.lang3.StringUtils@contains(ioType,"DO") or @org.apache.commons.lang3.StringUtils@contains(ioType,"DT")'>
+			ISNULL(IOGROUP,'') AS IOGROUP,
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"AI") or @org.apache.commons.lang3.StringUtils@equals(ioType,null)'>
+			CASE ISNULL(PRIORITY,'')
+				WHEN 0 THEN 'Printer only'
+				WHEN 1 THEN 'Minor'
+				WHEN 2 THEN 'Safety'
+				WHEN 3 THEN 'Major'
+				ELSE ''
+			END AS PRIORITY,
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"CI")'>
+			CASE ISNULL(PRIORITY,'')
+				WHEN 0 THEN 'Undef'
+				WHEN 1 THEN 'Minor'
+				WHEN 2 THEN 'Safety'
+				WHEN 3 THEN 'Major'
+				ELSE ''
+			END AS PRIORITY,
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"AO") or @org.apache.commons.lang3.StringUtils@contains(ioType,"DI") or @org.apache.commons.lang3.StringUtils@contains(ioType,"DO") or @org.apache.commons.lang3.StringUtils@contains(ioType,"DT")'>
+			ISNULL(PRIORITY,'') AS PRIORITY,
+			</if>
+			ISNULL(EQU#,'') AS EQU,
+			ISNULL(BSCAL,'') AS BSCAL,
+			ISNULL(WINDOW,'') AS WINDOW,
+			CASE ISNULL(RTRIM(LTRIM(STR(WIBA))),'')
+				WHEN 0 THEN 'OUT'
+				WHEN 1 THEN 'IN'
+				ELSE ''
+			END AS WIBA,
+			ISNULL(UNIT,'') AS UNIT,
+			ISNULL(LIMIT1,'') AS LIMIT2,
+			ISNULL(LIMIT2,'') AS LIMIT1,
+			ISNULL(PURPOSE,'') AS PURPOSE,
+			ISNULL(PROGRAM,'') AS PROGRAM,
+			ISNULL(RTD,'') AS RTD,
+			ISNULL(J,'') AS J,
+			ISNULL(ISEQ,'') AS ISEQ,
+			ISNULL(IHOGI,'') AS IHOGI,
+			ISNULL(IOTYPE,'') AS IOTYPE,
+			ISNULL(ZTEXT1,'') AS ZTEXT1,
+			ISNULL(ZTEXT2,'') AS ZTEXT2,
+			ISNULL(ZTEXT3,'') AS ZTEXT3,
+			<if test='@org.apache.commons.lang3.StringUtils@containsNone(ioType,"C")'>
+			ISNULL(TR,'') AS TR,
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"CI")'>
+			CASE ISNULL(TR,'')
+				WHEN 0 THEN 'Seconds'
+				WHEN 1 THEN 'Milliseconds'
+				ELSE ''
+			END AS TR,
+			</if>
+			CASE ISNULL(CR,'')
+				WHEN 0 THEN 'None'
+				WHEN 1 THEN 'Conditioned'
+				ELSE ''
+			END AS CR,
+			ISNULL(IOBIT,'') AS IOBIT,
+			ISNULL(COM1,'') AS COM1,
+			ISNULL(COM2,'') AS COM2,
+			CASE ISNULL(N,'')
+				WHEN 0 THEN 'Commission'
+				WHEN 1 THEN 'Not Commission'
+				ELSE ''
+			END AS N,
+			ISNULL(CONDITION,'') AS CONDITION,
+			ISNULL(CTRLNAME,'') AS CTRLNAME,
+			ISNULL(INTERLOCK,'') AS INTERLOCK,
+			ISNULL(FEEDBACK,'') AS FEEDBACK,
+			ISNULL(ALARMCOND,'') AS ALARMCOND,
+			ISNULL(INDICATE,'') AS INDICATE
+        FROM MST_TAG_DCC WITH (NOLOCK)
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			<!--a.IOTYPE = 'AI'-->
+			<!-- AND b.IOTYPE = 'DI'
+			AND b.IHOGI = a.IHOGI
+			AND b.XYGUBUN = a.XYGUBUN
+			AND b.ADDRESS = a.ADDRESS-->
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(iHogi)">
+	            AND iHogi = #{iHogi}
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isEmpty(iHogi)">
+	            AND iHogi = 3
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(xyGubun)">
+	        <if test='@org.apache.commons.lang3.StringUtils@containsNone(ioType,"C")'>
+	            AND xyGubun = #{xyGubun}
+	        </if>
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isEmpty(xyGubun)">
+	            AND xyGubun = 'X'
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ioType)">
+	            AND ioType = #{ioType}
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ioBit)">
+	        <if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"DI") and @org.apache.commons.lang3.StringUtils@contains(ioType,"DO")'>
+	            AND ioBit = #{ioBit}
+	        </if>
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(address)">
+	        <if test='@org.apache.commons.lang3.StringUtils@equals(addressType,"comma")'>
+	            AND address in ( ${address} )
+            </if>
+            <if test='@org.apache.commons.lang3.StringUtils@equals(addressType,"dash")'>
+	            AND address between #{address} AND #{address2}
+            </if>
+            <if test='@org.apache.commons.lang3.StringUtils@equals(addressType,"none")'>
+	            AND address = #{address}
+            </if>
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchKey_1)">
+	        	<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord_1)">
+	            AND ${searchKey_1} LIKE '%${searchWord_1}%'
+	            </if>
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchKey_2)">
+	            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord_2)">
+	            <if test="@org.apache.commons.lang3.StringUtils@compare(searchKey_1,searchKey_2)!=0">
+	            AND ${searchKey_2} LIKE '%${searchWord_2}%'
+	            </if>
+	            </if>
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchKey_3)">
+	            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord_3)">
+	            <if test="@org.apache.commons.lang3.StringUtils@compare(searchKey_1,searchKey_3)!=0">
+	            <if test="@org.apache.commons.lang3.StringUtils@compare(searchKey_2,searchKey_3)!=0">
+	            AND ${searchKey_3} LIKE '%${searchWord_3}%'
+	            </if>
+	            </if>
+	            </if>
+	        </if>
+        </trim>
+        ) c
+        ORDER BY CONVERT(INT,ADDRESS)
+        </if>
+    </select>
+    
+    <select id="selectIoColumnList" parameterType="DccSearchTip" resultType="DccIoColumnInfo">
+	    SELECT COLUMN_NAME AS columnName
+		FROM INFORMATION_SCHEMA.COLUMNS
+		WHERE TABLE_NAME='MST_TAG_DCC'
+		<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"AI") or @org.apache.commons.lang3.StringUtils@equals(ioType,null)'>
+		AND COLUMN_NAME IN ('REV','DESCR','MESSAGE','DRAWING','LOOPNAME','PURPOSE','PROGRAM','VLOW',
+							'VHIGH','ELOW','EHIGH','UNIT','CONV','RTD','TYPE','IOGROUP','WINDOW',
+							'PRIORITY','CR','LIMIT1','LIMIT2','J','N','EQU#','BSCAL','WIBA','DEVICE')
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"AO")'>
+		AND COLUMN_NAME IN ('REV','DESCR','DRAWING','DEVICE','PURPOSE','CTRLNAME','INTERLOCK','FEEDBACK','WIBA')
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"CI")'>
+		AND COLUMN_NAME IN ('CR','MESSAGE','DRAWING','REV','DEVICE','CONDITION','WIBA','IOGROUP','TR','PRIORITY','TYPE')
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"DI")'>
+		AND COLUMN_NAME IN ('IOBIT','REV','DESCR','DRAWING','DEVICE','PURPOSE','CTRLNAME','ALARMCOND','INDICATE','WIBA')
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"DO")'>
+		AND COLUMN_NAME IN ('IOBIT','REV','DESCR','DRAWING','DEVICE','PURPOSE','CTRLNAME','INTERLOCK','WIBA')
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"DT")'>
+		AND COLUMN_NAME IN ('PROGRAM','DESCR','LOOPNAME')
+		</if>
+	</select>
+	
+	<update id="updateIolistInfo" parameterType="DccSearchTip" >
+		UPDATE MST_TAG_DCC 
+		<trim prefix="SET" prefixOverrides=",">
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(address)">
+			, address  = #{address}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(rev)">
+			, rev =  #{rev}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(equ)">
+			, equ# = #{equ}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(type)">
+			, type =  #{type}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(descr)">
+			, descr =  #{descr}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ioGroup)">
+			, ioGroup = #{ioGroup}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(xyGubun)">
+			, xyGubun  = #{xyGubun}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(bscal)">
+			, bscal =  #{bscal}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(message)">
+	    	, message = #{message}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(window)">
+			, window =  #{window}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(wiba)">
+			, wiba = #{wiba}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(drawing)">
+			, drawing =  #{drawing}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(loopName)">
+			, loopName = #{loopName}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(priority)">
+		    , priority = #{priority}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(device)">
+			, device =  #{device}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(limit1)">
+			, limit1 =  #{limit1}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(purpose)">
+			, purpose = #{purpose}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(vHigh)">
+			, vHigh =  #{vHigh}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(vLow)">
+			, vLow =  #{vLow}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(eHigh)">
+			, eHigh = #{eHigh}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(eLow)">
+			, eLow = #{eLow}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(limit2)">
+			, limit2 =  #{limit2}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(program)">
+			, program = #{program}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(conv)">
+			, conv =  #{conv}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(rtd)">
+			, rtd =  #{rtd}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(j)">
+			, j = #{j}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(zText1)">
+			, zText1 = #{zText1}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(zText2)">
+			, zText2 = #{zText3}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(zText3)">
+			, zText3 = #{zText3}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(tr)">
+			, tr = #{tr}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(cr)">
+			, cr = #{cr}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ioBit)">
+			, iobit = #{ioBit}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(com1)">
+			, com1 = #{com1}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(com2)">
+			, com2 = #{com2}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(n)">
+			, n = #{n}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(condition)">
+			, condition = #{condition}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ctrlName)">
+			, ctrlName = #{ctrlName}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(interlock)">
+			, interlock = #{interlock}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(feedback)">
+			, feedback = #{feedback}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(alarmCond)">
+			, alarmCond = #{alarmCond}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(indicate)">
+			, indicate = #{indicate}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(unit)">
+			, unit = #{unit}
+		</if>
+		</trim>
+		WHERE iSeq = #{iSeq}
+		AND iHogi =  #{iHogi}
+		AND ioType = #{ioType}
+	</update>
+	    
+    <select id="selectIoListExcelDownload" parameterType="DccSearchTip" resultType="DccIolistInfo">
+		<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"FT")'>
+		<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"AI")'>
+		SELECT
+			ISNULL(a.ADDRESS,'') AS ADDRESS,
+			ISNULL(b.DESCR,'') AS DESCR,
+			ISNULL(b.REV,'') AS REV,
+			ISNULL(b.DRAWING,'') AS DRAWING,
+			ISNULL(b.LOOPNAME,'') AS LOOPNAME,
+			ISNULL(b.XYGUBUN,'') AS XYGUBUN,
+			ISNULL(b.DEVICE,'') AS DEVICE,
+			ISNULL(b.MESSAGE,'') AS MESSAGE,
+			ISNULL(b.VLOW,'') AS VLOW,
+			ISNULL(b.VHIGH,'') AS VHIGH,
+			ISNULL(b.ELOW,'') AS ELOW,
+			ISNULL(b.EHIGH,'') AS EHIGH,
+			ISNULL(b.CONV,'') AS CONV,
+			ISNULL(b.TYPE,'') AS TYPE,
+			ISNULL(b.IOGROUP,'') AS IOGROUP,
+			ISNULL(b.PRIORITY,'') AS PRIORITY
+		FROM MST_TAG_DCC a, MST_TAG_DCC b
+		WHERE ISNULL(a.IOTYPE,'') = 'FTAI'
+		AND ISNULL(b.IOTYPE,'') = 'AI'
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@contains(ioType,"DT")'>
+		SELECT
+			ISNULL(a.ADDRESS,'') AS ADDRESS,
+			ISNULL(b.PROGRAM,'') AS PROGRAM,
+			ISNULL(b.DESCR,'') AS DESCR,
+			ISNULL(b.LOOPNAME,'') AS LOOPNAME
+		FROM MST_TAG_DCC a, MST_TAG_DCC b
+		WHERE ISNULL(a.IOTYPE,'') = 'FTDT'
+		AND ISNULL(b.IOTYPE,'') = 'DT'
+		</if>
+		AND ISNULL(b.IHOGI,'') = a.IHOGI
+		AND ISNULL(b.XYGUBUN,'') = a.XYGUBUN
+		AND ISNULL(b.ADDRESS,'') = a.ADDRESS
+		AND ISNULL(b.IHOGI,'') = #{iHogi}
+		AND ISNULL(b.XYGUBUN,'') = #{xyGubun}
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(address)">
+			<if test='@org.apache.commons.lang3.StringUtils@equals(addressType,"comma")'>
+			AND b.address in ( ${address} )
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@equals(addressType,"dash")'>
+			AND b.address between #{address} AND #{address2}
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@equals(addressType,"none")'>
+			AND b.address = #{address}
+			</if>
+        </if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchKey_1)">
+        	<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord_1)">
+            AND b.${searchKey_1} LIKE '%${searchWord_1}%'
+            </if>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchKey_2)">
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord_2)">
+            <if test="@org.apache.commons.lang3.StringUtils@compare(searchKey_1,searchKey_2)!=0">
+            AND b.${searchKey_2} LIKE '%${searchWord_2}%'
+            </if>
+            </if>
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchKey_3)">
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord_3)">
+            <if test="@org.apache.commons.lang3.StringUtils@compare(searchKey_1,searchKey_3)!=0">
+            <if test="@org.apache.commons.lang3.StringUtils@compare(searchKey_2,searchKey_3)!=0">
+            AND b.${searchKey_3} LIKE '%${searchWord_3}$'
+            </if>
+            </if>
+            </if>
+        </if>
+		ORDER BY CONVERT(INT,b.ADDRESS) 
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@containsNone(ioType,"F")'>
+		SELECT c.* FROM (
+        SELECT
+			ISNULL(ADDRESS,'') AS ADDRESS,
+			ISNULL(DESCR,'') AS DESCR,
+			ISNULL(REV,'') AS REV,
+			ISNULL(DRAWING,'') AS DRAWING,
+			ISNULL(LOOPNAME,'') AS LOOPNAME,
+			ISNULL(XYGUBUN,'') AS XYGUBUN,
+			ISNULL(DEVICE,'') AS DEVICE,
+			ISNULL(MESSAGE,'') AS MESSAGE,
+			ISNULL(VLOW,'') AS VLOW,
+			ISNULL(VHIGH,'') AS VHIGH,
+			ISNULL(ELOW,'') AS ELOW,
+			ISNULL(EHIGH,'') AS EHIGH,
+			ISNULL(CONV,'') AS CONV,
+			ISNULL(TYPE,'') AS TYPE,
+			ISNULL(IOGROUP,'') AS IOGROUP,
+			ISNULL(PRIORITY,'') AS PRIORITY,
+			ISNULL(EQU#,'') AS EQU,
+			ISNULL(BSCAL,'') AS BSCAL,
+			ISNULL(WINDOW,'') AS WINDOW,
+			ISNULL(WIBA,'') AS WIBA,
+			ISNULL(UNIT,'') AS UNIT,
+			ISNULL(LIMIT1,'') AS LIMIT2,
+			ISNULL(LIMIT2,'') AS LIMIT1,
+			ISNULL(PURPOSE,'') AS PURPOSE,
+			ISNULL(PROGRAM,'') AS PROGRAM,
+			ISNULL(RTD,'') AS RTD,
+			ISNULL(J,'') AS J,
+			ISNULL(ISEQ,'') AS ISEQ,
+			ISNULL(IHOGI,'') AS IHOGI,
+			ISNULL(IOTYPE,'') AS IOTYPE,
+			ISNULL(ZTEXT1,'') AS ZTEXT1,
+			ISNULL(ZTEXT2,'') AS ZTEXT2,
+			ISNULL(ZTEXT3,'') AS ZTEXT3,
+			ISNULL(TR,'') AS TR,
+			ISNULL(CR,'') AS CR,
+			ISNULL(IOBIT,'') AS IOBIT,
+			ISNULL(COM1,'') AS COM1,
+			ISNULL(COM2,'') AS COM2,
+			ISNULL(N,'') AS N,
+			ISNULL(CONDITION,'') AS CONDITION,
+			ISNULL(CTRLNAME,'') AS CTRLNAME,
+			ISNULL(INTERLOCK,'') AS INTERLOCK,
+			ISNULL(FEEDBACK,'') AS FEEDBACK,
+			ISNULL(ALARMCOND,'') AS ALARMCOND,
+			ISNULL(INDICATE,'') AS INDICATE
+        FROM MST_TAG_DCC WITH (NOLOCK)
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(iHogi)">
+	            AND iHogi = #{iHogi}
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isEmpty(iHogi)">
+	            AND iHogi = 3
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(xyGubun)">
+	        <if test='@org.apache.commons.lang3.StringUtils@containsNone(ioType,"C")'>
+	            AND xyGubun = #{xyGubun}
+	        </if>
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isEmpty(xyGubun)">
+	            AND xyGubun = 'X'
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ioType)">
+	            AND ioType = #{ioType}
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(address)">
+	        <if test='@org.apache.commons.lang3.StringUtils@equals(addressType,"comma")'>
+	            AND address in ( ${address} )
+            </if>
+            <if test='@org.apache.commons.lang3.StringUtils@equals(addressType,"dash")'>
+	            AND address between #{address} AND #{address2}
+            </if>
+            <if test='@org.apache.commons.lang3.StringUtils@equals(addressType,"none")'>
+	            AND address = #{address}
+            </if>
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchKey_1)">
+	        	<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord_1)">
+	            AND ${searchKey_1} LIKE '%${searchWord_1}%'
+	            </if>
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchKey_2)">
+	            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord_2)">
+	            <if test="@org.apache.commons.lang3.StringUtils@compare(searchKey_1,searchKey_2)!=0">
+	            AND ${searchKey_2} LIKE '%${searchWord_2}%'
+	            </if>
+	            </if>
+	        </if>
+	        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchKey_3)">
+	            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchWord_3)">
+	            <if test="@org.apache.commons.lang3.StringUtils@compare(searchKey_1,searchKey_3)!=0">
+	            <if test="@org.apache.commons.lang3.StringUtils@compare(searchKey_2,searchKey_3)!=0">
+	            AND ${searchKey_3} LIKE '%${searchWord_3}%'
+	            </if>
+	            </if>
+	            </if>
+	        </if>
+        </trim>
+        ) c
+        ORDER BY CONVERT(INT,ADDRESS)
+        </if>
+    </select>
+	    
+</mapper>

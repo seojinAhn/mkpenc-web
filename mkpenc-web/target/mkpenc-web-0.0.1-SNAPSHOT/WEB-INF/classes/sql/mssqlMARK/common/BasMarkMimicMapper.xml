@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mkpenc.common.mapper.Markv.BasMarkMimicMapper">
+  
+	<select id="distinctMstCodeMark" resultType="java.util.Map">
+        
+			SELECT DISTINCT
+				    (SELECT ISNULL(MAX(CODE2),0) FROM MST_CODE_MARK WHERE CODE1 = 1 AND CODE3 = 0) AS CX,
+				    (SELECT ISNULL(MAX(CODE3),0) FROM MST_CODE_MARK WHERE CODE1 = 1 AND CODE3 <![CDATA[<>]]> 0) AS CY
+			FROM MST_CODE_MARK                 
+    </select> 
+    
+    <select id="selectMstCodeMark" resultType="java.util.Map">
+        
+			SELECT CODE2, CODE3, CODEDESC 
+			 FROM MST_CODE_MARK
+			WHERE CODE1 = 1
+			   AND CODE3<![CDATA[<>]]> 0
+			 ORDER BY CODE2, CODE3                 
+    </select> 
+
+
+
+</mapper>

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+        version="2.1">
+	
+	<description>custom function tags</description>
+    <tlib-version>1.0</tlib-version>
+    <short-name>cFn</short-name>
+    <uri>http://onmakers.com/function</uri>
+	
+    <function>
+        <description>get session attribute</description>
+        <name>getSessionAttr</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.Object getSessionAttribute( java.lang.String )</function-signature>
+        <example>
+            ${ cFn:sessionAttr(attrName) }
+        </example>
+    </function>
+
+    <function>
+        <description>get request menuId</description>
+        <name>getMenuId</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.String getRequestMenuId()</function-signature>
+        <example>
+            ${ cFn:getMenuId() }
+        </example>
+    </function>
+    
+    <function>
+        <description>get request subMenuId</description>
+        <name>getSubMenuId</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.String getRequestSubMenuId()</function-signature>
+        <example>
+            ${ cFn:getSubMenuId() }
+        </example>
+    </function>
+
+    <function>
+        <description>get request bbsId</description>
+        <name>getBbsId</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.String getRequestBbsId()</function-signature>
+        <example>
+            ${ cFn:getBbsId() }
+        </example>
+    </function>
+    
+    <function>
+        <description>get remote addr</description>
+        <name>getRemoteAddr</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.String getRemoteAddr()</function-signature>
+        <example>
+            ${ cFn:getRemoteAddr() }
+        </example>
+    </function>
+    
+    <function>
+        <description>get Request URI</description>
+        <name>getRequestURI</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.String getRequestURI()</function-signature>
+        <example>
+            ${ cFn:getRequestURI() }
+        </example>
+    </function>
+    
+    <function>
+        <description>get Real Request URI</description>
+        <name>getRealURI</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.String getRealURI()</function-signature>
+        <example>
+            ${ cFn:getRealURI() }
+        </example>
+    </function>
+    
+    
+    <function>
+        <description>date format</description>
+        <name>fmt</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.String fmt(java.util.Date)</function-signature>
+        <example>
+            ${ cFn:fmt(date) }
+        </example>
+    </function>
+    
+    <function>
+        <description>date format</description>
+        <name>fmtPattern</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.String fmt(java.util.Date, java.lang.String)</function-signature>
+        <example>
+            ${ cFn:fmtPattern(date, 'yyyy-MM-dd') }
+        </example>
+    </function>
+    
+    <function>
+        <description>스트링으로 된 날짜 문자열 포맷을 변경한다.</description>
+        <name>cdf</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.String cdf(java.lang.String, java.lang.String)</function-signature>
+        <example>
+            ${ cFn:cdf('2018-02-06', 'yyyy.MM') }
+        </example>
+    </function>
+    
+    <function>
+        <description>스트링으로 된 날짜 문자열 포맷을 변경한다.</description>
+        <name>cdfPattern</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.String cdf(java.lang.String, java.lang.String, java.lang.String)</function-signature>
+        <example>
+            ${ cFn:cdf('2018-02-06', 'yyyy-MM-dd', 'yyyy.MM') }
+        </example>
+    </function>
+    
+    <function>
+        <description>로그인한 관리자 가져오기</description>
+        <name>getLoginMember</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>com.onmakers.cms.module.member.model.Member getLoginMember()</function-signature>
+        <example>
+            ${ cFn:getLoginMember() }
+        </example>
+    </function>
+    
+    <function>
+        <description>스트링 글자수 줄이기</description>
+        <name>abbr</name>
+        <function-class>org.apache.commons.lang3.StringUtils</function-class>
+        <function-signature>java.lang.String abbreviate(java.lang.String, int)</function-signature>
+        <example>
+            ${ cFn:abbr('xxxxxxx', 5) } 
+        </example>
+    </function>
+    
+    
+    <function>
+        <description>리턴을 br로</description>
+        <name>rtn2br</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.String rtn2br(java.lang.String)</function-signature>
+        <example>
+            ${ cFn:rtn2br('xxxxxxx') } 
+        </example>
+    </function>
+    
+    <function>
+        <description>오늘날짜</description>
+        <name>today</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.String today(java.lang.String)</function-signature>
+        <example>
+            ${ cFn:today('yyyy-MM-dd') } 
+        </example>
+    </function>
+    
+    <function>
+        <description>이름 안보이게</description>
+        <name>blockedName</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.String blockedName(java.lang.String)</function-signature>
+        <example>
+            ${ cFn:blockedName('홍길동') } 
+        </example>
+    </function>
+    
+    <function>
+        <description>TRIM</description>
+        <name>trim</name>
+        <function-class>org.apache.commons.lang3.StringUtils</function-class>
+        <function-signature>java.lang.String trim(java.lang.String)</function-signature>
+        <example>
+            ${ cFn:trim('   홍길동    ') } 
+        </example>
+    </function>
+    
+    <function>
+        <description>byteCountToDisplaySize</description>
+        <name>fileSize</name>
+        <function-class>org.apache.commons.io.FileUtils</function-class>
+        <function-signature>java.lang.String byteCountToDisplaySize(long)</function-signature>
+        <example>
+            ${ cFn:fileSize(43252352) } 
+        </example>
+    </function>
+
+    <function>
+        <description>emptyCheckReplaceStr</description>
+        <name>emptyCheckReplaceStr</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.String emptyCheckReplaceStr(java.lang.String, java.lang.String)</function-signature>
+        <example>
+            ${ cFn:emptyCheckReplaceStr("", "") }
+        </example>
+    </function>
+
+    <function>
+        <description>gridDateFormat</description>
+        <name>gridDateFormat</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.String gridDateFormat(java.lang.String)</function-signature>
+        <example>
+            ${ cFn:gridDateFormat("20180101") }
+        </example>
+    </function>
+
+    <function>
+        <description>popupPageName</description>
+        <name>popupPageName</name>
+        <function-class>com.onmakers.common.util.JstlFunctionUtil</function-class>
+        <function-signature>java.lang.String popupPageName(java.lang.String)</function-signature>
+        <example>
+            ${ cFn:popupPageName("create") }
+        </example>
+    </function>
+</taglib>
+
+

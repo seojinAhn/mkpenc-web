@@ -1,0 +1,266 @@
+ <%@ page pageEncoding="utf-8"%>
+ 
+ 
+ <!-- header_wrap -->          
+ <div class="header_wrap">         
+     <div class="gnb_wrap">            
+         <h1 onclick="location.href='/main/dashboard'" title="월성 3,4 호기 원격감시시스템"></h1>            
+         <!-- fnc_menu_wrap -->            
+         <div class="fnc_menu_wrap">           
+             <a href="#none" target="_blank" class="link_site">EOF</a>         
+             <!-- fnc_menu -->         
+             <div class="fnc_menu">            
+                 <ul>          
+                     <li class="fnc_notice" onclick="location.href='/main/noticelist'" title="Topic"></li>            
+                     <li class="fnc_data" title="Data"></li>           
+                     <li class="fnc_sitemap" title="Site Map"></li>            
+                     <li class="fnc_help" title="Help"></li>           
+                     <li class="fnc_user">         
+                         <div class="fnc_user_detail">         
+<c:if test="${UserInfo eq null}">                         
+	                             <a class="btn_list" onclick="openLayer('modal_login');">Log In</a>
+</c:if>	                                       
+<c:if test="${UserInfo ne null}">
+	                             <span>${UserInfo.userName}</span>            
+	                             <a class="btn_list" href="#none">비밀번호 변경</a>            
+	                             <a class="btn_list" href="#none" id="logoutCheck">Log Out</a>
+</c:if>
+                         </div>            
+                     </li>         
+                 </ul>         
+             </div>            
+             <!-- //fnc_menu -->           
+         </div>            
+         <!-- //fnc_menu_wrap -->          
+     </div>            
+     <!-- lnb_menu -->         
+     <div class="lnb_wrap">            
+         <div class="lnb_tab">         
+             <a href="/dcc/mimic/lzc_1" >DCC</a>           
+             <a href="/markv/mimic/bearingdata" class="current">MARK_V</a>           
+         </div>            
+         <div class="lnb_menu">            
+             <ul>
+<c:if test="${BaseSearch.menuName eq 'MIMIC'}">
+                 <li class="current">
+</c:if>
+<c:if test="${BaseSearch eq null || BaseSearch.menuName ne 'MIMIC'}">
+                 <li>
+</c:if>                                                  
+                      <a href="#none">Mimic</a>         
+                      <div class="lnb_menu_depth">          
+                          <div class="lnb_depth_wrap">          
+                              <ul>          
+                                  <li>          
+                                      <a href="#none">CONTROL</a>           
+                                      <ul>          
+                                          <li><a href="/markv/mimic/loadcontrol">LOAD CONTROL</a></li>            
+                                          <li><a href="/markv/mimic/modeselection">MODE SELECTION</a></li>           
+                                          <li><a href="/markv/mimic/rotorprewarm">ROTOR PREPWARM</a></li>          
+                                          <li><a href="/markv/mimic/chestprewarm">CHEST PREWARM</a></li>         
+                                          <li><a href="/markv/mimic/prepforrolloff">PREP FOR ROLLOFF</a></li>            
+                                          <li><a href="/markv/mimic/speedcontrol">SPEED CONTROL</a></li>         
+                                          <li><a href="/markv/mimic/gensynchroniz">GEN SYNCHRONIZ</a></li>         
+                                          <li><a href="/markv/mimic/limiter">LIMITER</a></li>          
+                                      </ul>         
+                                  </li>         
+                              </ul>         
+                              <ul>          
+                                  <li>          
+                                      <a href="#none">MONITOR</a>         
+                                      <ul>          
+                                          <li><a href="/markv/mimic/generaldata">GENERAL DATA</a></li>            
+                                          <li><a href="/markv/mimic/compositedata">COMPOSITE DATA</a></li>           
+                                          <li><a href="/markv/mimic/bearingdata">BEARING DATA</a></li>           
+                                          <li><a href="/markv/mimic/lptbntemp">LP TBN TEMP</a></li>           
+                                          <li><a href="/markv/mimic/tbnoverview">TBN OVERVIEW-1</a></li>           
+                                          <li><a href="/markv/mimic/loggingdata">LOGGING DATA</a></li>           
+                                      </ul>         
+                                  </li>         
+                              </ul>         
+                              <ul>          
+                                  <li>          
+                                      <a href="#none">AUX</a>          
+                                      <ul>          
+                                          <li><a href="/markv/mimic/steamvalve">STEAM VALVE</a></li>         
+                                          <li><a href="/markv/mimic/tbnstemsealsys">TBN STEAM SEAL SYS</a></li>          
+                                          <li><a href="/markv/mimic/lubeoilsys">LUBE OIL SYS</a></li>          
+                                          <li><a href="/markv/mimic/hydraulicpower">HYDRAULIC POWER</a></li>          
+                                          <li><a href="/markv/mimic/drainvalvespos">DRAIN VALVES POS</a></li>          
+                                          <li><a href="/markv/mimic/sealoilsys">SEAL OIL SYS</a></li>          
+                                          <li><a href="/markv/mimic/statorwatersys">STATOR WATER SYS</a></li>          
+                                          <li><a href="/markv/mimic/coolinggassys">COOLING GAS SYS</a></li>          
+                                          <li><a href="/markv/mimic/gentcrtd1">GEN TC/RTD-1</a></li>          
+                                          <li><a href="/markv/mimic/gentcrtd2">GEN TC/RTD-2</a></li>          
+                                      </ul>         
+                                  </li>         
+                              </ul>         
+                              <ul>          
+                                  <li>          
+                                      <a href="#none">TESTs</a>         
+                                      <ul>          
+                                          <li><a href="/markv/mimic/frontstandard">FRONT STANDARD</a></li>         
+                                          <li><a href="/markv/mimic/fasolenoids">FA SOLENOIDS</a></li>          
+                                          <li><a href="/markv/mimic/hydraulictripsys">HYDRAULIC TRIP SYS</a></li>            
+                                          <li><a href="/markv/mimic/valvetightness">VALVE TIGHTNESS</a></li>            
+                                      </ul>         
+                                  </li>         
+                              </ul>         
+                          </div>            
+                      </div>            
+                  </li>        
+<c:if test="${BaseSearch.menuName eq 'TREND'}">
+                 <li class="current">
+</c:if>
+<c:if test="${BaseSearch eq null || BaseSearch.menuName ne 'TREND'}">
+                 <li>
+</c:if>       
+                      <a href="#none">Trend</a>         
+                      <div class="lnb_menu_depth">          
+                          <div class="lnb_depth_wrap">          
+                              <ul>          
+                                  <li>          
+                                      <a href="#none">TREND</a>         
+                                      <ul>          
+                                          <li><a href="/markv/trend/realtimetrendfixed">FIXED</a></li>            
+                                          <li><a href="/markv/trend/realtimetrendspare">SPARE</a></li>            
+                                      </ul>         
+                                  </li>         
+                              </ul>         
+                              <ul>          
+                                  <li>          
+                                      <a href="#none">LOG</a>          
+                                      <ul>          
+                                          <li><a href="/markv/trend/logfixed">FIXED</a></li>            
+                                          <li><a href="/markv/trend/logshare">SPARE</a></li>            
+                                      </ul>         
+                                  </li>         
+                              </ul>         
+                          </div>            
+                      </div>            
+                  </li>         
+<c:if test="${BaseSearch.menuName eq 'ALARM'}">
+                 <li class="current">
+</c:if>
+<c:if test="${BaseSearch eq null || BaseSearch.menuName ne 'ALARM'}">
+                 <li>
+</c:if>          
+                      <a href="#none">Alarm</a>         
+                      <div class="lnb_menu_depth">          
+                          <div class="lnb_depth_wrap">          
+                              <ul>          
+                                  <li>          
+                                      <a href="#none">ALARM</a>         
+                                  </li>         
+                              </ul>         
+                          </div>            
+                      </div>            
+                  </li>     
+<c:if test="${BaseSearch.menuName eq 'PERFORMANCE'}">
+                 <li class="current">
+</c:if>
+<c:if test="${BaseSearch eq null || BaseSearch.menuName ne 'PERFORMANCE'}">
+                 <li>
+</c:if>     
+                      <a href="#none">Performance </a>            
+                      <div class="lnb_menu_depth">          
+                          <div class="lnb_depth_wrap">          
+                              <ul>          
+                                  <li>          
+                                      <a href="#none">주요기기 성능감시</a>         
+                                      <ul>          
+                                          <li><a href="/markv/performance/fixed">FIXED</a></li>            
+                                          <li><a href="/markv/performance/spared">SPARE</a></li>            
+                                      </ul>         
+                                  </li>         
+                              </ul>         
+                              <ul>          
+                                  <li>          
+                                      <a href="/markv/performance/compare34">COMPARE 34</a>            
+                                  </li>         
+                              </ul>         
+                          </div>            
+                      </div>            
+                  </li>	
+<c:if test="${(UserInfo ne null) && (UserInfo.grade eq '1')}">
+	<c:if test="${BaseSearch.menuName eq 'ADMIN'}">
+                 <li class="current">
+	</c:if>
+	<c:if test="${BaseSearch eq null || BaseSearch.menuName ne 'ADMIN'}">
+                 <li> 
+	</c:if>       
+                       <a href="#none">Admin </a>         
+                      <div class="lnb_menu_depth">          
+                          <div class="lnb_depth_wrap">          
+                              <ul>          
+                                  <li>          
+                                      <a href="/markv/admin/taginfo">태그정보</a>          
+                                  </li>         
+                              </ul>         
+                          </div>            
+                      </div>            
+                  </li>         
+</c:if>
+             </ul>         
+         </div>            
+         <div class="lnb_status">    
+          	<div class="toggle_reactor">          	
+          	    <c:if test="${(UserInfo eq null) || (UserInfo ne null &&  UserInfo.hogi eq '3') }">  
+					<input id="3" name="view_reactor" type="radio" value="3" checked>
+				</c:if>
+				 <c:if test="${UserInfo ne null &&  UserInfo.hogi ne '3' }">        
+	             	<input id="3" name="view_reactor" type="radio" value="3" >
+	             </c:if>  
+				 <label for="3">3</label>
+				<c:if test="${UserInfo ne null &&  UserInfo.hogi eq '4' }">        
+					<input id="4" name="view_reactor" type="radio" value="4" checked>
+				</c:if>
+				 <c:if test="${(UserInfo eq null) || (UserInfo ne null &&  UserInfo.hogi ne '4') }">        
+				 	<input id="4" name="view_reactor" type="radio"  value="4">
+				 </c:if>
+				<label for="4">4</label>
+				<span class="button"></span>
+			</div>
+			<div class="toggle_xy">
+				  <c:if test="${(UserInfo eq null) || (UserInfo ne null &&  UserInfo.xyGubun eq 'X') }">       
+					<input id="X" name="view" type="radio" value="X" checked>
+				</c:if>
+				<c:if test="${UserInfo ne null &&  UserInfo.xyGubun ne 'X' }">
+					<input id="X" name="view" type="radio" value="X">     
+				</c:if>
+				<label for="X">X</label>
+				<c:if test="${UserInfo ne null &&  UserInfo.xyGubun eq 'Y' }">
+					<input id="Y" name="view" type="radio" value="Y" checked>        
+				</c:if>
+				<c:if test="${(UserInfo eq null) || (UserInfo ne null &&  UserInfo.xyGubun ne 'Y')}">        
+					<input id="Y" name="view" type="radio" value="Y">
+				</c:if>
+				<label for="Y">Y</label>
+				<span class="button"></span>
+				 </div>
+         </div>            
+     </div>            
+     <!-- //lnb_menu -->           
+ </div>            
+   <!-- //header_wrap -->           
+   <!-- layer_pop_wrap -->           
+   <div class="layer_pop_wrap login" id="modal_login">           
+       <!-- header_wrap -->           
+   	<div class="pop_header">           
+   	    <h3>Log In</h3>           
+           <a onclick="closeLayer('modal_login');" title="Close"></a>           
+       </div>           
+   	<!-- //header_wrap -->           
+   	<!-- pop_contents -->           
+   	<div class="pop_contents">           
+           <!-- login_wrap -->           
+           <div class="login_wrap">           
+               <input type="text" id="userId" name="userId" value="toasj" placeholder="아이디">           
+               <input type="password" id="userPwd" name="userPwd"  value="pwd123" placeholder="비밀번호">           
+               <a href="#" class="login_btn" id="loginCheck">로그인</a>           
+           </div>           
+           <!-- //login_wrap -->           
+   	</div>           
+   	<!-- pop_contents -->           
+   </div>           
+   <!-- //layer_pop_wrap -->           

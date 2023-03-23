@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onmakers.cms.module.menu.mapper.MenuMapper">
+    <select id="selectMenuList" parameterType="SearchMenu" resultType="Menu">
+		SELECT
+              T1.MENU_CD
+            , T1.MENU_NM
+            , T1.MENU_PARENT_CD
+            , T1.MENU_DIVN
+            , T1.LINK_TYPE
+            , T1.MENU_DTH
+            , T1.MENU_ORD
+            , T1.MENU_URL
+            , T1.MENU_DESC
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , T1.TAB_ID
+            , FN_GET_MENU_NAVI2(T1.MENU_CD) MENU_NAVI
+		FROM CMS_MENU T1
+		WHERE T1.IS_VALID_YN = 'Y'
+        <if test="roleList != null">
+            AND T1.MENU_CD IN (
+              SELECT ST1.MENU_CD FROM CMS_AUTH_MENU_MAP ST1
+              WHERE ST1.AUTH_CD IN
+                    <foreach collection="roleList" item="role" open="(" close=")" separator=",">
+                        #{role}
+                    </foreach>
+            )
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchMenuParentCd)">
+            AND T1.MENU_PARENT_CD = #{searchMenuParentCd}
+        </if>
+		ORDER BY T1.MENU_DTH, T1.MENU_ORD
+	</select>
+
+	<select id="createMenuCd" parameterType="string" resultType="string">
+		SELECT
+			CONCAT(#{menuParentCd}, MENU_CD) AS MENU_CD
+		FROM (
+			SELECT
+				LPAD(CAST(SUBSTRING(IFNULL(MAX(MENU_CD), CONCAT('M0101', '00')), -2) AS UNSIGNED) + 1, 2, '0') MENU_CD
+			FROM
+				CMS_MENU
+			WHERE MENU_PARENT_CD = #{menuParentCd}
+		) RS
+	</select>
+
+	<insert id="insertMenu" parameterType="Menu">
+		INSERT INTO CMS_MENU (
+			  MENU_CD
+			, MENU_PARENT_CD
+			, MENU_NM
+			, MENU_DIVN
+			, LINK_TYPE
+			, IS_VALID_YN
+			, REG_DT
+			, MENU_DTH
+			, MENU_ORD
+			, MENU_URL
+			, MENU_DESC
+		) VALUES (
+			  #{menuCd}
+			, #{menuParentCd}
+			, #{menuNm}
+			, #{menuDivn}
+			, #{linkType}
+			, #{isValidYn}
+			, NOW()
+			, #{menuDth}
+			, #{menuOrd}
+			, #{menuUrl}
+			, #{menuDesc}
+		)
+	</insert>
+
+	<select id="selectMenu" parameterType="SearchMenu"  resultType="Menu">
+		SELECT
+              T1.MENU_CD
+            , T1.MENU_NM
+            , T1.MENU_PARENT_CD
+            , T1.MENU_DIVN
+            , T1.LINK_TYPE
+            , T1.MENU_DTH
+            , T1.MENU_ORD
+            , T1.MENU_URL
+            , T1.MENU_DESC
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , FN_GET_MENU_NAVI2(T1.MENU_CD) MENU_NAVI
+		FROM CMS_MENU T1
+		WHERE T1.MENU_CD = #{searchMenuCd}
+	</select>
+
+	<update id="updateMenu" parameterType="Menu">
+		UPDATE CMS_MENU
+        SET
+            MENU_NM = #{menuNm},
+            MENU_DIVN = #{menuDivn},
+            LINK_TYPE = #{linkType},
+            IS_VALID_YN = #{isValidYn},
+            UPT_DT = NOW(),
+            MENU_DTH = #{menuDth},
+            MENU_URL = #{menuUrl},
+            MENU_DESC = #{menuDesc}
+        WHERE MENU_CD = #{menuCd}
+	</update>
+
+	<select id="selectSubMenuList" parameterType="SearchMenu"  resultType="Menu">
+		SELECT
+		MENU_CD
+		, UP_MENU_CD
+		, MENU_NM
+		<if test="minMenuDth != null">
+			, FN_GET_MENU_NAVI(
+			MENU_CD
+			) AS MENU_NAVI
+		</if>
+		, DIVN
+		, LINK_TYPE
+		, ACTV_YN
+		, ACSS_CTRL_YN
+		, REG_DT
+		, UPDT_DT
+		, MENU_AUTH_LIST
+		, DTH
+		, ORD
+		, URL
+		, MENU_DESC
+		, DISPLAY_YN
+		FROM
+		TB_MENU
+		WHERE
+		ACTV_YN = #{optionActivity}
+		AND DTH <![CDATA[ <= ]]> #{maxMenuDth}
+		AND LEFT(MENU_CD, #{menuLeftLength}) = #{baseMenuCd}
+		ORDER BY
+		${optionType} ${optionOrder}
+		<!-- LIMIT #{pageOffset}, #{pageSize} -->
+	</select>
+
+    <delete id="deleteMenu" parameterType="String">
+        DELETE FROM CMS_MENU WHERE MENU_CD = #{menuCd}
+    </delete>
+
+    <select id="selectAuthFirstMenu" parameterType="SearchMenu" resultType="Menu">
+        SELECT
+            T1.MENU_CD
+            , T1.MENU_NM
+            , T1.MENU_PARENT_CD
+            , T1.MENU_DIVN
+            , T1.LINK_TYPE
+            , T1.MENU_DTH
+            , T1.MENU_ORD
+            , T1.MENU_URL
+            , T1.MENU_DESC
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , T1.TAB_ID
+            , FN_GET_MENU_NAVI2(T1.MENU_CD) MENU_NAVI
+        FROM CMS_MENU T1, CMS_AUTH_MENU_MAP T2
+        WHERE T1.MENU_CD = T2.MENU_CD
+        AND MENU_DTH IN (2, 3, 4) AND MENU_DIVN &lt;&gt; 'empty'
+          AND AUTH_CD IN
+          <foreach item="item" collection="roleList" open="(" close=")" separator=",">
+              #{item}
+          </foreach>
+
+        ORDER BY T1.MENU_CD
+            LIMIT 1
+    </select>
+
+</mapper>

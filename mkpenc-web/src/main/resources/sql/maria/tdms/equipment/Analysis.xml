@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onmakers.tdms.module.equipment.mapper.AnalysisMapper">
+    <select id="selectAnalysisInfoList" parameterType="SearchAnalysis" resultType="AnalysisInfo">
+        SELECT
+              T1.ANALYSIS_SEQ
+            , T1.REQ_NO
+            , T1.REV
+            , T1.ANALYSIS_TYPE_CD
+            , T1.ANALYSIS_STATUS_CD
+            , T1.FILE_PATH
+            , T1.UPLOAD_FILE_REAL_NAME
+            , T1.UPLOAD_FILE_NAME
+            , T1.ANALYSIS_FILE_NAME
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , T1.ANALYSIS_DT
+            , FN_GET_CODE_NM('ANALYSISTYPECD', T1.ANALYSIS_TYPE_CD) ANALYSIS_TYPE_CD_NM
+            , FN_GET_CODE_NM('ANALYSISSTATUSCD', T1.ANALYSIS_STATUS_CD) ANALYSIS_STATUS_CD_NM
+            , (SELECT ST1.SAMPLE_NM FROM TDT_TEST_REQ_INFO ST1 WHERE ST1.REQ_NO = T1.REQ_NO) SAMPLE_NM
+        FROM TDT_ANALYSIS_INFO T1
+        WHERE 1=1
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchReqNo)">
+            AND T1.REQ_NO = #{searchReqNo}
+        </if>
+        <if test="searchRev != null">
+            AND T1.REV = #{searchRev}
+        </if>
+        ORDER BY T1.ANALYSIS_SEQ DESC
+    </select>
+
+    <select id="selectAnalysisInfo" parameterType="SearchAnalysis" resultType="AnalysisInfo">
+        SELECT
+              T1.ANALYSIS_SEQ
+            , T1.REQ_NO
+            , T1.REV
+            , T1.ANALYSIS_TYPE_CD
+            , T1.ANALYSIS_STATUS_CD
+            , T1.FILE_PATH
+            , T1.UPLOAD_FILE_REAL_NAME
+            , T1.UPLOAD_FILE_NAME
+            , T1.ANALYSIS_FILE_NAME
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , T1.ANALYSIS_DT
+            , FN_GET_CODE_NM('ANALYSISTYPECD', T1.ANALYSIS_TYPE_CD) ANALYSIS_TYPE_CD_NM
+            , FN_GET_CODE_NM('ANALYSISSTATUSCD', T1.ANALYSIS_STATUS_CD) ANALYSIS_STATUS_CD_NM
+        FROM TDT_ANALYSIS_INFO T1
+        WHERE T1.ANALYSIS_SEQ = #{searchAnalysisSeq}
+    </select>
+
+    <insert id="insertAnalysisInfo" parameterType="AnalysisInfo">
+        INSERT INTO TDT_ANALYSIS_INFO (
+              REQ_NO
+            , REV
+            , ANALYSIS_TYPE_CD
+            , ANALYSIS_STATUS_CD
+            , FILE_PATH
+            , UPLOAD_FILE_REAL_NAME
+            , UPLOAD_FILE_NAME
+            , REG_ID
+            , REG_DT
+        ) VALUES (
+              #{reqNo}
+            , #{rev}
+            , #{analysisTypeCd}
+            , #{analysisStatusCd}
+            , #{filePath}
+            , #{uploadFileRealName}
+            , #{uploadFileName}
+            , #{regId}
+            , NOW()
+        )
+    </insert>
+</mapper>

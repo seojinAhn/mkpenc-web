@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onmakers.tdms.module.customer.mapper.CustomerMapper">
+    <select id="selectCustomerList" parameterType="SearchCustomer" resultType="Customer">
+        SELECT
+              T1.CUST_CD
+            , T1.CUST_NM
+            , T1.CUST_TYPE1_CD
+            , T1.CUST_TYPE2_CD
+            , T1.BIZ_NO
+            , T1.REP_NM
+            , T1.TEL_NO
+            , T1.HP_NO
+            , T1.ZIP_CD
+            , T1.COM_ADDR
+            , T1.EMAIL
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , FN_GET_CODE_NM('CUSTTYPE1CD', T1.CUST_TYPE1_CD)  CUST_TYPE1_CD_NM
+            , FN_GET_CODE_NM('CUSTTYPE2CD', T1.CUST_TYPE2_CD)  CUST_TYPE2_CD_NM
+        FROM MST_CUSTOMER T1
+        WHERE T1.IS_VIEW_YN = 'Y'
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchText)">
+          AND T1.CUST_NM LIKE CONCAT('%', #{searchText}, '%')
+        </if>
+    </select>
+
+    <select id="selectCustomer" parameterType="SearchCustomer" resultType="Customer">
+        SELECT
+              T1.CUST_CD
+            , T1.CUST_NM
+            , T1.CUST_TYPE1_CD
+            , T1.CUST_TYPE2_CD
+            , T1.BIZ_NO
+            , T1.REP_NM
+            , T1.TEL_NO
+            , T1.HP_NO
+            , T1.ZIP_CD
+            , T1.COM_ADDR
+            , T1.EMAIL
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , FN_GET_CODE_NM('CUSTTYPE1CD', T1.CUST_TYPE1_CD)  CUST_TYPE1_CD_NM
+            , FN_GET_CODE_NM('CUSTTYPE2CD', T1.CUST_TYPE2_CD)  CUST_TYPE2_CD_NM
+        FROM MST_CUSTOMER T1
+        WHERE T1.CUST_CD = #{searchCustCd}
+    </select>
+
+    <insert id="insertCustomer" parameterType="Customer">
+        INSERT INTO MST_CUSTOMER (
+              CUST_CD
+            , CUST_NM
+            , CUST_TYPE1_CD
+            , CUST_TYPE2_CD
+            , BIZ_NO
+            , REP_NM
+            , TEL_NO
+            , HP_NO
+            , ZIP_CD
+            , COM_ADDR
+            , EMAIL
+            , IS_VALID_YN
+            , IS_VIEW_YN
+            , REG_ID
+            , REG_DT
+        ) VALUES (
+              #{custCd}
+            , #{custNm}
+            , #{custType1Cd}
+            , #{custType2Cd}
+            , #{bizNo}
+            , #{repNm}
+            , #{telNo}
+            , #{hpNo}
+            , #{zipCd}
+            , #{comAddr}
+            , #{email}
+            , 'Y'
+            , 'Y'
+            , #{regId}
+            , NOW()
+        )
+    </insert>
+
+    <update id="updateCustomer" parameterType="Customer">
+        UPDATE MST_CUSTOMER SET
+              CUST_NM = #{custNm}
+            , CUST_TYPE1_CD = #{custType1Cd}
+            , CUST_TYPE2_CD = #{custType2Cd}
+            , BIZ_NO = #{bizNo}
+            , REP_NM = #{repNm}
+            , TEL_NO = #{telNo}
+            , HP_NO = #{hpNo}
+            , ZIP_CD = #{zipCd}
+            , COM_ADDR = #{comAddr}
+            , EMAIL = #{email}
+            , IS_VALID_YN = #{isValidYn}
+            , IS_VIEW_YN = #{isViewYn}
+            , UPT_ID = #{uptId}
+            , UPT_DT = NOW()
+        WHERE CUST_CD = #{custCd}
+    </update>
+
+    <update id="updateCustomerViewYn" parameterType="Customer">
+        UPDATE MST_CUSTOMER SET
+          IS_VIEW_YN = #{isViewYn}
+        WHERE CUST_CD = #{custCd}
+    </update>
+</mapper>
