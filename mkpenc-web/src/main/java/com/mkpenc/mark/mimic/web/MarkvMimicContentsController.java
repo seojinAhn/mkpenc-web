@@ -98,6 +98,35 @@ public class MarkvMimicContentsController {
         	
         	markvSearchMimic.setMenuName(this.menuName);
         	
+        	if(markvSearchMimic.getsMenuNo() == null || markvSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		markvSearchMimic.setsDive("M");
+        		markvSearchMimic.setsMenuNo("1");
+        		markvSearchMimic.setsGrpID("mimic");
+        		markvSearchMimic.setsUGrpNo("1");
+	        	
+	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+	        	markvSearchMimic.setsHogi(member.getHogi());
+	        	markvSearchMimic.setsXYGubun(member.getXyGubun());	        	
+        	}
+        	
+        	Map markGrpTagSearchMap = new HashMap();
+        	markGrpTagSearchMap.put("xyGubun",markvSearchMimic.getsXYGubun()==null?  "": markvSearchMimic.getsXYGubun());
+        	markGrpTagSearchMap.put("hogi",markvSearchMimic.getsHogi()==null?  "": markvSearchMimic.getsHogi());
+    		markGrpTagSearchMap.put("dive",markvSearchMimic.getsDive()==null?  "": markvSearchMimic.getsDive());
+    		markGrpTagSearchMap.put("grpID", markvSearchMimic.getsGrpID()==null?  "": markvSearchMimic.getsGrpID());
+    		markGrpTagSearchMap.put("menuNo", markvSearchMimic.getsMenuNo()==null?  "": markvSearchMimic.getsMenuNo());
+    		markGrpTagSearchMap.put("uGrpNo", markvSearchMimic.getsUGrpNo()==null?  "": markvSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
+    		
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		
+    		mav.addObject("SearchTime", markVal.get("SearchTime"));
+        	mav.addObject("ForeColor", markVal.get("ForeColor"));
+        	mav.addObject("lblDataList", markVal.get("lblDataList"));
+        	mav.addObject("MarkTagInfoList", tagMarkInfoList);
+        	
         	mav.addObject("BaseSearch", markvSearchMimic);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
         	
@@ -155,13 +184,42 @@ public class MarkvMimicContentsController {
         	
         	markvSearchMimic.setMenuName(this.menuName);
         	
+        	if(markvSearchMimic.getsMenuNo() == null || markvSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		markvSearchMimic.setsDive("M");
+        		markvSearchMimic.setsMenuNo("1");
+        		markvSearchMimic.setsGrpID("mimic");
+        		markvSearchMimic.setsUGrpNo("4");
+	        	
+	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+	        	markvSearchMimic.setsHogi(member.getHogi());
+	        	markvSearchMimic.setsXYGubun(member.getXyGubun());	        	
+        	}
+        	
+        	Map markGrpTagSearchMap = new HashMap();
+        	markGrpTagSearchMap.put("xyGubun",markvSearchMimic.getsXYGubun()==null?  "": markvSearchMimic.getsXYGubun());
+        	markGrpTagSearchMap.put("hogi",markvSearchMimic.getsHogi()==null?  "": markvSearchMimic.getsHogi());
+    		markGrpTagSearchMap.put("dive",markvSearchMimic.getsDive()==null?  "": markvSearchMimic.getsDive());
+    		markGrpTagSearchMap.put("grpID", markvSearchMimic.getsGrpID()==null?  "": markvSearchMimic.getsGrpID());
+    		markGrpTagSearchMap.put("menuNo", markvSearchMimic.getsMenuNo()==null?  "": markvSearchMimic.getsMenuNo());
+    		markGrpTagSearchMap.put("uGrpNo", markvSearchMimic.getsUGrpNo()==null?  "": markvSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
+    		
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		
+    		mav.addObject("SearchTime", markVal.get("SearchTime"));
+        	mav.addObject("ForeColor", markVal.get("ForeColor"));
+        	mav.addObject("lblDataList", markVal.get("lblDataList"));
+        	mav.addObject("MarkTagInfoList", tagMarkInfoList);
+        	
         	mav.addObject("BaseSearch", markvSearchMimic);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
         	
         }
 
         return mav;
-    }	
+    }
 	
 	@RequestMapping("speedcontrol")
 	public ModelAndView speedcontrol(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
@@ -173,6 +231,35 @@ public class MarkvMimicContentsController {
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	if(markvSearchMimic.getsMenuNo() == null || markvSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		markvSearchMimic.setsDive("M");
+        		markvSearchMimic.setsMenuNo("1");
+        		markvSearchMimic.setsGrpID("mimic");
+        		markvSearchMimic.setsUGrpNo("5");
+	        	
+	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+	        	markvSearchMimic.setsHogi(member.getHogi());
+	        	markvSearchMimic.setsXYGubun(member.getXyGubun());	        	
+        	}
+        	
+        	Map markGrpTagSearchMap = new HashMap();
+        	markGrpTagSearchMap.put("xyGubun",markvSearchMimic.getsXYGubun()==null?  "": markvSearchMimic.getsXYGubun());
+        	markGrpTagSearchMap.put("hogi",markvSearchMimic.getsHogi()==null?  "": markvSearchMimic.getsHogi());
+    		markGrpTagSearchMap.put("dive",markvSearchMimic.getsDive()==null?  "": markvSearchMimic.getsDive());
+    		markGrpTagSearchMap.put("grpID", markvSearchMimic.getsGrpID()==null?  "": markvSearchMimic.getsGrpID());
+    		markGrpTagSearchMap.put("menuNo", markvSearchMimic.getsMenuNo()==null?  "": markvSearchMimic.getsMenuNo());
+    		markGrpTagSearchMap.put("uGrpNo", markvSearchMimic.getsUGrpNo()==null?  "": markvSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
+    		
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		
+    		mav.addObject("SearchTime", markVal.get("SearchTime"));
+        	mav.addObject("ForeColor", markVal.get("ForeColor"));
+        	mav.addObject("lblDataList", markVal.get("lblDataList"));
+        	mav.addObject("MarkTagInfoList", tagMarkInfoList);
         	
         	mav.addObject("BaseSearch", markvSearchMimic);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
@@ -193,6 +280,35 @@ public class MarkvMimicContentsController {
         	
         	markvSearchMimic.setMenuName(this.menuName);
         	
+        	if(markvSearchMimic.getsMenuNo() == null || markvSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		markvSearchMimic.setsDive("M");
+        		markvSearchMimic.setsMenuNo("1");
+        		markvSearchMimic.setsGrpID("mimic");
+        		markvSearchMimic.setsUGrpNo("10");
+	        	
+	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+	        	markvSearchMimic.setsHogi(member.getHogi());
+	        	markvSearchMimic.setsXYGubun(member.getXyGubun());	        	
+        	}
+        	
+        	Map markGrpTagSearchMap = new HashMap();
+        	markGrpTagSearchMap.put("xyGubun",markvSearchMimic.getsXYGubun()==null?  "": markvSearchMimic.getsXYGubun());
+        	markGrpTagSearchMap.put("hogi",markvSearchMimic.getsHogi()==null?  "": markvSearchMimic.getsHogi());
+    		markGrpTagSearchMap.put("dive",markvSearchMimic.getsDive()==null?  "": markvSearchMimic.getsDive());
+    		markGrpTagSearchMap.put("grpID", markvSearchMimic.getsGrpID()==null?  "": markvSearchMimic.getsGrpID());
+    		markGrpTagSearchMap.put("menuNo", markvSearchMimic.getsMenuNo()==null?  "": markvSearchMimic.getsMenuNo());
+    		markGrpTagSearchMap.put("uGrpNo", markvSearchMimic.getsUGrpNo()==null?  "": markvSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
+    		
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		
+    		mav.addObject("SearchTime", markVal.get("SearchTime"));
+        	mav.addObject("ForeColor", markVal.get("ForeColor"));
+        	mav.addObject("lblDataList", markVal.get("lblDataList"));
+        	mav.addObject("MarkTagInfoList", tagMarkInfoList);
+        	
         	mav.addObject("BaseSearch", markvSearchMimic);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
         	
@@ -211,6 +327,35 @@ public class MarkvMimicContentsController {
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	if(markvSearchMimic.getsMenuNo() == null || markvSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		markvSearchMimic.setsDive("M");
+        		markvSearchMimic.setsMenuNo("1");
+        		markvSearchMimic.setsGrpID("mimic");
+        		markvSearchMimic.setsUGrpNo("8");
+	        	
+	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+	        	markvSearchMimic.setsHogi(member.getHogi());
+	        	markvSearchMimic.setsXYGubun(member.getXyGubun());	        	
+        	}
+        	
+        	Map markGrpTagSearchMap = new HashMap();
+        	markGrpTagSearchMap.put("xyGubun",markvSearchMimic.getsXYGubun()==null?  "": markvSearchMimic.getsXYGubun());
+        	markGrpTagSearchMap.put("hogi",markvSearchMimic.getsHogi()==null?  "": markvSearchMimic.getsHogi());
+    		markGrpTagSearchMap.put("dive",markvSearchMimic.getsDive()==null?  "": markvSearchMimic.getsDive());
+    		markGrpTagSearchMap.put("grpID", markvSearchMimic.getsGrpID()==null?  "": markvSearchMimic.getsGrpID());
+    		markGrpTagSearchMap.put("menuNo", markvSearchMimic.getsMenuNo()==null?  "": markvSearchMimic.getsMenuNo());
+    		markGrpTagSearchMap.put("uGrpNo", markvSearchMimic.getsUGrpNo()==null?  "": markvSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
+    		
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		
+    		mav.addObject("SearchTime", markVal.get("SearchTime"));
+        	mav.addObject("ForeColor", markVal.get("ForeColor"));
+        	mav.addObject("lblDataList", markVal.get("lblDataList"));
+        	mav.addObject("MarkTagInfoList", tagMarkInfoList);
         	
         	mav.addObject("BaseSearch", markvSearchMimic);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
@@ -288,45 +433,6 @@ public class MarkvMimicContentsController {
         return mav;
     }
 	
-	@RequestMapping("bearingdata")
-	public ModelAndView bearingdata(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
-        
-		ModelAndView mav = new ModelAndView();
-
-        logger.info("############ bearingdata");
-        
-        if(request.getSession().getAttribute("USER_INFO") != null) {
-        	
-        	markvSearchMimic.setMenuName(this.menuName);
-        	
-        	mav.addObject("BaseSearch", markvSearchMimic);
-        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
-        	
-        }
-
-        return mav;
-    }	
-	
-	@RequestMapping("lptbntemp")
-	public ModelAndView lptbntemp(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
-        
-		ModelAndView mav = new ModelAndView();
-
-        logger.info("############ lptbntemp");
-        
-        if(request.getSession().getAttribute("USER_INFO") != null) {
-        	
-        	markvSearchMimic.setMenuName(this.menuName);
-        	
-        	mav.addObject("BaseSearch", markvSearchMimic);
-        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
-        	
-        }
-
-        return mav;
-    }	
-
-	
 	@RequestMapping("tbnoverview")
 	public ModelAndView tbnoverview(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
         
@@ -362,6 +468,55 @@ public class MarkvMimicContentsController {
     		
     		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
     		
+    		mav.addObject("SearchTime", markVal.get("SearchTime"));
+        	mav.addObject("ForeColor", markVal.get("ForeColor"));
+        	mav.addObject("lblDataList", markVal.get("lblDataList"));
+        	mav.addObject("MarkTagInfoList", tagMarkInfoList);
+        	
+        	mav.addObject("BaseSearch", markvSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }	
+	
+	@RequestMapping("tbnstemsealsys")
+	public ModelAndView tbnstemsealsys(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ tbnstemsealsys");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	if(markvSearchMimic.getsMenuNo() == null || markvSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		markvSearchMimic.setsDive("D");
+        		markvSearchMimic.setsMenuNo("3");
+        		markvSearchMimic.setsGrpID("mimic");
+	        	markvSearchMimic.setsUGrpNo("2");
+	        	
+	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+	        	markvSearchMimic.setsHogi(member.getHogi());
+	        	markvSearchMimic.setsXYGubun(member.getXyGubun());	        	
+        	}
+        	
+        	//getMarkGrpTagList
+        	Map markvGrpTagSearchMap = new HashMap();
+        	markvGrpTagSearchMap.put("xyGubun",markvSearchMimic.getsXYGubun()==null?  "": markvSearchMimic.getsXYGubun());
+        	markvGrpTagSearchMap.put("hogi",markvSearchMimic.getsHogi()==null?  "": markvSearchMimic.getsHogi());
+        	markvGrpTagSearchMap.put("dive",markvSearchMimic.getsDive()==null?  "": markvSearchMimic.getsDive());
+        	markvGrpTagSearchMap.put("grpID", markvSearchMimic.getsGrpID()==null?  "": markvSearchMimic.getsGrpID());
+        	markvGrpTagSearchMap.put("menuNo", markvSearchMimic.getsMenuNo()==null?  "": markvSearchMimic.getsMenuNo());
+        	markvGrpTagSearchMap.put("uGrpNo", markvSearchMimic.getsUGrpNo()==null?  "": markvSearchMimic.getsUGrpNo());
+
+        	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
+        	
+        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -441,55 +596,6 @@ public class MarkvMimicContentsController {
 
         return mav;
     }
-	
-	@RequestMapping("tbnstemsealsys")
-	public ModelAndView tbnstemsealsys(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
-        
-		ModelAndView mav = new ModelAndView();
-
-        logger.info("############ tbnstemsealsys");
-        
-        if(request.getSession().getAttribute("USER_INFO") != null) {
-        	
-        	markvSearchMimic.setMenuName(this.menuName);
-        	
-        	if(markvSearchMimic.getsMenuNo() == null || markvSearchMimic.getsMenuNo().isEmpty()) {
-            	
-        		markvSearchMimic.setsDive("D");
-        		markvSearchMimic.setsMenuNo("3");
-        		markvSearchMimic.setsGrpID("mimic");
-	        	markvSearchMimic.setsUGrpNo("2");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	markvSearchMimic.setsHogi(member.getHogi());
-	        	markvSearchMimic.setsXYGubun(member.getXyGubun());	        	
-        	}
-        	
-        	//getMarkGrpTagList
-        	Map markvGrpTagSearchMap = new HashMap();
-        	markvGrpTagSearchMap.put("xyGubun",markvSearchMimic.getsXYGubun()==null?  "": markvSearchMimic.getsXYGubun());
-        	markvGrpTagSearchMap.put("hogi",markvSearchMimic.getsHogi()==null?  "": markvSearchMimic.getsHogi());
-        	markvGrpTagSearchMap.put("dive",markvSearchMimic.getsDive()==null?  "": markvSearchMimic.getsDive());
-        	markvGrpTagSearchMap.put("grpID", markvSearchMimic.getsGrpID()==null?  "": markvSearchMimic.getsGrpID());
-        	markvGrpTagSearchMap.put("menuNo", markvSearchMimic.getsMenuNo()==null?  "": markvSearchMimic.getsMenuNo());
-        	markvGrpTagSearchMap.put("uGrpNo", markvSearchMimic.getsUGrpNo()==null?  "": markvSearchMimic.getsUGrpNo());
-
-        	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
-        	
-        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
-        	
-    		mav.addObject("SearchTime", markVal.get("SearchTime"));
-        	mav.addObject("ForeColor", markVal.get("ForeColor"));
-        	mav.addObject("lblDataList", markVal.get("lblDataList"));
-        	mav.addObject("MarkTagInfoList", tagMarkInfoList);
-        	
-        	mav.addObject("BaseSearch", markvSearchMimic);
-        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
-        	
-        }
-
-        return mav;
-    }	
 	
 	@RequestMapping("lubeoilsys")
 	public ModelAndView lubeoilsys(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
