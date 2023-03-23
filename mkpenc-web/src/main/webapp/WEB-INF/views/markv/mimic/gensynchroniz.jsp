@@ -58,7 +58,10 @@
                             <h6>PHASE ANGEL</h6>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label>
+                                    	<c:if test="${lblDataList[0].fValue eq null}">0</c:if>
+                                		<c:if test="${lblDataList[0].fValue ne null}">${lblDataList[0].fValue}</c:if>
+                                    </label>
                                     <span>deg C</span>
                                 </p>
                             </div>
@@ -67,7 +70,10 @@
                             <h6>DIFFERENCE VOLTS</h6>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label>
+                                    	<c:if test="${lblDataList[1].fValue eq null}">0</c:if>
+                                		<c:if test="${lblDataList[1].fValue ne null}">${lblDataList[1].fValue}</c:if>
+                                    </label>
                                     <span>%</span>
                                 </p>
                             </div>
@@ -76,7 +82,10 @@
                             <h6>SLIP FREQUENCY</h6>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label>
+                                    	<c:if test="${lblDataList[2].fValue eq null}">0</c:if>
+                                		<c:if test="${lblDataList[2].fValue ne null}">${lblDataList[2].fValue}</c:if>
+                                    </label>
                                     <span>%</span>
                                 </p>
                             </div>
@@ -90,12 +99,18 @@
                             <h6 class="double">PRIMARY VOLTS(KV)</h6>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label>
+                                    	<c:if test="${lblDataList[3].fValue eq null}">0</c:if>
+                                		<c:if test="${lblDataList[3].fValue ne null}">${lblDataList[3].fValue}</c:if>
+                                    </label>
                                 </p>
                             </div>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label>
+                                    	<c:if test="${lblDataList[6].fValue eq null}">0</c:if>
+                                		<c:if test="${lblDataList[6].fValue ne null}">${lblDataList[6].fValue}</c:if>
+                                    </label>
                                 </p>
                             </div>
                         </div>
@@ -103,12 +118,18 @@
                             <h6 class="double">% RATED VOLTS</h6>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label>
+                                    	<c:if test="${lblDataList[4].fValue eq null}">0</c:if>
+                                		<c:if test="${lblDataList[4].fValue ne null}">${lblDataList[4].fValue}</c:if>
+                                    </label>
                                 </p>
                             </div>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label>
+                                    	<c:if test="${lblDataList[7].fValue eq null}">0</c:if>
+                                		<c:if test="${lblDataList[7].fValue ne null}">${lblDataList[7].fValue}</c:if>
+                                    </label>
                                 </p>
                             </div>
                         </div>
@@ -116,12 +137,18 @@
                             <h6 class="double">FREQUENCY(Hz)</h6>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label>
+                                    	<c:if test="${lblDataList[5].fValue eq null}">0</c:if>
+                                		<c:if test="${lblDataList[5].fValue ne null}">${lblDataList[5].fValue}</c:if>
+                                    </label>
                                 </p>
                             </div>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label>
+                                    	<c:if test="${lblDataList[8].fValue eq null}">0</c:if>
+                                		<c:if test="${lblDataList[8].fValue ne null}">${lblDataList[8].fValue}</c:if>
+                                    </label>
                                 </p>
                             </div>
                         </div>
@@ -137,7 +164,10 @@
                                     <h6>WAT TS</h6>
                                     <div class="summary">
                                         <p>
-                                            <label>0</label>
+                                            <label>
+                                            	<c:if test="${lblDataList[9].fValue eq null}">0</c:if>
+                                				<c:if test="${lblDataList[9].fValue ne null}">${lblDataList[9].fValue}</c:if>
+                                            </label>
                                             <span>%</span>
                                         </p>
                                     </div>
@@ -146,7 +176,10 @@
                                     <h6>WAT TS</h6>
                                     <div class="summary">
                                         <p>
-                                            <label>0</label>
+                                            <label>
+                                            	<c:if test="${lblDataList[10].fValue eq null}">0</c:if>
+                                				<c:if test="${lblDataList[10].fValue ne null}">${lblDataList[10].fValue}</c:if>
+                                            </label>
                                             <span>%</span>
                                         </p>
                                     </div>
@@ -155,7 +188,10 @@
                                     <h6>WAT TS</h6>
                                     <div class="summary">
                                         <p>
-                                            <label>0</label>
+                                            <label>
+                                            	<c:if test="${lblDataList[11].fValue eq null}">0</c:if>
+                                				<c:if test="${lblDataList[11].fValue ne null}">${lblDataList[11].fValue}</c:if>
+                                            </label>
                                             <span>%</span>
                                         </p>
                                     </div>
@@ -233,7 +269,10 @@
                                 </div>
                                 <div class="summary">
                                     <p>
-                                        <label>0</label>
+                                        <label>
+                                        	<c:if test="${lblDataList[12].fValue eq null}">0</c:if>
+                                			<c:if test="${lblDataList[12].fValue ne null}">${lblDataList[12].fValue}</c:if>
+                                        </label>
                                     </p>
                                 </div>                                 
                             </div>
