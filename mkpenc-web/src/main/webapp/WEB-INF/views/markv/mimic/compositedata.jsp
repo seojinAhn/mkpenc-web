@@ -47,7 +47,10 @@
                                         <div class="barchart" style="width:120px;height:180px;">차트</div>
                                         <div class="summary">
                                             <p>
-                                                <label>0</label>
+                                                <label>
+                                                	<c:if test="${lblDataList[0].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[0].fValue ne null}">${lblDataList[0].fValue}</c:if>
+                                                </label>
                                             </p>
                                         </div>
                                     </div>
@@ -58,7 +61,10 @@
                                         <div class="barchart" style="width:120px;height:180px;">차트</div>
                                         <div class="summary">
                                             <p>
-                                                <label>0</label>
+                                                <label>
+                                                	<c:if test="${lblDataList[1].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[1].fValue ne null}">${lblDataList[1].fValue}</c:if>
+                                                </label>
                                             </p>
                                         </div>
                                     </div>
@@ -78,7 +84,10 @@
                                         <div class="barchart" style="width:120px;height:180px;">차트</div>
                                         <div class="summary">
                                             <p>
-                                                <label>0</label>
+                                                <label>
+                                                	<c:if test="${lblDataList[2].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[2].fValue ne null}">${lblDataList[2].fValue}</c:if>
+                                                </label>
                                             </p>
                                         </div>
                                     </div>
@@ -89,7 +98,10 @@
                                         <div class="barchart" style="width:120px;height:180px;">차트</div>
                                         <div class="summary">
                                             <p>
-                                                <label>0</label>
+                                                <label>
+                                                	<c:if test="${lblDataList[3].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[3].fValue ne null}">${lblDataList[3].fValue}</c:if>
+                                                </label>
                                             </p>
                                         </div>
                                     </div>
@@ -109,7 +121,10 @@
                                         <div class="barchart" style="width:120px;height:180px;">차트</div>
                                         <div class="summary">
                                             <p>
-                                                <label>0</label>
+                                                <label>
+                                                	<c:if test="${lblDataList[4].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[4].fValue ne null}">${lblDataList[4].fValue}</c:if>
+                                                </label>
                                             </p>
                                         </div>
                                     </div>
@@ -129,7 +144,10 @@
                                         <div class="barchart" style="width:120px;height:180px;">차트</div>
                                         <div class="summary">
                                             <p>
-                                                <label>0</label>
+                                                <label>
+                                                	<c:if test="${lblDataList[5].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[5].fValue ne null}">${lblDataList[5].fValue}</c:if>
+                                                </label>
                                             </p>
                                         </div>
                                     </div>
@@ -149,7 +167,10 @@
                                         <div class="barchart" style="width:120px;height:180px;">차트</div>
                                         <div class="summary">
                                             <p>
-                                                <label>0</label>
+                                                <label>
+                                                	<c:if test="${lblDataList[6].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[6].fValue ne null}">${lblDataList[6].fValue}</c:if>
+                                                </label>
                                             </p>
                                         </div>
                                     </div>
@@ -173,7 +194,10 @@
                                         <div class="barchart" style="width:120px;height:180px;">차트</div>
                                         <div class="summary">
                                             <p>
-                                                <label>0</label>
+                                                <label>
+                                                	<c:if test="${lblDataList[7].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[7].fValue ne null}">${lblDataList[7].fValue}</c:if>
+                                                </label>
                                             </p>
                                         </div>
                                     </div>
@@ -184,7 +208,10 @@
                                         <div class="barchart" style="width:120px;height:180px;">차트</div>
                                         <div class="summary">
                                             <p>
-                                                <label>0</label>
+                                                <label>
+                                                	<c:if test="${lblDataList[8].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[8].fValue ne null}">${lblDataList[8].fValue}</c:if>
+                                                </label>
                                             </p>
                                         </div>
                                     </div>
@@ -204,7 +231,10 @@
                                         <div class="barchart" style="width:120px;height:180px;">차트</div>
                                         <div class="summary">
                                             <p>
-                                                <label>0</label>
+                                                <label>
+                                                	<c:if test="${lblDataList[10].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[10].fValue ne null}">${lblDataList[10].fValue}</c:if>
+                                                </label>
                                             </p>
                                         </div>
                                     </div>
@@ -215,7 +245,10 @@
                                         <div class="barchart" style="width:120px;height:180px;">차트</div>
                                         <div class="summary">
                                             <p>
-                                                <label>0</label>
+                                                <label>
+                                                	<c:if test="${lblDataList[11].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[11].fValue ne null}">${lblDataList[11].fValue}</c:if>
+                                                </label>
                                             </p>
                                         </div>
                                     </div>
@@ -235,7 +268,10 @@
                                         <div class="barchart" style="width:120px;height:180px;">차트</div>
                                         <div class="summary">
                                             <p>
-                                                <label>0</label>
+                                                <label>
+                                                	<c:if test="${lblDataList[12].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[12].fValue ne null}">${lblDataList[12].fValue}</c:if>
+                                                </label>
                                             </p>
                                         </div>
                                     </div>
@@ -246,7 +282,10 @@
                                         <div class="barchart" style="width:120px;height:180px;">차트</div>
                                         <div class="summary">
                                             <p>
-                                                <label>0</label>
+                                                <label>
+                                                	<c:if test="${lblDataList[13].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[13].fValue ne null}">${lblDataList[13].fValue}</c:if>
+                                                </label>
                                             </p>
                                         </div>
                                     </div>
@@ -266,7 +305,10 @@
                                         <div class="barchart" style="width:120px;height:180px;">차트</div>
                                         <div class="summary">
                                             <p>
-                                                <label>0</label>
+                                                <label>
+                                                	<c:if test="${lblDataList[14].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[14].fValue ne null}">${lblDataList[14].fValue}</c:if>
+                                                </label>
                                             </p>
                                         </div>
                                     </div>
