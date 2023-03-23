@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onmakers.tdms.module.equipment.mapper.ResultFileMapper">
+    <select id="selectResultFileList" parameterType="SearchEquipment" resultType="ResultOutfile">
+        SELECT
+              T1.FILE_SEQ
+            , T1.REQ_NO
+            , T1.REV
+            , T1.FILE_TYPE_CD
+            , T1.FILE_SAVE_NM
+            , T1.FILE_REAL_NM
+            , T1.FILE_PATH
+            , T1.FILE_SIZE
+            , T1.FILE_SIZE_UOM
+            , T1.FILE_EXT
+            , T1.DATA_MART_YN
+            , T1.GRAPH_NM
+            , T1.GRAPH_DESC
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , FN_GET_CODE_NM('FILETYPECD', T1.FILE_TYPE_CD)  FILE_TYPE_CD_NM
+            , (SELECT ST1.REPORT_SEQ FROM TDT_REPORT_INFO ST1 WHERE ST1.REQ_NO = T1.REQ_NO AND ST1.REV = T1.REV AND ST1.FILE_TYPE_CD = T1.FILE_TYPE_CD) REPORT_SEQ
+        FROM TDT_RESULT_OUTFILE_INFO T1
+        WHERE T1.IS_VALID_YN = 'Y'
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchReqNo)">
+            AND T1.REQ_NO = #{searchReqNo}
+        </if>
+        <if test="searchRev != null">
+            AND T1.REV = #{searchRev}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchFileTypeCd)">
+            AND T1.FILE_TYPE_CD = #{searchFileTypeCd}
+        </if>
+    </select>
+
+    <select id="selectResultFile" parameterType="SearchEquipment" resultType="ResultOutfile">
+        SELECT
+              T1.FILE_SEQ
+            , T1.REQ_NO
+            , T1.REV
+            , T1.FILE_TYPE_CD
+            , T1.FILE_SAVE_NM
+            , T1.FILE_REAL_NM
+            , T1.FILE_PATH
+            , T1.FILE_SIZE
+            , T1.FILE_SIZE_UOM
+            , T1.FILE_EXT
+            , T1.DATA_MART_YN
+            , T1.GRAPH_NM
+            , T1.GRAPH_DESC
+            , T1.IS_VALID_YN
+            , T1.IS_VIEW_YN
+            , T1.REG_ID
+            , T1.REG_DT
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , FN_GET_CODE_NM('FILETYPECD', T1.FILE_TYPE_CD)  FILE_TYPE_CD_NM
+            , (SELECT ST1.REPORT_SEQ FROM TDT_REPORT_INFO ST1 WHERE ST1.REQ_NO = T1.REQ_NO AND ST1.REV = T1.REV AND ST1.FILE_TYPE_CD = T1.FILE_TYPE_CD) REPORT_SEQ
+        FROM TDT_RESULT_OUTFILE_INFO T1
+        WHERE T1.FILE_SEQ = #{searchFileSeq}
+    </select>
+
+    <insert id="insertResultFile" parameterType="ResultOutfile">
+        INSERT INTO TDT_RESULT_OUTFILE_INFO (
+              REQ_NO
+            , REV
+            , FILE_TYPE_CD
+            , FILE_SAVE_NM
+            , FILE_REAL_NM
+            , FILE_PATH
+            , FILE_SIZE
+            , FILE_SIZE_UOM
+            , FILE_EXT
+            , DATA_MART_YN
+            , GRAPH_NM
+            , GRAPH_DESC
+            , IS_VALID_YN
+            , IS_VIEW_YN
+            , REG_ID
+            , REG_DT
+        ) VALUES (
+               #{reqNo}
+             , #{rev}
+             , #{fileTypeCd}
+             , #{fileSaveNm}
+             , #{fileRealNm}
+             , #{filePath}
+             , #{fileSize}
+             , #{fileSizeUom}
+             , #{fileExt}
+             , #{dataMartYn}
+             , #{graphNm}
+             , #{graphDesc}
+             , 'Y'
+             , 'Y'
+             , #{regId}
+             , NOW()
+        )
+    </insert>
+
+    <delete id="deleteResultFile" parameterType="Integer">
+        DELETE FROM TDT_RESULT_OUTFILE_INFO
+        WHERE FILE_SEQ = #{fileSeq}
+    </delete>
+
+
+    <delete id="deleteReportFile" parameterType="ResultOutfile">
+        DELETE FROM TDT_RESULT_OUTFILE_INFO
+        WHERE REQ_NO = #{reqNo} AND REV = #{rev} AND FILE_TYPE_CD = #{fileTypeCd}
+    </delete>
+
+    <update id="updateResultFileSendYn" parameterType="Integer">
+        UPDATE TDT_RESULT_OUTFILE_INFO SET DATA_MART_YN = 'Y'
+        WHERE FILE_SEQ = #{fileSeq}
+    </update>
+</mapper>

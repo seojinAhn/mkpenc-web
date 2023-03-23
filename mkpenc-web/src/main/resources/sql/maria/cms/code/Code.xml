@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onmakers.cms.module.code.mapper.CodeMapper">
+	<select id="selectCodeList" parameterType="SearchCode" resultType="Code">
+		SELECT
+              T1.CD
+            , T1.GRP_CD
+            , T1.CD_NM
+            , T1.CD_ORD
+            , T1.IS_VALID_YN
+            , T1.DIVN1
+            , T1.DIVN2
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , T1.REG_ID
+            , T1.REG_DT
+            , T2.GRP_CD_NM
+		FROM CMS_CODE T1, CMS_CODE_GRP T2
+		WHERE T1.GRP_CD = T2.GRP_CD AND T1.IS_VALID_YN = 'Y'
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchGrpCd)">
+            AND T1.GRP_CD = #{searchGrpCd}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchDivn1)">
+            AND T1.DIVN1 = #{searchDivn1}
+        </if>
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(searchDivn2)">
+            AND T1.DIVN2 = #{searchDivn2}
+        </if>
+		ORDER BY T1.CD_ORD
+	</select>
+	
+	<insert id="insertCode" parameterType="Code">
+		INSERT INTO CMS_CODE (
+              CD
+            , GRP_CD
+            , CD_NM
+            , CD_ORD
+            , IS_VALID_YN
+            , DIVN1
+            , DIVN2
+            , REG_ID
+            , REG_DT
+		) VALUES (
+              #{cd}
+            , #{grpCd}
+            , #{cdNm}
+            , #{cdOrd}
+            , 'Y'
+            , #{divn1}
+            , #{divn2}
+            , #{regId}
+            , NOW()
+		)
+	</insert>
+	
+	<select id="selectCode" parameterType="String" resultType="Code">
+		SELECT
+              T1.CD
+            , T1.GRP_CD
+            , T1.CD_NM
+            , T1.CD_ORD
+            , T1.IS_VALID_YN
+            , T1.DIVN1
+            , T1.DIVN2
+            , T1.UPT_ID
+            , T1.UPT_DT
+            , T1.REG_ID
+            , T1.REG_DT
+            , T2.GRP_CD_NM
+		FROM CMS_CODE T1, CMS_CODE_GRP T2
+		WHERE T1.GRP_CD = T2.GRP_CD AND T1.IS_VALID_YN = 'Y'
+		  AND T1.CD = #{cd}
+        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpCd)">
+            AND T1.GRP_CD = #{grpCd}
+        </if>
+	</select>
+	
+	<update id="updateCode" parameterType="Code">
+		UPDATE CMS_CODE
+        <set>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(cdNm)">
+                CD_NM = #{cdNm},
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpCd)">
+                GRP_CD = #{grpCd},
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(isValidYn)">
+                IS_VALID_YN = #{isValidYn}
+            </if>
+            <if test="cdOrd != null">
+                CD_ORD = #{cdOrd}
+            </if>
+        </set>
+        , UPT_ID = #{uptId}
+        , UPT_DT = NOW()
+        WHERE CD = #{cd}
+	</update>
+
+    <delete id="deleteCode" parameterType="Code">
+        DELETE FROM CMS_CODE
+        <where>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(cd)">
+                CD = #{cd}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpCd)">
+                GRP_CD = #{grpCd}
+            </if>
+        </where>
+    </delete>
+</mapper>

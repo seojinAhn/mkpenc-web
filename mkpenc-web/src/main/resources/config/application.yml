@@ -1,0 +1,72 @@
+spring:
+  profiles:
+    #local or dev or prod
+    active: local
+    include: datasource, common, sitemesh
+  application:
+    name: TDMS
+
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration, org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration, org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+  resources:
+    static-locations: /resources/**
+    add-mappings: true
+
+  mvc:
+    static-path-pattern: /**
+    servlet:
+      load-on-startup: 0
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+    throw-exception-if-no-handler-found: false
+    favicon:
+      enabled: false
+
+  messages:
+    always-use-message-format: false
+    fallback-to-system-locale: true
+    basename: config/i18n/messages
+    encoding: UTF-8
+
+  servlet:
+    # multipart settings
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+      file-size-threshold: 0
+      resolve-lazily: true
+
+# error settings
+server:
+  error:
+    path: /error/error
+    include-exception: true
+    whitelabel:
+      enabled: true
+  servlet:
+    session:
+      timeout: 180m
+  port: 8080
+
+# logging settings
+logging:
+  exception-conversion-word: '%wEx'
+  register-shutdown-hook: false
+  level:
+    com:
+      mkpenc: debug
+    org:
+      springframework:
+        jdbc:
+          datasource: debug
+  pattern:
+    console: '%clr(%d{yyyy-MM-dd E HH:mm:ss.SSS}){blue} %clr(%-5p) %clr(${PID}){faint} %clr(---){faint} %clr([%8.15t]){cyan} %clr(%-40.40logger{0}){blue} %clr(:){red} %clr(%m){faint}%n'
