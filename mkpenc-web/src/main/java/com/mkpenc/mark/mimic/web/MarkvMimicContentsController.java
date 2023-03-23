@@ -433,6 +433,44 @@ public class MarkvMimicContentsController {
         return mav;
     }
 	
+	@RequestMapping("bearingdata")
+	public ModelAndView bearingdata(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ bearingdata");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", markvSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }
+	
+	@RequestMapping("lptbntemp")
+	public ModelAndView lptbntemp(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ lptbntemp");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	markvSearchMimic.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", markvSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }
+	
 	@RequestMapping("tbnoverview")
 	public ModelAndView tbnoverview(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
         
