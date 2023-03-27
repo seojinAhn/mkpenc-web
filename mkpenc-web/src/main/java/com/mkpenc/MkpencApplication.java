@@ -11,7 +11,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-@ServletComponentScan
+@ServletComponentScan  
 @SpringBootApplication(scanBasePackages = "com.mkpenc")
 @EnableCaching
 @EnableAspectJAutoProxy
