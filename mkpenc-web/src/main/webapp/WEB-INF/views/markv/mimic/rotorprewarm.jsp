@@ -17,6 +17,62 @@
 <script type="text/javascript" src="<c:url value="/resources/js/common.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/mimic.js" />" charset="utf-8"></script>
+<script type="text/javascript">
+var timerOn = true; //true로 변경
+var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
+var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
+
+$(function () {
+
+	if( $("input:radio[id='4']").is(":checked") ) {
+		hogiHeader = "4";
+	} else {
+		hogiHeader = "3";
+	}
+	if( $("input:radio[id='Y']").is(":checked") ) {
+		xyHeader = "Y";
+	} else {
+		xyHeader = "X";
+	}
+	
+	var lblDateVal = '${SearchTime}';
+	$("#lblDate").text(lblDateVal);
+	
+	$(document.body).delegate('#3', 'click', function() {
+		setTimer('3',xyHeader,0);
+	});
+	$(document.body).delegate('#4', 'click', function() {
+		setTimer('4',xyHeader,0);
+	});
+	$(document.body).delegate('#X', 'click', function() {
+		setTimer(hogiHeader,'X',0);
+	});
+
+	setTimer(hogiHeader,xyHeader,5000);
+
+});	
+
+function setTimer(hogiHeader,xyHeader,interval) {
+	if( interval > 0 ) {
+		setTimeout(function() {
+			if( timerOn ) {
+				var	comSubmit	=	new ComSubmit("rotorprewarmFrm");
+				comSubmit.setUrl("/markv/mimic/rotorprewarm");
+				comSubmit.addParam("hogiHeader",hogiHeader);
+				comSubmit.addParam("xyHeader",xyHeader);
+				comSubmit.submit();
+			}
+		},interval);
+	} else {
+		var	comSubmit	=	new ComSubmit("rotorprewarmFrm");
+		comSubmit.setUrl("/markv/mimic/rotorprewarm");
+		comSubmit.addParam("hogiHeader",hogiHeader);
+		comSubmit.addParam("xyHeader",xyHeader);
+		comSubmit.submit();
+	}
+}
+</script>
+
 </head>
 <body>
 <div class="wrap">
@@ -48,13 +104,15 @@
                             <h6>HP</h6>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[0].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[0].fValue ne null}">${lblDataList[0].fValue}</c:if></label>
                                     <span>deg C</span>
                                 </p>
                             </div>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[3].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[3].fValue ne null}">${lblDataList[3].fValue}</c:if></label>
                                     <span>℃</span>
                                 </p>
                             </div>
@@ -63,13 +121,15 @@
                             <h6>LP INL</h6>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[1].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[1].fValue ne null}">${lblDataList[1].fValue}</c:if></label>
                                     <span>deg C</span>
                                 </p>
                             </div>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[4].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[4].fValue ne null}">${lblDataList[4].fValue}</c:if></label>
                                     <span>℃</span>
                                 </p>
                             </div>
@@ -78,13 +138,15 @@
                             <h6>LP EXH</h6>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[2].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[2].fValue ne null}">${lblDataList[2].fValue}</c:if></label>
                                     <span>deg C</span>
                                 </p>
                             </div>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[5].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[5].fValue ne null}">${lblDataList[5].fValue}</c:if></label>
                                     <span>℃</span>
                                 </p>
                             </div>
@@ -100,13 +162,15 @@
                             <h6>HP</h6>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[6].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[6].fValue ne null}">${lblDataList[6].fValue}</c:if></label>
                                     <span>deg C</span>
                                 </p>
                             </div>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[9].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[9].fValue ne null}">${lblDataList[9].fValue}</c:if></label>
                                     <span>C/HR</span>
                                 </p>
                             </div>
@@ -115,13 +179,15 @@
                             <h6>LP INL</h6>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[7].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[7].fValue ne null}">${lblDataList[7].fValue}</c:if></label>
                                     <span>deg C</span>
                                 </p>
                             </div>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[10].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[10].fValue ne null}">${lblDataList[10].fValue}</c:if></label>
                                     <span>C/HR</span>
                                 </p>
                             </div>
@@ -130,13 +196,15 @@
                             <h6>LP EXH</h6>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[8].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[8].fValue ne null}">${lblDataList[8].fValue}</c:if></label>
                                     <span>deg C</span>
                                 </p>
                             </div>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[11].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[11].fValue ne null}">${lblDataList[11].fValue}</c:if></label>
                                     <span>C/HR</span>
                                 </p>
                             </div>
@@ -147,7 +215,8 @@
                             <h6 class="double">MAIN STEAM PRESSURE</h6>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[12].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[12].fValue ne null}">${lblDataList[12].fValue}</c:if></label>
                                     <span>bar</span>
                                 </p>
                             </div>
@@ -156,7 +225,8 @@
                             <h6 class="double">MAIN STEAM TEMPERATURE</h6>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[13].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[13].fValue ne null}">${lblDataList[13].fValue}</c:if></label>
                                     <span>deg C</span>
                                 </p>
                             </div>
@@ -165,7 +235,8 @@
                             <h6 class="double">ECCENTRICITY</h6>
                             <div class="summary">
                                 <p>
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[14].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[14].fValue ne null}">${lblDataList[14].fValue}</c:if></label>
                                     <span>mm</span>
                                 </p>
                             </div>
@@ -181,7 +252,8 @@
                                     <div class="barchart" style="width:120px;height:180px;">차트</div>
                                     <div class="summary">
                                         <p>
-                                            <label>0</label>
+                                            <label><c:if test="${lblDataList[15].fValue eq null}">0</c:if>
+                                    		<c:if test="${lblDataList[15].fValue ne null}">${lblDataList[15].fValue}</c:if></label>
                                             <span>bar</span>
                                         </p>
                                     </div>
@@ -195,7 +267,8 @@
                                     <div class="barchart" style="width:120px;height:180px;">차트</div>
                                     <div class="summary">
                                         <p>
-                                            <label>0</label>
+                                            <label><c:if test="${lblDataList[16].fValue eq null}">0</c:if>
+                                    		<c:if test="${lblDataList[16].fValue ne null}">${lblDataList[16].fValue}</c:if></label>
                                             <span>bar</span>
                                         </p>
                                     </div>
@@ -209,7 +282,8 @@
                                     <div class="barchart" style="width:120px;height:180px;">차트</div> 
                                     <div class="summary">
                                         <p>
-                                            <label>0</label>
+                                            <label><c:if test="${lblDataList[17].fValue eq null}">0</c:if>
+                                    		<c:if test="${lblDataList[17].fValue ne null}">${lblDataList[17].fValue}</c:if></label>
                                             <span>rpm</span>
                                         </p>
                                     </div>
@@ -224,9 +298,13 @@
                         <div class="line_table_block">
                             <div class="summary">
                                 <p class="side">
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[19].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[19].fValue ne null}">${lblDataList[19].fValue}</c:if></label>
                                     <span>MSV</span>
-                                    <label>0</label>
+                                    <label><c:if test="${lblDataList[20].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[20].fValue ne null}">${lblDataList[20].fValue}</c:if></label>
+                                    <label><c:if test="${lblDataList[21].fValue eq null}">0</c:if>
+                                    <c:if test="${lblDataList[21].fValue ne null}">${lblDataList[21].fValue}</c:if></label>
                                 </p>
                             </div>
                         </div>
@@ -242,7 +320,8 @@
                             <div class="block_item">
                                 <div class="summary">
                                     <p>
-                                        <label>0</label>
+                                        <label><c:if test="${lblDataList[18].fValue eq null}">0</c:if>
+                                        <c:if test="${lblDataList[18].fValue ne null}">${lblDataList[18].fValue}</c:if></label>
                                         <span class="fx_none">%</span>
                                     </p>
                                 </div>
