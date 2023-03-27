@@ -16,6 +16,11 @@ public class MarkvSearchMimic  extends BaseSearch {
 	private String  sXYGubun;
 	private String  sChkHogi;
 	
+	private String  sScreenId;
+	
+	private String hogiHeader;
+	private String xyHeader;
+	
 	public String getsGrpID() {
 		return sGrpID;
 	}
@@ -58,7 +63,23 @@ public class MarkvSearchMimic  extends BaseSearch {
 	public void setsChkHogi(String sChkHogi) {
 		this.sChkHogi = sChkHogi;
 	}
-	
-	
+	public String getsScreenId() {
+		return sScreenId;
+	}
+	public void setsScreenId(String sScreenId) {
+		this.sScreenId = sScreenId;
+	}
+	public String getHogiHeader() {
+		return hogiHeader;
+	}
+	public void setHogiHeader(String hogiHeader) {
+		this.hogiHeader = hogiHeader;
+	}
+	public String getXyHeader() {
+		return xyHeader;
+	}
+	public void setXyHeader(String xyHeader) {
+		this.xyHeader = xyHeader;
+	}	
 	
 }
