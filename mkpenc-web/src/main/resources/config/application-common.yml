@@ -3,7 +3,7 @@ spring:
 
 props:
   domain: http://10.135.101.221:8090
-  url: http://10.135.101.221:8090
+  url: http://10.135.101.221:8090 
   
 
   # attach file dir
