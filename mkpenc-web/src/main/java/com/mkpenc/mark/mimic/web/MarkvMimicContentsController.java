@@ -146,6 +146,36 @@ public class MarkvMimicContentsController {
         	
         	markvSearchMimic.setMenuName(this.menuName);
         	
+        	if(markvSearchMimic.getsMenuNo() == null || markvSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		markvSearchMimic.setsDive("D");
+        		markvSearchMimic.setsMenuNo("1");
+        		markvSearchMimic.setsGrpID("mimic");
+	        	markvSearchMimic.setsUGrpNo("2");
+	        	
+	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+	        	markvSearchMimic.setsHogi(member.getHogi());
+	        	markvSearchMimic.setsXYGubun(member.getXyGubun());	        	
+        	}
+        	
+        	//getMarkGrpTagList
+        	Map markvGrpTagSearchMap = new HashMap();
+        	markvGrpTagSearchMap.put("xyGubun",markvSearchMimic.getsXYGubun()==null?  "": markvSearchMimic.getsXYGubun());
+        	markvGrpTagSearchMap.put("hogi",markvSearchMimic.getsHogi()==null?  "": markvSearchMimic.getsHogi());
+        	markvGrpTagSearchMap.put("dive",markvSearchMimic.getsDive()==null?  "": markvSearchMimic.getsDive());
+        	markvGrpTagSearchMap.put("grpID", markvSearchMimic.getsGrpID()==null?  "": markvSearchMimic.getsGrpID());
+        	markvGrpTagSearchMap.put("menuNo", markvSearchMimic.getsMenuNo()==null?  "": markvSearchMimic.getsMenuNo());
+        	markvGrpTagSearchMap.put("uGrpNo", markvSearchMimic.getsUGrpNo()==null?  "": markvSearchMimic.getsUGrpNo());
+
+        	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
+        	
+        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	
+    		mav.addObject("SearchTime", markVal.get("SearchTime"));
+        	mav.addObject("ForeColor", markVal.get("ForeColor"));
+        	mav.addObject("lblDataList", markVal.get("lblDataList"));
+        	mav.addObject("MarkTagInfoList", tagMarkInfoList);
+        	
         	mav.addObject("BaseSearch", markvSearchMimic);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
         	
