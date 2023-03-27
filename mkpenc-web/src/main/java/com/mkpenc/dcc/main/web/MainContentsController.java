@@ -173,7 +173,7 @@ public class MainContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
     		
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));

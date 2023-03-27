@@ -1785,8 +1785,8 @@ public class ExcelHelperUtil {
 
 	}
 	
-	public void statusExcelDownload(HttpServletRequest request, HttpServletResponse response, List<String[]> values,
-			List<DccTagInfo> dccTagInfoList, List<String> scanTimeList, String type) throws Exception{
+	public void statusExcelDownload(HttpServletRequest request, HttpServletResponse response, List<Map> values,
+			List<ComTagDccInfo> dccTagInfoList, Map scanTime, String type) throws Exception{
 		
 		Workbook wb = new XSSFWorkbook();
 		Sheet sheet = wb.createSheet("첫번째 시트");
@@ -1852,27 +1852,35 @@ public class ExcelHelperUtil {
 		// Set lblDate
 		row = sheet.createRow(rowNum++);
 		cell = row.createCell(0);
-		cell.setCellValue(scanTimeList.get(0));
+		cell.setCellValue(scanTime.get("SearchTime").toString());
 		// Set empty row
 		row = sheet.createRow(rowNum++);
 		
 		for( int lli=0;lli<values.size();lli++ ) {
 			for( int lii=0;lii<size;lii++ ) {
-			row = sheet.createRow(rowNum++);
-			cell = row.createCell(0);
-			cell.setCellValue(lii+1);
-			cell = row.createCell(1);
-			cell.setCellValue(dccTagInfoList.get(lii).getDataLoop());
-			cell = row.createCell(2);
-			cell.setCellValue(values.get(lli)[lii]);
-			cell = row.createCell(3);
-			cell.setCellValue(dccTagInfoList.get(lii).getUnit());
-			cell = row.createCell(4);
-			cell.setCellValue(dccTagInfoList.get(lii).getIoType());
-			cell = row.createCell(5);
-			cell.setCellValue(dccTagInfoList.get(lii).getAddress());
-			cell = row.createCell(6);
-			cell.setCellValue(dccTagInfoList.get(lii).getIoBit());
+				
+				row = sheet.createRow(rowNum++);
+				
+				cell = row.createCell(0);
+				cell.setCellValue(lii+1);
+				
+				cell = row.createCell(1);
+				cell.setCellValue(dccTagInfoList.get(lii).getDataLoop());
+				
+				cell = row.createCell(2);
+				cell.setCellValue(values.get(lli).get("fValue").toString());
+				
+				cell = row.createCell(3);
+				cell.setCellValue(dccTagInfoList.get(lii).getUnit());
+				
+				cell = row.createCell(4);
+				cell.setCellValue(dccTagInfoList.get(lii).getIOTYPE());
+				
+				cell = row.createCell(5);
+				cell.setCellValue(dccTagInfoList.get(lii).getADDRESS());
+				
+				cell = row.createCell(6);
+				cell.setCellValue(dccTagInfoList.get(lii).getIOBIT());
 			}
 		}
 		

@@ -330,7 +330,7 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 		return sqlQueryDcc(searchMap).split("\\|");
 	}
 	
-	public Map getDccValue(Map searchMap, List<ComTagDccInfo> tagDccInfoList,  ModelAndView mav){
+	public Map getDccValue(Map searchMap, List<ComTagDccInfo> tagDccInfoList){
 	
 		Map rtnMap = new HashMap();
 		

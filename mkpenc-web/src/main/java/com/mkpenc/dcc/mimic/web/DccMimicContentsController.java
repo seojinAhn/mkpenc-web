@@ -81,7 +81,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -127,7 +127,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -208,7 +208,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -255,7 +255,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -336,7 +336,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -383,7 +383,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -464,7 +464,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -511,7 +511,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -592,7 +592,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -639,7 +639,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -721,7 +721,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -768,7 +768,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -849,7 +849,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -896,7 +896,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -977,7 +977,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -1024,7 +1024,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -1105,7 +1105,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -1152,7 +1152,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -1233,7 +1233,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -1280,7 +1280,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -1363,7 +1363,7 @@ public class DccMimicContentsController {
     		//단위변환 사용하지 않음
     		List<ComTagDccInfo> tagDccInfoList = basDccMimicService.getDccGrpTagNoUnitConvList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -1410,7 +1410,7 @@ public class DccMimicContentsController {
 
     		List<ComTagDccInfo> tagDccInfoList = basDccMimicService.getDccGrpTagNoUnitConvList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -1491,7 +1491,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -1538,7 +1538,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -1619,7 +1619,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -1666,7 +1666,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -1747,7 +1747,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccMimicService.getDccGrpTagNoUnitConvList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -1794,7 +1794,7 @@ public class DccMimicContentsController {
 
     		List<ComTagDccInfo> tagDccInfoList = basDccMimicService.getDccGrpTagNoUnitConvList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -1875,7 +1875,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -1922,7 +1922,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -2003,7 +2003,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -2050,7 +2050,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -2131,7 +2131,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -2178,7 +2178,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -2259,7 +2259,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -2306,7 +2306,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -2387,7 +2387,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -2434,7 +2434,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -2515,7 +2515,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -2562,7 +2562,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
@@ -2643,7 +2643,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -2690,7 +2690,7 @@ public class DccMimicContentsController {
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
     		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");

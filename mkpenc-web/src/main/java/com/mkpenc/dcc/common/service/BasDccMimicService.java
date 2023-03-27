@@ -20,7 +20,7 @@ public  interface BasDccMimicService {
 	
 	public String[] getDccValueReturn(Map searchMap);
 	
-	public Map getDccValue(Map searchMap, List<ComTagDccInfo> tagDccInfoList,  ModelAndView mav);
+	public Map getDccValue(Map searchMap, List<ComTagDccInfo> tagDccInfoList);
 	
 	String selectSeqInfo(DccSearchMimic searchMimic);
 	

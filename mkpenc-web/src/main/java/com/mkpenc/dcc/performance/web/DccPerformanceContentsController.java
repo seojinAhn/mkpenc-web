@@ -870,7 +870,7 @@ public class DccPerformanceContentsController {
         	}
         	
         	getCompareXY(dccSearchPerformance, mav);
-        	dccSearchPerformance.setsPer(preSPer);        	
+        	dccSearchPerformance.setsPer(preSPer );        	
         	        	
         	mav.addObject("BaseSearch", dccSearchPerformance);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
@@ -924,7 +924,7 @@ public class DccPerformanceContentsController {
 	
 	private void getCompareXY(DccSearchPerformance dccSearchPerformance, ModelAndView mav) {
 		
-if(dccSearchPerformance.getsIOType() != null && !dccSearchPerformance.getsIOType().isEmpty()) {
+		if(dccSearchPerformance.getsIOType() != null && !dccSearchPerformance.getsIOType().isEmpty()) {
     		
     		//*** START X GUBUN
     		String pSCanTimeX = "";
@@ -1303,7 +1303,7 @@ if(dccSearchPerformance.getsIOType() != null && !dccSearchPerformance.getsIOType
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
-        	Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList, mav);
+        	Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
         	
         	List<Map> lblDataList = (ArrayList)dccVal.get("lblDataList");
         	
@@ -1747,7 +1747,7 @@ if(dccSearchPerformance.getsIOType() != null && !dccSearchPerformance.getsIOType
     		List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer  
-        	Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList, mav);
+        	Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList);
         	
         	List<Map> lblDataXList = (ArrayList)dccValX.get("lblDataList");
         	List<Map> shpDataXList = new ArrayList<Map>();
@@ -1808,7 +1808,7 @@ if(dccSearchPerformance.getsIOType() != null && !dccSearchPerformance.getsIOType
     		List<ComTagDccInfo> tagDccInfoYList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer  
-        	Map dccValY = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoYList,  mav);
+        	Map dccValY = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoYList);
         	
         	List<Map> lblDataYList = (ArrayList)dccValY.get("lblDataList");
         	List<Map> shpDataYList = new ArrayList<Map>();
@@ -1918,14 +1918,14 @@ if(dccSearchPerformance.getsIOType() != null && !dccSearchPerformance.getsIOType
         	List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer--X
-        	Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList, mav);
+        	Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList);
         	
         	//VB : ScreenInit--Y
         	dccGrpTagSearchMap.put("xyGubun","Y");
         	List<ComTagDccInfo> tagDccInfoYList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer--Y
-        	Map dccValY = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoYList, mav);
+        	Map dccValY = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoYList);
         	
         	mav.addObject("XSearchTime", dccValX.get("SearchTime"));
         	mav.addObject("XForeColor", dccValX.get("ForeColor"));
@@ -1999,7 +1999,7 @@ if(dccSearchPerformance.getsIOType() != null && !dccSearchPerformance.getsIOType
         	List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer--X
-        	Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList, mav);
+        	Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList);
         	
         	List<Map> lblDataXList = (ArrayList)dccValX.get("lblDataList");
         	List<Map> shpDataXList = new ArrayList<Map>();
@@ -2060,7 +2060,7 @@ if(dccSearchPerformance.getsIOType() != null && !dccSearchPerformance.getsIOType
         	List<ComTagDccInfo> tagDccInfoYList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer --Y
-        	Map dccValY = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoYList, mav);
+        	Map dccValY = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoYList);
         	
         	List<Map> lblDataYList = (ArrayList)dccValY.get("lblDataList");
         	List<Map> shpDataYList = new ArrayList<Map>();
@@ -2172,7 +2172,7 @@ if(dccSearchPerformance.getsIOType() != null && !dccSearchPerformance.getsIOType
         	List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer--X 
-        	Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList,  mav);
+        	Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList);
         	
         	List<Map> lblDataXList = (ArrayList)dccValX.get("lblDataList");
         	List<Map> shpDataXList = new ArrayList<Map>();
