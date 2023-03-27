@@ -21,7 +21,7 @@ public class MkpencApplication extends SpringBootServletInitializer {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return builder.sources(MkpencApplication.class);
-    }
+    } 
 
     public static void main(String[] args) throws Exception {
         ApplicationContext applicationContext = SpringApplication.run(MkpencApplication.class, args);
