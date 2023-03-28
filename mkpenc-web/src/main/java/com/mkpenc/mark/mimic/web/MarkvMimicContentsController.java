@@ -333,7 +333,7 @@ public class MarkvMimicContentsController {
     		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
     		
     		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
-    		 
+    		
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -1195,8 +1195,8 @@ public class MarkvMimicContentsController {
 	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 	        	markvSearchMimic.setsHogi(member.getHogi());
 	        	markvSearchMimic.setsXYGubun(member.getXyGubun());	        	
-        	} 
-        	 
+        	}
+        	
         	Map markGrpTagSearchMap = new HashMap();
         	markGrpTagSearchMap.put("xyGubun",markvSearchMimic.getsXYGubun()==null?  "": markvSearchMimic.getsXYGubun());
         	markGrpTagSearchMap.put("hogi",markvSearchMimic.getsHogi()==null?  "": markvSearchMimic.getsHogi());
@@ -1220,6 +1220,6 @@ public class MarkvMimicContentsController {
         }
 
         return mav;
-    }	 
+    }	
 	
 }
