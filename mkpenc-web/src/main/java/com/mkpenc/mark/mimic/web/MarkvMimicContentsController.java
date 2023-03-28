@@ -333,7 +333,7 @@ public class MarkvMimicContentsController {
     		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
     		
     		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
-    		
+    		 
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
