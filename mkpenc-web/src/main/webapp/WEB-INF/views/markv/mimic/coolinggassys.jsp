@@ -40,21 +40,30 @@
                         <div class="summary">
                             <p>
                                 <span>PRESSURE</span>
-                                <label>0</label>
+                                <label>
+                                	<c:if test="${lblDataList[0].fValue eq null}">0</c:if>
+                                	<c:if test="${lblDataList[0].fValue ne null}">${lblDataList[0].fValue}</c:if>
+                                </label>
                                 <span>bar</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
                                 <span>PURITY</span>
-                                <label>0</label>
+                                <label>
+                                	<c:if test="${lblDataList[1].fValue eq null}">0</c:if>
+                                	<c:if test="${lblDataList[1].fValue ne null}">${lblDataList[1].fValue}</c:if>
+                                </label>
                                 <span>%</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
                                 <span>ION CURR</span>
-                                <label>0</label>
+                                <label>
+                                	<c:if test="${lblDataList[2].fValue eq null}">0</c:if>
+                                	<c:if test="${lblDataList[2].fValue ne null}">${lblDataList[2].fValue}</c:if>
+                                </label>
                                 <span>%</span>
                             </p>
                         </div>
@@ -71,17 +80,50 @@
                                         <div class="barchart" style="width:1000px;height:180px;">차트</div>
                                         <div class="summary" style="padding:0 20px;">
                                             <p>
-                                                <label class="line">0</label>
-                                                <label class="line">0</label>
-                                                <label class="line">0</label>
-                                                <label class="line">0</label>
-                                                <label class="line">0</label>
-                                                <label class="line">0</label>
-                                                <label class="line">0</label>
-                                                <label class="line">0</label>
-                                                <label class="line">0</label>
-                                                <label class="line">0</label>
-                                                <label class="line">0</label>
+                                                <label class="line">
+                                                	<c:if test="${lblDataList[4].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[4].fValue ne null}">${lblDataList[4].fValue}</c:if>
+                                                </label>
+                                                <label class="line">
+                                                	<c:if test="${lblDataList[5].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[5].fValue ne null}">${lblDataList[5].fValue}</c:if>
+                                                </label>
+                                                <label class="line">
+                                                	<c:if test="${lblDataList[6].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[6].fValue ne null}">${lblDataList[6].fValue}</c:if>
+                                                </label>
+                                                <label class="line">
+                                                	<c:if test="${lblDataList[7].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[7].fValue ne null}">${lblDataList[7].fValue}</c:if>
+                                                </label>
+                                                <label class="line">
+                                                	<c:if test="${lblDataList[8].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[8].fValue ne null}">${lblDataList[8].fValue}</c:if>
+                                                </label>
+                                                <label class="line">
+                                                	<c:if test="${lblDataList[9].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[9].fValue ne null}">${lblDataList[9].fValue}</c:if>
+                                                </label>
+                                                <label class="line">
+                                                	<c:if test="${lblDataList[10].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[10].fValue ne null}">${lblDataList[10].fValue}</c:if>
+                                                </label>
+                                                <label class="line">
+                                                	<c:if test="${lblDataList[11].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[11].fValue ne null}">${lblDataList[11].fValue}</c:if>
+                                                </label>
+                                                <label class="line">
+                                                	<c:if test="${lblDataList[12].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[12].fValue ne null}">${lblDataList[12].fValue}</c:if>
+                                                </label>
+                                                <label class="line">
+                                                	<c:if test="${lblDataList[13].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[13].fValue ne null}">${lblDataList[13].fValue}</c:if>
+                                                </label>
+                                                <label class="line">
+                                                	<c:if test="${lblDataList[14].fValue eq null}">0</c:if>
+                                					<c:if test="${lblDataList[14].fValue ne null}">${lblDataList[14].fValue}</c:if>
+                                                </label>
                                             </p>
                                         </div>
                                     </div>

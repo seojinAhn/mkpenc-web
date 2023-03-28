@@ -66,7 +66,10 @@
                         <div class="summary">
                             <p>
                                 <span>PRESS RATIO</span>
-                                <label>0</label>
+                                <label>
+                                	<c:if test="${lblDataList[10].fValue eq null}">0</c:if>
+                                	<c:if test="${lblDataList[10].fValue ne null}">${lblDataList[10].fValue}</c:if>
+                                </label>
                                 <span class="fx_none">%</span>
                             </p>
                         </div>
@@ -80,7 +83,10 @@
                                 <p class="side">
                                     <label>0</label>
                                     <span>MSV</span>
-                                    <label>0</label>
+                                    <label>
+                                    	<c:if test="${lblDataList[13].fValue eq null}">0</c:if>
+                                		<c:if test="${lblDataList[13].fValue ne null}">${lblDataList[13].fValue}</c:if>
+                                    </label>
                                 </p>
                             </div>
                         </div>
@@ -112,7 +118,10 @@
                             <div class="block_item">
                                 <div class="summary">
                                     <p>
-                                        <label>0</label>
+                                        <label>
+                                        	<c:if test="${lblDataList[12].fValue eq null}">0</c:if>
+                                			<c:if test="${lblDataList[12].fValue ne null}">${lblDataList[12].fValue}</c:if>
+                                        </label>
                                         <span class="fx_none">%</span>
                                     </p>
                                 </div>
