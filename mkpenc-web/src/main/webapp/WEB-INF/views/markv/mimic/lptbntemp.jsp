@@ -266,7 +266,7 @@
                                 </p>
                             </div>
                             <h6>HOOD TEMP HDC</h6>
-                            <div class="summary">
+                            <div class="summary"> 
                                 <p>
                                     <label>
                                     	<c:if test="${lblDataList[27].fValue eq null}">0</c:if>
