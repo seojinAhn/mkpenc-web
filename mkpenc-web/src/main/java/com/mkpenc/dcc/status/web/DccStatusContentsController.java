@@ -2284,7 +2284,7 @@ public class DccStatusContentsController {
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	mav = tagFind(mav,dccSearchStatus,request);
-        	
+        	 
         }
         return mav;
     }
