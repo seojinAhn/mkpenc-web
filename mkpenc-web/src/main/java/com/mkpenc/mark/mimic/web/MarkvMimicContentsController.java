@@ -1195,7 +1195,7 @@ public class MarkvMimicContentsController {
 	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 	        	markvSearchMimic.setsHogi(member.getHogi());
 	        	markvSearchMimic.setsXYGubun(member.getXyGubun());	        	
-        	}
+        	} 
         	
         	Map markGrpTagSearchMap = new HashMap();
         	markGrpTagSearchMap.put("xyGubun",markvSearchMimic.getsXYGubun()==null?  "": markvSearchMimic.getsXYGubun());
