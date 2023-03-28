@@ -252,7 +252,7 @@
                                     	<c:if test="${lblDataList[25].fValue eq null}">0</c:if>
                                 		<c:if test="${lblDataList[25].fValue ne null}">${lblDataList[25].fValue}</c:if>
                                     </label>
-                                    <span>deg C</span>
+                                    <span>deg C</span>  
                                 </p>
                             </div>
                             <h6>PRESSURE(ABS) HDC</h6>
