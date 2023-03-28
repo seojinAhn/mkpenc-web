@@ -181,12 +181,14 @@
                                  <li>          
                                      <a href="/dcc/alarm/gaschromatography">가스크로마토그래프</a>            
                                  </li>         
-                             </ul>         
+                             </ul>  
+                             <!--      
                              <ul>          
                                  <li>          
                                      <a href="#none">연료프린트</a>            
                                  </li>         
-                             </ul>         
+                             </ul> 
+                              -->          
                          </div>            
                      </div>            
                  </li>         
@@ -412,13 +414,14 @@
                                  <li>          
                                      <a href="#none">DCC형상관리</a>           
                                      <ul>          
-                                         <li><a href="/dcc/admin/swsmlist">S/W 형상관리</a></li>         
-                                         <li><a href="/dcc/admin/hwsmlist">H/W 형상관리</a></li>         
+                                         <li><a href="/dcc/admin/swsmlist">S/W 형상관리</a></li>        
+                                         <!--<li><a href="/dcc/admin/hwsmlist">H/W 형상관리</a></li>   -->     
                                          <li><a href="/dcc/admin/pcbmgmlist">PCB</a></li>          
                                          <li><a href="/dcc/admin/restartcodelist">재기동관리</a></li>           
                                      </ul>         
                                  </li>         
-                             </ul>         
+                             </ul> 
+                             <!--         
                              <ul>          
                                  <li>          
                                      <a href="#none">자료실</a>            
@@ -428,7 +431,8 @@
                                  <li>          
                                      <a href="#none">EOF 현황</a>          
                                  </li>         
-                             </ul>         
+                             </ul>   
+                              -->      
                          </div>            
                      </div>            
                  </li>   
