@@ -24,15 +24,17 @@
 <script type="text/javascript">
 	var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
 	var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
-	var selGrpList = [];
+	var currentSelGrp = "";
+	var grpNos = [];
+	var selGrpNm = "";
 
 	$(function() {
-		var iid=0;
-		var str = '${DccGroupList[0]}';
-		var ss = str.replace(/{/gi,'').replace(/}/gi,'').split(', ');
-		for( var dd=0;dd<ss.length;dd++ ) {
-			console.log(ss[dd].split("=")[1]);
-		}
+		//var iid=0;
+		//var str = '${DccGroupList[0]}';
+		//var ss = str.replace(/{/gi,'').replace(/}/gi,'').split(', ');
+		//for( var dd=0;dd<ss.length;dd++ ) {
+		//	console.log(ss[dd].split("=")[1]);
+		//}
 		
 		if( '${BaseSearch.gHis}' == 'H' ) {
 			$("input:radio[id='H']").prop("checked",true);
@@ -51,6 +53,13 @@
 			xyHeader = "Y";
 		} else {
 			xyHeader = "X";
+		}
+		
+		currentSelGrp = $("#cboUGrpName option:selected").val();
+		
+		var grpList = '${DccGroupList}'.split(', groupNo=');
+		for( var i=1;i<grpList.length;i++ ) {
+			grpNos.push('opt'+grpList[i].substr(0,grpList[i].indexOf('}')));
 		}
 		
 		var sDtm,eDtm,eDate,eHour,eMin;
@@ -110,45 +119,49 @@
 			var uGrpName = $("#cboUGrpName option:selected").val();
 			hogiHeader = '3';
 			
-			callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
+			//callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
 		});
 		
 		$(document.body).delegate('#4', 'click', function() {
 			var uGrpName = $("#cboUGrpName option:selected").val();
 			hogiHeader = '4';
 			
-			callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
+			//callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
 		});
 		
 		$(document.body).delegate('#X', 'click', function() {
 			var uGrpName = $("#cboUGrpName option:selected").val();
 			xyHeader = 'X';
 			
-			callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
+			//callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
 		});
 		
 		$(document.body).delegate('#Y', 'click', function() {
 			var uGrpName = $("#cboUGrpName option:selected").val();
 			xyHeader = 'Y';
 			
-			callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
+			//callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
 		});
 		
-		$("#cboUGrpName").change(function() {
-			console.log(selGrpList);
+		$(document.body).on("change", "#cboUGrpName", function() {
 			var selGrpName = $("#cboUGrpName option:selected").val();
-			var alreadyExists = false;
-			for( var i=0;i<selGrpList.length;i++ ) {
-				if( (selGrpName == selGrpList[i]) && !alreadyExists ) {
-					alreadyExists = true;
-					i = selGrpList.length;
-				}
+			
+			var startDate = "";
+			var endDate = "";
+			if( $("#selectSDate").val() != null && typeof $("#selectSDate").val() != 'undefined' ) {
+				startDate = $("#selectSDate").val()+':00.000';
+				endDate = $("#selectEDate").val()+':00.000';
 			}
 			
-			if( !alreadyExists ) {
-				$("#lblTagName"+selGrpList.length).text(selGrpName);
-				selGrpList.push(selGrpName);
-			}
+			var comAjax = new ComAjax("selGrpFrm");
+			comAjax.setUrl("/dcc/trend/changeGrpName");
+			comAjax.addParam("hogiHeader", hogiHeader);
+			comAjax.addParam("xyHeader", xyHeader);
+			comAjax.addParam("startDate", startDate);
+			comAjax.addParam("endDate", endDate);
+			comAjax.addParam('sUGrpNo',selGrpName);
+			comAjax.setCallback("mbr_RuntimerEventCallback");
+			comAjax.ajax();
 		});
 	});
 	
@@ -157,6 +170,7 @@
 		$("#cmdReal").css("display","");
 		$("#divUseGap").css("display","");
 		$("#searchDate").css("display","");
+		$("#txtTimeGap").attr("disabled",true);
 	}
 	
 	function cmdReal_click() {
@@ -164,6 +178,7 @@
 		$("#cmdReal").css("display","none");
 		$("#divUseGap").css("display","none");
 		$("#searchDate").css("display","none");
+		$("#txtTimeGap").attr("disabled",false);
 	}
 	
 	function DatetimepickerDefaults(opts) {
@@ -214,15 +229,11 @@
 	
 	function chkUseGap_click(type) {
 		if( type == true ) {
-			$("#txtTimeGap").attr("disabled",true);
-			$("#txtTimeGap").css("background","#fafafa");
-			$("#selectSDate").attr("disabled",true);
-			$("#selectSDate").css("background","#fafafa");
-		} else {
 			$("#txtTimeGap").attr("disabled",false);
-			$("#txtTimeGap").css("background","white");
+			$("#selectSDate").attr("disabled",true);
+		} else {
+			$("#txtTimeGap").attr("disabled",true);
 			$("#selectSDate").attr("disabled",false);
-			$("#selectSDate").css("background","white");
 		}
 	}
 </script>
@@ -244,6 +255,7 @@
 			</div>
 			<!-- //page_title -->
 			<!-- fx_srch_wrap -->
+			<form id="selGrpFrm" type="hidden"></form>
 			<div class="fx_srch_wrap">	
 				<div class="fx_srch_form">
 					<div class="fx_srch_row">
@@ -288,8 +300,8 @@
 				</div>
 				<!-- fx_srch_button -->
 				<div class="fx_srch_button">
-					<a id="cmdHistorical" href="#none" onclick="javascript:cmdHistorical_click();" class="btn_srch">Search</a>
-					<a id="cmdReal" href="#none" onclick="javascript:cmdReal_click();" class="btn_srch" style="display:none">Search</a>
+					<a id="cmdReal" href="#none" onclick="javascript:cmdReal_click();" class="btn_srch">Search</a>
+					<a id="cmdHistorical" href="#none" onclick="javascript:cmdHistorical_click();" class="btn_srch" style="display:none">Search</a>
 				</div>
 				<!-- //fx_srch_button -->
 			</div>
@@ -298,11 +310,11 @@
 			<div class="fx_srch_wrap b_type">	
 				<div class="fx_srch_form">
 					<div class="fx_srch_row">
-						<div class="fx_srch_item no_label">
+						<div class="fx_srch_item no_label">	
                             <div class="fx_form">
                                 <select id="cboUGrpName">
                                 <c:forEach var="grpInfo" items="${DccGroupList}">
-                                	<option value="${grpInfo.groupNo}">${grpInfo.groupName}</option>
+                                	<option id="opt${grpInfo.groupNo}" value="${grpInfo.groupNo}">${grpInfo.groupName}</option>
                                 </c:forEach>
                                 <a href="#none" class="btn_list">새창으로</a>
                                 <a href="#none" class="btn_list">Range 저장</a>
@@ -314,55 +326,55 @@
 						</div>
 						<div class="fx_srch_item"></div>
 					</div>
-					<div class="fx_srch_row">
+					<div class="fx_srch_row" id="lblBody1">
 						<div class="fx_srch_item line">
-                            <div class="fx_form chart_sum color_1"><!-- color : #801517 -->
-                                <input type="checkbox" checked>
+                            <div class="fx_form" style="color:#F1881A"><!-- color : #801517 -->
+                                <input id="lblCheckbox0" type="checkbox" checked>
                                 <span><label id="lblTagName0">3X MOD. TEMP</label></span>
                                 <span><label id="lblValue0">68.74</label></span>
                                 <span><label id="lblUnit0">DEG C</label></span>
                             </div>
 						</div>
 						<div class="fx_srch_item line">
-                            <div class="fx_form chart_sum color_2"><!-- color : #B9529F -->
-                                <input type="checkbox" checked>
+                            <div class="fx_form" style="color:#F2772A"><!-- color : #B9529F -->
+                                <input id="lblCheckbox1" type="checkbox" checked>
                                 <span><label id="lblTagName1">3X MOD. TEMP</label></span>
                                 <span><label id="lblValue1">68.74</label></span>
                                 <span><label id="lblUnit1">DEG C</label></span>
                             </div>
 						</div>
 						<div class="fx_srch_item line">
-                            <div class="fx_form chart_sum color_3"><!-- color : #1EBCBE -->
-                                <input type="checkbox" checked>
+                            <div class="fx_form" style="color:#F3663A"><!-- color : #1EBCBE -->
+                                <input id="lblCheckbox2" type="checkbox" checked>
                                 <span><label id="lblTagName2">3X MOD. TEMP</label></span>
                                 <span><label id="lblValue2">68.74</label></span>
                                 <span><label id="lblUnit2">DEG C</label></span>
                             </div>
 						</div>
 						<div class="fx_srch_item line">
-                            <div class="fx_form chart_sum color_4"><!-- color : #282A73 -->
-                                <input type="checkbox" checked>
+                            <div class="fx_form" style="color:#F4554A"><!-- color : #282A73 -->
+                                <input id="lblCheckbox3" type="checkbox" checked>
                                 <span><label id="lblTagName3">3X MOD. TEMP</label></span>
                                 <span><label id="lblValue3">68.74</label></span>
                                 <span><label id="lblUnit3">DEG C</label></span>
                             </div>
 						</div>
 					</div>
-					<div class="fx_srch_row">
+					<div class="fx_srch_row" id="lblBody2">
 						<div class="fx_srch_item line">
-                            <div class="fx_form chart_sum color_5"><!-- color : #ED1E24 -->
+                            <div class="fx_form chart_sum color_5" style="display:none"><!-- color : #ED1E24 -->
                             </div>
                         </div>
 						<div class="fx_srch_item line">
-                            <div class="fx_form chart_sum color_6"><!-- color : #7A57A4 -->
+                            <div class="fx_form chart_sum color_6" style="display:none"><!-- color : #7A57A4 -->
                             </div>
                         </div>
 						<div class="fx_srch_item line">
-                            <div class="fx_form chart_sum color_7"><!-- color : #70CBD1 -->
+                            <div class="fx_form chart_sum color_7" style="display:none"><!-- color : #70CBD1 -->
                             </div>
                         </div>
 						<div class="fx_srch_item line">
-                            <div class="fx_form chart_sum color_8"><!-- color : #364CA0 -->
+                            <div class="fx_form chart_sum color_8" style="display:none"><!-- color : #364CA0 -->
                             </div>
                         </div>
 					</div>
