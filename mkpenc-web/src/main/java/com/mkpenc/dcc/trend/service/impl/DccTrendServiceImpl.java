@@ -463,14 +463,109 @@ public class DccTrendServiceImpl implements DccTrendService{
 	private LocalDateTime convDtm(String date, boolean isMilli) {
 		String[] pDate = date.split(" ")[0].split("-");
 		String[] pTime = date.split(" ")[1].split(":");
-		if( !isMilli ) {
-			pTime[2] = pTime[2].indexOf(".") > -1 ? pTime[2].substring(0,pTime[2].indexOf(".")) : pTime[2];
+		String millis = "000";
+
+		pTime[2] = pTime[2].indexOf(".") > -1 ? pTime[2].substring(0,pTime[2].indexOf(".")) : pTime[2];
+		if( isMilli ) {
+			if( pTime[2].indexOf(".") > -1 ) {
+				millis = pTime[2].substring(pTime[2].indexOf(".")+1,pTime[2].length());
+			}
+		
+			LocalDateTime ldt = LocalDateTime.of(Integer.parseInt(pDate[0]),Integer.parseInt(pDate[1]),Integer.parseInt(pDate[2]),
+												Integer.parseInt(pTime[0]),Integer.parseInt(pTime[1]),Integer.parseInt(pTime[2]),Integer.parseInt(millis));
+			
+			return ldt;
+		} else {
+			LocalDateTime ldt = LocalDateTime.of(Integer.parseInt(pDate[0]),Integer.parseInt(pDate[1]),Integer.parseInt(pDate[2]),
+												Integer.parseInt(pTime[0]),Integer.parseInt(pTime[1]),Integer.parseInt(pTime[2]));
+
+			return ldt;
+		}
+	}
+	
+	private String addDate(String type, String dtm, int diff) {
+		LocalDateTime ldt = convDtm(dtm,true);
+		String rtv = "";
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		boolean isMinus = diff < 0 ? true : false;
+		String millis = "";
+		String tmpMillis = dtm.indexOf(".") > -1 ? dtm.substring(dtm.indexOf(".")+1,dtm.length()) : "0";
+		
+		System.out.println("diff and isMinus ::: "+diff+", "+isMinus);
+		
+		switch( type ) {
+		case "y":
+			if( isMinus ) {
+				rtv = ldt.minusYears(diff).format(dtf)+"."+tmpMillis;
+			} else {
+				rtv = ldt.plusYears(diff).format(dtf)+"."+tmpMillis;
+			}
+			break;
+		case "m":
+			if( isMinus ) {
+				rtv = ldt.minusMonths(diff).format(dtf)+"."+tmpMillis;
+			} else {
+				rtv = ldt.plusMonths(diff).format(dtf)+"."+tmpMillis;
+			}
+			break;
+		case "d":
+			if( isMinus ) {
+				rtv = ldt.minusDays(diff).format(dtf)+"."+tmpMillis;
+			} else {
+				rtv = ldt.plusDays(diff).format(dtf)+"."+tmpMillis;
+			}
+			break;
+		case "h":
+			if( isMinus ) {
+				rtv = ldt.minusHours(diff).format(dtf)+"."+tmpMillis;
+			} else {
+				rtv = ldt.plusHours(diff).format(dtf)+"."+tmpMillis;
+			}
+			break;
+		case "n":
+			if( isMinus ) {
+				rtv = ldt.minusMinutes(diff).format(dtf)+"."+tmpMillis;
+			} else {
+				rtv = ldt.plusMinutes(diff).format(dtf)+"."+tmpMillis;
+			}
+			break;
+		case "s":
+			if( isMinus ) {
+				rtv = ldt.minusSeconds(diff).format(dtf)+"."+tmpMillis;
+			} else {
+				rtv = ldt.plusSeconds(diff).format(dtf)+"."+tmpMillis;
+			}
+			break;
+		case "mi":
+			int newMillis = Integer.parseInt(tmpMillis)*1000 + diff*1000;
+			System.out.println("tmpMillis : "+tmpMillis+", newMillis : "+newMillis);
+			
+			if( newMillis < 0 ) {
+				if( newMillis < -1000 ) {
+					if( newMillis%1000 == 0 ) {
+						rtv = ldt.minusSeconds((newMillis/1000)).format(dtf);
+					} else {
+						rtv = ldt.minusSeconds((newMillis/1000)+1).format(dtf);
+					}
+				}
+				millis = String.valueOf(1000 - (newMillis - (newMillis/1000)*1000));
+				
+				rtv = rtv+"."+millis;
+			} else if( newMillis >= 0 && newMillis < 1000 ){
+				millis = diff+"";
+				
+				rtv = rtv+"."+millis;
+			} else {
+				if( newMillis > 1000 ) rtv = ldt.plusSeconds((newMillis/1000)).format(dtf);
+				
+				millis = String.valueOf(newMillis - (newMillis/1000)*1000);
+				
+				rtv = rtv+"."+millis;
+			}
+			break;
 		}
 		
-		LocalDateTime ldt = LocalDateTime.of(Integer.parseInt(pDate[0]),Integer.parseInt(pDate[1]),Integer.parseInt(pDate[2]),
-											Integer.parseInt(pTime[0]),Integer.parseInt(pTime[1]),Integer.parseInt(pTime[2]));
-		
-		return ldt;
+		return rtv;
 	}
 	
 	public List<Map> rsTrend5sGap(Map trendSearchMap, List<ComTagDccInfo> dccGrpTagList, Long lGap, String strFast) {
@@ -487,9 +582,10 @@ public class DccTrendServiceImpl implements DccTrendService{
 		String thistime = "";
 		String thistime2 = "";
 		
+		System.out.println("chkDate ::: "+curDate+", "+maxDate);
 		while( convDtm(curDate,true).compareTo(convDtm(maxDate,true)) <= 0 ) {
-			onlyDate.clear();
-			onlyDate2.clear();
+			//onlyDate.clear();
+			//onlyDate2.clear();
 			
 			String sTime = curDate;
 			String eTime = "";
@@ -503,7 +599,7 @@ public class DccTrendServiceImpl implements DccTrendService{
 					searchMap.put("startDate",sTime);
 					searchMap.put("endDate",eTime);
 					searchMap.put("seq","1");
-					searchMap.put("type","0");
+					searchMap.put("type","1");
 					
 					thistime = dccTrendMapper.selectMinScantime(searchMap);
 					thistime = thistime == null ? curDate : thistime;
@@ -515,6 +611,8 @@ public class DccTrendServiceImpl implements DccTrendService{
 			} else {
 				eTime = dtf.format(convDtm(curDate,true).plusNanos(7000*10^6));
 				
+				System.out.println("chk1 :: "+eTime+", "+now_minTime);
+				
 				if( convDtm(now_minTime,true).compareTo(convDtm(eTime,true)) > 0 ) {
 					for( int ti=1;ti<dccGrpTagList.size()+1;ti++ ) {
 						Map searchMap = new HashMap();
@@ -523,23 +621,33 @@ public class DccTrendServiceImpl implements DccTrendService{
 						searchMap.put("startDate",sTime);
 						searchMap.put("endDate",eTime);
 						searchMap.put("seq",dccGrpTagList.get(ti-1).getTBLNO());
-						searchMap.put("type","1");
+						searchMap.put("type","2");
 						
 						thistime = dccTrendMapper.selectMinScantime(searchMap);
 						thistime = thistime == null ? curDate : thistime;
 						
-						searchMap.replace("type","2");
+						onlyDate2.put(ti,thistime2);
+					}
+				} else {
+					for( int ti=1;ti<dccGrpTagList.size()+1;ti++ ) {
+						Map searchMap = new HashMap();
 						
-						thistime2 = dccTrendMapper.selectMinScantime(searchMap);
-						thistime2 = thistime2 == null ? curDate : thistime2;
+						searchMap.put("hogi",dccGrpTagList.get(ti-1).getHogi());
+						searchMap.put("startDate",sTime);
+						searchMap.put("endDate",eTime);
+						searchMap.put("seq",dccGrpTagList.get(ti-1).getTBLNO());
+						searchMap.put("type","0");
+						
+						thistime = dccTrendMapper.selectMinScantime(searchMap);
+						thistime = thistime == null ? curDate : thistime;
 						
 						onlyDate.put(ti,thistime);
-						onlyDate2.put(ti,thistime2);
 					}
 				}
 			}
 			
 			curDate = dtf.format(convDtm(curDate,true).plusNanos(lGap*10^6));
+			System.out.println("cur/only :: "+curDate+", "+onlyDate.get(1));
 			if( convDtm(curDate,true).compareTo(convDtm(onlyDate.get(1).toString(),true)) == 0 ) {
 				curDate = dtf.format(convDtm(curDate,true).plusNanos(1000*10^6));
 			}
@@ -549,16 +657,50 @@ public class DccTrendServiceImpl implements DccTrendService{
 		Map temp = new HashMap();
 		if( !"F".equalsIgnoreCase(strFast) ) {
 			
-			temp.put(0,onlyDate2.get(1).toString());
+			if( onlyDate.size() > 0 ) {
+				temp.put(0,onlyDate2.get(1).toString());
+				for( int vi=1;vi<dccGrpTagList.size()+1;vi++ ) {
+					Map searchMap = new HashMap();
+					
+					searchMap.put("hogi",dccGrpTagList.get(vi-1).getHogi());
+					searchMap.put("startDate",onlyDate2.get(vi).toString());
+					searchMap.put("seq",dccGrpTagList.get(vi-1).getTBLNO());
+					searchMap.put("FldNo",dccGrpTagList.get(vi-1).getFLDNO());
+					searchMap.put("type","1");
+					
+					String tmpValue = dccTrendMapper.selectTValueTrend(searchMap);
+					temp.put(vi,tmpValue);
+					
+					if( "F".equalsIgnoreCase(strFast) ) {
+						temp.replace(0,temp.get(0).toString().length() != 23 ? temp.get(0).toString()+".000" : temp.get(0).toString());
+					} else {
+						temp.replace(0,temp.get(0).toString().length() > 19 ? temp.get(0).toString().substring(0,19) : temp.get(0).toString());
+					}
+				}
+			}
+			
+			rtnList.add(idx,temp);
+			idx++;
+		}
+		
+		if( onlyDate2.size() > 0 ) {
+			//temp.clear();
+			temp.put(0,onlyDate.get(1).toString());
 			for( int vi=1;vi<dccGrpTagList.size()+1;vi++ ) {
 				Map searchMap = new HashMap();
-				
+	
 				searchMap.put("hogi",dccGrpTagList.get(vi-1).getHogi());
-				searchMap.put("startDate",onlyDate2.get(vi).toString());
-				searchMap.put("seq",dccGrpTagList.get(vi-1).getTBLNO());
-				searchMap.put("FldNo",dccGrpTagList.get(vi-1).getFLDNO());
-				searchMap.put("type","1");
-				
+				searchMap.put("startDate",onlyDate.get(vi).toString());
+				if( "F".equalsIgnoreCase(strFast) ) {
+					searchMap.put("seq","1");
+					searchMap.put("FldNo",dccGrpTagList.get(vi-1).getFLDNO_FAST());
+					searchMap.put("type","2");
+				} else {
+					searchMap.put("seq",dccGrpTagList.get(vi-1).getTBLNO());
+					searchMap.put("FldNo",dccGrpTagList.get(vi-1).getFLDNO());
+					searchMap.put("type","0");
+				}
+	
 				String tmpValue = dccTrendMapper.selectTValueTrend(searchMap);
 				temp.put(vi,tmpValue);
 				
@@ -568,39 +710,19 @@ public class DccTrendServiceImpl implements DccTrendService{
 					temp.replace(0,temp.get(0).toString().length() > 19 ? temp.get(0).toString().substring(0,19) : temp.get(0).toString());
 				}
 			}
-			
 			rtnList.add(idx,temp);
-			idx++;
 		}
-		
-		temp.clear();
-		temp.put(0,onlyDate.get(1).toString());
-		for( int vi=1;vi<dccGrpTagList.size()+1;vi++ ) {
-			Map searchMap = new HashMap();
-
-			searchMap.put("hogi",dccGrpTagList.get(vi-1).getHogi());
-			searchMap.put("startDate",onlyDate.get(vi).toString());
-			if( "F".equalsIgnoreCase(strFast) ) {
-				searchMap.put("seq","1");
-				searchMap.put("FldNo",dccGrpTagList.get(vi-1).getFLDNO_FAST());
-				searchMap.put("type","2");
-			} else {
-				searchMap.put("seq",dccGrpTagList.get(vi-1).getTBLNO());
-				searchMap.put("FldNo",dccGrpTagList.get(vi-1).getFLDNO());
-				searchMap.put("type","0");
-			}
-
-			String tmpValue = dccTrendMapper.selectTValueTrend(searchMap);
-			temp.put(vi,tmpValue);
-			
-			if( "F".equalsIgnoreCase(strFast) ) {
-				temp.replace(0,temp.get(0).toString().length() != 23 ? temp.get(0).toString()+".000" : temp.get(0).toString());
-			} else {
-				temp.replace(0,temp.get(0).toString().length() > 19 ? temp.get(0).toString().substring(0,19) : temp.get(0).toString());
-			}
-		}
-		rtnList.add(idx,temp);
 		
 		return rtnList;
+	}
+	
+	@Override
+	public int manageTrendProc(String procBody) {
+		return dccTrendMapper.manageTrendProc(procBody);
+	}
+	
+	@Override
+	public List<Map> callTrendProc(Map procInfo) {
+		return dccTrendMapper.callTrendProc(procInfo);
 	}
 }

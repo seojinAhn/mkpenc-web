@@ -24,4 +24,8 @@ public interface DccTrendService {
 	Map getDccValue(DccSearchTrend dccSearchTrend, List<Map> dccGrpTagList, Long lGap, ModelAndView mav);
 	
 	List<Map> rsTrend5sGap(Map trendSearchMap, List<ComTagDccInfo> dccGrpTagList, Long lGap, String strFast);
+	
+	int manageTrendProc(String procBody);
+	
+	List<Map> callTrendProc(Map procInfo);
 }

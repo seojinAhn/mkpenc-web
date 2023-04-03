@@ -1786,7 +1786,7 @@ public class ExcelHelperUtil {
 	}
 	
 	public void statusExcelDownload(HttpServletRequest request, HttpServletResponse response, List<Map> values,
-			List<ComTagDccInfo> dccTagInfoList, Map scanTime, String type) throws Exception{
+			List<ComTagDccInfo> dccTagInfoList, String scanTime, String type) throws Exception{
 		
 		Workbook wb = new XSSFWorkbook();
 		Sheet sheet = wb.createSheet("첫번째 시트");
@@ -1852,7 +1852,7 @@ public class ExcelHelperUtil {
 		// Set lblDate
 		row = sheet.createRow(rowNum++);
 		cell = row.createCell(0);
-		cell.setCellValue(scanTime.get("SearchTime").toString());
+		cell.setCellValue(scanTime);
 		// Set empty row
 		row = sheet.createRow(rowNum++);
 		

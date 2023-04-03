@@ -21,4 +21,8 @@ public interface DccTrendMapper {
 	String selectMinScantime(Map trendSearchMap);
 	
 	String selectTValueTrend(Map trendSearchMap);
+	
+	int manageTrendProc(String procBody);
+	
+	List<Map> callTrendProc(Map procInfo);
 }

@@ -150,7 +150,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		    		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, (Map)dccVal.get("SearchTime"), "schematic");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "schematic");
 		}
 	}
 	
@@ -308,7 +308,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		    		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, (Map)dccVal.get("SearchTime"), "rrs");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "rrs");
 		}
 	}
 	
@@ -423,6 +423,9 @@ public class DccStatusContentsController {
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
         	mav.addObject("lblDataList", dccVal.get("lblDataList"));
         	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
 
         }
 
@@ -462,7 +465,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
     		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, (Map)dccVal.get("SearchTime"), "htc");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "htc");
 		}
 	}
 	
@@ -576,6 +579,9 @@ public class DccStatusContentsController {
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
         	mav.addObject("lblDataList", dccVal.get("lblDataList"));
         	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
     	}
 
         return mav;
@@ -614,7 +620,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
     		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, (Map)dccVal.get("SearchTime"), "mtc");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "mtc");
 		}
 	}
 	
@@ -770,7 +776,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
     		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, (Map)dccVal.get("SearchTime"), "sgp");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "sgp");
 		}
 	}
 	
@@ -926,7 +932,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
     		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, (Map)dccVal.get("SearchTime"), "sgl");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "sgl");
 		}
 		
 	}
@@ -1082,7 +1088,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
     		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, (Map)dccVal.get("SearchTime"), "phtpump");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "phtpump");
 		}
 	}
 	
@@ -1237,7 +1243,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
     		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, (Map)dccVal.get("SearchTime"), "zonevalues");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "zonevalues");
 		}
 	}
 	
@@ -1392,7 +1398,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
     		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, (Map)dccVal.get("SearchTime"), "zonediviations");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "zonediviations");
 		}
 	}
 	
@@ -1594,7 +1600,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
     		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, (Map)dccVal.get("SearchTime"), "adjrod");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "adjrod");
 		}
 	}
 	
@@ -1749,7 +1755,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
     		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, (Map)dccVal.get("SearchTime"), "react");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "react");
 		}
 	}
 	
@@ -1904,7 +1910,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
     		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, (Map)dccVal.get("SearchTime"), "stb");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "stb");
 		}
 	}
 	
@@ -2058,7 +2064,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
     		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, (Map)dccVal.get("SearchTime"), "sb");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "sb");
 		}
 	}
 	
@@ -2214,7 +2220,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
     		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, (Map)dccVal.get("SearchTime"), "chtemp");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "chtemp");
 		}
 	}
 	

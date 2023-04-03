@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.mkpenc.common.model.CommonConstant;
 import com.mkpenc.dcc.common.mapper.BasDccOsmsMapper;
 import com.mkpenc.dcc.common.model.ComDccGrpTagInfo;
 import com.mkpenc.dcc.common.model.ComTagDccInfo;
@@ -20,6 +21,9 @@ import com.mkpenc.dcc.common.service.BasDccOsmsService;
 public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	
 	public String[] gFormat = new String[]{ "%.5f",     "%.4f",     "%.4f",     "%.4f",     "%.3f",     "%.3f",     "%.3f",     "%.2f",     "%.2f",     "%.2f",     "%.2f",     "%.1f",     "%.1f",     "%.1f",     "%.1f",     "%.0f"};
+	
+	@Autowired
+	private CommonConstant commonConstant;	
 	
 	@Autowired
 	private BasDccOsmsMapper basDccOsmsMapper;
@@ -222,7 +226,13 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	
 		Map rtnMap = new HashMap();
 		
-		String[] varValue = sqlQueryDcc(searchMap).split("\\|");
+		String[] varValue = null;
+		
+		if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {
+			varValue = sqlQueryDcc4hogi(searchMap).split("\\|");
+		}else {		
+			varValue = sqlQueryDcc(searchMap).split("\\|");
+		}
 
 		//*** Start getDccValue 에 포함 된 로직
     	if(varValue != null && varValue.length != 0) {
@@ -279,6 +289,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
    	
     	return rtnMap; 
 	}
+		
 	
 	private Map setDataConv(double fValue, ComTagDccInfo tagDccInfo, Map searchMap) {
 		
@@ -469,6 +480,82 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		return pStr;
 		
 	}
+	
+	private String sqlQueryDcc4hogi(Map searchMap) {		
+				
+		String pSCanTime ="";	
+				
+		Map scantime = basDccOsmsMapper.selectScanTime(searchMap);
+		
+		if(scantime != null && scantime.get("SCANTIME") != null) {
+			pSCanTime = scantime.get("SCANTIME") .toString();
+		}
+		
+		searchMap.put("pSCanTime", pSCanTime);
+	
+		List<Map> tblNoFldNoList = basDccOsmsMapper.selectTblNoFldNo(searchMap);
+		
+		String[] iTBLNO = new String[400];
+		String[] iFLDNO = new String[400];
+		String[] iTBLNO_GRP = new String[400];	
+		
+		int iTagCnt = 0;
+		int iTblCnt = 0;
+				
+		for(Map tblNoFldNo:tblNoFldNoList) {
+			iTBLNO[iTagCnt] = tblNoFldNo.get("TBLNO").toString();
+			iFLDNO[iTagCnt] = tblNoFldNo.get("FLDNO").toString();	
+			
+			int i=0;
+			for(i=0;i<iTblCnt;i++) {
+				if(iTBLNO[iTagCnt] == iTBLNO_GRP[i]) {
+					break;
+				}
+			}
+			
+			if(i == iTblCnt) {
+				iTBLNO_GRP[iTblCnt] = iTBLNO[iTagCnt];
+				iTblCnt = iTblCnt + 1;
+			}
+			
+			iTagCnt = iTagCnt + 1;			
+		}
+		
+		int iValCnt = 0;
+		List<Map> vValue = new ArrayList<Map>();
+		
+		 String pStr = pSCanTime + "|";
+		
+		for(int i=0;i<iTblCnt;i++) {
+			searchMap.put("tblnoGrp", iTBLNO_GRP[i]);
+			
+			vValue = basDccOsmsMapper.selectLogDccTrend4Hogi(searchMap);
+			
+			int j=0;
+	    	for(j=0;j<vValue.size();j++) {
+
+	    		String seq = vValue.get(j).get("SEQ") != null? vValue.get(j).get("SEQ").toString():"";
+	    	
+	    		if(iTBLNO.equals(seq)) {
+	    			break;
+	    		}
+	    	}
+	    	
+	    	 if(j >= vValue.size()) {
+	    		 pStr = pStr + "|";
+	    	 }else {
+	    		 // *** field 명 확인 필요 ***
+	    		// pStr = pStr + vValue.get(j).get("TVALUE"+ Integer.parseInt(iFLDNO)) +  "|";
+	    	 }
+
+		}
+		
+		
+		
+		return pStr;
+		
+	}
+
 	
 	// added by jhlee(23.02.28)
 	public List<Map> selectDccGrpTagListB(Map searchMap) {
