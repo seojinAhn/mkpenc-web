@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mkpenc.dcc.admin.model.DccSearchAdmin;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,6 +89,9 @@ public class DccTrendContentsController {
 		
 		if(request.getSession().getAttribute("USER_INFO") != null) {
 			getTrendData(dccSearchTrend,mav,userInfo);
+			//getGrpTagList(dccSearchTrend,mav);
+			
+			//changeGrpName(dccSearchTrend,mav);
 	    	
 			dccSearchTrend.setMenuName(this.menuName);
 			
@@ -102,6 +108,7 @@ public class DccTrendContentsController {
 	
 	private void getTrendData(DccSearchTrend dccSearchTrend, ModelAndView mav, MemberInfo userInfo) {
 		String strHogi = dccSearchTrend.getsHogi() == null ? "3" : dccSearchTrend.getsHogi();
+		String strXY = dccSearchTrend.getsXYGubun() == null ? "X" : dccSearchTrend.getsXYGubun();
     	String strGrpID = dccSearchTrend.getsGrpID() == null ? userInfo.getId() : dccSearchTrend.getsGrpID();
     	String strMenuNo = dccSearchTrend.getsMenuNo() == null ? "21" : dccSearchTrend.getsMenuNo();
     	String strUGrpNo = dccSearchTrend.getsUGrpNo() == null ? "" : dccSearchTrend.getsUGrpNo();
@@ -113,7 +120,7 @@ public class DccTrendContentsController {
     	
     	LocalDateTime endDate = LocalDateTime.now();
     	LocalDateTime startDate = endDate.minusMinutes(10);
-    	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     	
     	String mskStart = dccSearchTrend.getStartDate();
     	String mskEnd = dccSearchTrend.getEndDate();
@@ -172,38 +179,158 @@ public class DccTrendContentsController {
     	mav.addObject("DccGroupList",dccGroupList);
 	}
 	
-	private void changeGrpName(DccSearchTrend dccSearchTrend, ModelAndView mav) {
-		List<Map> arrTrendData = new ArrayList();
+	private void getGrpTagList(DccSearchTrend dccSearchTrend, ModelAndView mav) {
+		LocalDateTime endDate = LocalDateTime.now();
+    	LocalDateTime startDate = endDate.minusMinutes(10);
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+
+		String strHogi = dccSearchTrend.getsHogi() == null ? "3" : dccSearchTrend.getsHogi();
+		String strXY = dccSearchTrend.getsXYGubun() == null ? "X" : dccSearchTrend.getsXYGubun();
+    	String strGrpID = dccSearchTrend.getsGrpID() == null ? "" : dccSearchTrend.getsGrpID();
+    	String strMenuNo = dccSearchTrend.getsMenuNo() == null ? "21" : dccSearchTrend.getsMenuNo();
+    	String strUGrpNo = dccSearchTrend.getsUGrpNo() == null ? "" : dccSearchTrend.getsUGrpNo();
+    	String strDive = dccSearchTrend.getsDive() == null ? "D" : dccSearchTrend.getsDive();
 		
-		String strUGrpNo = dccSearchTrend.getsUGrpNo();
-		String strTimeGap = dccSearchTrend.getTxtTimeGap();
-		String strDive = dccSearchTrend.getsDive();
-		Long lGap = Long.parseLong(strTimeGap)*1000;
-		String strFast = "";
-		String sDtm = dccSearchTrend.getStartDate();
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-		String strStartTime = "";
-		String strEndTime = "";
+		Map searchMap = new HashMap();
+		searchMap.put("xyGubun",strXY);
+		searchMap.put("hogi",strHogi);
+		searchMap.put("dive",strDive);
+		searchMap.put("grpID",strGrpID);
+		searchMap.put("menuNo",strMenuNo);
+		searchMap.put("uGrpNo",strUGrpNo);
+		searchMap.put("startDate",dccSearchTrend.getStartDate() == null ? addDate("s",endDate.format(dtf)+".000",-650) : dccSearchTrend.getStartDate());
+		searchMap.put("endDate",dccSearchTrend.getEndDate() == null ? endDate.format(dtf)+".000" : dccSearchTrend.getEndDate());
+
+		List<ComTagDccInfo> dccGrpTagList = basDccOsmsService.getDccGrpTagList(searchMap);
+		Map dccVal = basDccOsmsService.getDccValue(searchMap, dccGrpTagList);
+
+		Map lblTagList = new HashMap();
+		Map lblValueList = new HashMap();
+		Map lblUnitList = new HashMap();
 		
-		Map serachMap = new HashMap();
-		serachMap.put("xyGubun",dccSearchTrend.getsXYGubun());
-		serachMap.put("hogi",dccSearchTrend.getsHogi());
-		serachMap.put("dive",dccSearchTrend.getsDive());
-		serachMap.put("grpID",dccSearchTrend.getsGrpID());
-		serachMap.put("menuNo",dccSearchTrend.getsMenuNo());
-		serachMap.put("uGrpNo",dccSearchTrend.getsUGrpNo());
-		
-		List<ComTagDccInfo> dccGrpTagList = new ArrayList();
-		List<Map> grpTagList = new ArrayList();
-		if( "D".equalsIgnoreCase(strDive) ) {
-			dccGrpTagList = basDccOsmsService.getDccGrpTagList(serachMap);
-		} else if( "B".equalsIgnoreCase(strDive) ) {
-			grpTagList = dccTrendService.getGrpTag(serachMap);
+		for( int ll=0;ll<dccGrpTagList.size();ll++ ) {
+			lblTagList.put(ll,dccGrpTagList.get(ll).getHogi()+dccGrpTagList.get(ll).getXYGubun()+" "+dccGrpTagList.get(ll).getDataLoop());
+			lblValueList.put(ll,((List) dccVal.get("lblDataList")).get(ll));
+			lblUnitList.put(ll,dccGrpTagList.get(ll).getUnit());
 		}
 		
+		List<Map> lblInfoList = new ArrayList();
+		lblInfoList.add(0,lblTagList);
+		lblInfoList.add(1,lblValueList);
+		lblInfoList.add(2,lblUnitList);
+		
+		mav.addObject("LblInfoList",lblInfoList);
+	}
+	
+	@RequestMapping(value="changeGrpName", method = { RequestMethod.POST })
+	@ResponseBody
+	public ModelAndView changeGrpName(DccSearchTrend dccSearchTrend, HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("jsonView");
+		
+		logger.info("############ realtimetrendfixed");
+		
+		LocalDateTime endDate = LocalDateTime.now();
+    	LocalDateTime startDate = endDate.minusMinutes(10);
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+		
+		if( dccSearchTrend.getHogiHeader() != null ) {
+    		if( dccSearchTrend.getHogi() == null ) dccSearchTrend.setsHogi(dccSearchTrend.getHogiHeader());
+    	} else {
+    		if( dccSearchTrend.getHogi() == null ) dccSearchTrend.setsHogi("3");
+    	}
+    	if( dccSearchTrend.getXyHeader() != null ) {
+    		if( dccSearchTrend.getXyGubun() == null ) dccSearchTrend.setsXYGubun(dccSearchTrend.getXyHeader());
+    	} else {
+    		if( dccSearchTrend.getXyGubun() == null ) dccSearchTrend.setsXYGubun("X");
+    	}
+		if( dccSearchTrend.getFixed() == null ) dccSearchTrend.setFixed("F");
+		if( dccSearchTrend.getgHis() == null ) dccSearchTrend.setgHis("R");
+		if( dccSearchTrend.getsDive() == null ) dccSearchTrend.setsDive("D");
+		if( dccSearchTrend.getgUseGap() == null ) dccSearchTrend.setgUseGap("0");
+		if( dccSearchTrend.getsMenuNo() == null ) dccSearchTrend.setsMenuNo("21");
+		if( dccSearchTrend.getsUGrpNo() == null ) dccSearchTrend.setsUGrpNo("");
+		if( dccSearchTrend.getTxtTimeGap() == null ) dccSearchTrend.setTxtTimeGap("5");
+		if( dccSearchTrend.getStartDate() == null ) dccSearchTrend.setStartDate(addDate("s",endDate.format(dtf)+".000",-650));
+		if( dccSearchTrend.getEndDate() == null ) dccSearchTrend.setEndDate(endDate.format(dtf)+".000");
+	    
+		MemberInfo mberInfo = (MemberInfo)request.getSession().getAttribute("USER_INFO");
+		DccSearchAdmin dccSearchAdmin = new DccSearchAdmin();
+		dccSearchAdmin.setUserId(mberInfo.getId());
+		MemberInfo userInfo = dccAdminService.selectMemberInfo(dccSearchAdmin);
+		
+		if(request.getSession().getAttribute("USER_INFO") != null) {
+			dccSearchTrend.setMenuName(this.menuName);
+			
+			//changeGrpName(dccSearchTrend,mav);
+			dccSearchTrend.setsUGrpNo(dccSearchTrend.getsUGrpNo() == null ? mberInfo.getId() : dccSearchTrend.getsUGrpNo());
+			
+			getGrpTagList(dccSearchTrend,mav);
+			
+			userInfo.setHogi(dccSearchTrend.getsHogi());
+			userInfo.setXyGubun(dccSearchTrend.getsXYGubun());
+			
+			mav.addObject("BaseSearch", dccSearchTrend);
+			mav.addObject("UserInfo",userInfo);
+		}
+	
+		return mav;
+	}
+	
+	private void changeGrpName(DccSearchTrend dccSearchTrend, ModelAndView mav) {
+		
+		logger.info("############ realtimetrendfixed");
+		
+		if( dccSearchTrend.getHogiHeader() != null ) {
+    		if( dccSearchTrend.getHogi() == null ) dccSearchTrend.setsHogi(dccSearchTrend.getHogiHeader());
+    	} else {
+    		if( dccSearchTrend.getHogi() == null ) dccSearchTrend.setsHogi("3");
+    	}
+    	if( dccSearchTrend.getXyHeader() != null ) {
+    		if( dccSearchTrend.getXyGubun() == null ) dccSearchTrend.setsXYGubun(dccSearchTrend.getXyHeader());
+    	} else {
+    		if( dccSearchTrend.getXyGubun() == null ) dccSearchTrend.setsXYGubun("X");
+    	}
+		if( dccSearchTrend.getFixed() == null ) dccSearchTrend.setFixed("F");
+		if( dccSearchTrend.getgHis() == null ) dccSearchTrend.setgHis("R");
+		if( dccSearchTrend.getsDive() == null ) dccSearchTrend.setsDive("D");
+		if( dccSearchTrend.getgUseGap() == null ) dccSearchTrend.setgUseGap("0");
+		if( dccSearchTrend.getsMenuNo() == null ) dccSearchTrend.setsMenuNo("21");
+		if( dccSearchTrend.getsUGrpNo() == null ) dccSearchTrend.setsUGrpNo("");
+		if( dccSearchTrend.getTxtTimeGap() == null ) dccSearchTrend.setTxtTimeGap("5");
+	    	
+		dccSearchTrend.setMenuName(this.menuName);
+		
+		String strDive = dccSearchTrend.getsDive();
+		
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		
+		Map searchMap = new HashMap();
+		searchMap.put("xyGubun",dccSearchTrend.getsXYGubun());
+		searchMap.put("hogi",dccSearchTrend.getsHogi());
+		searchMap.put("dive",dccSearchTrend.getsDive());
+		searchMap.put("grpID",dccSearchTrend.getsGrpID());
+		searchMap.put("menuNo",dccSearchTrend.getsMenuNo());
+		searchMap.put("uGrpNo",dccSearchTrend.getsUGrpNo());
+		searchMap.put("startDate",dccSearchTrend.getStartDate() == null ? addDate("s",now.format(dtf)+".000",-650) : dccSearchTrend.getStartDate());
+		searchMap.put("endDate",dccSearchTrend.getEndDate() == null ? now.format(dtf)+".000" : dccSearchTrend.getEndDate());
+		
+		System.out.println(searchMap.get("startDate")+" // "+searchMap.get("endDate"));
+		
+		List<ComTagDccInfo> dccGrpTagList = new ArrayList();
+		Map dccVal = new HashMap();
+		List<Map> grpTagList = new ArrayList();
+		if( "D".equalsIgnoreCase(strDive) ) {
+			dccGrpTagList = basDccOsmsService.getDccGrpTagList(searchMap);
+			dccVal = basDccOsmsService.getDccValue(searchMap, dccGrpTagList);
+		} else if( "B".equalsIgnoreCase(strDive) ) {
+			grpTagList = dccTrendService.getGrpTag(searchMap);
+		}
+		
+		System.out.println(dccGrpTagList.size());
 		if( dccGrpTagList.size() > 0 ) {
 			List<Map> lblValue = new ArrayList<Map>();
-			List<Map> lblTagNme = new ArrayList<Map>();
+			List<Map> lblTagName = new ArrayList<Map>();
 			List<Map> lblUnit = new ArrayList<Map>();
 			List<Map> txtMax = new ArrayList<Map>();
 			List<Map> txtMin = new ArrayList<Map>();
@@ -211,18 +338,19 @@ public class DccTrendContentsController {
 			List<Map> fLoAlarm = new ArrayList<Map>();
 			List<Map> fDtabHi = new ArrayList<Map>();
 			List<Map> fDtabLo = new ArrayList<Map>();
+
+			Map tmpValue = new HashMap();
+			Map tmpTagName = new HashMap();
+			Map tmpUnit = new HashMap();
+			Map tmpMax = new HashMap();
+			Map tmpMin = new HashMap();
+			Map tmpHiAlarm = new HashMap();
+			Map tmpLoAlarm = new HashMap();
+			Map tmpDtabHi = new HashMap();
+			Map tmpDtabLo = new HashMap();
 			
 			int idx=0;
 			for( ComTagDccInfo comTagDccInfo : dccGrpTagList ) {
-				Map tmpValue = new HashMap();
-				Map tmpTagName = new HashMap();
-				Map tmpUnit = new HashMap();
-				Map tmpMax = new HashMap();
-				Map tmpMin = new HashMap();
-				Map tmpHiAlarm = new HashMap();
-				Map tmpLoAlarm = new HashMap();
-				Map tmpDtabHi = new HashMap();
-				Map tmpDtabLo = new HashMap();
 				
 				tmpTagName.put(idx,comTagDccInfo.getHogi()+comTagDccInfo.getXYGubun()+" "+comTagDccInfo.getDataLoop());
 				tmpUnit.put(idx,comTagDccInfo.getUnit());
@@ -270,10 +398,90 @@ public class DccTrendContentsController {
 				
 				idx++;
 			}
+
+			mav.addObject("lblValue",dccVal.get("lblDataList"));
+			mav.addObject("lblTagName",tmpTagName);
+			mav.addObject("lblUnit",tmpUnit);
 		}
 		
-		//TrendView
+		getTrendView(dccSearchTrend, dccGrpTagList, grpTagList, searchMap, mav);
 		
+		mav.addObject("DccGrpTagList",dccGrpTagList);
+		
+	}
+	
+	private String addDate(String type, String dtm, int diff) {
+		LocalDateTime ldt = convDtm(dtm,true);
+		String rtv = "";
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		String millis = "";
+		String tmpMillis = dtm.indexOf(".") > -1 ? dtm.substring(dtm.indexOf(".")+1,dtm.length()) : "0";
+		
+		switch( type ) {
+		case "y":
+			rtv = ldt.plusYears(diff).format(dtf)+"."+tmpMillis;
+			break;
+		case "m":
+			rtv = ldt.plusMonths(diff).format(dtf)+"."+tmpMillis;
+			break;
+		case "d":
+			rtv = ldt.plusDays(diff).format(dtf)+"."+tmpMillis;
+			break;
+		case "h":
+			rtv = ldt.plusHours(diff).format(dtf)+"."+tmpMillis;
+			break;
+		case "n":
+			rtv = ldt.plusMinutes(diff).format(dtf)+"."+tmpMillis;
+			break;
+		case "s":
+			rtv = ldt.plusSeconds(diff).format(dtf)+"."+tmpMillis;
+			break;
+		case "mi":
+			int newMillis = Integer.parseInt(tmpMillis)*1000 + diff*1000;
+			
+			if( newMillis < 0 ) {
+				if( newMillis < -1000 ) {
+					if( newMillis%1000 == 0 ) {
+						rtv = ldt.minusSeconds((newMillis/1000)).format(dtf);
+					} else {
+						rtv = ldt.minusSeconds((newMillis/1000)+1).format(dtf);
+					}
+				}
+				millis = String.valueOf(1000 - (newMillis - (newMillis/1000)*1000));
+				
+				rtv = rtv+"."+millis;
+			} else if( newMillis >= 0 && newMillis < 1000 ){
+				millis = diff+"";
+				
+				rtv = rtv+"."+millis;
+			} else {
+				if( newMillis > 1000 ) rtv = ldt.plusSeconds((newMillis/1000)).format(dtf);
+				
+				millis = String.valueOf(newMillis - (newMillis/1000)*1000);
+				
+				rtv = rtv+"."+millis;
+			}
+			break;
+		}
+		
+		return rtv;
+	}
+		
+		
+	private void getTrendView(DccSearchTrend dccSearchTrend, List<ComTagDccInfo> dccGrpTagList, List<Map> grpTagList, Map searchMap, ModelAndView mav) {
+		
+		String strUGrpNo = dccSearchTrend.getsUGrpNo();
+		String strTimeGap = dccSearchTrend.getTxtTimeGap();
+		Long lGap = Long.parseLong(strTimeGap)*1000;
+		String strFast = "";
+		String sDtm = dccSearchTrend.getStartDate();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+		String strStartTime = "";
+		String strEndTime = "";
+
+		List<Map> arrTrendData = new ArrayList();
+		
+		//TrendView
 		for( int di=0;di<dccGrpTagList.size();di++ ) {
 			if( dccGrpTagList.get(di).getFASTIOCHK() != 1 ) {
 				if( Double.parseDouble(strTimeGap) < 5 ) {
@@ -360,11 +568,31 @@ public class DccTrendContentsController {
 			strEndTime = pScanTime;
 		}
 		
-		Duration durSec = Duration.between(convDtm(strStartTime,true),convDtm(strEndTime,true));
+		Duration durSec = Duration.between(convDtm(strStartTime.replaceAll("/", "-"),true),convDtm(strEndTime.replaceAll("/", "-"),true));
 		int nSec = (int) durSec.getSeconds();
 		int nBun = (nSec-nSec%60)/60;
 
-		List<Map> rsTrendListHistorical = dccTrendService.rsTrend5sGap(serachMap, dccGrpTagList, lGap, strFast);
+		//frmProgressBar.show
+		List<Map> rsTrendListHistorical = new ArrayList();
+		switch( dccSearchTrend.getsDive().toUpperCase() ) {
+			case "M":
+				//rsTrendListpHistorical = dccTrendService.rsTrend5sGapMark(searchMap, dccGrpTagList, lGap, strFast);
+				break;
+			case "A":
+				//rsTrendListpHistorical = dccTrendService.rsTrend5sGapAux(searchMap, dccGrpTagList, lGap, strFast);
+				break;
+			case "D":
+				if( "4".equals(dccSearchTrend.getsXYGubun()) ) {
+					//List<Map> rsTrendList = dccTrendService.rsTrend5sGap222(searchMap, dccGrpTagList, lGap, strFast);
+				} else {
+					rsTrendListHistorical = dccTrendService.rsTrend5sGap(searchMap, dccGrpTagList, lGap, strFast);
+				}
+				break;
+			case "B":
+				//rsTrendListpHistorical = dccTrendService.rsTrend5sGapDccMark(searchMap, dccGrpTagList, lGap, strFast);
+				break;
+		}
+		
 		int nEndPos = 0;
 		if( "R".equalsIgnoreCase(dccSearchTrend.getgHis()) ) {
 			nEndPos = nTrendWidth;
@@ -376,69 +604,441 @@ public class DccTrendContentsController {
 			
 		}
 		
-		
-		//tmRun_timer
-		if( dccGrpTagList.size() > 0 ) {
-			if( "F".equalsIgnoreCase(strFast) ) {
-				List<Map> rsTrendList = dccTrendService.rsTrend5sGap(serachMap, dccGrpTagList, lGap, strFast);
+		String sDateS = "";
+		String sDateE = "";
+		int iRow = 0;
+		for( int hi=0;hi<rsTrendListHistorical.size();hi++ ) {
+			String[] dccGrpTagArray = {
+				dccGrpTagList.get(hi).getIOTYPE(),
+				dccGrpTagList.get(hi).getIOBIT()+"",
+				dccGrpTagList.get(hi).getSaveCore()+"",
+				dccGrpTagList.get(hi).getBScale()+"",
+				dccGrpTagList.get(hi).getADDRESS(),
+				dccGrpTagList.get(hi).getFASTIOCHK()+""
+			};
+			Map rtnMapHistorical = new HashMap();
+			
+			for( int ht=0;ht<rsTrendListHistorical.get(hi).size();ht++ ) {
+				String RetVal = setDataConv(ht,rsTrendListHistorical.get(hi).get(ht).toString(),dccGrpTagArray,dccSearchTrend.getsMenuNo(),lGap);
 				
-				int nCnt = rsTrendList.size();
-				for( int tt=0;tt<nTrendWidth-nCnt;tt++ ) {
-					//rtnList.put(tt,)
+				int nRetValType = 0;
+				try {
+					if( RetVal == null ) {
+						nRetValType = 2;
+					} else {
+						int tmpN = Integer.parseInt(RetVal);
+						nRetValType = 0;
+					}
+				} catch( NumberFormatException nfe ) {
+					nRetValType = 1;
 				}
 				
-				for( int tt=nTrendWidth-nCnt;tt<nTrendWidth;tt++ ) {
-					String[] dccGrpTagArray = {
-						dccGrpTagList.get(tt).getIOTYPE(),
-						dccGrpTagList.get(tt).getIOBIT()+"",
-						dccGrpTagList.get(tt).getSaveCore()+"",
-						dccGrpTagList.get(tt).getBScale()+"",
-						dccGrpTagList.get(tt).getADDRESS(),
-						dccGrpTagList.get(tt).getFASTIOCHK()+""
-					};
-
-					Map rtnMap = new HashMap();
-					for( int st=0;st<rsTrendList.get(tt).size();st++ ) {
-						String RetVal = setDataConv(st,rsTrendList.get(tt).get(st).toString(),dccGrpTagArray,dccSearchTrend.getsMenuNo(),lGap);
-						
-						int nRetValType = 0;
-						try {
-							if( RetVal == null ) {
-								nRetValType = 2;
-							} else {
-								int tmpN = Integer.parseInt(RetVal);
-								nRetValType = 0;
+				if( nRetValType == 0 ) {
+					rtnMapHistorical.put(ht,Integer.parseInt(RetVal)*1000+"");
+					
+					sDateS = RetVal;
+					iRow++;
+				} else if( nRetValType == 1 ) {
+					rtnMapHistorical.put(ht,cnstErr+"");
+				} else {
+					rtnMapHistorical.put(ht,cnstNull+"");
+				}
+			}
+			Map timeNPosH = new HashMap();
+			timeNPosH.put("m_data",rtnMapHistorical);
+			timeNPosH.put("m_time",rsTrendListHistorical.get(hi).get(0).toString());
+			timeNPosH.put("m_xpos",hi+"");
+			
+			arrTrendData.add(hi,timeNPosH);
+		}
+		
+		LocalDateTime now = LocalDateTime.now();
+		int nDateDiff = (int) Duration.between(now,convDtm(strStartTime,true)).getSeconds();
+		if( Math.abs((nDateDiff-nDateDiff%60)/60) > 20 ) {
+			sDateE = arrTrendData.get(nEndPos).toString();
+			
+			if( !"".equals(sDateS) && !"".equals(sDateE) ) {
+				if( !sDateS.equals(sDateE) ) {
+					searchMap.replace("startDate",sDateS);
+					searchMap.replace("endDate",sDateE);
+					List<Map> rsTrendListHistorical2 = dccTrendService.rsTrend5sGap(searchMap, dccGrpTagList, lGap, strFast);
+					
+					int iPoint = 0;
+					if( rsTrendListHistorical2.size() < 1 ) {
+						iPoint = -1;
+					} else {
+						iPoint = rsTrendListHistorical2.size();
+					}
+					
+					for( int subi=0;subi<nEndPos;subi++ ) {
+						if( iPoint > (subi-iRow) ) {
+							arrTrendData.get(subi).replace("m_time", rsTrendListHistorical2.get(subi-iRow).get(0).toString());
+							arrTrendData.get(subi).replace("m_xpos", subi+"");
+							
+							for( int subj=0;subj<rsTrendListHistorical.size();subj++ ) {
+								if( rsTrendListHistorical2.get(subi-iRow).get(subj) == null || "".equals(rsTrendListHistorical2.get(subi-iRow).get(subj)) ) {
+									((Map) arrTrendData.get(subi).get("m_data")).replace(subj,cnstNull+"");
+								} else {
+									switch( dccSearchTrend.getsDive().toUpperCase() ) {
+									case "M":
+										//((Map) arrTrendData.get(subi).get("m_data")).replace(subj,CheckValueMark(rsTrendListHistorical2.get(subi-iRow).get(subj).toString()));
+										break;
+									case "A":
+										//((Map) arrTrendData.get(subi).get("m_data")).replace(subj,CheckValueAux(rsTrendListHistorical2.get(subi-iRow).get(subj).toString()));
+										break;
+									case "D":
+										String[] dccGrpTagArray = {
+											dccGrpTagList.get(subi-iRow).getIOTYPE(),
+											dccGrpTagList.get(subi-iRow).getIOBIT()+"",
+											dccGrpTagList.get(subi-iRow).getSaveCore()+"",
+											dccGrpTagList.get(subi-iRow).getBScale()+"",
+											dccGrpTagList.get(subi-iRow).getADDRESS(),
+											dccGrpTagList.get(subi-iRow).getFASTIOCHK()+""
+										};
+										String RetVal2 = setDataConv(subj,rsTrendListHistorical.get(subi-iRow).get(subj).toString(),dccGrpTagArray,dccSearchTrend.getsMenuNo(),lGap);
+										
+										int nRetValType = 0;
+										int tmpN = 0;
+										try {
+											if( RetVal2 == null ) {
+												nRetValType = 2;
+											} else {
+												tmpN = Integer.parseInt(RetVal2);
+												nRetValType = 0;
+											}
+										} catch( NumberFormatException nfe ) {
+											nRetValType = 1;
+										}
+										
+										if( nRetValType == 0 ) {
+											if( "AI".equalsIgnoreCase(dccGrpTagArray[0]) && "2753".equals(dccGrpTagArray[4]) || "2754".equals(dccGrpTagArray[4]) ) {
+												((Map) arrTrendData.get(subi).get("m_data")).replace(subj,tmpN*1000+"");
+											} else {
+												((Map) arrTrendData.get(subi).get("m_data")).replace(subj,RetVal2);
+											}
+										} else if( nRetValType == 1 ) {
+											((Map) arrTrendData.get(subi).get("m_data")).replace(subj,cnstErr+"");
+										} else {
+											((Map) arrTrendData.get(subi).get("m_data")).replace(subj,cnstNull+"");
+										}
+										break;
+									}
+								}
 							}
-						} catch( NumberFormatException nfe ) {
-							nRetValType = 1;
-						}
-						
-						if( nRetValType == 0 ) {
-							rtnMap.put(st,RetVal);
-						} else if( nRetValType == 1 ) {
-							rtnMap.put(st,cnstErr+"");
 						} else {
-							rtnMap.put(st,cnstNull+"");
+							break;
 						}
 					}
-					Map timeNPos = new HashMap();
-					timeNPos.put("m_data",rtnMap);
-					timeNPos.put("m_time",rsTrendList.get(tt).get(0).toString());
-					timeNPos.put("m_xpos",tt+"");
-					
-					arrTrendData.add(tt,timeNPos);
 				}
-				
-				String lblDate = arrTrendData.get(nTrendWidth-1).get("m_time").toString();
-				String lblDate2 = lblDate;
-				Map lblValue = (Map) arrTrendData.get(nTrendWidth-1).get("m_data");
-			} else {
-				//GetTrendRealValue
 			}
 		}
 		
-		//String lblDate = arrTrendData(gnEndPos-1).m_time;
+		mav.addObject("ArrTrendData",arrTrendData);
 	}
+	
+	private List<Map> getRsTrend5sGap(DccSearchTrend dccSearchTrend, List<ComTagDccInfo> dccGrpTagList, String strFast, boolean bOldFlag, long lGap) {
+		List<Map> rtnMapList = new ArrayList();
+		int nRes = 0;
+		String procName = "";
+		Map procInfo = new HashMap();
+		String qryStr = "";
+		int size = dccGrpTagList.size();
+		
+		String strStartDate = dccSearchTrend.getStartDate() == null ? "" : dccSearchTrend.getStartDate();
+		String strEndDate = dccSearchTrend.getEndDate() == null ? "" : dccSearchTrend.getEndDate();
+		
+		if( !"".equals(strStartDate) && !"".equals(strEndDate) ) {
+			if( "F".equalsIgnoreCase(strFast) && !"".equals(strStartDate) ) {
+				if( strStartDate.length() > 19 ) strStartDate = strStartDate.substring(0,19);
+			}
+			
+			String tickCount = System.currentTimeMillis()+"";
+			
+			procName = "DccTrend"+strStartDate.replaceAll("-","").replaceAll(" ","").replaceAll(":","").replaceAll(".","")+tickCount.substring(tickCount.length()-4,tickCount.length());
+			
+			// craete tmp procedure
+			qryStr = "CREATE PROCEDURE " + procName + " @timegap as int AS \n"
+				   + " declare @maxdate datetime \n"
+				   + " declare @mindate datetime \n"
+				   + " declare @curdate datetime \n"
+				   + " set @mindate = convert(datetime, '"+strStartDate+"') \n"
+				   + " set @maxdate = convert(datetime, '"+strEndDate+"') \n"
+				   + " set @curdate = convert(datetime, '"+strStartDate+"') \n";
+			
+			for( int i=1;i<size+1;i++ ) {
+				qryStr += " declare @thistime"+i+" datetime \n";
+			}
+			
+			qryStr += " declare @stime datetime \n"
+					+ " declare @etime datetime \n"
+					+ " declare @thistime datetime \n"
+					+ " declare @now_mintime datetime \n"
+					+ " create table #temp( \n"
+					+ "     Scantime datetime, \n";
+			
+			for( int i=1;i<size+1;i++ ) {
+				if( i == size+1 ) {
+					qryStr += "     tvalue"+i+" float \n";
+				} else {
+					qryStr += "     tvalue"+i+" float, \n";
+				}
+			}
+			
+			qryStr += " ) \n"
+					+ " create table #OnlyDate( \n";
+			
+			for( int i=1;i<size+1;i++ ) {
+				qryStr += "     thistime"+i+" datetime, \n";
+			}
+			
+			qryStr += "     OutSeq int \n"
+					+ " ) "
+					+ " create table #OnlyDate2( \n";
+			
+			for( int i=1;i<size+1;i++ ) {
+				qryStr += "     thistime"+i+" datetime, \n";
+			}
+			
+			qryStr += "     OutSeq int \n"
+					+ " ) "
+					+ " declare @iSeq int \n"
+					+ " declare @Chk smallint \n"
+					+ " set @Chk = 0 \n"
+					+ " set @iSeq = 0 \n"
+					+ " select @now_mintime = min(Scantime) from log_4dcc_trend \n"
+					+ " while @curdate <= @maxdate \n"
+					+ " begin \n"
+					+ "     set @stime = @curdate \n";
+			
+			if( "F".equalsIgnoreCase(strFast) ) {
+				qryStr += "     set @etime = dateadd(ms, 800, @curdate) \n";
+				
+				for( int i=1;i<size+1;i++ ) {
+					qryStr += "     SELECT @thistime"+i+" = min(Scantime) FROM LOG_"+dccGrpTagList.get(i-1).getHogi()+"DCC_TREND_FAST WHERE SCANTIME BETWEEN @stime AND @etime AND Seq = 1 \n"
+							+ "     set @thistime"+i+" = isnull(@thistime"+i+", @curdate) \n";
+				}
+				
+				qryStr += "     set @iSeq = @iSeq + 1 \n"
+						+ " insert into #OnlyDate(";
+				
+				for( int i=1;i<size+1;i++ ) {
+					qryStr += "thistime"+i+",";
+				}
+				
+				qryStr += "OutSeq) values (";
+				
+				for( int i=1;i<size+1;i++ ) {
+					qryStr += "@thistime"+i+",";
+				}
+				
+				qryStr += "@iSeq) \n";
+			} else {
+				if( bOldFlag ) {
+					qryStr += "     set @etime = dateadd(ms, 60000, @curdate) \n";
+				} else {
+					qryStr += "     set @etime = dateadd(ms, 7000, @curdate) \n";
+				}
+				
+				qryStr += "     if (@now_mintime > @etime)  \n"
+						+ "        begin \n";
+				
+				for( int i=1;i<size+1;i++ ) {
+					qryStr += "        SELECT @thistime"+i+" = min(Scantime) FROM LOG_"+dccGrpTagList.get(i-1).getHogi()+"DCC_TREND_HIST WHERE SCANTIME BETWEEN @stime AND @etime AND Seq = "+dccGrpTagList.get(i-1).getTBLNO()+" \n"
+							+ "        set @thistime"+i+" = isnull(@thistime"+i+", @curdate) \n";
+				}
+				
+				qryStr += "     set @iSeq = @iSeq + 1 \n"
+						+ " insert into #OnlyDate2(";
+				
+				for( int i=1;i<size+1;i++ ) {
+					qryStr += "thistime"+i+",";
+				}
+				
+				qryStr += "OutSeq) values (";
+				
+				for( int i=1;i<size+1;i++ ) {
+					qryStr += "@thistime"+i+",";
+				}
+				
+				qryStr += "@iSeq) \n"
+						+ "        End \n"
+						+ "     Else \n"
+						+ "        begin \n";
+				
+				for( int i=1;i<size+1;i++ ) {
+					qryStr += "        SELECT @thistime"+i+" = min(Scantime) FROM LOG_"+dccGrpTagList.get(i-1).getHogi()+"DCC_TREND WHERE SCANTIME BETWEEN @stime AND @etime AND Seq = "+dccGrpTagList.get(i-1).getTBLNO()+" \n"
+							+ "        set @thistime"+i+" = isnull(@thistime"+i+", @curdate) \n";
+				}
+				
+				qryStr += "     set @iSeq = @iSeq + 1 \n"
+						+ " insert into #OnlyDate(";
+				
+				for( int i=1;i<size+1;i++ ) {
+					qryStr += "thistime"+i+",";
+				}
+				
+				qryStr += "OutSeq) values (";
+				
+				for( int i=1;i<size+1;i++ ) {
+					qryStr += "@thistime"+i+",";
+				}
+				
+				qryStr += "@iSeq) \n"
+						+ "        End \n";
+			}
+			
+			qryStr += "         set @curdate = dateadd(ms, @timegap, @curdate) \n"
+					+ "         if @curdate = @thistime1 \n"
+					+ "            begin \n"
+					+ "            set @curdate = dateadd(ms, 1000, @curdate) \n"
+					+ "            End \n"
+					+ " End\n";
+			
+			if( !"F".equalsIgnoreCase(strFast) ) {
+				qryStr += " insert into #temp(Scantime";
+				
+				for( int i=1;i<size+1;i++ ) {
+					qryStr += ",tvalue"+i;
+				}
+				
+				qryStr += ") \n"
+						+ " select a.thistime1,";
+				
+				for( int i=1;i<size+1;i++ ) {
+					if( i == size+1 ) {
+						qryStr += "         'tvalue"+i+"' = (select tvalue"+dccGrpTagList.get(i-1).getFLDNO()+" from LOG_"+dccGrpTagList.get(i-1).getHogi()+"DCC_TREND_HIST where Scantime = a.thistime"+i+" and Seq = "+dccGrpTagList.get(i-1).getTBLNO()+") \n";
+					} else {
+						qryStr += "         'tvalue"+i+"' = (select tvalue"+dccGrpTagList.get(i-1).getFLDNO()+" from LOG_"+dccGrpTagList.get(i-1).getHogi()+"DCC_TREND_HIST where Scantime = a.thistime"+i+" and Seq = "+dccGrpTagList.get(i-1).getTBLNO()+"), \n";
+					}
+				}
+				
+				qryStr += "      from #OnlyDate2 a \n"
+						+ "      order by OutSeq   \n";
+			}
+			
+			qryStr += " insert into #temp(Scantime";
+			
+			for( int i=1;i<size+1;i++ ) {
+				qryStr += ",tvalue"+i;
+			}
+			
+			qryStr += ") \n"
+					+ " select a.thistime1,";
+			
+			for( int i=1;i<size+1;i++ ) {
+				if( i == size+1 ) {
+					if( "F".equalsIgnoreCase(strFast) ) {
+						qryStr += "         'tvalue"+i+"' = (select tvalue"+dccGrpTagList.get(i-1).getFLDNO_FAST()+" from LOG_"+dccGrpTagList.get(i-1).getHogi()+"DCC_TREND_FAST where Scantime = a.thistime"+i+" and Seq = 1) \n";
+					} else {
+						qryStr += "         'tvalue"+i+"' = (select tvalue"+dccGrpTagList.get(i-1).getFLDNO()+" from LOG_"+dccGrpTagList.get(i-1).getHogi()+"DCC_TREND where Scantime = a.thistime"+i+" and Seq = "+dccGrpTagList.get(i-1).getTBLNO()+") \n";
+					}
+				} else {
+					if( "F".equalsIgnoreCase(strFast) ) {
+						qryStr += "         'tvalue"+i+"' = (select tvalue"+dccGrpTagList.get(i-1).getFLDNO_FAST()+" from LOG_"+dccGrpTagList.get(i-1).getHogi()+"DCC_TREND_FAST where Scantime = a.thistime"+i+" and Seq = 1), \n";
+					} else {
+						qryStr += "         'tvalue"+i+"' = (select tvalue"+dccGrpTagList.get(i-1).getFLDNO()+" from LOG_"+dccGrpTagList.get(i-1).getHogi()+"DCC_TREND where Scantime = a.thistime"+i+" and Seq = "+dccGrpTagList.get(i-1).getTBLNO()+"), \n";
+					}
+				}
+			}
+			
+			qryStr += "      from #OnlyDate a \n"
+					+ "      order by OutSeq   \n"
+					+ " delete from #temp where Scantime is null \n";
+			
+			if( "F".equalsIgnoreCase(strFast) ) {
+				qryStr += " select convert(char(23),Scantime,121)";
+			} else {
+				qryStr += " select convert(char(19),Scantime,121)";
+			}
+			
+			for( int i=1;i<size+1;i++ ) {
+				qryStr += ",tvalue"+i;
+			}
+			
+			qryStr += "  from #temp\n";
+			
+			nRes = dccTrendService.manageTrendProc(qryStr);
+			
+			if( nRes > 0 ) {
+				// exec tmp procedure
+				procInfo.put("procName",procName);
+				procInfo.put("param",lGap+"");
+				
+				rtnMapList = dccTrendService.callTrendProc(procInfo);
+			}
+			
+			// drop tmp procedure
+			qryStr = "DROP PROCEDURE " + procName;
+			nRes = dccTrendService.manageTrendProc(qryStr);
+		}
+			
+		return rtnMapList;
+	}
+	
+//	public void tmRum_timer (DccSearchTrend dccSearchTrend) {
+//		
+//		//tmRun_timer
+//		if( dccGrpTagList.size() > 0 ) {
+//			if( "F".equalsIgnoreCase(strFast) ) {
+//				List<Map> rsTrendList = dccTrendService.rsTrend5sGap(searchMap, dccGrpTagList, lGap, strFast);
+//				
+//				int nCnt = rsTrendList.size();
+//				for( int tt=0;tt<nTrendWidth-nCnt;tt++ ) {
+//					//rtnList.put(tt,)
+//				}
+//				
+//				for( int tt=nTrendWidth-nCnt;tt<nTrendWidth;tt++ ) {
+//					String[] dccGrpTagArray = {
+//						dccGrpTagList.get(tt).getIOTYPE(),
+//						dccGrpTagList.get(tt).getIOBIT()+"",
+//						dccGrpTagList.get(tt).getSaveCore()+"",
+//						dccGrpTagList.get(tt).getBScale()+"",
+//						dccGrpTagList.get(tt).getADDRESS(),
+//						dccGrpTagList.get(tt).getFASTIOCHK()+""
+//					};
+//
+//					Map rtnMap = new HashMap();
+//					for( int st=0;st<rsTrendList.get(tt).size();st++ ) {
+//						String RetVal = setDataConv(st,rsTrendList.get(tt).get(st).toString(),dccGrpTagArray,dccSearchTrend.getsMenuNo(),lGap);
+//						
+//						int nRetValType = 0;
+//						try {
+//							if( RetVal == null ) {
+//								nRetValType = 2;
+//							} else {
+//								int tmpN = Integer.parseInt(RetVal);
+//								nRetValType = 0;
+//							}
+//						} catch( NumberFormatException nfe ) {
+//							nRetValType = 1;
+//						}
+//						
+//						if( nRetValType == 0 ) {
+//							rtnMap.put(st,RetVal);
+//						} else if( nRetValType == 1 ) {
+//							rtnMap.put(st,cnstErr+"");
+//						} else {
+//							rtnMap.put(st,cnstNull+"");
+//						}
+//					}
+//					Map timeNPos = new HashMap();
+//					timeNPos.put("m_data",rtnMap);
+//					timeNPos.put("m_time",rsTrendList.get(tt).get(0).toString());
+//					timeNPos.put("m_xpos",tt+"");
+//					
+//					arrTrendData.add(tt,timeNPos);
+//				}
+//				
+//				String lblDate = arrTrendData.get(nTrendWidth-1).get("m_time").toString();
+//				String lblDate2 = lblDate;
+//				Map lblValue = (Map) arrTrendData.get(nTrendWidth-1).get("m_data");
+//			} else {
+//				//GetTrendRealValue
+//			}
+//		}
+//		
+//		//String lblDate = arrTrendData(gnEndPos-1).m_time;
+//	}
 	
 	private String setDataConv(int i, String fVal, String[] dccGrpTagArray, String sMenuNo, Long lGap) {
 		Map dataConv = new HashMap();
@@ -499,14 +1099,24 @@ public class DccTrendContentsController {
 	private LocalDateTime convDtm(String date, boolean isMilli) {
 		String[] pDate = date.split(" ")[0].split("-");
 		String[] pTime = date.split(" ")[1].split(":");
-		if( !isMilli ) {
-			pTime[2] = pTime[2].indexOf(".") > -1 ? pTime[2].substring(0,pTime[2].indexOf(".")) : pTime[2];
+		String millis = "000";
+
+		pTime[2] = pTime[2].indexOf(".") > -1 ? pTime[2].substring(0,pTime[2].indexOf(".")) : pTime[2];
+		if( isMilli ) {
+			if( pTime[2].indexOf(".") > -1 ) {
+				millis = pTime[2].substring(pTime[2].indexOf(".")+1,pTime[2].length());
+			}
+		
+			LocalDateTime ldt = LocalDateTime.of(Integer.parseInt(pDate[0]),Integer.parseInt(pDate[1]),Integer.parseInt(pDate[2]),
+												Integer.parseInt(pTime[0]),Integer.parseInt(pTime[1]),Integer.parseInt(pTime[2]),Integer.parseInt(millis));
+			
+			return ldt;
+		} else {
+			LocalDateTime ldt = LocalDateTime.of(Integer.parseInt(pDate[0]),Integer.parseInt(pDate[1]),Integer.parseInt(pDate[2]),
+												Integer.parseInt(pTime[0]),Integer.parseInt(pTime[1]),Integer.parseInt(pTime[2]));
+
+			return ldt;
 		}
-		
-		LocalDateTime ldt = LocalDateTime.of(Integer.parseInt(pDate[0]),Integer.parseInt(pDate[1]),Integer.parseInt(pDate[2]),
-											Integer.parseInt(pTime[0]),Integer.parseInt(pTime[1]),Integer.parseInt(pTime[2]));
-		
-		return ldt;
 	}
 	
 	@RequestMapping("realtimetrendspare")
