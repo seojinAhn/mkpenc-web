@@ -21,6 +21,8 @@ public interface BasDccMimicMapper {
 	
 	List<Map> selectLogDccTrend(Map selectMap);
 	
+	List<Map> selectLogDccTrend4Hogi(Map selectMap);
+	
 	String selectSeqInfo(DccSearchMimic searchMimic);
 	
 	int updateTagInfo(DccSearchMimic searchMimic);
