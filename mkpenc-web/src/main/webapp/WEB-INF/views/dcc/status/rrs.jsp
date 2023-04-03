@@ -19,6 +19,7 @@
 <script type="text/javascript" src="<c:url value="/resources/js/status.js" />" charset="utf-8"></script>
 
 <script type="text/javascript">
+
 	var timerOn = false;
 	var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
 	var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
@@ -31,17 +32,16 @@
 		${DccTagInfoList[20].iSeq},${DccTagInfoList[21].iSeq},${DccTagInfoList[22].iSeq},${DccTagInfoList[23].iSeq},${DccTagInfoList[24].iSeq},
 		${DccTagInfoList[25].iSeq},${DccTagInfoList[26].iSeq},${DccTagInfoList[27].iSeq}
 	];
-/*
+	
 	var tDccTrendValue = [
-		'${DccLogTrendInfoListOrg[0].TVALUE1}','${DccLogTrendInfoListOrg[0].TVALUE2}','${DccLogTrendInfoListOrg[0].TVALUE3}','${DccLogTrendInfoListOrg[0].TVALUE4}',
-		'${DccLogTrendInfoListOrg[0].TVALUE5}','${DccLogTrendInfoListOrg[0].TVALUE6}','${DccLogTrendInfoListOrg[0].TVALUE7}','${DccLogTrendInfoListOrg[0].TVALUE8}',
-		'${DccLogTrendInfoListOrg[0].TVALUE9}','${DccLogTrendInfoListOrg[0].TVALUE10}','${DccLogTrendInfoListOrg[0].TVALUE11}','${DccLogTrendInfoListOrg[0].TVALUE12}',
-		'${DccLogTrendInfoListOrg[0].TVALUE13}','${DccLogTrendInfoListOrg[0].TVALUE14}','${DccLogTrendInfoListOrg[0].TVALUE15}','${DccLogTrendInfoListOrg[0].TVALUE16}',
-		'${DccLogTrendInfoListOrg[0].TVALUE17}','${DccLogTrendInfoListOrg[0].TVALUE18}','${DccLogTrendInfoListOrg[0].TVALUE19}','${DccLogTrendInfoListOrg[0].TVALUE20}',
-		'${DccLogTrendInfoListOrg[0].TVALUE21}','${DccLogTrendInfoListOrg[0].TVALUE22}','${DccLogTrendInfoListOrg[0].TVALUE23}','${DccLogTrendInfoListOrg[0].TVALUE24}',
-		'${DccLogTrendInfoListOrg[0].TVALUE25}','${DccLogTrendInfoListOrg[0].TVALUE26}','${DccLogTrendInfoListOrg[0].TVALUE27}','${DccLogTrendInfoListOrg[0].TVALUE28}'
+		'${lblDataList[0].fValue}','${lblDataList[1].fValue}','${lblDataList[2].fValue}','${lblDataList[3].fValue}','${lblDataList[4].fValue}',
+		'${lblDataList[5].fValue}','${lblDataList[6].fValue}','${lblDataList[7].fValue}','${lblDataList[8].fValue}','${lblDataList[9].fValue}',
+		'${lblDataList[10].fValue}','${lblDataList[11].fValue}','${lblDataList[12].fValue}','${lblDataList[13].fValue}','${lblDataList[14].fValue}',
+		'${lblDataList[15].fValue}','${lblDataList[16].fValue}','${lblDataList[17].fValue}','${lblDataList[18].fValue}','${lblDataList[19].fValue}',
+		'${lblDataList[20].fValue}','${lblDataList[21].fValue}','${lblDataList[22].fValue}','${lblDataList[23].fValue}','${lblDataList[24].fValue}',
+		'${lblDataList[25].fValue}','${lblDataList[26].fValue}','${lblDataList[27].fValue}'
 	];
-	*/
+	
 	var tDccTagXy = [
 		'${DccTagInfoList[0].XYGubun}','${DccTagInfoList[1].XYGubun}','${DccTagInfoList[2].XYGubun}','${DccTagInfoList[3].XYGubun}','${DccTagInfoList[4].XYGubun}',
 		'${DccTagInfoList[5].XYGubun}','${DccTagInfoList[6].XYGubun}','${DccTagInfoList[7].XYGubun}','${DccTagInfoList[8].XYGubun}','${DccTagInfoList[9].XYGubun}',
@@ -64,16 +64,27 @@
 					,{name:"address",value:""},{name:"ioBit",value:""},{name:"descr",value:""}];
 
 	function showTag(tagNo,iSeq) {
+		
 		if(${UserInfo.grade} == '1' || ${UserInfo.grade} == '2') { // 나중에 grade 1 은 삭제할 것
 			timerOn = false;
+		
 			$("#tagNo").val(tagNo);
-			var infos = tToolTipText[tagNo];
-			$("#txtHogi").val(infos.substring(infos.indexOf('[')+1,infos.indexOf(':')));
+			
+			var toolTip = tToolTipText[tagNo];
+			var strDescr = toolTip.substring(0, toolTip.lastIndexOf('['));
+			var infos =  toolTip.substring(toolTip.lastIndexOf('[')+1, toolTip.lastIndexOf(']')).split(":");
+
+			$("#txtHogi").val(infos[0]);
 	        $("#txtXyGubun").val(tDccTagXy[tagNo]);
-	        $("#txtDescr").val(infos.substring(0,infos.indexOf('[')));
-	        $("#txtIoType").val(infos.substring(infos.indexOf(':')+1,infos.indexOf('-')));
-	        $("#txtAddress").val(infos.substring(infos.indexOf('-')+1,infos.lastIndexOf(':')));
-	        $("#txtIoBit").val(infos.substring(infos.lastIndexOf(':')+1,infos.indexOf(']')));
+	        $("#txtDescr").val(strDescr);
+	        $("#txtIoType").val(infos[1].substring(0,infos[1].indexOf('-')));
+	        $("#txtAddress").val(infos[1].substring(infos[1].indexOf('-')+1));
+	        if(infos[2] != null){
+	         	$("#txtIoBit").val(infos[2]);
+	        }else {
+	         	$("#txtIoBit").val("");
+	        }
+	        
 			openLayer('modal_2');
 		} else {
 			console.log('Not enough permission...');
@@ -98,6 +109,7 @@
 	}
 	
 	function setFontColor() {
+		
 		var tDccTagAlarm = [
 			${DccTagInfoList[0].alarmType},${DccTagInfoList[1].alarmType},${DccTagInfoList[2].alarmType},${DccTagInfoList[3].alarmType},${DccTagInfoList[4].alarmType},
 			${DccTagInfoList[5].alarmType},${DccTagInfoList[6].alarmType},${DccTagInfoList[7].alarmType},${DccTagInfoList[8].alarmType},${DccTagInfoList[9].alarmType},
@@ -196,6 +208,7 @@
 			}
 			setTimer(hogiHeader,xyHeader,0);
 		});
+		
 		$(document.body).delegate('#dccStatusRRSForm label', 'dblclick', function() {
 			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
 			if( cId != null && cId != '' && cId != 'undefined' ) {
@@ -434,8 +447,8 @@
                         <th>ALTERNATE SETPT</th>
                         <td class="tc">
                             <div class="fx_form">
-                                <label id="0" class="full flex_end">${lblDataList[0].fValue}asdfasdf</label>
-                                <label id="unit0" class="full">${DccTagInfoList[0].unit}aaaa</label>
+                                <label id="0" class="full flex_end">${lblDataList[0].fValue}</label>
+                                <label id="unit0" class="full">${DccTagInfoList[0].unit}</label>
                             </div>
                         </td>
                         <td class="tc">

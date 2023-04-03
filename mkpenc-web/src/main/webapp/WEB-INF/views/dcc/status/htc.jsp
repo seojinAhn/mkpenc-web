@@ -35,69 +35,52 @@
 	];
 	
 	var tDccTagXy = [
-		'${DccTagInfoList[0].xyGubun}','${DccTagInfoList[1].xyGubun}','${DccTagInfoList[2].xyGubun}','${DccTagInfoList[3].xyGubun}','${DccTagInfoList[4].xyGubun}',
-		'${DccTagInfoList[5].xyGubun}','${DccTagInfoList[6].xyGubun}','${DccTagInfoList[7].xyGubun}','${DccTagInfoList[8].xyGubun}','${DccTagInfoList[9].xyGubun}',
-		'${DccTagInfoList[10].xyGubun}','${DccTagInfoList[11].xyGubun}','${DccTagInfoList[12].xyGubun}','${DccTagInfoList[13].xyGubun}','${DccTagInfoList[14].xyGubun}',
-		'${DccTagInfoList[15].xyGubun}','${DccTagInfoList[16].xyGubun}','${DccTagInfoList[17].xyGubun}','${DccTagInfoList[18].xyGubun}','${DccTagInfoList[19].xyGubun}',
-		'${DccTagInfoList[20].xyGubun}','${DccTagInfoList[21].xyGubun}','${DccTagInfoList[22].xyGubun}','${DccTagInfoList[23].xyGubun}','${DccTagInfoList[24].xyGubun}',
-		'${DccTagInfoList[25].xyGubun}','${DccTagInfoList[26].xyGubun}','${DccTagInfoList[27].xyGubun}','${DccTagInfoList[28].xyGubun}','${DccTagInfoList[29].xyGubun}',
-		'${DccTagInfoList[30].xyGubun}','${DccTagInfoList[31].xyGubun}','${DccTagInfoList[32].xyGubun}','${DccTagInfoList[33].xyGubun}','${DccTagInfoList[34].xyGubun}',
-		'${DccTagInfoList[35].xyGubun}'
+		'${DccTagInfoList[0].XYGubun}','${DccTagInfoList[1].XYGubun}','${DccTagInfoList[2].XYGubun}','${DccTagInfoList[3].XYGubun}','${DccTagInfoList[4].XYGubun}',
+		'${DccTagInfoList[5].XYGubun}','${DccTagInfoList[6].XYGubun}','${DccTagInfoList[7].XYGubun}','${DccTagInfoList[8].XYGubun}','${DccTagInfoList[9].XYGubun}',
+		'${DccTagInfoList[10].XYGubun}','${DccTagInfoList[11].XYGubun}','${DccTagInfoList[12].XYGubun}','${DccTagInfoList[13].XYGubun}','${DccTagInfoList[14].XYGubun}',
+		'${DccTagInfoList[15].XYGubun}','${DccTagInfoList[16].XYGubun}','${DccTagInfoList[17].XYGubun}','${DccTagInfoList[18].XYGubun}','${DccTagInfoList[19].XYGubun}',
+		'${DccTagInfoList[20].XYGubun}','${DccTagInfoList[21].XYGubun}','${DccTagInfoList[22].XYGubun}','${DccTagInfoList[23].XYGubun}','${DccTagInfoList[24].XYGubun}',
+		'${DccTagInfoList[25].XYGubun}','${DccTagInfoList[26].XYGubun}','${DccTagInfoList[27].XYGubun}','${DccTagInfoList[28].XYGubun}','${DccTagInfoList[29].XYGubun}',
+		'${DccTagInfoList[30].XYGubun}','${DccTagInfoList[31].XYGubun}','${DccTagInfoList[32].XYGubun}','${DccTagInfoList[33].XYGubun}','${DccTagInfoList[34].XYGubun}',
+		'${DccTagInfoList[35].XYGubun}'
 	];
 	
 	var tToolTipText = [
-		"${DccTagInfoList[0].descr}[${DccTagInfoList[0].hogi}:${DccTagInfoList[0].ioType}-${DccTagInfoList[0].address}:${DccTagInfoList[0].ioBit}]"
-		,"${DccTagInfoList[1].descr}[${DccTagInfoList[1].hogi}:${DccTagInfoList[1].ioType}-${DccTagInfoList[1].address}:${DccTagInfoList[1].ioBit}]"
-		,"${DccTagInfoList[2].descr}[${DccTagInfoList[2].hogi}:${DccTagInfoList[2].ioType}-${DccTagInfoList[2].address}:${DccTagInfoList[2].ioBit}]"
-		,"${DccTagInfoList[3].descr}[${DccTagInfoList[3].hogi}:${DccTagInfoList[3].ioType}-${DccTagInfoList[3].address}:${DccTagInfoList[3].ioBit}]"
-		,"${DccTagInfoList[4].descr}[${DccTagInfoList[4].hogi}:${DccTagInfoList[4].ioType}-${DccTagInfoList[4].address}:${DccTagInfoList[4].ioBit}]"
-		,"${DccTagInfoList[5].descr}[${DccTagInfoList[5].hogi}:${DccTagInfoList[5].ioType}-${DccTagInfoList[5].address}:${DccTagInfoList[5].ioBit}]"
-		,"${DccTagInfoList[6].descr}[${DccTagInfoList[6].hogi}:${DccTagInfoList[6].ioType}-${DccTagInfoList[6].address}:${DccTagInfoList[6].ioBit}]"
-		,"${DccTagInfoList[7].descr}[${DccTagInfoList[7].hogi}:${DccTagInfoList[7].ioType}-${DccTagInfoList[7].address}:${DccTagInfoList[7].ioBit}]"
-		,"${DccTagInfoList[8].descr}[${DccTagInfoList[8].hogi}:${DccTagInfoList[8].ioType}-${DccTagInfoList[8].address}:${DccTagInfoList[8].ioBit}]"
-		,"${DccTagInfoList[9].descr}[${DccTagInfoList[9].hogi}:${DccTagInfoList[9].ioType}-${DccTagInfoList[9].address}:${DccTagInfoList[9].ioBit}]"
-		,"${DccTagInfoList[10].descr}[${DccTagInfoList[10].hogi}:${DccTagInfoList[10].ioType}-${DccTagInfoList[10].address}:${DccTagInfoList[10].ioBit}]"
-		,"${DccTagInfoList[11].descr}[${DccTagInfoList[11].hogi}:${DccTagInfoList[11].ioType}-${DccTagInfoList[11].address}:${DccTagInfoList[11].ioBit}]"
-		,"${DccTagInfoList[12].descr}[${DccTagInfoList[12].hogi}:${DccTagInfoList[12].ioType}-${DccTagInfoList[12].address}:${DccTagInfoList[12].ioBit}]"
-		,"${DccTagInfoList[13].descr}[${DccTagInfoList[13].hogi}:${DccTagInfoList[13].ioType}-${DccTagInfoList[13].address}:${DccTagInfoList[13].ioBit}]"
-		,"${DccTagInfoList[14].descr}[${DccTagInfoList[14].hogi}:${DccTagInfoList[14].ioType}-${DccTagInfoList[14].address}:${DccTagInfoList[14].ioBit}]"
-		,"${DccTagInfoList[15].descr}[${DccTagInfoList[15].hogi}:${DccTagInfoList[15].ioType}-${DccTagInfoList[15].address}:${DccTagInfoList[15].ioBit}]"
-		,"${DccTagInfoList[16].descr}[${DccTagInfoList[16].hogi}:${DccTagInfoList[16].ioType}-${DccTagInfoList[16].address}:${DccTagInfoList[16].ioBit}]"
-		,"${DccTagInfoList[17].descr}[${DccTagInfoList[17].hogi}:${DccTagInfoList[17].ioType}-${DccTagInfoList[17].address}:${DccTagInfoList[17].ioBit}]"
-		,"${DccTagInfoList[18].descr}[${DccTagInfoList[18].hogi}:${DccTagInfoList[18].ioType}-${DccTagInfoList[18].address}:${DccTagInfoList[18].ioBit}]"
-		,"${DccTagInfoList[19].descr}[${DccTagInfoList[19].hogi}:${DccTagInfoList[19].ioType}-${DccTagInfoList[19].address}:${DccTagInfoList[19].ioBit}]"
-		,"${DccTagInfoList[20].descr}[${DccTagInfoList[20].hogi}:${DccTagInfoList[20].ioType}-${DccTagInfoList[20].address}:${DccTagInfoList[20].ioBit}]"
-		,"${DccTagInfoList[21].descr}[${DccTagInfoList[21].hogi}:${DccTagInfoList[21].ioType}-${DccTagInfoList[21].address}:${DccTagInfoList[21].ioBit}]"
-		,"${DccTagInfoList[22].descr}[${DccTagInfoList[22].hogi}:${DccTagInfoList[22].ioType}-${DccTagInfoList[22].address}:${DccTagInfoList[22].ioBit}]"
-		,"${DccTagInfoList[23].descr}[${DccTagInfoList[23].hogi}:${DccTagInfoList[23].ioType}-${DccTagInfoList[23].address}:${DccTagInfoList[23].ioBit}]"
-		,"${DccTagInfoList[24].descr}[${DccTagInfoList[24].hogi}:${DccTagInfoList[24].ioType}-${DccTagInfoList[24].address}:${DccTagInfoList[24].ioBit}]"
-		,"${DccTagInfoList[25].descr}[${DccTagInfoList[25].hogi}:${DccTagInfoList[25].ioType}-${DccTagInfoList[25].address}:${DccTagInfoList[25].ioBit}]"
-		,"${DccTagInfoList[26].descr}[${DccTagInfoList[26].hogi}:${DccTagInfoList[26].ioType}-${DccTagInfoList[26].address}:${DccTagInfoList[26].ioBit}]"
-		,"${DccTagInfoList[27].descr}[${DccTagInfoList[27].hogi}:${DccTagInfoList[27].ioType}-${DccTagInfoList[27].address}:${DccTagInfoList[27].ioBit}]"
-		,"${DccTagInfoList[28].descr}[${DccTagInfoList[28].hogi}:${DccTagInfoList[28].ioType}-${DccTagInfoList[28].address}:${DccTagInfoList[28].ioBit}]"
-		,"${DccTagInfoList[29].descr}[${DccTagInfoList[29].hogi}:${DccTagInfoList[29].ioType}-${DccTagInfoList[29].address}:${DccTagInfoList[29].ioBit}]"
-		,"${DccTagInfoList[30].descr}[${DccTagInfoList[30].hogi}:${DccTagInfoList[30].ioType}-${DccTagInfoList[30].address}:${DccTagInfoList[30].ioBit}]"
-		,"${DccTagInfoList[31].descr}[${DccTagInfoList[31].hogi}:${DccTagInfoList[31].ioType}-${DccTagInfoList[31].address}:${DccTagInfoList[31].ioBit}]"
-		,"${DccTagInfoList[32].descr}[${DccTagInfoList[32].hogi}:${DccTagInfoList[32].ioType}-${DccTagInfoList[32].address}:${DccTagInfoList[32].ioBit}]"
-		,"${DccTagInfoList[33].descr}[${DccTagInfoList[33].hogi}:${DccTagInfoList[33].ioType}-${DccTagInfoList[33].address}:${DccTagInfoList[33].ioBit}]"
-		,"${DccTagInfoList[34].descr}[${DccTagInfoList[34].hogi}:${DccTagInfoList[34].ioType}-${DccTagInfoList[34].address}:${DccTagInfoList[34].ioBit}]"
-		,"${DccTagInfoList[35].descr}[${DccTagInfoList[35].hogi}:${DccTagInfoList[35].ioType}-${DccTagInfoList[35].address}:${DccTagInfoList[35].ioBit}]"
+		"${DccTagInfoList[0].toolTip}"		,"${DccTagInfoList[1].toolTip}"		,"${DccTagInfoList[2].toolTip}"		,"${DccTagInfoList[3].toolTip}"		,"${DccTagInfoList[4].toolTip}"
+		,"${DccTagInfoList[5].toolTip}"		,"${DccTagInfoList[6].toolTip}"		,"${DccTagInfoList[7].toolTip}"		,"${DccTagInfoList[8].toolTip}"		,"${DccTagInfoList[9].toolTip}"
+		,"${DccTagInfoList[10].toolTip}"		,"${DccTagInfoList[11].toolTip}"		,"${DccTagInfoList[12].toolTip}"		,"${DccTagInfoList[13].toolTip}"		,"${DccTagInfoList[14].toolTip}"
+		,"${DccTagInfoList[15].toolTip}"		,"${DccTagInfoList[16].toolTip}"		,"${DccTagInfoList[17].toolTip}"		,"${DccTagInfoList[18].toolTip}"		,"${DccTagInfoList[19].toolTip}"
+		,"${DccTagInfoList[20].toolTip}"		,"${DccTagInfoList[21].toolTip}"		,"${DccTagInfoList[22].toolTip}"		,"${DccTagInfoList[23].toolTip}"		,"${DccTagInfoList[24].toolTip}"
+		,"${DccTagInfoList[25].toolTip}"		,"${DccTagInfoList[26].toolTip}"		,"${DccTagInfoList[27].toolTip}"		,"${DccTagInfoList[28].toolTip}"		,"${DccTagInfoList[29].toolTip}"
+		,"${DccTagInfoList[30].toolTip}"		,"${DccTagInfoList[31].toolTip}"		,"${DccTagInfoList[32].toolTip}"		,"${DccTagInfoList[33].toolTip}"		,"${DccTagInfoList[34].toolTip}"
+		,"${DccTagInfoList[35].toolTip}"
 	];
-	
+
 	var selectTag = [{name:"hogi",value:""},{name:"xyGubun",value:""},{name:"loopName",value:""},{name:"ioType",value:""}
 					,{name:"address",value:""},{name:"ioBit",value:""},{name:"descr",value:""}];
 	
-	function showTag(tagNo,iSeq) {
+function showTag(tagNo,iSeq) {
+		
 		if(${UserInfo.grade} == '1' || ${UserInfo.grade} == '2') { // 나중에 grade 1 은 삭제할 것
 			timerOn = false;
+		
 			$("#tagNo").val(tagNo);
-			var infos = tToolTipText[tagNo];
-			$("#txtHogi").val(infos.substring(infos.indexOf('[')+1,infos.indexOf(':')));
+			
+			var toolTip = tToolTipText[tagNo];
+			var strDescr = toolTip.substring(0, toolTip.lastIndexOf('['));
+			var infos =  toolTip.substring(toolTip.lastIndexOf('[')+1, toolTip.lastIndexOf(']')).split(":");
+
+			$("#txtHogi").val(infos[0]);
 	        $("#txtXyGubun").val(tDccTagXy[tagNo]);
-	        $("#txtDescr").val(infos.substring(0,infos.indexOf('[')));
-	        $("#txtIoType").val(infos.substring(infos.indexOf(':')+1,infos.indexOf('-')));
-	        $("#txtAddress").val(infos.substring(infos.indexOf('-')+1,infos.lastIndexOf(':')));
-	        $("#txtIoBit").val(infos.substring(infos.lastIndexOf(':')+1,infos.indexOf(']')));
+	        $("#txtDescr").val(strDescr);
+	        $("#txtIoType").val(infos[1].substring(0,infos[1].indexOf('-')));
+	        $("#txtAddress").val(infos[1].substring(infos[1].indexOf('-')+1));
+	        if(infos[2] != null){
+	         	$("#txtIoBit").val(infos[2]);
+	        }else {
+	         	$("#txtIoBit").val("");
+	        }
+	        
 			openLayer('modal_2');
 		} else {
 			console.log('Not enough permission...');
@@ -386,6 +369,7 @@
 		comSubmit.setUrl("/dcc/status/htc");
 		comSubmit.submit();
 	}
+	
 </script>
 
 </head>
@@ -433,13 +417,13 @@
                             <th>SETPOINT</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="0" class="full flex_end">${DccLogTrendInfoList[0].TVALUE1}</label>
+                                    <label id="0" class="full flex_end">${lblDataList[0].fValue}</label>
                                     <label id="unit0" class="full">${DccTagInfoList[0].unit}</label>
                                 </div>
                             </td>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="3" class="full flex_end">${DccLogTrendInfoList[0].TVALUE4}</label>
+                                    <label id="3" class="full flex_end">${lblDataList[3].fValue}</label>
                                     <label id="unit3" class="full">${DccTagInfoList[3].unit}</label>
                                 </div>
                             </td>
@@ -448,13 +432,13 @@
                             <th>PRESENT VALUE</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="1" class="full flex_end">${DccLogTrendInfoList[0].TVALUE2}</label>
+                                    <label id="1" class="full flex_end">${DccLogTrendInfoList[1].fValue}</label>
                                     <label id="unit1" class="full">${DccTagInfoList[1].unit}</label>
                                 </div>
                             </td>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="4" class="full flex_end">${DccLogTrendInfoList[0].TVALUE5}</label>
+                                    <label id="4" class="full flex_end">${lblDataList[4].fValue}</label>
                                     <label id="unit4" class="full">${DccTagInfoList[4].unit}</label>
                                 </div>
                             </td>
@@ -463,13 +447,13 @@
                             <th>DEVIATION</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="2" class="full flex_end">${DccLogTrendInfoList[0].TVALUE3}</label>
+                                    <label id="2" class="full flex_end">${lblDataList[2].fValue}</label>
                                     <label id="unit2" class="full">${DccTagInfoList[2].unit}</label>
                                 </div>
                             </td>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="5" class="full flex_end">${DccLogTrendInfoList[0].TVALUE6}</label>
+                                    <label id="5" class="full flex_end">${lblDataList[5].fValue}</label>
                                     <label id="unit5" class="full">${DccTagInfoList[5].unit}</label>
                                 </div>
                             </td>
@@ -478,13 +462,13 @@
                             <th>SETPOINT MODE</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="25" class="full flex_end">${DccLogTrendInfoList[0].TVALUE26}</label>
+                                    <label id="25" class="full flex_end">${lblDataList[25].fValue}</label>
                                     <label id="unit25" class="full">${DccTagInfoList[25].unit}</label>
                                 </div>
                             </td>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="26" class="full flex_end">${DccLogTrendInfoList[0].TVALUE27}</label>
+                                    <label id="26" class="full flex_end">${lblDataList[36].fValue}</label>
                                     <label id="unit26" class="full">${DccTagInfoList[26].unit}</label>
                                 </div>
                             </td>
@@ -508,19 +492,19 @@
                             <div class="fx_srch_item no_label">
                                 <div class="fx_form">
                                     <label class="title">P1</label>
-                                    <label id="21">${DccLogTrendInfoList[0].TVALUE22}</label>
+                                    <label id="21">${lblDataList[21].fValue}</label>
                                     <label id="unit21">${DccTagInfoList[21].unit}</label>
                                 </div>
                             </div>
                             <div class="fx_srch_item">
                                 <div class="fx_form">
                                     <label class="title">P2</label>
-                                    <label id="23">${DccLogTrendInfoList[0].TVALUE24}</label>
+                                    <label id="23">${lblDataList[23].fValue}</label>
                                     <label id="unit23">${DccTagInfoList[23].unit}</label>
                                 </div>
                             </div>
                             <div class="fx_srch_item">
-	                            <label id="6">${DccLogTrendInfoList[0].TVALUE7}</label>
+	                            <label id="6">${lblDataList[6].fValue}</label>
 	                            <label id="unit6">${DccTagInfoList[6].unit}</label>
                             </div>
                         </div>
@@ -528,19 +512,19 @@
                             <div class="fx_srch_item no_label">
                                 <div class="fx_form">
                                     <label class="title">P1</label>
-                                    <label id="22">${DccLogTrendInfoList[0].TVALUE23}</label>
+                                    <label id="22">${lblDataList[22].fValue}</label>
                                     <label id="unit22">${DccTagInfoList[22].unit}</label>
                                 </div>
                             </div>
                             <div class="fx_srch_item">
                                 <div class="fx_form">
                                     <label class="title">P2</label>
-                                    <label id="24">${DccLogTrendInfoList[0].TVALUE25}</label>
+                                    <label id="24">${lblDataList[24].fValue}</label>
                                     <label id="unit24">${DccTagInfoList[24].unit}</label>
                                 </div>
                             </div>
                             <div class="fx_srch_item">
-	                            <label id="7">${DccLogTrendInfoList[0].TVALUE8}</label>
+	                            <label id="7">${lblDataList[7].fValue}</label>
 	                            <label id="unit7">${DccTagInfoList[7].unit}</label>
                             </div>
                         </div>
@@ -567,13 +551,13 @@
                             <th>FEED VALVE</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="8" class="full flex_end">${DccLogTrendInfoList[0].TVALUE9}</label>
+                                    <label id="8" class="full flex_end">${lblDataList[8].fValue}</label>
                                     <label id="unit8" class="full">${DccTagInfoList[8].unit}</label>
                                 </div>
                             </td>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="12" class="full flex_end">${DccLogTrendInfoList[0].TVALUE13}</label>
+                                    <label id="12" class="full flex_end">${lblDataList[12].fValue}</label>
                                     <label id="unit12" class="full">${DccTagInfoList[12].unit}</label>
                                 </div>
                             </td>
@@ -582,13 +566,13 @@
                             <th>BLEED VALVE</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="9" class="full flex_end">${DccLogTrendInfoList[0].TVALUE10}</label>
+                                    <label id="9" class="full flex_end">${lblDataList[9].fValue}</label>
                                     <label id="unit9" class="full">${DccTagInfoList[9].unit}</label>
                                 </div>
                             </td>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="13" class="full flex_end">${DccLogTrendInfoList[0].TVALUE14}</label>
+                                    <label id="13" class="full flex_end">${lblDataList[13].fValue}</label>
                                     <label id="unit13" class="full">${DccTagInfoList[13].unit}</label>
                                 </div>
                             </td>
@@ -597,13 +581,13 @@
                             <th>STEAM BLEED</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="10" class="full flex_end">${DccLogTrendInfoList[0].TVALUE11}</label>
+                                    <label id="10" class="full flex_end">${lblDataList[11].fValue}</label>
                                     <label id="unit10" class="full">${DccTagInfoList[10].unit}</label>
                                 </div>
                             </td>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="14" class="full flex_end">${DccLogTrendInfoList[0].TVALUE15}</label>
+                                    <label id="14" class="full flex_end">${lblDataList[14].fValue}</label>
                                     <label id="unit14" class="full">${DccTagInfoList[14].unit}</label>
                                 </div>
                             </td>
@@ -612,13 +596,13 @@
                             <th>STEAM BLEED</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="11" class="full flex_end">${DccLogTrendInfoList[0].TVALUE12}</label>
+                                    <label id="11" class="full flex_end">${lblDataList[11].fValue}</label>
                                     <label id="unit11" class="full">${DccTagInfoList[11].unit}</label>
                                 </div>
                             </td>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="15" class="full flex_end">${DccLogTrendInfoList[0].TVALUE16}</label>
+                                    <label id="15" class="full flex_end">${lblDataList[15].fValue}</label>
                                     <label id="unit15" class="full">${DccTagInfoList[15].unit}</label>
                                 </div>
                             </td>
@@ -638,19 +622,19 @@
                             </div>
                             <div class="fx_srch_item triple">
                                 <div class="fx_form">
-                                    <label id="28">${DccLogTrendInfoList[0].TVALUE29}</label>
+                                    <label id="28">${lblDataList[28].fValue}</label>
                                     <label id="unit28">${DccTagInfoList[28].unit}</label>
                                 </div>
                                 <div class="fx_form">
-                                    <label id="29">${DccLogTrendInfoList[0].TVALUE30}</label>
+                                    <label id="29">${lblDataList[29].fValue}</label>
                                     <label id="unit29">${DccTagInfoList[29].unit}</label>
                                 </div>
                                 <div class="fx_form">
-                                    <label id="30">${DccLogTrendInfoList[0].TVALUE31}</label>
+                                    <label id="30">${lblDataList[30].fValue}</label>
                                     <label id="unit30">${DccTagInfoList[30].unit}</label>
                                 </div>
                                 <div class="fx_form">
-                                    <label id="31">${DccLogTrendInfoList[0].TVALUE32}</label>
+                                    <label id="31">${lblDataList[31].fValue}</label>
                                     <label id="unit31">${DccTagInfoList[31].unit}</label>
                                 </div>
                             </div>
@@ -663,19 +647,19 @@
                             </div>
                             <div class="fx_srch_item triple">
                                 <div class="fx_form">
-                                    <label id="32">${DccLogTrendInfoList[0].TVALUE33}</label>
+                                    <label id="32">${lblDataList[32].fValue}</label>
                                     <label id="unit32">${DccTagInfoList[32].unit}</label>
                                 </div>
                                 <div class="fx_form">
-                                    <label id="33">${DccLogTrendInfoList[0].TVALUE34}</label>
+                                    <label id="33">${lblDataList[33].fValue}</label>
                                     <label id="unit33">${DccTagInfoList[33].unit}</label>
                                 </div>
                                 <div class="fx_form">
-                                    <label id="34">${DccLogTrendInfoList[0].TVALUE35}</label>
+                                    <label id="34">${lblDataList[34].fValue}</label>
                                     <label id="unit34">${DccTagInfoList[34].unit}</label>
                                 </div>
                                 <div class="fx_form">
-                                    <label id="35">${DccLogTrendInfoList[0].TVALUE36}</label>
+                                    <label id="35">${lblDataList[35].fValue}</label>
                                     <label id="unit35">${DccTagInfoList[35].unit}</label>
                                 </div>
                             </div>
@@ -696,14 +680,14 @@
                         <td class="tc">
                             <div class="fx_form">
                                 <label class="full title">VARIABLE</label>
-                                <label id="16" class="full flex_end">${DccLogTrendInfoList[0].TVALUE17}</label>
+                                <label id="16" class="full flex_end">${lblDataList[16].fValue}</label>
                                 <label id="unit16" class="full">${DccTagInfoList[16].unit}</label>
                             </div>
                         </td>
                         <td class="tc">
                             <div class="fx_form">
                                 <label class="full title">ON/OFF</label>
-                                <label id="27" class="full flex_end">${DccLogTrendInfoList[0].TVALUE28}</label>
+                                <label id="27" class="full flex_end">${lblDataList[27].fValue}</label>
                                 <label id="unit27" class="full">${DccTagInfoList[27].unit}</label>
                             </div>
                         </td>
@@ -713,14 +697,14 @@
                         <td class="tc">
                             <div class="fx_form">
                                 <label class="full title">LIQUID</label>
-                                <label id="17" class="full flex_end">${DccLogTrendInfoList[0].TVALUE18}</label>
+                                <label id="17" class="full flex_end">${lblDataList[17].fValue}</label>
                                 <label id="unit17" class="full">${DccTagInfoList[17].unit}</label>
                             </div>
                         </td>
                         <td class="tc">
                             <div class="fx_form">
                                 <label class="full title">VAPOUR</label>
-                                <label id="18" class="full flex_end">${DccLogTrendInfoList[0].TVALUE19}</label>
+                                <label id="18" class="full flex_end">${lblDataList[18].fValue}</label>
                                 <label id="unit18" class="full">${DccTagInfoList[18].unit}</label>
                             </div>
                         </td>
@@ -730,14 +714,14 @@
                         <td class="tc">
                             <div class="fx_form">
                                 <label class="full title">LEVEL</label>
-                                <label id="19" class="full flex_end">${DccLogTrendInfoList[0].TVALUE20}</label>
+                                <label id="19" class="full flex_end">${lblDataList[19].fValue}</label>
                                 <label id="unit19" class="full">${DccTagInfoList[19].unit}</label>
                             </div>
                         </td>
                         <td class="tc">
                             <div class="fx_form">
                                 <label class="full title">PRESSURE</label>
-                                <label id="20" class="full flex_end">${DccLogTrendInfoList[0].TVALUE21}</label>
+                                <label id="20" class="full flex_end">${lblDataList[20].fValue}</label>
                                 <label id="unit20" class="full">${DccTagInfoList[20].unit}</label>
                             </div>
                         </td>

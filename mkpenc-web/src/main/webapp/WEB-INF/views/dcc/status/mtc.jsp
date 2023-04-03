@@ -44,22 +44,33 @@
 	var selectTag = [{name:"hogi",value:""},{name:"xyGubun",value:""},{name:"loopName",value:""},{name:"ioType",value:""}
 					,{name:"address",value:""},{name:"ioBit",value:""},{name:"descr",value:""}];
 	
-	function showTag(tagNo,iSeq) {
-		//console.log('tagNo :: '+tagNo+' | iSeq :: '+iSeq);
+function showTag(tagNo,iSeq) {
+		
 		if(${UserInfo.grade} == '1' || ${UserInfo.grade} == '2') { // 나중에 grade 1 은 삭제할 것
+			timerOn = false;
+		
 			$("#tagNo").val(tagNo);
-			var infos = tToolTipText[tagNo];
-			$("#txtHogi").val(infos.substring(infos.indexOf('[')+1,infos.indexOf(':')));
+			
+			var toolTip = tToolTipText[tagNo];
+			var strDescr = toolTip.substring(0, toolTip.lastIndexOf('['));
+			var infos =  toolTip.substring(toolTip.lastIndexOf('[')+1, toolTip.lastIndexOf(']')).split(":");
+
+			$("#txtHogi").val(infos[0]);
 	        $("#txtXyGubun").val(tDccTagXy[tagNo]);
-	        $("#txtDescr").val(infos.substring(0,infos.indexOf('[')));
-	        $("#txtIoType").val(infos.substring(infos.indexOf(':')+1,infos.indexOf('-')));
-	        $("#txtAddress").val(infos.substring(infos.indexOf('-')+1,infos.lastIndexOf(':')));
-	        $("#txtIoBit").val(infos.substring(infos.lastIndexOf(':')+1,infos.indexOf(']')));
+	        $("#txtDescr").val(strDescr);
+	        $("#txtIoType").val(infos[1].substring(0,infos[1].indexOf('-')));
+	        $("#txtAddress").val(infos[1].substring(infos[1].indexOf('-')+1));
+	        if(infos[2] != null){
+	         	$("#txtIoBit").val(infos[2]);
+	        }else {
+	         	$("#txtIoBit").val("");
+	        }
+	        
 			openLayer('modal_2');
 		} else {
 			console.log('Not enough permission...');
 		}
-	}
+	}	
 	
 	function showTooltip(id) {
 		var tooltipText;
@@ -307,7 +318,7 @@
 	
 	function closeModal() {
 		var	comSubmit	=	new ComSubmit("reloadFrm");
-		comSubmit.setUrl("/dcc/status/htc");
+		comSubmit.setUrl("/dcc/status/mtc");
 		comSubmit.submit();
 	}
 
@@ -365,7 +376,7 @@
                                 <th>MODERATOR OUTLET TEMP</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="1" class="full flex_end">${DccLogTrendInfoList[0].TVALUE2}</label>
+                                        <label id="1" class="full flex_end">${lblDataList[1].fValue}</label>
                                     	<label id="unit1" class="full">${DccTagInfoList[1].unit}</label>
                                     </div>
                                 </td>
@@ -374,7 +385,7 @@
                                 <th>HX1 TCV 8</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="2" class="full flex_end">${DccLogTrendInfoList[0].TVALUE3}</label>
+                                        <label id="2" class="full flex_end">${lblDataList[0].fValue}</label>
                                     	<label id="unit2" class="full">${DccTagInfoList[2].unit}</label>
                                     	<label id="onoff0" class="full">OPEN</label>
                                     </div>
@@ -384,7 +395,7 @@
                                 <th>HX1 TCV 6</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="3" class="full flex_end">${DccLogTrendInfoList[0].TVALUE4}</label>
+                                        <label id="3" class="full flex_end">${lblDataList[3].fValue}</label>
                                     	<label id="unit3" class="full">${DccTagInfoList[3].unit}</label>
                                     	<label id="onoff1" class="full">OPEN</label>
                                     </div>
@@ -394,7 +405,7 @@
                                 <th>VALVE TCV 61,62</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="4" class="full flex_end">${DccLogTrendInfoList[0].TVALUE5}</label>
+                                        <label id="4" class="full flex_end">${lblDataList[4].fValue}</label>
                                     	<label id="unit4" class="full">${DccTagInfoList[4].unit}</label>
                                     	<label id="onoff2" class="full">OPEN</label>
                                     </div>
@@ -404,7 +415,7 @@
                                 <th>INTEGRAL LIFT</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="5" class="full flex_end">${DccLogTrendInfoList[0].TVALUE6}</label>
+                                        <label id="5" class="full flex_end">${lblDataList[5].fValue}</label>
                                     	<label id="unit5" class="full">${DccTagInfoList[5].unit}</label>
                                     </div>
                                 </td>
@@ -413,7 +424,7 @@
                                 <th>HX1 OUTLET TEMP</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="10" class="full flex_end">${DccLogTrendInfoList[0].TVALUE11}</label>
+                                        <label id="10" class="full flex_end">${lblDataList[10].fValue}</label>
                                     	<label id="unit10" class="full">${DccTagInfoList[10].unit}</label>
                                     </div>
                                 </td>
@@ -422,7 +433,7 @@
                                 <th>HX2 OUTLET TEMP</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="11" class="full flex_end">${DccLogTrendInfoList[0].TVALUE12}</label>
+                                        <label id="11" class="full flex_end">${lblDataList[11].fValue}</label>
                                     	<label id="unit11" class="full">${DccTagInfoList[11].unit}</label>
                                     </div>
                                 </td>
@@ -440,7 +451,7 @@
                                 <th>MODERATOR PRESENT LEVEL</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="6" class="full flex_end">${DccLogTrendInfoList[0].TVALUE7}</label>
+                                        <label id="6" class="full flex_end">${lblDataList[6].fValue}</label>
                                     	<label id="unit6" class="full">${DccTagInfoList[6].unit}</label>
                                     </div>
                                 </td>
@@ -466,7 +477,7 @@
                                 <th>PURIF COOLER OUT SETPOINT</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="7" class="full flex_end">${DccLogTrendInfoList[0].TVALUE8}</label>
+                                        <label id="7" class="full flex_end">${lblDataList[7].fValue}</label>
                                     <label id="unit7" class="full">${DccTagInfoList[7].unit}</label>
                                     </div>
                                 </td>
@@ -475,7 +486,7 @@
                                 <th>PURIF COOLER OUT TEMP</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="8" class="full flex_end">${DccLogTrendInfoList[0].TVALUE9}</label>
+                                        <label id="8" class="full flex_end">${lblDataList[8].fValue}</label>
                                     <label id="unit8" class="full">${DccTagInfoList[8].unit}</label>
                                     </div>
                                 </td>
@@ -484,7 +495,7 @@
                                 <th>PURIF COOLER FLOW</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="12" class="full flex_end">${DccLogTrendInfoList[0].TVALUE13}</label>
+                                        <label id="12" class="full flex_end">${lblDataList[12].fValue}</label>
                                     <label id="unit12" class="full">${DccTagInfoList[12].unit}</label>
                                     </div>
                                 </td>
@@ -493,7 +504,7 @@
                                 <th>PURIF INTEGRAL LIFT</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="13" class="full flex_end">${DccLogTrendInfoList[0].TVALUE14}</label>
+                                        <label id="13" class="full flex_end">${lblDataList[13].fValue}</label>
                                     <label id="unit13" class="full">${DccTagInfoList[13].unit}</label>
                                     </div>
                                 </td>
@@ -502,7 +513,7 @@
                                 <th>VALVE HCV-5 CLOSED IF TEMP</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="const2" class="full flex_end">>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;85</label>
+                                        <label id="const2" class="full flex_end">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;85</label>
                                         <label id="const1" class="full">DEG C</label>
                                     </div>
                                 </td>
@@ -511,7 +522,7 @@
                                 <th>VALVE TCV-44</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="9" class="full flex_end">${DccLogTrendInfoList[0].TVALUE10}</label>
+                                        <label id="9" class="full flex_end">${lblDataList[9].fValue}</label>
                                     	<label id="unit9" class="full">${DccTagInfoList[9].unit}</label>
                                     	<label id="onoff4" class="full">OPEN</label>
                                     </div>
@@ -521,7 +532,7 @@
                                 <th>RCW TEMP</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="14" class="full flex_end">${DccLogTrendInfoList[0].TVALUE15}</label>
+                                        <label id="14" class="full flex_end">${lblDataList[14].fValue}</label>
                                     	<label id="unit14" class="full">${DccTagInfoList[14].unit}</label>
                                     </div>
                                 </td>
