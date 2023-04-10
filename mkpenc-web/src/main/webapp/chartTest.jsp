@@ -1,109 +1,70 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: JYH
-  Date: 2019-01-11
-  Time: 17:09
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ include file="/resources/inc/config.jsp" %>
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>Title</title>
-        <script src="<c:url value="/resources/vendor/jquery/dist/jquery.js" />" ></script>
-        <script src="<c:url value="/resources/vendor/jquery.blockUI/jquery.blockUI.js" />"></script>
-        <script src="<c:url value="/resources/vendor/d3/d3.js" />"></script>
-        <script src="<c:url value="/resources/vendor/conrec/conrec.js" />"></script>
-        <script src="/resources/vendor/plotly/dist/plotly.js"></script>
-        <script src="/resources/vendor/plotly/dist/plotly-locale-ko.js"></script>
-        <script src="<c:url value="/resources/js/common.js" />"></script>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>SBChart2.0</title>
+	<link rel="stylesheet" href="resources/sbchart/sbchart.css">
+	<script type="text/javascript" src="resources/sbchart/sbchart.js"></script>
+</head>
+<body>
+	<div id="chartArea"></div><br/>
+	<div>
+		<button onclick="chart.data({json: chartData2}).render()">데이터 변경</button>
+		<button onclick="chart.data({type: 'line'}).render()">차트 변경</button>
+		<button onclick="chart.grid({x:{show:false},y:{show:false}}).render()">격자무늬 제거</button>
+		<button onclick="chart.axis({x:{type:'category'}}).render()">X축 타입변경</button>
+	</div><br/>
+	<div id="chartVersion"></div>
 
-    </head>
-    <body>
-        <div id="myDiv" style="width:1000px;height:700px;"></div>
-        <div id="myDiv2" style="width:500px;height:500px;"></div>
+	<script>
+		document.addEventListener("DOMContentLoaded", function(){
+			createChart();
+			document.getElementById('chartVersion').innerHTML = sb.chart.version
+		});
 
-        <form id="hiddenFrm">
-            <input type="hidden" name="menuId" value="M010101"/>
-        </form>
-    </body>
-    <%--<script>--%>
-        <%--var min = -20, max = 0;--%>
-        <%--var x = [-15, -4.97863321087328];--%>
-        <%--var y = [-1586.73831753011, -346.67894244194];--%>
-        <%--var m = (y[0] - y[1]) / (x[0] - x[1]);--%>
+		var chart;
 
-        <%--var y3 = m * (min-x[0]) + y[0];--%>
-        <%--var y4 = m * (max-x[1]) + y[1];--%>
+		function createChart(){
+			var chartConfig = {
+				global: {
+					svg: {
+						classname: 'customClass' // 해당 차트의 svg  태그에 커스텀 클래스 설정
+					},
+					size: {
+						width: 500,
+						height: 300
+					}
+				},
+				data: {
+					type: 'bar', // 차트의 타입을 설정
+					json: chartData, // json 형태로 데이터 설정하며, chartData라는 변수의 데이터를 가져와서 그려줌
+					keys: { // json 형태의 데이터를 사용 시, 필수로 keys 속성을 사용해야 함
+						x: "name", // 각각의 x축 이름을 chartData의 name값으로 설정
+						value: ['2015','2016','2017'] // chartData의 2015, 2016, 2017 데이터를 보여주도록 설정
+					}
+				},
+				extend: {
+					bar: {
+						topRadius: 15
+					}
+				}
+			};
+			chart = new sb.chart("#chartArea", chartConfig) // 첫번째 파라미터는 div 영역의 id, 두번째 파라미터는 위에서 설정한 chart config 객체명 기입
+			chart.render(); // render 메소드를 사용해야 차트가 그려짐 (동적으로 사용 시에도 마지막에 꼭 render()를 써줘야 변경한 값들이 반영되어 보여집니다.)
+		}
 
-        <%--console.log(y3 - y[0]);--%>
-        <%--console.log(y4 - y[1]);--%>
-
-        <%--x.unshift(min);--%>
-        <%--x.push(max);--%>
-        <%--y.unshift(y3);--%>
-        <%--y.push(y4);--%>
-
-        <%--console.log(x, y);--%>
-
-        <%--var data = {--%>
-        <%--x: x,--%>
-        <%--y: y,--%>
-        <%--type: 'lines'--%>
-        <%--};--%>
-
-        <%--Plotly.newPlot('myDiv', [data]);--%>
-
-    <%--</script>--%>
-    <script>
-        var layout = {
-            title: 'Test'
-        };
-        var data = {
-            x: [],
-            y: [],
-            z: [],
-            type: 'contour',
-            colorscale: 'Jet',
-            // autocontour: false,
-            contours: {
-                start: 0,
-                end: 100,
-                size: 500
-            }
-        };
-
-        var getData = function() {
-            $.ajax({
-                type: "get",
-                dataType: 'text',
-                url: '/resources/cccc.json',
-                success: function(result) {
-                    var data = JSON.parse(result.replace(/\bNaN\b/g, "null"));
-                    document.testData = data
-                    Plotly.newPlot('myDiv', [{
-                        z: data.z,
-                        x: data.xi.x[0],
-                        type: 'contour',
-                        colorscale: 'Jet',
-                        autocontour: false,
-                        contours: {
-                            start: 97.33404255,
-                            end: 89.24,
-                            size: 0.269,
-                            type: 'levels',
-                            showlines: false
-                        },
-                        zmin: 89.24,
-                        zmax: 97.33404255
-
-                    }], layout);
-                },
-                error: function(a, b, c) {
-                    console.log(a, b, c)
-                }
-            });
-        };
-        getData();
-    </script>
+		var chartData = [
+			{name: '서울', 2015: 10, 2016: 20, 2017: 30},
+			{name: '경기', 2015: 30, 2016: 10, 2017: 20},
+			{name: '인천', 2015: 20, 2016: 30, 2017: 10},
+		]
+		var chartData2 = [
+			{name: '서울', 2015: 20, 2016: 30, 2017: 10},
+			{name: '경기', 2015: 30, 2016: 10, 2017: 20},
+			{name: '인천', 2015: 10, 2016: 20, 2017: 30},
+		]
+	</script>
+</body>
 </html>

@@ -599,10 +599,6 @@ public class DccTrendContentsController {
 		} else {
 			nEndPos = rsTrendListHistorical.size() > nTrendWidth ? nTrendWidth : rsTrendListHistorical.size();
 		}
-
-		for( int li=0;li<nEndPos;li++ ) {
-			
-		}
 		
 		String sDateS = "";
 		String sDateE = "";
@@ -965,6 +961,20 @@ public class DccTrendContentsController {
 				procInfo.put("param",lGap+"");
 				
 				rtnMapList = dccTrendService.callTrendProc(procInfo);
+
+				int resCnt = 0;
+				int rtnMapSize = 0;
+				do {
+					rtnMapSize = rtnMapList == null ? 0 : rtnMapList.size();
+						
+					try {
+						Thread.sleep(1000);
+					} catch( Exception e) {
+						//
+					} finally {
+						resCnt++;
+					}
+				} while( rtnMapSize == 0 && resCnt < 5 );
 			}
 			
 			// drop tmp procedure
