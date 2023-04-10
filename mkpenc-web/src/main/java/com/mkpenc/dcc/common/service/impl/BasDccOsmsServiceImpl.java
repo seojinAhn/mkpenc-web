@@ -470,7 +470,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	    		 pStr = pStr + "|";
 	    	 }else {
 	    		 // *** field 명 확인 필요 ***
-	    		 pStr = pStr + vValue.get(j).get("TVALUE"+ Integer.parseInt(iFLDNO)) +  "|";
+	    		 pStr = pStr + vValue.get(j).get("TVALUE"+iFLDNO) +  "|";
 	    	 }
 	    	
 	    }
@@ -484,11 +484,16 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	private String sqlQueryDcc4hogi(Map searchMap) {		
 				
 		String pSCanTime ="";	
-				
-		Map scantime = basDccOsmsMapper.selectScanTime(searchMap);
 		
-		if(scantime != null && scantime.get("SCANTIME") != null) {
-			pSCanTime = scantime.get("SCANTIME") .toString();
+		if(searchMap.get("startDate") != null ) {
+			pSCanTime = searchMap.get("startDate").toString();
+		}else {
+				
+			Map scantime = basDccOsmsMapper.selectScanTime(searchMap);
+			
+			if(scantime != null && scantime.get("SCANTIME") != null) {
+				pSCanTime = scantime.get("SCANTIME").toString();
+			}
 		}
 		
 		searchMap.put("pSCanTime", pSCanTime);
@@ -522,35 +527,35 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		}
 		
 		int iValCnt = 0;
-		List<Map> vValue = new ArrayList<Map>();
-		
-		 String pStr = pSCanTime + "|";
+		List<Map> vValues = new ArrayList<Map>();
 		
 		for(int i=0;i<iTblCnt;i++) {
 			searchMap.put("tblnoGrp", iTBLNO_GRP[i]);
 			
-			vValue = basDccOsmsMapper.selectLogDccTrend4Hogi(searchMap);
+			List<Map> vValue = basDccOsmsMapper.selectLogDccTrend4Hogi(searchMap);
 			
-			int j=0;
-	    	for(j=0;j<vValue.size();j++) {
-
-	    		String seq = vValue.get(j).get("SEQ") != null? vValue.get(j).get("SEQ").toString():"";
-	    	
-	    		if(iTBLNO.equals(seq)) {
-	    			break;
-	    		}
-	    	}
-	    	
-	    	 if(j >= vValue.size()) {
-	    		 pStr = pStr + "|";
-	    	 }else {
-	    		 // *** field 명 확인 필요 ***
-	    		// pStr = pStr + vValue.get(j).get("TVALUE"+ Integer.parseInt(iFLDNO)) +  "|";
-	    	 }
-
+			for(Map value:vValue) {
+				vValues.add(value);
+				iValCnt = iValCnt + 1;
+			}
 		}
 		
-		
+		int i;
+		int j;
+		String pStr = pSCanTime + "|";		
+		for(i=0;i<iTagCnt;i++) {
+			for(j=0;j<iValCnt;j++) {
+				if(iTBLNO[i].equals(vValues.get(j).get("SEQ").toString())) {
+					break;
+				}
+			}
+			
+			if(j >= iValCnt ) {
+				 pStr = pStr + "|";
+			}else {
+				 pStr = pStr + vValues.get(j).get("TVALUE"+iFLDNO[i])  + "|";
+			}			
+		}	
 		
 		return pStr;
 		
