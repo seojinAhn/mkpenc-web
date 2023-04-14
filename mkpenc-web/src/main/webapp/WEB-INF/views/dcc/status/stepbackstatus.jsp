@@ -40,6 +40,23 @@
 		${DccTagInfoList[65].iSeq},${DccTagInfoList[66].iSeq}
 	];	
 	
+	var tDccTrendValue = [
+		'${lblDataList[0].fValue}','${lblDataList[1].fValue}','${lblDataList[2].fValue}','${lblDataList[3].fValue}','${lblDataList[4].fValue}',
+		'${lblDataList[5].fValue}','${lblDataList[6].fValue}','${lblDataList[7].fValue}','${lblDataList[8].fValue}','${lblDataList[9].fValue}',
+		'${lblDataList[10].fValue}','${lblDataList[11].fValue}','${lblDataList[12].fValue}','${lblDataList[13].fValue}','${lblDataList[14].fValue}',
+		'${lblDataList[15].fValue}','${lblDataList[16].fValue}','${lblDataList[17].fValue}','${lblDataList[18].fValue}','${lblDataList[19].fValue}',
+		'${lblDataList[20].fValue}','${lblDataList[21].fValue}','${lblDataList[22].fValue}','${lblDataList[23].fValue}','${lblDataList[24].fValue}',
+		'${lblDataList[25].fValue}','${lblDataList[26].fValue}','${lblDataList[27].fValue}','${lblDataList[28].fValue}','${lblDataList[29].fValue}',
+		'${lblDataList[30].fValue}','${lblDataList[31].fValue}','${lblDataList[32].fValue}','${lblDataList[33].fValue}','${lblDataList[34].fValue}',
+		'${lblDataList[35].fValue}','${lblDataList[36].fValue}','${lblDataList[37].fValue}','${lblDataList[38].fValue}','${lblDataList[39].fValue}',
+		'${lblDataList[40].fValue}','${lblDataList[41].fValue}','${lblDataList[42].fValue}','${lblDataList[43].fValue}','${lblDataList[44].fValue}',
+		'${lblDataList[45].fValue}','${lblDataList[46].fValue}','${lblDataList[47].fValue}','${lblDataList[48].fValue}','${lblDataList[49].fValue}',
+		'${lblDataList[50].fValue}','${lblDataList[51].fValue}','${lblDataList[52].fValue}','${lblDataList[53].fValue}','${lblDataList[54].fValue}',
+		'${lblDataList[55].fValue}','${lblDataList[56].fValue}','${lblDataList[57].fValue}','${lblDataList[58].fValue}','${lblDataList[59].fValue}',
+		'${lblDataList[60].fValue}','${lblDataList[61].fValue}','${lblDataList[62].fValue}','${lblDataList[63].fValue}','${lblDataList[64].fValue}',
+		'${lblDataList[65].fValue}','${lblDataList[66].fValue}'
+	];
+	
 	var tDccTagXy = [
 		'${DccTagInfoList[0].XYGubun}','${DccTagInfoList[1].XYGubun}','${DccTagInfoList[2].XYGubun}','${DccTagInfoList[3].XYGubun}','${DccTagInfoList[4].XYGubun}',
 		'${DccTagInfoList[5].XYGubun}','${DccTagInfoList[6].XYGubun}','${DccTagInfoList[7].XYGubun}','${DccTagInfoList[8].XYGubun}','${DccTagInfoList[9].XYGubun}',
@@ -58,20 +75,20 @@
 	];
 	
 	var tToolTipText = [
-		"${DccTagInfoList[0].toolTip}"		,"${DccTagInfoList[1].toolTip}"		,"${DccTagInfoList[2].toolTip}"		,"${DccTagInfoList[3].toolTip}"		,"${DccTagInfoList[4].toolTip}"
-		,"${DccTagInfoList[5].toolTip}"		,"${DccTagInfoList[6].toolTip}"		,"${DccTagInfoList[7].toolTip}"		,"${DccTagInfoList[8].toolTip}"		,"${DccTagInfoList[9].toolTip}"
-		,"${DccTagInfoList[10].toolTip}"		,"${DccTagInfoList[11].toolTip}"		,"${DccTagInfoList[12].toolTip}"		,"${DccTagInfoList[13].toolTip}"		,"${DccTagInfoList[14].toolTip}"
-		,"${DccTagInfoList[15].toolTip}"		,"${DccTagInfoList[16].toolTip}"		,"${DccTagInfoList[17].toolTip}"		,"${DccTagInfoList[18].toolTip}"		,"${DccTagInfoList[19].toolTip}"
-		,"${DccTagInfoList[20].toolTip}"		,"${DccTagInfoList[21].toolTip}"		,"${DccTagInfoList[22].toolTip}"		,"${DccTagInfoList[23].toolTip}"		,"${DccTagInfoList[24].toolTip}"
-		,"${DccTagInfoList[25].toolTip}"		,"${DccTagInfoList[26].toolTip}"		,"${DccTagInfoList[27].toolTip}"		,"${DccTagInfoList[28].toolTip}"		,"${DccTagInfoList[29].toolTip}"
-		,"${DccTagInfoList[30].toolTip}"		,"${DccTagInfoList[31].toolTip}"		,"${DccTagInfoList[32].toolTip}"		,"${DccTagInfoList[33].toolTip}"		,"${DccTagInfoList[34].toolTip}"
-		,"${DccTagInfoList[35].toolTip}"		,"${DccTagInfoList[36].toolTip}"		,"${DccTagInfoList[37].toolTip}"		,"${DccTagInfoList[38].toolTip}"		,"${DccTagInfoList[39].toolTip}"
-		,"${DccTagInfoList[40].toolTip}"		,"${DccTagInfoList[41].toolTip}"		,"${DccTagInfoList[42].toolTip}"		,"${DccTagInfoList[43].toolTip}"		,"${DccTagInfoList[44].toolTip}"
-		,"${DccTagInfoList[45].toolTip}"		,"${DccTagInfoList[46].toolTip}"		,"${DccTagInfoList[47].toolTip}"		,"${DccTagInfoList[48].toolTip}"		,"${DccTagInfoList[49].toolTip}"
-		,"${DccTagInfoList[50].toolTip}"		,"${DccTagInfoList[51].toolTip}"		,"${DccTagInfoList[52].toolTip}"		,"${DccTagInfoList[53].toolTip}"		,"${DccTagInfoList[54].toolTip}"
-		,"${DccTagInfoList[55].toolTip}"		,"${DccTagInfoList[56].toolTip}"		,"${DccTagInfoList[57].toolTip}"		,"${DccTagInfoList[58].toolTip}"		,"${DccTagInfoList[59].toolTip}"
-		,"${DccTagInfoList[60].toolTip}"		,"${DccTagInfoList[61].toolTip}"		,"${DccTagInfoList[62].toolTip}"		,"${DccTagInfoList[63].toolTip}"		,"${DccTagInfoList[64].toolTip}"
-		,"${DccTagInfoList[65].toolTip}"		,"${DccTagInfoList[66].toolTip}"
+		'${DccTagInfoList[0].toolTip}'		,'${DccTagInfoList[1].toolTip}'		,'${DccTagInfoList[2].toolTip}'		,'${DccTagInfoList[3].toolTip}'		,'${DccTagInfoList[4].toolTip}'
+		,'${DccTagInfoList[5].toolTip}'		,'${DccTagInfoList[6].toolTip}'		,'${DccTagInfoList[7].toolTip}'		,'${DccTagInfoList[8].toolTip}'		,'${DccTagInfoList[9].toolTip}'
+		,'${DccTagInfoList[10].toolTip}'		,'${DccTagInfoList[11].toolTip}'		,'${DccTagInfoList[12].toolTip}'		,'${DccTagInfoList[13].toolTip}'		,'${DccTagInfoList[14].toolTip}'
+		,'${DccTagInfoList[15].toolTip}'		,'${DccTagInfoList[16].toolTip}'		,'${DccTagInfoList[17].toolTip}'		,'${DccTagInfoList[18].toolTip}'		,'${DccTagInfoList[19].toolTip}'
+		,'${DccTagInfoList[20].toolTip}'		,'${DccTagInfoList[21].toolTip}'		,'${DccTagInfoList[22].toolTip}'		,'${DccTagInfoList[23].toolTip}'		,'${DccTagInfoList[24].toolTip}'
+		,'${DccTagInfoList[25].toolTip}'		,'${DccTagInfoList[26].toolTip}'		,'${DccTagInfoList[27].toolTip}'		,'${DccTagInfoList[28].toolTip}'		,'${DccTagInfoList[29].toolTip}'
+		,'${DccTagInfoList[30].toolTip}'		,'${DccTagInfoList[31].toolTip}'		,'${DccTagInfoList[32].toolTip}'		,'${DccTagInfoList[33].toolTip}'		,'${DccTagInfoList[34].toolTip}'
+		,'${DccTagInfoList[35].toolTip}'		,'${DccTagInfoList[36].toolTip}'		,'${DccTagInfoList[37].toolTip}'		,'${DccTagInfoList[38].toolTip}'		,'${DccTagInfoList[39].toolTip}'
+		,'${DccTagInfoList[40].toolTip}'		,'${DccTagInfoList[41].toolTip}'		,'${DccTagInfoList[42].toolTip}'		,'${DccTagInfoList[43].toolTip}'		,'${DccTagInfoList[44].toolTip}'
+		,'${DccTagInfoList[45].toolTip}'		,'${DccTagInfoList[46].toolTip}'		,'${DccTagInfoList[47].toolTip}'		,'${DccTagInfoList[48].toolTip}'		,'${DccTagInfoList[49].toolTip}'
+		,'${DccTagInfoList[50].toolTip}'		,'${DccTagInfoList[51].toolTip}'		,'${DccTagInfoList[52].toolTip}'		,'${DccTagInfoList[53].toolTip}'		,'${DccTagInfoList[54].toolTip}'
+		,'${DccTagInfoList[55].toolTip}'		,'${DccTagInfoList[56].toolTip}'		,'${DccTagInfoList[57].toolTip}'		,'${DccTagInfoList[58].toolTip}'		,'${DccTagInfoList[59].toolTip}'
+		,'${DccTagInfoList[60].toolTip}'		,'${DccTagInfoList[61].toolTip}'		,'${DccTagInfoList[62].toolTip}'		,'${DccTagInfoList[63].toolTip}'		,'${DccTagInfoList[64].toolTip}'
+		,'${DccTagInfoList[65].toolTip}'		,'${DccTagInfoList[66].toolTip}'
 	];
 	
 	var selectTag = [{name:"hogi",value:""},{name:"xyGubun",value:""},{name:"loopName",value:""},{name:"ioType",value:""}
@@ -305,9 +322,9 @@
 		
 		var lblDateVal = '${BaseSearch.hogi}'+'${BaseSearch.xyGubun}'+' '+'${DccLogTrendInfoList[0].SCANTIME}';
 		$("#lblDate").text(lblDateVal);
-		
+
 		setConst();
-		
+
 		$(document.body).delegate('#hogiHeader3', 'click', function() {
 			setTimer('3',xyHeader,0);
 		});

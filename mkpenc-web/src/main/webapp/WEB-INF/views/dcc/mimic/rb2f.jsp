@@ -256,16 +256,27 @@ var selectTag = [{name:"hogi",value:""},{name:"xyGubun",value:""},{name:"loopNam
 				,{name:"address",value:""},{name:"ioBit",value:""},{name:"descr",value:""}];
 
 function showTag(tagNo,iSeq) {
+	
 	if(${UserInfo.grade} == '1' || ${UserInfo.grade} == '2') { // 나중에 grade 1 은 삭제할 것
 		timerOn = false;
+	
 		$("#tagNo").val(tagNo);
-		var infos = tToolTipText[tagNo];
-		$("#txtHogi").val(infos.substring(infos.indexOf('[')+1,infos.indexOf(':')));
+		
+		var toolTip = tToolTipText[tagNo];
+		var strDescr = toolTip.substring(0, toolTip.lastIndexOf('['));
+		var infos =  toolTip.substring(toolTip.lastIndexOf('[')+1, toolTip.lastIndexOf(']')).split(":");
+
+		$("#txtHogi").val(infos[0]);
         $("#txtXyGubun").val(tDccTagXy[tagNo]);
-        $("#txtDescr").val(infos.substring(0,infos.indexOf('[')));
-        $("#txtIoType").val(infos.substring(infos.indexOf(':')+1,infos.indexOf('-')));
-        $("#txtAddress").val(infos.substring(infos.indexOf('-')+1,infos.lastIndexOf(':')));
-        $("#txtIoBit").val(infos.substring(infos.lastIndexOf(':')+1,infos.indexOf(']')));
+        $("#txtDescr").val(strDescr);
+        $("#txtIoType").val(infos[1].substring(0,infos[1].indexOf('-')));
+        $("#txtAddress").val(infos[1].substring(infos[1].indexOf('-')+1));
+        if(infos[2] != null){
+         	$("#txtIoBit").val(infos[2]);
+        }else {
+         	$("#txtIoBit").val("");
+        }
+        
 		openLayer('modal_2');
 	} else {
 		console.log('Not enough permission...');

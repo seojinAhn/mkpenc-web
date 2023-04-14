@@ -46,7 +46,6 @@ var tToolTipText = [
 
 $(function () {
 
-
 	if( $("input:radio[id='4']").is(":checked") ) {
 		hogiHeader = "4";
 	} else {
@@ -272,6 +271,7 @@ function closeModal() {
 var selectTag = [{name:"hogi",value:""},{name:"xyGubun",value:""},{name:"loopName",value:""},{name:"ioType",value:""}
 				,{name:"address",value:""},{name:"ioBit",value:""},{name:"descr",value:""}];
 
+/*
 function showTag(tagNo,iSeq) {
 	if(${UserInfo.grade} == '1' || ${UserInfo.grade} == '2') { // 나중에 grade 1 은 삭제할 것
 		timerOn = false;
@@ -288,6 +288,35 @@ function showTag(tagNo,iSeq) {
 		console.log('Not enough permission...');
 	}
 }
+*/
+
+function showTag(tagNo,iSeq) {
+	
+	if(${UserInfo.grade} == '1' || ${UserInfo.grade} == '2') { // 나중에 grade 1 은 삭제할 것
+		timerOn = false;
+	
+		$("#tagNo").val(tagNo);
+		
+		var toolTip = tToolTipText[tagNo];
+		var strDescr = toolTip.substring(0, toolTip.lastIndexOf('['));
+		var infos =  toolTip.substring(toolTip.lastIndexOf('[')+1, toolTip.lastIndexOf(']')).split(":");
+
+		$("#txtHogi").val(infos[0]);
+        $("#txtXyGubun").val(tDccTagXy[tagNo]);
+        $("#txtDescr").val(strDescr);
+        $("#txtIoType").val(infos[1].substring(0,infos[1].indexOf('-')));
+        $("#txtAddress").val(infos[1].substring(infos[1].indexOf('-')+1));
+        if(infos[2] != null){
+         	$("#txtIoBit").val(infos[2]);
+        }else {
+         	$("#txtIoBit").val("");
+        }
+        
+		openLayer('modal_2');
+	} else {
+		console.log('Not enough permission...');
+	}
+}	
 
 function toCSV() {
 	var	comSubmit = new ComSubmit("lzc_1Frm");
@@ -459,13 +488,13 @@ function toCSV() {
 <!-- layer_pop_wrap -->
 <div class="layer_pop_wrap big" id="modal_2">
     <!-- header_wrap -->
-<div class="pop_header">
-   <h3>태그정보</h3>
+	<div class="pop_header">
+   		<h3>태그정보</h3>
         <a onclick="javascript:closeModal();" title="Close"></a>
     </div>
-<!-- //header_wrap -->
-<!-- pop_contents -->
-<div class="pop_contents" style="max-height:460px;">
+	<!-- //header_wrap -->
+	<!-- pop_contents -->
+	<div class="pop_contents" style="max-height:460px;">
         <!-- list_wrap -->
         <div class="list_wrap">
             <!-- list_table -->
@@ -526,21 +555,21 @@ function toCSV() {
             <!-- //list_table -->
         </div>
         <!-- //list_wrap -->
-</div>
-<!-- pop_contents -->
+	</div>
+	<!-- pop_contents -->
 </div>
 <!-- //layer_pop_wrap -->
 
 <!-- layer_pop_wrap -->
 <div class="layer_pop_wrap big" id="modal_3">
     <!-- header_wrap -->
-<div class="pop_header">
-   <h3>태그목록</h3>
+	<div class="pop_header">
+   		<h3>태그목록</h3>
         <a onclick="closeLayer('modal_3');" title="Close"></a>
     </div>
-<!-- //header_wrap -->
-<!-- pop_contents -->
-<div class="pop_contents" style="max-height:460px;">
+	<!-- //header_wrap -->
+	<!-- pop_contents -->
+	<div class="pop_contents" style="max-height:460px;">
         <!-- form_wrap -->
         <div class="form_wrap">
             <!-- form_table -->
@@ -625,8 +654,8 @@ function toCSV() {
             <!-- //list_bottom -->
         </div>
         <!-- //list_wrap -->      
-</div>
-<!-- pop_contents -->
+	</div>
+	<!-- pop_contents -->
 </div>
 <!-- //layer_pop_wrap -->
 
