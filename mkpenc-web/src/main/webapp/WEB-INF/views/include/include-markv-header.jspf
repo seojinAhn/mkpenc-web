@@ -170,13 +170,13 @@
                                       <a href="#none">주요기기 성능감시</a>         
                                       <ul>          
                                           <li><a href="/markv/performance/fixed">FIXED</a></li>            
-                                          <li><a href="/markv/performance/spared">SPARE</a></li>            
+                                          <li><a href="/markv/performance/spare">SPARE</a></li>            
                                       </ul>         
                                   </li>         
                               </ul>         
                               <ul>          
                                   <li>          
-                                      <a href="/markv/performance/compare34">COMPARE 34</a>            
+                                      <a href="#none">COMPARE 34</a>            
                                   </li>         
                               </ul>         
                           </div>            
