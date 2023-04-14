@@ -75,7 +75,7 @@
 			COUNT(*)
 		FROM LOG_${hogi}DCC_ALARM
 		<trim prefix="WHERE" prefixOverrides="AND | OR">
-			AND SEQ >= Trim(Replace(Left(#{startDate},7),'-',''))
+			AND SEQ >= Replace(Left(#{startDate},7),'-','')
 			AND ALMHOGI = #{hogi}
 			AND ALMXYGUBUN = #{xyGubun}
 			AND CONVERT(VARCHAR(16), ALMDATE, 120) BETWEEN #{startDate} AND #{endDate}
@@ -102,7 +102,7 @@
 		<if test='@org.apache.commons.lang3.StringUtils@equals(currentPage,"-9999")'>
 			SELECT MIN(SEQ) AS SEQ FROM LOG_${hogi}DCC_ALARM
 			WHERE ALMXYGUBUN = #{xyGubun} AND ALMDATE <![CDATA[>=]]> #{startDate}
-			AND SEQ >= Trim(Replace(Left(#{startDate},7),'-',''))
+			AND SEQ >= Replace(Left(#{startDate},7),'-','')
 		</if>
 		<if test='@org.apache.commons.lang3.StringUtils@equals(currentPage,"-1")'>
 			SELECT MAX(SEQ) AS SEQ FROM LOG_${hogi}DCC_ALARM WHERE ALMXYGUBUN = #{xyGubun} AND SEQ <![CDATA[<]]> #{pagNo}
@@ -159,7 +159,7 @@
 			'' AS ALMYEAR
 		FROM LOG_${hogi}DCC_ALARM
 		<trim prefix="WHERE" prefixOverrides="AND | OR">
-			AND SEQ >= Trim(Replace(Left(#{startDate},7),'-',''))
+			AND SEQ >= Replace(Left(#{startDate},7),'-','')
 			AND ALMHOGI = #{hogi}
 			AND ALMXYGUBUN = #{xyGubun}
 			AND CONVERT(VARCHAR(16), ALMDATE, 120) BETWEEN #{startDate} AND #{endDate}
@@ -200,7 +200,7 @@
 			'' AS ALMYEAR
 		FROM LOG_${hogi}DCC_ALARM
 		<trim prefix="WHERE" prefixOverrides="AND | OR">
-			AND SEQ >= Trim(Replace(Left(#{startDate},7),'-',''))
+			AND SEQ >= Replace(Left(#{startDate},7),'-','')
 			AND ALMHOGI = #{hogi}
 			AND ALMXYGUBUN = #{xyGubun}
 			AND CONVERT(VARCHAR(16), ALMDATE, 120) BETWEEN #{startDate} AND #{endDate}
@@ -389,7 +389,7 @@
 		FROM LOG_${sHogi}DCC_ALARM
 		<trim prefix="WHERE" prefixOverrides="AND | OR">
 			<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"0030") or @org.apache.commons.lang3.StringUtils@equals(pType,"0320") or @org.apache.commons.lang3.StringUtils@equals(pType,"1140") or @org.apache.commons.lang3.StringUtils@equals(pType,"1180") or @org.apache.commons.lang3.StringUtils@equals(pType,"2760")'>
-				AND SEQ <![CDATA[>=]]> Trim(Replace(Left(#{startDate},7),'-',''))
+				AND SEQ <![CDATA[>=]]> Replace(Left(#{startDate},7),'-','')
 			</if>
 			<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"core1")'>
 				AND CONVERT(VARCHAR(23), ALMDATE, 121) <![CDATA[>]]> #{startDate}
@@ -404,10 +404,10 @@
 			</if>
 				AND ALMCODE = 'CI'
 				AND ISNUMERIC(ALMADDRESS) = 1
-			<if test='!@org.apache.commons.lang3.StringUtils@equals(pType,"1140") and !@org.apache.commons.lang3.StringUtils@equals(pType,"1181") and !@org.apache.commons.lang3.StringUtils@equals(pType,"2760") and !@org.apache.commons.lang3.StringUtils@equals(pType,"2850")'>
+			<if test='!@org.apache.commons.lang3.StringUtils@equals(pType,"1140") and !@org.apache.commons.lang3.StringUtils@equals(pType,"1180") and !@org.apache.commons.lang3.StringUtils@equals(pType,"2760") and !@org.apache.commons.lang3.StringUtils@equals(pType,"2850")'>
 				AND CONVERT(INT,ALMADDRESS) = #{address}
 			</if>
-			<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"1140") or @org.apache.commons.lang3.StringUtils@equals(pType,"1181") or @org.apache.commons.lang3.StringUtils@equals(pType,"2760") or @org.apache.commons.lang3.StringUtils@equals(pType,"2850")'>
+			<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"1140") or @org.apache.commons.lang3.StringUtils@equals(pType,"1180") or @org.apache.commons.lang3.StringUtils@equals(pType,"2760") or @org.apache.commons.lang3.StringUtils@equals(pType,"2850")'>
 				AND CONVERT(INT,ALMADDRESS) in (${address})
 			</if>
 		</trim>

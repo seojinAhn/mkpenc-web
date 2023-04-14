@@ -39,12 +39,12 @@ public class MarkvPerformanceContentsController {
         return mav;
     }
 	
-	@RequestMapping("share")
-	public ModelAndView share(MarkvSearchPerformance markvSearchPerformance, HttpServletRequest request) {
+	@RequestMapping("spare")
+	public ModelAndView spare(MarkvSearchPerformance markvSearchPerformance, HttpServletRequest request) {
         
 		ModelAndView mav = new ModelAndView();
 
-        logger.info("############ share");
+        logger.info("############ spare");
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	

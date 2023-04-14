@@ -24,5 +24,7 @@ public interface BasDccOsmsMapper {
 	
 	// added by jhlee(23.02.28)
 	List<Map> selectDccGrpTagListB(Map selectMap);
+	
+	List<Map> selectDccGrpTagListA(Map selectMap);
 
 }

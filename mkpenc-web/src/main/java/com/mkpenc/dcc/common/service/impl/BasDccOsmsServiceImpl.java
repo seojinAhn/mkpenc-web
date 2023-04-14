@@ -470,7 +470,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	    		 pStr = pStr + "|";
 	    	 }else {
 	    		 // *** field 명 확인 필요 ***
-	    		 pStr = pStr + vValue.get(j).get("TVALUE"+iFLDNO) +  "|";
+	    		 pStr = pStr + vValue.get(j).get("TVALUE"+ Integer.parseInt(iFLDNO)) +  "|";
 	    	 }
 	    	
 	    }
@@ -482,7 +482,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	}
 	
 	private String sqlQueryDcc4hogi(Map searchMap) {		
-				
+		
 		String pSCanTime ="";	
 		
 		if(searchMap.get("startDate") != null ) {
@@ -560,13 +560,55 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		return pStr;
 		
 	}
-
 	
 	// added by jhlee(23.02.28)
 	public List<Map> selectDccGrpTagListB(Map searchMap) {
 		List<Map> rtnMap = new ArrayList<Map>();
 		
 		List<Map> tmpMapList = basDccOsmsMapper.selectDccGrpTagListB(searchMap);
+		tmpMapList.forEach(m -> {
+			Map tmpMap = new HashMap();
+			if( "D".equalsIgnoreCase(m.get("gubun").toString()) ) {
+				tmpMap.put("iSeq", m.get("iSeq"));
+				tmpMap.put("gubun", m.get("gubun"));
+				tmpMap.put("hogi", m.get("hogi"));
+				tmpMap.put("xyGubun", m.get("xyGubun"));
+				tmpMap.put("Descr", m.get("Descr"));
+				tmpMap.put("ioType", m.get("ioType"));
+				tmpMap.put("address", m.get("address"));
+				tmpMap.put("ioBit", m.get("ioBit"));
+				tmpMap.put("minVal", m.get("minVal"));
+				tmpMap.put("maxVal", m.get("maxVal"));
+				if( "0".equals(m.get("saveCoreChk")) && "SC".equalsIgnoreCase(m.get("ioType").toString()) ) {
+					tmpMap.put("saveCoreChk", "");
+				} else {
+					tmpMap.put("saveCoreChk", m.get("saveCoreChk"));
+				}
+			} else {
+				tmpMap.put("iSeq_m", m.get("iSeq_M"));
+				tmpMap.put("gubun", m.get("gubun_M"));
+				tmpMap.put("hogi_m", m.get("hogi_M"));
+				tmpMap.put("xyGubun", "");
+				tmpMap.put("Descr_m", m.get("Descr_M"));
+				tmpMap.put("ioType_m", m.get("ioType_M"));
+				tmpMap.put("register_m", m.get("register_M"));
+				tmpMap.put("ioBit_m", m.get("ioBit_M"));
+				tmpMap.put("minVal_m", m.get("minVal_M"));
+				tmpMap.put("maxVal_m", m.get("maxVal_M"));
+				tmpMap.put("saveCoreChk_m", "");
+			}
+			
+			rtnMap.add(tmpMap);
+		});
+		
+		return rtnMap;
+	}
+	
+
+	public List<Map> selectDccGrpTagListA(Map searchMap) {
+		List<Map> rtnMap = new ArrayList<Map>();
+		
+		List<Map> tmpMapList = basDccOsmsMapper.selectDccGrpTagListA(searchMap);
 		tmpMapList.forEach(m -> {
 			Map tmpMap = new HashMap();
 			if( "D".equalsIgnoreCase(m.get("gubun").toString()) ) {
