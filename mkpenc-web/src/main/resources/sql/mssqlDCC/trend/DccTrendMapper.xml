@@ -144,4 +144,12 @@
 		WHERE SCANTIME = #{startDate}
 		AND SEQ = #{seq}
     </select>
+    
+    <update id="manageTrendProc" parameterType="java.lang.String">
+    	${value}
+    </update>
+    
+    <select id="callTrendProc" parameterType="java.util.Map" statementType="CALLABLE" resultType="java.util.Map">
+    	EXEC ${procName} ${param}
+    </select>
 </mapper>

@@ -261,10 +261,11 @@ public class DccTrendContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {
 			dccSearchTrend.setMenuName(this.menuName);
 			
-			//changeGrpName(dccSearchTrend,mav);
 			dccSearchTrend.setsUGrpNo(dccSearchTrend.getsUGrpNo() == null ? mberInfo.getId() : dccSearchTrend.getsUGrpNo());
 			
 			getGrpTagList(dccSearchTrend,mav);
+			
+			changeGrpName(dccSearchTrend,mav);
 			
 			userInfo.setHogi(dccSearchTrend.getsHogi());
 			userInfo.setXyGubun(dccSearchTrend.getsXYGubun());
@@ -524,10 +525,10 @@ public class DccTrendContentsController {
 					if( "F".equalsIgnoreCase(strFast) ) {
 						strTimeGap = "0.5";
 						lGap = 500L;
-						strStartTime = dtf.format(convDtm(strScanTime,false).minusSeconds((440)*nTrendWidth));
+						strStartTime = dtf.format(convDtm(strScanTime,false).minusSeconds(440));
 						strEndTime = strScanTime;
 					} else {
-						strStartTime = dtf.format(convDtm(strScanTime,false).minusSeconds((lGap/1000)*nTrendWidth+10));
+						strStartTime = dtf.format(convDtm(strScanTime,false).minusSeconds((lGap/1000)*(nTrendWidth+10)));
 						strEndTime = strScanTime;
 					}
 					break;
@@ -549,10 +550,10 @@ public class DccTrendContentsController {
 					if( "F".equalsIgnoreCase(strFast) ) {
 						strTimeGap = "0.5";
 						lGap = 500L;
-						strStartTime = dtf.format(convDtm(strScanTime,false).minusSeconds((440)*nTrendWidth));
+						strStartTime = dtf.format(convDtm(strScanTime,false).minusSeconds(440));
 						strEndTime = strScanTime;
 					} else {
-						strStartTime = dtf.format(convDtm(strScanTime,false).minusSeconds((lGap/1000)*nTrendWidth+10));
+						strStartTime = dtf.format(convDtm(strScanTime,false).minusSeconds((lGap/1000)*(nTrendWidth+10)));
 						strEndTime = strScanTime;
 					}
 					break;
@@ -564,13 +565,16 @@ public class DccTrendContentsController {
 		if( "".equals(strScanTime) ) {
 			pScanTime = dccTrendService.selectScanTime(dccSearchTrend);
 			lGap = Long.parseLong(strTimeGap) * 1000;
-			strStartTime = dtf.format(convDtm(strScanTime,true).minusSeconds((lGap/1000)*nTrendWidth));
+			strStartTime = dtf.format(convDtm(pScanTime,true).minusSeconds((lGap/1000)*nTrendWidth));
 			strEndTime = pScanTime;
 		}
 		
 		Duration durSec = Duration.between(convDtm(strStartTime.replaceAll("/", "-"),true),convDtm(strEndTime.replaceAll("/", "-"),true));
 		int nSec = (int) durSec.getSeconds();
 		int nBun = (nSec-nSec%60)/60;
+		
+		dccSearchTrend.setStartDate(strStartTime);
+		dccSearchTrend.setEndDate(strEndTime);
 
 		//frmProgressBar.show
 		List<Map> rsTrendListHistorical = new ArrayList();
@@ -582,10 +586,11 @@ public class DccTrendContentsController {
 				//rsTrendListpHistorical = dccTrendService.rsTrend5sGapAux(searchMap, dccGrpTagList, lGap, strFast);
 				break;
 			case "D":
-				if( "4".equals(dccSearchTrend.getsXYGubun()) ) {
+				if( "4".equals(dccSearchTrend.getsHogi()) ) {
 					//List<Map> rsTrendList = dccTrendService.rsTrend5sGap222(searchMap, dccGrpTagList, lGap, strFast);
 				} else {
-					rsTrendListHistorical = dccTrendService.rsTrend5sGap(searchMap, dccGrpTagList, lGap, strFast);
+					//rsTrendListHistorical = dccTrendService.rsTrend5sGap(searchMap, dccGrpTagList, lGap, strFast);
+					rsTrendListHistorical = getRsTrend5sGap(dccSearchTrend, dccGrpTagList, strFast, false, lGap);
 				}
 				break;
 			case "B":
@@ -603,26 +608,28 @@ public class DccTrendContentsController {
 		String sDateS = "";
 		String sDateE = "";
 		int iRow = 0;
-		for( int hi=0;hi<rsTrendListHistorical.size();hi++ ) {
-			String[] dccGrpTagArray = {
-				dccGrpTagList.get(hi).getIOTYPE(),
-				dccGrpTagList.get(hi).getIOBIT()+"",
-				dccGrpTagList.get(hi).getSaveCore()+"",
-				dccGrpTagList.get(hi).getBScale()+"",
-				dccGrpTagList.get(hi).getADDRESS(),
-				dccGrpTagList.get(hi).getFASTIOCHK()+""
-			};
 			Map rtnMapHistorical = new HashMap();
 			
-			for( int ht=0;ht<rsTrendListHistorical.get(hi).size();ht++ ) {
-				String RetVal = setDataConv(ht,rsTrendListHistorical.get(hi).get(ht).toString(),dccGrpTagArray,dccSearchTrend.getsMenuNo(),lGap);
+			for( int ht=0;ht<rsTrendListHistorical.size();ht++ ) {
+				for( int hi=0;hi<dccGrpTagList.size();hi++ ) {
+					String[] dccGrpTagArray = {
+						dccGrpTagList.get(hi).getIOTYPE(),
+						dccGrpTagList.get(hi).getIOBIT()+"",
+						dccGrpTagList.get(hi).getSaveCore()+"",
+						dccGrpTagList.get(hi).getBScale()+"",
+						dccGrpTagList.get(hi).getADDRESS(),
+						dccGrpTagList.get(hi).getFASTIOCHK()+""
+					};
+				String RetVal = setDataConv(ht,rsTrendListHistorical.get(ht).get("tvalue"+(hi+1)).toString(),dccGrpTagArray,dccSearchTrend.getsMenuNo(),lGap);
+				System.out.println(RetVal);
 				
 				int nRetValType = 0;
+				Double tmpN = 0d;
 				try {
 					if( RetVal == null ) {
 						nRetValType = 2;
 					} else {
-						int tmpN = Integer.parseInt(RetVal);
+						tmpN = Double.parseDouble(RetVal);
 						nRetValType = 0;
 					}
 				} catch( NumberFormatException nfe ) {
@@ -630,22 +637,26 @@ public class DccTrendContentsController {
 				}
 				
 				if( nRetValType == 0 ) {
-					rtnMapHistorical.put(ht,Integer.parseInt(RetVal)*1000+"");
+					if( "AI".equalsIgnoreCase(dccGrpTagArray[0]) && ("2753".equals(dccGrpTagArray[4]) || "2754".equals(dccGrpTagArray[4])) ) {
+						rtnMapHistorical.put(hi,tmpN*1000+"");
+					} else {
+						rtnMapHistorical.put(hi,tmpN+"");
+					}
 					
 					sDateS = RetVal;
 					iRow++;
 				} else if( nRetValType == 1 ) {
-					rtnMapHistorical.put(ht,cnstErr+"");
+					rtnMapHistorical.put(hi,cnstErr+"");
 				} else {
-					rtnMapHistorical.put(ht,cnstNull+"");
+					rtnMapHistorical.put(hi,cnstNull+"");
 				}
 			}
 			Map timeNPosH = new HashMap();
 			timeNPosH.put("m_data",rtnMapHistorical);
-			timeNPosH.put("m_time",rsTrendListHistorical.get(hi).get(0).toString());
-			timeNPosH.put("m_xpos",hi+"");
+			timeNPosH.put("m_time",rsTrendListHistorical.get(ht).get("").toString());
+			timeNPosH.put("m_xpos",ht+"");
 			
-			arrTrendData.add(hi,timeNPosH);
+			arrTrendData.add(ht,timeNPosH);
 		}
 		
 		LocalDateTime now = LocalDateTime.now();
@@ -657,7 +668,8 @@ public class DccTrendContentsController {
 				if( !sDateS.equals(sDateE) ) {
 					searchMap.replace("startDate",sDateS);
 					searchMap.replace("endDate",sDateE);
-					List<Map> rsTrendListHistorical2 = dccTrendService.rsTrend5sGap(searchMap, dccGrpTagList, lGap, strFast);
+					//List<Map> rsTrendListHistorical2 = dccTrendService.rsTrend5sGap(searchMap, dccGrpTagList, lGap, strFast);
+					List<Map> rsTrendListHistorical2 = getRsTrend5sGap(dccSearchTrend, dccGrpTagList, strFast, false, lGap);
 					
 					int iPoint = 0;
 					if( rsTrendListHistorical2.size() < 1 ) {
@@ -666,13 +678,13 @@ public class DccTrendContentsController {
 						iPoint = rsTrendListHistorical2.size();
 					}
 					
-					for( int subi=0;subi<nEndPos;subi++ ) {
+					for( int subi=iRow;subi<nEndPos;subi++ ) {
 						if( iPoint > (subi-iRow) ) {
-							arrTrendData.get(subi).replace("m_time", rsTrendListHistorical2.get(subi-iRow).get(0).toString());
+							arrTrendData.get(subi).replace("m_time", rsTrendListHistorical2.get(subi-iRow).get("").toString());
 							arrTrendData.get(subi).replace("m_xpos", subi+"");
 							
-							for( int subj=0;subj<rsTrendListHistorical.size();subj++ ) {
-								if( rsTrendListHistorical2.get(subi-iRow).get(subj) == null || "".equals(rsTrendListHistorical2.get(subi-iRow).get(subj)) ) {
+							for( int subj=0;subj<dccGrpTagList.size();subj++ ) {
+								if( rsTrendListHistorical2.get(subi-iRow).get("tvalue"+(subj+1)) == null || "".equals(rsTrendListHistorical2.get(subi-iRow).get("tvalue"+(subj+1))) ) {
 									((Map) arrTrendData.get(subi).get("m_data")).replace(subj,cnstNull+"");
 								} else {
 									switch( dccSearchTrend.getsDive().toUpperCase() ) {
@@ -684,22 +696,22 @@ public class DccTrendContentsController {
 										break;
 									case "D":
 										String[] dccGrpTagArray = {
-											dccGrpTagList.get(subi-iRow).getIOTYPE(),
-											dccGrpTagList.get(subi-iRow).getIOBIT()+"",
-											dccGrpTagList.get(subi-iRow).getSaveCore()+"",
-											dccGrpTagList.get(subi-iRow).getBScale()+"",
-											dccGrpTagList.get(subi-iRow).getADDRESS(),
-											dccGrpTagList.get(subi-iRow).getFASTIOCHK()+""
+											dccGrpTagList.get(subj).getIOTYPE(),
+											dccGrpTagList.get(subj).getIOBIT()+"",
+											dccGrpTagList.get(subj).getSaveCore()+"",
+											dccGrpTagList.get(subj).getBScale()+"",
+											dccGrpTagList.get(subj).getADDRESS(),
+											dccGrpTagList.get(subj).getFASTIOCHK()+""
 										};
-										String RetVal2 = setDataConv(subj,rsTrendListHistorical.get(subi-iRow).get(subj).toString(),dccGrpTagArray,dccSearchTrend.getsMenuNo(),lGap);
+										String RetVal2 = setDataConv(subj,rsTrendListHistorical.get(subi-iRow).get("tvalue"+(subj+1)).toString(),dccGrpTagArray,dccSearchTrend.getsMenuNo(),lGap);
 										
 										int nRetValType = 0;
-										int tmpN = 0;
+										Double tmpN = 0d;
 										try {
 											if( RetVal2 == null ) {
 												nRetValType = 2;
 											} else {
-												tmpN = Integer.parseInt(RetVal2);
+												tmpN = Double.parseDouble(RetVal2);
 												nRetValType = 0;
 											}
 										} catch( NumberFormatException nfe ) {
@@ -707,7 +719,7 @@ public class DccTrendContentsController {
 										}
 										
 										if( nRetValType == 0 ) {
-											if( "AI".equalsIgnoreCase(dccGrpTagArray[0]) && "2753".equals(dccGrpTagArray[4]) || "2754".equals(dccGrpTagArray[4]) ) {
+											if( "AI".equalsIgnoreCase(dccGrpTagArray[0]) && ("2753".equals(dccGrpTagArray[4]) || "2754".equals(dccGrpTagArray[4])) ) {
 												((Map) arrTrendData.get(subi).get("m_data")).replace(subj,tmpN*1000+"");
 											} else {
 												((Map) arrTrendData.get(subi).get("m_data")).replace(subj,RetVal2);
@@ -750,16 +762,16 @@ public class DccTrendContentsController {
 			
 			String tickCount = System.currentTimeMillis()+"";
 			
-			procName = "DccTrend"+strStartDate.replaceAll("-","").replaceAll(" ","").replaceAll(":","").replaceAll(".","")+tickCount.substring(tickCount.length()-4,tickCount.length());
+			procName = "DccTrend"+strStartDate.replaceAll("/","").replaceAll("-","").replaceAll(" ","").replaceAll(":","").replaceAll("\\.","")+tickCount.substring(tickCount.length()-3,tickCount.length());
 			
 			// craete tmp procedure
 			qryStr = "CREATE PROCEDURE " + procName + " @timegap as int AS \n"
 				   + " declare @maxdate datetime \n"
 				   + " declare @mindate datetime \n"
 				   + " declare @curdate datetime \n"
-				   + " set @mindate = convert(datetime, '"+strStartDate+"') \n"
-				   + " set @maxdate = convert(datetime, '"+strEndDate+"') \n"
-				   + " set @curdate = convert(datetime, '"+strStartDate+"') \n";
+				   + " set @mindate = convert(datetime, '"+strStartDate.replaceAll("/","-")+"') \n"
+				   + " set @maxdate = convert(datetime, '"+strEndDate.replaceAll("/","-")+"') \n"
+				   + " set @curdate = convert(datetime, '"+strStartDate.replaceAll("/","-")+"') \n";
 			
 			for( int i=1;i<size+1;i++ ) {
 				qryStr += " declare @thistime"+i+" datetime \n";
@@ -814,8 +826,8 @@ public class DccTrendContentsController {
 							+ "     set @thistime"+i+" = isnull(@thistime"+i+", @curdate) \n";
 				}
 				
-				qryStr += "     set @iSeq = @iSeq + 1 \n"
-						+ " insert into #OnlyDate(";
+				qryStr += "        set @iSeq = @iSeq + 1 \n"
+						+ "        insert into #OnlyDate(";
 				
 				for( int i=1;i<size+1;i++ ) {
 					qryStr += "thistime"+i+",";
@@ -843,8 +855,8 @@ public class DccTrendContentsController {
 							+ "        set @thistime"+i+" = isnull(@thistime"+i+", @curdate) \n";
 				}
 				
-				qryStr += "     set @iSeq = @iSeq + 1 \n"
-						+ " insert into #OnlyDate2(";
+				qryStr += "        set @iSeq = @iSeq + 1 \n"
+						+ "        insert into #OnlyDate2(";
 				
 				for( int i=1;i<size+1;i++ ) {
 					qryStr += "thistime"+i+",";
@@ -866,8 +878,8 @@ public class DccTrendContentsController {
 							+ "        set @thistime"+i+" = isnull(@thistime"+i+", @curdate) \n";
 				}
 				
-				qryStr += "     set @iSeq = @iSeq + 1 \n"
-						+ " insert into #OnlyDate(";
+				qryStr += "        set @iSeq = @iSeq + 1 \n"
+						+ "        insert into #OnlyDate(";
 				
 				for( int i=1;i<size+1;i++ ) {
 					qryStr += "thistime"+i+",";
@@ -901,7 +913,7 @@ public class DccTrendContentsController {
 						+ " select a.thistime1,";
 				
 				for( int i=1;i<size+1;i++ ) {
-					if( i == size+1 ) {
+					if( i == size ) {
 						qryStr += "         'tvalue"+i+"' = (select tvalue"+dccGrpTagList.get(i-1).getFLDNO()+" from LOG_"+dccGrpTagList.get(i-1).getHogi()+"DCC_TREND_HIST where Scantime = a.thistime"+i+" and Seq = "+dccGrpTagList.get(i-1).getTBLNO()+") \n";
 					} else {
 						qryStr += "         'tvalue"+i+"' = (select tvalue"+dccGrpTagList.get(i-1).getFLDNO()+" from LOG_"+dccGrpTagList.get(i-1).getHogi()+"DCC_TREND_HIST where Scantime = a.thistime"+i+" and Seq = "+dccGrpTagList.get(i-1).getTBLNO()+"), \n";
@@ -922,7 +934,7 @@ public class DccTrendContentsController {
 					+ " select a.thistime1,";
 			
 			for( int i=1;i<size+1;i++ ) {
-				if( i == size+1 ) {
+				if( i == size ) {
 					if( "F".equalsIgnoreCase(strFast) ) {
 						qryStr += "         'tvalue"+i+"' = (select tvalue"+dccGrpTagList.get(i-1).getFLDNO_FAST()+" from LOG_"+dccGrpTagList.get(i-1).getHogi()+"DCC_TREND_FAST where Scantime = a.thistime"+i+" and Seq = 1) \n";
 					} else {
@@ -953,9 +965,11 @@ public class DccTrendContentsController {
 			
 			qryStr += "  from #temp\n";
 			
+			System.out.println(qryStr);
+			
 			nRes = dccTrendService.manageTrendProc(qryStr);
 			
-			if( nRes > 0 ) {
+			//if( nRes > 0 ) {
 				// exec tmp procedure
 				procInfo.put("procName",procName);
 				procInfo.put("param",lGap+"");
@@ -965,7 +979,7 @@ public class DccTrendContentsController {
 				int resCnt = 0;
 				int rtnMapSize = 0;
 				do {
-					rtnMapSize = rtnMapList == null ? 0 : rtnMapList.size();
+					rtnMapSize = rtnMapList.size() == 0 ? 0 : rtnMapList.size();
 						
 					try {
 						Thread.sleep(1000);
@@ -975,7 +989,7 @@ public class DccTrendContentsController {
 						resCnt++;
 					}
 				} while( rtnMapSize == 0 && resCnt < 5 );
-			}
+			//}
 			
 			// drop tmp procedure
 			qryStr = "DROP PROCEDURE " + procName;
@@ -1107,7 +1121,13 @@ public class DccTrendContentsController {
 	}
 	
 	private LocalDateTime convDtm(String date, boolean isMilli) {
-		String[] pDate = date.split(" ")[0].split("-");
+		String[] pDate = {};
+		
+		if( date.split(" ")[0].indexOf("-") > -1 ) {
+			pDate = date.split(" ")[0].split("-");
+		} else if(date.split(" ")[0].indexOf("/") > -1 ) { 
+			pDate = date.split(" ")[0].split("/");
+		}
 		String[] pTime = date.split(" ")[1].split(":");
 		String millis = "000";
 

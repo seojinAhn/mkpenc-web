@@ -21,14 +21,20 @@
 <link rel="stylesheet" type="text/css" href="<c:url value="/resources/datetimepicker/jquery.datetimepicker.css" />">
 <script type="text/javascript" src="<c:url value="/resources/datetimepicker/jquery.datetimepicker.full.min.js" />" charset="utf-8"></script>
 
+<link rel="stylesheet" href="/resources/sbchart/sbchart.css">
+<script type="text/javascript" src="/resources/sbchart/sbchart.js"></script>
+
 <script type="text/javascript">
 	var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
 	var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
 	var currentSelGrp = "";
 	var grpNos = [];
 	var selGrpNm = "";
+	
+	var chart;
 
 	$(function() {
+		//createChart();
 		//var iid=0;
 		//var str = '${DccGroupList[0]}';
 		//var ss = str.replace(/{/gi,'').replace(/}/gi,'').split(', ');
@@ -162,6 +168,8 @@
 			comAjax.addParam('sUGrpNo',selGrpName);
 			comAjax.setCallback("mbr_RuntimerEventCallback");
 			comAjax.ajax();
+			
+			createChart($("#testArea").text());
 		});
 	});
 	
@@ -235,6 +243,83 @@
 			$("#txtTimeGap").attr("disabled",true);
 			$("#selectSDate").attr("disabled",false);
 		}
+	}
+
+	function createChart(data){
+		console.log(data);
+		var xValues = data.split("},{");
+		var str0 = xValues[0];
+		var strLast = xValues[xValues.length-1];
+		
+		str0 = str0.substring(1,str0.length);
+		strLast = strLast.substring(0,strLast.length-1);
+		
+		xValues.splice(0,1,str0);
+		xValues.splice(xValues.length-1,1,strLast);
+
+		var xData = [];
+		var xAxis = [];
+		for( var j=0;j<xValues.length;j++ ) {
+			var xJson = xValues[j].split(', ');
+			//xJson.splice(0,1);
+			
+			//xData = [
+			//	{name:xJson[0], [xJson[1].split('=')[0]]:(xJson[1].split('=')[1])*1}
+			//];
+			//for( var d=1;d<xJson.length;d++ ) {
+					//var key = xJson[d].split('=')[0];
+					//var value = (xJson[d].split('=')[1])*1;
+					xData.push({name:xJson[0], [xJson[1].split('=')[0]]:(xJson[1].split('=')[1])*1, [xJson[2].split('=')[0]]:(xJson[2].split('=')[1])*1, [xJson[3].split('=')[0]]:(xJson[3].split('=')[1])*1, [xJson[4].split('=')[0]]:(xJson[4].split('=')[1])*1});
+					//xData.push({[key]:value});
+			if( j == 0 ) {		
+				for( var d=1;d<xJson.length;d++ ) {
+					xAxis.push(xJson[d].split('=')[0]);
+				}
+			}
+			//}
+		}
+		
+		console.log(xData);
+		console.log(xAxis);
+		
+		var chartConfig = {
+			global: {
+				svg: {
+					classname: 'customClass' // í´ë¹ ì°¨í¸ì svg  íê·¸ì ì»¤ì¤í í´ëì¤ ì¤ì 
+				},
+				size: {
+					width: 840,
+					height: 600
+				}
+			},
+			data: {
+				type: 'line', // ì°¨í¸ì íìì ì¤ì 
+				json: xData, // json ííë¡ ë°ì´í° ì¤ì íë©°, chartDataë¼ë ë³ìì ë°ì´í°ë¥¼ ê°ì ¸ìì ê·¸ë ¤ì¤
+				keys: { // json ííì ë°ì´í°ë¥¼ ì¬ì© ì, íìë¡ keys ìì±ì ì¬ì©í´ì¼ í¨
+					x: "name", // ê°ê°ì xì¶ ì´ë¦ì chartDataì nameê°ì¼ë¡ ì¤ì 
+					value: xAxis // chartDataì 2015, 2016, 2017 ë°ì´í°ë¥¼ ë³´ì¬ì£¼ëë¡ ì¤ì 
+				}
+			},
+			extend: {
+				bar: {
+					topRadius: 15
+				}
+			}
+		};
+		chart = new sb.chart("#chartArea", chartConfig) // ì²«ë²ì§¸ íë¼ë¯¸í°ë div ìì­ì id, ëë²ì§¸ íë¼ë¯¸í°ë ììì ì¤ì í chart config ê°ì²´ëª ê¸°ì
+		chart.render(); // render ë©ìëë¥¼ ì¬ì©í´ì¼ ì°¨í¸ê° ê·¸ë ¤ì§ (ëì ì¼ë¡ ì¬ì© ììë ë§ì§ë§ì ê¼­ render()ë¥¼ ì¨ì¤ì¼ ë³ê²½í ê°ë¤ì´ ë°ìëì´ ë³´ì¬ì§ëë¤.)
+	}
+
+	var chartData = [
+		{name: 'ìì¸', 2015: 10, 2016: 20, 2017: 30},
+		{name: 'ê²½ê¸°', 2015: 30, 2016: 10, 2017: 20},
+		{name: 'ì¸ì²', 2015: 20, 2016: 30, 2017: 10},
+	]
+	
+	function loadTrendDataArray(data) {
+		var arrTrendData = data;
+		
+		console.log('trend data :: '+arrTrendData);
 	}
 </script>
 
@@ -382,7 +467,7 @@
 			</div>
 			<!-- //fx_srch_wrap -->         
 			<!-- chart_wrap_area -->
-			<div class="chart_wrap_area">
+			<div class="chart_wrap_area" id="chartArea">
                 <!-- 마우스 우클릭 메뉴 -->
                 <div class="context_menu" id="mouse_area">
                     <ul>
@@ -402,6 +487,7 @@
                 <!-- //마우스 우클릭 메뉴 -->                
                 차트영역 (최종본 라인 제거)
             </div>
+            <input id="testArea" type="hidden"></input>
             <!-- //chart_wrap_area -->
 		</div>
 		<!-- //contents -->
