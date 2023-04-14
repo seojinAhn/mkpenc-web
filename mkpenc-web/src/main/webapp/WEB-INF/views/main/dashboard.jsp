@@ -28,7 +28,7 @@ $(function () {
 			// 화면초기화
 			var	comSubmit	=	new ComSubmit("dashboardFrm");
 			comSubmit.setUrl("/main/dashboard");
-			comSubmit.submit();		
+			//comSubmit.submit();		
 		 }, 5000); 	  
 		
 });	
