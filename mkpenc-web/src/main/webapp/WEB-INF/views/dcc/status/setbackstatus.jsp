@@ -38,6 +38,21 @@
 		${DccTagInfoList[55].iSeq}
 	];
 	
+	var tDccTrendValue = [
+		'${lblDataList[0].fValue}','${lblDataList[1].fValue}','${lblDataList[2].fValue}','${lblDataList[3].fValue}','${lblDataList[4].fValue}',
+		'${lblDataList[5].fValue}','${lblDataList[6].fValue}','${lblDataList[7].fValue}','${lblDataList[8].fValue}','${lblDataList[9].fValue}',
+		'${lblDataList[10].fValue}','${lblDataList[11].fValue}','${lblDataList[12].fValue}','${lblDataList[13].fValue}','${lblDataList[14].fValue}',
+		'${lblDataList[15].fValue}','${lblDataList[16].fValue}','${lblDataList[17].fValue}','${lblDataList[18].fValue}','${lblDataList[19].fValue}',
+		'${lblDataList[20].fValue}','${lblDataList[21].fValue}','${lblDataList[22].fValue}','${lblDataList[23].fValue}','${lblDataList[24].fValue}',
+		'${lblDataList[25].fValue}','${lblDataList[26].fValue}','${lblDataList[27].fValue}','${lblDataList[28].fValue}','${lblDataList[29].fValue}',
+		'${lblDataList[30].fValue}','${lblDataList[31].fValue}','${lblDataList[32].fValue}','${lblDataList[33].fValue}','${lblDataList[34].fValue}',
+		'${lblDataList[35].fValue}','${lblDataList[36].fValue}','${lblDataList[37].fValue}','${lblDataList[38].fValue}','${lblDataList[39].fValue}',
+		'${lblDataList[40].fValue}','${lblDataList[41].fValue}','${lblDataList[42].fValue}','${lblDataList[43].fValue}','${lblDataList[44].fValue}',
+		'${lblDataList[45].fValue}','${lblDataList[46].fValue}','${lblDataList[47].fValue}','${lblDataList[48].fValue}','${lblDataList[49].fValue}',
+		'${lblDataList[50].fValue}','${lblDataList[51].fValue}','${lblDataList[52].fValue}','${lblDataList[53].fValue}','${lblDataList[54].fValue}',
+		'${lblDataList[55].fValue}'
+	];
+	
 	var tDccTagXy = [
 		'${DccTagInfoList[0].XYGubun}','${DccTagInfoList[1].XYGubun}','${DccTagInfoList[2].XYGubun}','${DccTagInfoList[3].XYGubun}','${DccTagInfoList[4].XYGubun}',
 		'${DccTagInfoList[5].XYGubun}','${DccTagInfoList[6].XYGubun}','${DccTagInfoList[7].XYGubun}','${DccTagInfoList[8].XYGubun}','${DccTagInfoList[9].XYGubun}',
@@ -76,8 +91,7 @@
 	var lblFP = ['0.02','0.6','0.6','0.02','0.02','0.02','0.02','0.08','0.6','0.6','0.02'];
 	
 	function showTag(tagNo,iSeq) {
-		alert("asdfadf");
-		/*
+
 		if(${UserInfo.grade} == '1' || ${UserInfo.grade} == '2') { // 나중에 grade 1 은 삭제할 것
 			timerOn = false;
 		
@@ -103,7 +117,6 @@
 		} else {
 			console.log('Not enough permission...');
 		}
-		*/
 	}
 	
 	function getToolTipText(id) {
@@ -200,7 +213,7 @@
 		$("#lblFP8").text(lblFP[8]);
 		$("#lblFP9").text(lblFP[9]);
 		$("#lblFP10").text(lblFP[10]);
-		
+
 		$("#imgTooltip0").attr("title",tToolTipText[44]);
 		$("#imgTooltip1").attr("title",tToolTipText[45]);
 		$("#imgTooltip2").attr("title",tToolTipText[46]);
@@ -212,7 +225,7 @@
 		$("#imgTooltip8").attr("title",tToolTipText[52]);
 		$("#imgTooltip9").attr("title",tToolTipText[53]);
 		$("#imgTooltip10").attr("title",tToolTipText[54]);
-		
+
 		if( tDccTrendValue[44]*1 == 0 ) {
 			$("#shpIND0").attr("class","st_label st_no");
 		} else {
@@ -271,6 +284,7 @@
 	}
 	
 	$(function(){
+		
 		if( $("#hogiHeader4").attr("class") == 'current' && $("#hogiHeader4").attr("class") != 'undefined' && $("#hogiHeader4").attr("class") != '') {
 			hogiHeader = "4";
 		} else {
@@ -285,9 +299,9 @@
 		
 		var lblDateVal = '${BaseSearch.hogi}'+'${BaseSearch.xyGubun}'+' '+'${DccLogTrendInfoList[0].SCANTIME}';
 		$("#lblDate").text(lblDateVal);
-		
+
 		setConst();
-		
+
 		$(document.body).delegate('#hogiHeader3', 'click', function() {
 			setTimer('3',xyHeader,0);
 		});
@@ -303,7 +317,7 @@
 			setTimer(hogiHeader,xyHeader,0);
 		});
 		$(document.body).delegate('#dccStatusSBForm label', 'dblclick', function() {
-			alert("double");
+
 			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
 			cId = getToolTipText(cId).split("||")[0];
 			if( cId != null && cId != '' && cId != 'undefined' && cId.indexOf('lbl') == -1 && cId.indexOf('shp') == -1 ) {
@@ -355,7 +369,7 @@
 				}
 			}
 		});
-		
+
 		$("#tagSearch").click(function() {
 			tagSearchEvent();
 		});
@@ -398,7 +412,7 @@
 			comSubmit.submit();
 		}
 	}
-	
+
 	function saveTag() {
 		var comSubmit = new ComSubmit("setIOForm");
 		var frm = document.getElementById("setIOForm");
@@ -428,7 +442,7 @@
 		comSubmit.setUrl("/dcc/status/stbSaveTag");
 		comSubmit.ajax();
 	}
-	
+
 	function tagSearchEvent(){
 		var comAjax = new ComAjax("setIOForm");
 		var tHogi = $("#txtHogi").val()*1;
@@ -459,7 +473,7 @@
 		comAjax.setCallback("tagSearchCallback");
 		comAjax.ajax();
 	}
-	
+
 	function tagFind(type) {
 		var comAjax = new ComAjax("tagSearchForm");
 		if( type == 0 ) {
@@ -475,7 +489,7 @@
 		comAjax.setCallback("tagFindCallback");
 		comAjax.ajax();
 	}
-	
+
 	function tagSelect() {
 		for( var tr=0;tr<selectTag.length;tr++ ) {
 			if( selectTag[tr].name == "hogi" ) $("#txtHogi").val(selectTag[tr].value);
