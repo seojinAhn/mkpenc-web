@@ -542,6 +542,535 @@ function setTimer(hogiHeader,xyHeader,interval) {
 	<!-- //footer -->
 </div>
 <!--  //wrap  -->
+
+<!-- layer_pop_wrap -->
+<div class="layer_pop_wrap large" id="modal_1">
+    <!-- header_wrap -->
+	<div class="pop_header">
+	    <h3>태그정보</h3>
+        <a onclick="closeLayer('modal_1');" title="Close"></a>
+    </div>
+	<!-- //header_wrap -->
+	<!-- pop_contents -->
+	<div class="pop_contents">
+        <!-- form_wrap -->
+        <div class="form_wrap">
+            <!-- form_table -->
+            <table class="form_table">
+                <colgroup>
+                    <col width="120px"/>
+                    <col />
+                </colgroup>
+                <tr>
+                    <th>태그번호</th>
+                    <td>
+                        <div class="fx_form">
+                            <input type="text">
+                            <a class="btn_list" herf="none" onclick="openLayer('modal_2');">태그찾기</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>태그명</th>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <th>태그설명</th>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <th>표현방식</th>
+                    <td>
+                        <div class="fx_form_multi">
+                            <div class="fx_form">
+                                <label>
+                                    <input type="radio" name="type">
+                                    수치표현
+                                </label>
+                                <label>
+                                    <input type="radio" name="type">
+                                    문자표현
+                                </label>
+                                <label>
+                                    <input type="radio" name="type">
+                                    문자표현(A)
+                                </label>
+                                <a class="btn_list" herf="none" onclick="openLayer('modal_3');">문자(A) 표현관리</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>소수점 자리수</th>
+                    <td>
+                        <select class="fx_none" style="width:120px;">
+                            <option>0000</option>
+                        </select>                        
+                    </td>
+                </tr>
+                <tr>
+                    <th>0 상태 문자표현(0)</th>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <th>1 상태 문자표현(0)</th>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <th>문자표현(A)</th>
+                    <td>
+                        <div class="fx_form">
+                            <select class="fx_none" style="width:260px;">
+                                <option>0000</option>
+                            </select>
+                            <select>
+                                <option>0000</option>
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <!-- //form_table -->
+        </div>
+        <!-- //form_wrap -->
+	</div>
+	<!-- pop_contents -->
+    <!-- pop_footer -->
+    <div class="pop_footer">
+        <a href="#none" class="btn_page primary">저장</a>
+        <a href="#none" class="btn_page" onclick="closeLayer('modal_1');">닫기</a>
+        <a href="#none" class="btn_page">Command1</a>
+    </div>
+    <!-- //pop_footer -->
+</div>
+<!-- //layer_pop_wrap -->
+
+<!-- layer_pop_wrap -->
+<div class="layer_pop_wrap large" id="modal_2">
+    <!-- header_wrap -->
+	<div class="pop_header">
+	    <h3>태그목록</h3>
+        <a onclick="closeLayer('modal_2');" title="Close"></a>
+    </div>
+	<!-- //header_wrap -->
+	<!-- pop_contents -->
+	<div class="pop_contents">
+        <!-- fx_srch_wrap -->
+        <div class="fx_srch_wrap">	
+            <div class="fx_srch_form">
+                <div class="fx_srch_row">
+                    <div class="fx_srch_item">
+                        <label>검색옵션</label>
+                        <div class="fx_form">
+                            <label>
+                                <input type="checkbox" name="type">
+                                태그명
+                            </label>
+                            <label>
+                                <input type="checkbox" name="type">
+                                태그설명
+                            </label>
+                        </div>
+                    </div>
+                    <div class="fx_srch_item">
+                        <label>검색어</label>
+                        <input type="text">
+                    </div>
+                </div>
+            </div>
+            <!-- fx_srch_button -->
+            <div class="fx_srch_button">
+                <a class="btn_srch">Search</a>
+            </div>
+            <!-- //fx_srch_button -->
+        </div>
+        <!-- //fx_srch_wrap -->
+        <!-- list_wrap -->
+        <div class="list_wrap">
+            <!-- list_table_scroll -->
+            <div class="list_table_scroll">                
+                <!-- list_table -->
+                <table class="list_table">
+                    <colgroup>
+                        <col width="160px"/>
+                        <col width="160px"/>
+                        <col width="160px"/>
+                        <col width="160px"/>
+                        <col width="160px"/>
+                        <col width="160px"/>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>title</th>
+                            <th>title</th>
+                            <th>title</th>
+                            <th>title</th>
+                            <th>title</th>
+                            <th>title</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                        </tr>
+                        <tr>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                        </tr>
+                        <tr>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                        </tr>
+                        <tr>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                        </tr>
+                        <tr>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                        </tr>
+                        <tr>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                        </tr>
+                        <tr>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                            <td class="tc"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- //list_table -->
+            </div>
+                <!-- //list_table_scroll -->
+        </div>
+        <!-- //list_wrap -->        
+	</div>
+	<!-- pop_contents -->
+    <!-- pop_footer -->
+    <div class="pop_footer">
+        <a href="#none" class="btn_page">전체리스트</a>
+        <a href="#none" class="btn_page primary">선택</a>
+        <a href="#none" class="btn_page" onclick="closeLayer('modal_2');">닫기</a>
+    </div>
+    <!-- //pop_footer -->
+</div>
+<!-- //layer_pop_wrap -->
+
+<!-- layer_pop_wrap -->
+<div class="layer_pop_wrap large" id="modal_3">
+    <!-- header_wrap -->
+	<div class="pop_header">
+	    <h3>Analog 문자표현 그룹관리</h3>
+        <a onclick="closeLayer('modal_3');" title="Close"></a>
+    </div>
+	<!-- //header_wrap -->
+	<!-- pop_contents -->
+	<div class="pop_contents">
+        
+        <!-- layout_table -->
+        <table class="layout_table">
+            <colgroup>
+                <col />
+                <col />
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td>
+
+                        <!-- list_wrap -->
+                        <div class="list_wrap">
+                            <!-- list_head -->
+                            <div class="list_head">
+                                <h4>그룹목록</h4>
+                            </div>
+                            <!-- //list_head --> 
+                        </div>                
+                        <!-- fx_srch_wrap -->
+                        <div class="fx_srch_wrap b_type">	
+                            <div class="fx_srch_form">
+                                <div class="fx_srch_row">
+                                    <div class="fx_srch_item">
+                                        <label>그룹</label>
+                                        <div class="fx_form">
+                                            <input type="text" class="fx_none" style="width:50px;">
+                                            <input type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- //fx_srch_wrap -->                
+                        <!-- list_wrap -->
+                        <div class="list_wrap">
+                            <!-- list_head -->
+                            <div class="list_head">
+                                <!-- button -->
+                                <div class="button">
+                                    <a class="btn_list primary" href="#none">추가</a>
+                                    <a class="btn_list" href="#none">수정</a>
+                                    <a class="btn_list" href="#none">삭제</a>
+                                </div>
+                                <!-- button -->
+                            </div>
+                            <!-- //list_head -->            
+                            <!-- list_table_scroll -->
+                            <div class="list_table_scroll">
+                                <!-- list_table -->
+                                <table class="list_table">
+                                    <colgroup>
+                                        <col width="160px"/>
+                                        <col width="160px"/>
+                                        <col width="160px"/>
+                                        <col width="160px"/>
+                                        <col width="160px"/>
+                                        <col width="160px"/>
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>title</th>
+                                            <th>title</th>
+                                            <th>title</th>
+                                            <th>title</th>
+                                            <th>title</th>
+                                            <th>title</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!-- //list_table -->
+                            </div>
+                                <!-- //list_table_scroll -->
+                        </div>
+                        <!-- //list_wrap -->
+                        
+                    </td>
+                    <td>
+
+                        <!-- list_wrap -->
+                        <div class="list_wrap">
+                            <!-- list_head -->
+                            <div class="list_head">
+                                <h4>표현문자목록</h4>
+                            </div>
+                            <!-- //list_head --> 
+                        </div>                
+                        <!-- fx_srch_wrap -->
+                        <div class="fx_srch_wrap b_type">	
+                            <div class="fx_srch_form">
+                                <div class="fx_srch_row">
+                                    <div class="fx_srch_item">
+                                        <label>표현문자</label>
+                                        <div class="fx_form">
+                                            <input type="text" class="fx_none" style="width:50px;">
+                                            <input type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- //fx_srch_wrap -->                
+                        <!-- list_wrap -->
+                        <div class="list_wrap">
+                            <!-- list_head -->
+                            <div class="list_head">
+                                <!-- button -->
+                                <div class="button">
+                                    <a class="btn_list primary" href="#none">추가</a>
+                                    <a class="btn_list" href="#none">수정</a>
+                                    <a class="btn_list" href="#none">삭제</a>
+                                </div>
+                                <!-- button -->
+                            </div>
+                            <!-- //list_head -->            
+                            <!-- list_table_scroll -->
+                            <div class="list_table_scroll">                
+                                <!-- list_table -->
+                                <table class="list_table">
+                                    <colgroup>
+                                        <col width="160px"/>
+                                        <col width="160px"/>
+                                        <col width="160px"/>
+                                        <col width="160px"/>
+                                        <col width="160px"/>
+                                        <col width="160px"/>
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>title</th>
+                                            <th>title</th>
+                                            <th>title</th>
+                                            <th>title</th>
+                                            <th>title</th>
+                                            <th>title</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                            <td class="tc"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!-- //list_table -->
+                            </div>
+                                <!-- //list_table_scroll -->
+                        </div>
+                        <!-- //list_wrap -->
+                        
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+	</div>
+	<!-- pop_contents -->
+    <!-- pop_footer -->
+    <div class="pop_footer">
+        <a href="#none" class="btn_page primary">선택</a>
+        <a href="#none" class="btn_page" onclick="closeLayer('modal_3');">닫기</a>
+    </div>
+    <!-- //pop_footer -->
+</div>
+<!-- //layer_pop_wrap -->
+
 <script type="text/javascript" src="<c:url value="/resources/js/range_control.js" />" charset="utf-8"></script>
 </body>
 </html>
