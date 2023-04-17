@@ -23,6 +23,25 @@ var timerOn = false; //true로 변경
 var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
 var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
 
+var tMarkTagSeq = [	
+	${MarkTagInfoList[0].iSeq},${MarkTagInfoList[1].iSeq},${MarkTagInfoList[2].iSeq},${MarkTagInfoList[3].iSeq},${MarkTagInfoList[4].iSeq},
+	${MarkTagInfoList[5].iSeq},${MarkTagInfoList[6].iSeq},${MarkTagInfoList[7].iSeq},${MarkTagInfoList[8].iSeq},${MarkTagInfoList[9].iSeq},
+	${MarkTagInfoList[10].iSeq},${MarkTagInfoList[11].iSeq},${MarkTagInfoList[12].iSeq}
+];
+
+var tMarkTagXy = [
+	'${MarkTagInfoList[0].XYGubun}','${MarkTagInfoList[1].XYGubun}','${MarkTagInfoList[2].XYGubun}','${MarkTagInfoList[3].XYGubun}','${MarkTagInfoList[4].XYGubun}',
+	'${MarkTagInfoList[5].XYGubun}','${MarkTagInfoList[6].XYGubun}','${MarkTagInfoList[7].XYGubun}','${MarkTagInfoList[8].XYGubun}','${MarkTagInfoList[9].XYGubun}',
+	'${MarkTagInfoList[10].XYGubun}','${MarkTagInfoList[11].XYGubun}','${MarkTagInfoList[12].XYGubun}'
+];
+
+var tToolTipText = [
+	"${MarkTagInfoList[0].toolTip}"	,"${MarkTagInfoList[1].toolTip}"	,"${MarkTagInfoList[2].toolTip}"	,"${MarkTagInfoList[3].toolTip}"
+	,"${MarkTagInfoList[4].toolTip}"	,"${MarkTagInfoList[5].toolTip}"	,"${MarkTagInfoList[6].toolTip}"	,"${MarkTagInfoList[7].toolTip}"
+	,"${MarkTagInfoList[8].toolTip}"	,"${MarkTagInfoList[9].toolTip}"	,"${MarkTagInfoList[10].toolTip}"	,"${MarkTagInfoList[11].toolTip}"
+	,"${MarkTagInfoList[12].toolTip}"
+];
+
 $(function () {
 
 	if( $("input:radio[id='4']").is(":checked") ) {
@@ -48,6 +67,13 @@ $(function () {
 	$(document.body).delegate('#X', 'click', function() {
 		setTimer(hogiHeader,'X',0);
 	});
+	
+	$(document.body).delegate('#sealoilsys_div span', 'dblclick', function() {		
+		var cId = this.id.indexOf('fValue') > -1 ? this.id.substring(4) : this.id;
+		if( cId != null && cId != '' && cId != 'undefined' ) {
+			showTag(cId,tMarkTagSeq[cId]);
+		}
+	});
 
 	setTimer(hogiHeader,xyHeader,5000);
 
@@ -72,6 +98,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
 		comSubmit.submit();
 	}
 }
+
+function showTag(tagNo,iSeq) {	
+	alert("showTag");	
+}
+
 </script>
 
 </head>
@@ -91,7 +122,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
 			</div>
 			<!-- //page_title -->
 			<form id="sealoilsysFrm" style="display:none"></form>
-			<div class="img_wrap seal_oil_sys">
+			<div class="img_wrap seal_oil_sys" id="sealoilsys_div">
                 <!-- range_slider -->
                 <div class="range_slider">
                     <input type="range" id="opacity-change" value="100" min="20" max="100">
@@ -103,7 +134,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                     <div class="chart_block_contents only_box">
                         <div class="summary">
                             <p>
-                                <span class="fx_full"><c:if test="${lblDataList[7].fValue eq null}">0</c:if>
+                                <span id="7" class="fx_full"><c:if test="${lblDataList[7].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[7].fValue ne null}">${lblDataList[7].fValue}</c:if></span>
                             </p>
                         </div>
@@ -113,7 +144,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                     <div class="chart_block_contents only_box">
                         <div class="summary">
                             <p>
-                                <span class="fx_full"><c:if test="${lblDataList[8].fValue eq null}">0</c:if>
+                                <span id="8" class="fx_full"><c:if test="${lblDataList[8].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[8].fValue ne null}">${lblDataList[8].fValue}</c:if></span>
                             </p>
                         </div>
@@ -123,7 +154,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                     <div class="chart_block_contents only_box">
                         <div class="summary">
                             <p>
-                                <span class="fx_full"><c:if test="${lblDataList[11].fValue eq null}">0</c:if>
+                                <span id="11" class="fx_full"><c:if test="${lblDataList[11].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[11].fValue ne null}">${lblDataList[11].fValue}</c:if></span>
                             </p>
                         </div>
@@ -133,7 +164,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                     <div class="chart_block_contents only_box">
                         <div class="summary">
                             <p>
-                                <span class="fx_full"><c:if test="${lblDataList[0].fValue eq null}">0</c:if>
+                                <span id="0" class="fx_full"><c:if test="${lblDataList[0].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[0].fValue ne null}">${lblDataList[0].fValue}</c:if></span>
                             </p>
                         </div>
@@ -143,7 +174,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                     <div class="chart_block_contents only_box">
                         <div class="summary">
                             <p>
-                                <span class="fx_full"><c:if test="${lblDataList[1].fValue eq null}">0</c:if>
+                                <span id="1" class="fx_full"><c:if test="${lblDataList[1].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[1].fValue ne null}">${lblDataList[1].fValue}</c:if></span>
                             </p>
                         </div>
@@ -153,7 +184,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                     <div class="chart_block_contents only_box">
                         <div class="summary">
                             <p>
-                                <span class="fx_full"><c:if test="${lblDataList[6].fValue eq null}">0</c:if>
+                                <span id="6" class="fx_full"><c:if test="${lblDataList[6].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[6].fValue ne null}">${lblDataList[6].fValue}</c:if></span>
                             </p>
                         </div>
@@ -163,7 +194,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                     <div class="chart_block_contents only_box">
                         <div class="summary">
                             <p>
-                                <span class="fx_full"><c:if test="${lblDataList[2].fValue eq null}">0</c:if>
+                                <span id="2" class="fx_full"><c:if test="${lblDataList[2].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[2].fValue ne null}">${lblDataList[2].fValue}</c:if></span>
                             </p>
                         </div>
@@ -173,7 +204,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                     <div class="chart_block_contents only_box">
                         <div class="summary">
                             <p>
-                                <span class="fx_full"><c:if test="${lblDataList[3].fValue eq null}">0</c:if>
+                                <span id="3" class="fx_full"><c:if test="${lblDataList[3].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[3].fValue ne null}">${lblDataList[3].fValue}</c:if></span>
                             </p>
                         </div>
@@ -183,7 +214,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                     <div class="chart_block_contents only_box">
                         <div class="summary">
                             <p>
-                                <span class="fx_full"><c:if test="${lblDataList[4].fValue eq null}">0</c:if>
+                                <span id="4" class="fx_full"><c:if test="${lblDataList[4].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[4].fValue ne null}">${lblDataList[4].fValue}</c:if></span>
                             </p>
                         </div>
@@ -193,7 +224,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                     <div class="chart_block_contents only_box">
                         <div class="summary">
                             <p>
-                                <span class="fx_full"><c:if test="${lblDataList[5].fValue eq null}">0</c:if>
+                                <span id="5" class="fx_full"><c:if test="${lblDataList[5].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[5].fValue ne null}">${lblDataList[5].fValue}</c:if></span>
                             </p>
                         </div>

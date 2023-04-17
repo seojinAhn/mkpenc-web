@@ -824,12 +824,12 @@ public class MarkvMimicContentsController {
         return mav;
     }		
 	
-	@RequestMapping("drainvalvespos")
-	public ModelAndView drainvalvespos(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+	@RequestMapping("drainvalvepos")
+	public ModelAndView drainvalvepos(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
         
 		ModelAndView mav = new ModelAndView();
 
-        logger.info("############ drainvalvespos");
+        logger.info("############ drainvalvepos");
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
