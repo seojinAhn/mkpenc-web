@@ -23,6 +23,63 @@ var timerOn = false; //true로 변경
 var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
 var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
 
+var tMarkTagSeq = [	
+	${MarkTagInfoList[0].iSeq},${MarkTagInfoList[1].iSeq},${MarkTagInfoList[2].iSeq},${MarkTagInfoList[3].iSeq},${MarkTagInfoList[4].iSeq},
+	${MarkTagInfoList[5].iSeq},${MarkTagInfoList[6].iSeq},${MarkTagInfoList[7].iSeq},${MarkTagInfoList[8].iSeq},${MarkTagInfoList[9].iSeq},
+	${MarkTagInfoList[10].iSeq},${MarkTagInfoList[11].iSeq},${MarkTagInfoList[12].iSeq},${MarkTagInfoList[13].iSeq},${MarkTagInfoList[14].iSeq},
+	${MarkTagInfoList[15].iSeq},${MarkTagInfoList[16].iSeq},${MarkTagInfoList[17].iSeq},${MarkTagInfoList[18].iSeq},${MarkTagInfoList[19].iSeq},
+	${MarkTagInfoList[20].iSeq},${MarkTagInfoList[21].iSeq},${MarkTagInfoList[22].iSeq},${MarkTagInfoList[23].iSeq},${MarkTagInfoList[24].iSeq},
+	${MarkTagInfoList[25].iSeq},${MarkTagInfoList[26].iSeq},${MarkTagInfoList[27].iSeq},${MarkTagInfoList[28].iSeq},${MarkTagInfoList[29].iSeq},
+	${MarkTagInfoList[30].iSeq},${MarkTagInfoList[31].iSeq},${MarkTagInfoList[32].iSeq},${MarkTagInfoList[33].iSeq},${MarkTagInfoList[34].iSeq},
+	${MarkTagInfoList[35].iSeq},${MarkTagInfoList[36].iSeq},${MarkTagInfoList[37].iSeq},${MarkTagInfoList[38].iSeq},${MarkTagInfoList[39].iSeq},
+	${MarkTagInfoList[40].iSeq},${MarkTagInfoList[41].iSeq},${MarkTagInfoList[42].iSeq},${MarkTagInfoList[43].iSeq},${MarkTagInfoList[44].iSeq},
+	${MarkTagInfoList[45].iSeq},${MarkTagInfoList[46].iSeq},${MarkTagInfoList[47].iSeq},${MarkTagInfoList[48].iSeq},${MarkTagInfoList[49].iSeq},
+	${MarkTagInfoList[50].iSeq},${MarkTagInfoList[51].iSeq},${MarkTagInfoList[52].iSeq},${MarkTagInfoList[53].iSeq},${MarkTagInfoList[54].iSeq},
+	${MarkTagInfoList[55].iSeq},${MarkTagInfoList[56].iSeq},${MarkTagInfoList[57].iSeq},${MarkTagInfoList[58].iSeq},${MarkTagInfoList[59].iSeq},
+	${MarkTagInfoList[60].iSeq},${MarkTagInfoList[61].iSeq},${MarkTagInfoList[62].iSeq},${MarkTagInfoList[63].iSeq},${MarkTagInfoList[64].iSeq},
+	${MarkTagInfoList[65].iSeq},${MarkTagInfoList[66].iSeq},${MarkTagInfoList[67].iSeq},${MarkTagInfoList[68].iSeq},${MarkTagInfoList[69].iSeq},
+	${MarkTagInfoList[70].iSeq},${MarkTagInfoList[71].iSeq}
+];
+
+var tMarkTagXy = [
+	'${MarkTagInfoList[0].XYGubun}','${MarkTagInfoList[1].XYGubun}','${MarkTagInfoList[2].XYGubun}','${MarkTagInfoList[3].XYGubun}','${MarkTagInfoList[4].XYGubun}',
+	'${MarkTagInfoList[5].XYGubun}','${MarkTagInfoList[6].XYGubun}','${MarkTagInfoList[7].XYGubun}','${MarkTagInfoList[8].XYGubun}','${MarkTagInfoList[9].XYGubun}',
+	'${MarkTagInfoList[10].XYGubun}','${MarkTagInfoList[11].XYGubun}','${MarkTagInfoList[12].XYGubun}','${MarkTagInfoList[13].XYGubun}','${MarkTagInfoList[14].XYGubun}',
+	'${MarkTagInfoList[15].XYGubun}','${MarkTagInfoList[16].XYGubun}','${MarkTagInfoList[17].XYGubun}','${MarkTagInfoList[18].XYGubun}','${MarkTagInfoList[19].XYGubun}',
+	'${MarkTagInfoList[20].XYGubun}','${MarkTagInfoList[21].XYGubun}','${MarkTagInfoList[22].XYGubun}','${MarkTagInfoList[23].XYGubun}','${MarkTagInfoList[24].XYGubun}',
+	'${MarkTagInfoList[25].XYGubun}','${MarkTagInfoList[26].XYGubun}','${MarkTagInfoList[27].XYGubun}','${MarkTagInfoList[28].XYGubun}','${MarkTagInfoList[29].XYGubun}',
+	'${MarkTagInfoList[30].XYGubun}','${MarkTagInfoList[31].XYGubun}','${MarkTagInfoList[32].XYGubun}','${MarkTagInfoList[33].XYGubun}','${MarkTagInfoList[34].XYGubun}',
+	'${MarkTagInfoList[35].XYGubun}','${MarkTagInfoList[36].XYGubun}','${MarkTagInfoList[37].XYGubun}','${MarkTagInfoList[38].XYGubun}','${MarkTagInfoList[39].XYGubun}',
+	'${MarkTagInfoList[40].XYGubun}','${MarkTagInfoList[41].XYGubun}','${MarkTagInfoList[42].XYGubun}','${MarkTagInfoList[43].XYGubun}','${MarkTagInfoList[44].XYGubun}',
+	'${MarkTagInfoList[45].XYGubun}','${MarkTagInfoList[46].XYGubun}','${MarkTagInfoList[47].XYGubun}','${MarkTagInfoList[48].XYGubun}','${MarkTagInfoList[49].XYGubun}',
+	'${MarkTagInfoList[50].XYGubun}','${MarkTagInfoList[51].XYGubun}','${MarkTagInfoList[52].XYGubun}','${MarkTagInfoList[53].XYGubun}','${MarkTagInfoList[54].XYGubun}',
+	'${MarkTagInfoList[55].XYGubun}','${MarkTagInfoList[56].XYGubun}','${MarkTagInfoList[57].XYGubun}','${MarkTagInfoList[58].XYGubun}','${MarkTagInfoList[59].XYGubun}',
+	'${MarkTagInfoList[60].XYGubun}','${MarkTagInfoList[61].XYGubun}','${MarkTagInfoList[62].XYGubun}','${MarkTagInfoList[63].XYGubun}','${MarkTagInfoList[64].XYGubun}',
+	'${MarkTagInfoList[65].XYGubun}','${MarkTagInfoList[66].XYGubun}','${MarkTagInfoList[67].XYGubun}','${MarkTagInfoList[68].XYGubun}','${MarkTagInfoList[69].XYGubun}',
+	'${MarkTagInfoList[70].XYGubun}','${MarkTagInfoList[71].XYGubun}'
+];
+
+var tToolTipText = [
+	"${MarkTagInfoList[0].toolTip}"	,"${MarkTagInfoList[1].toolTip}","${MarkTagInfoList[2].toolTip}","${MarkTagInfoList[3].toolTip}"
+	,"${MarkTagInfoList[4].toolTip}","${MarkTagInfoList[5].toolTip}","${MarkTagInfoList[6].toolTip}","${MarkTagInfoList[7].toolTip}"
+	,"${MarkTagInfoList[8].toolTip}","${MarkTagInfoList[9].toolTip}","${MarkTagInfoList[10].toolTip}","${MarkTagInfoList[11].toolTip}"
+	,"${MarkTagInfoList[12].toolTip}","${MarkTagInfoList[13].toolTip}","${MarkTagInfoList[14].toolTip}","${MarkTagInfoList[15].toolTip}"
+	,"${MarkTagInfoList[16].toolTip}","${MarkTagInfoList[17].toolTip}","${MarkTagInfoList[18].toolTip}","${MarkTagInfoList[19].toolTip}"
+	,"${MarkTagInfoList[20].toolTip}","${MarkTagInfoList[21].toolTip}","${MarkTagInfoList[22].toolTip}","${MarkTagInfoList[23].toolTip}"
+	,"${MarkTagInfoList[24].toolTip}","${MarkTagInfoList[25].toolTip}","${MarkTagInfoList[26].toolTip}","${MarkTagInfoList[27].toolTip}"
+	,"${MarkTagInfoList[28].toolTip}","${MarkTagInfoList[29].toolTip}","${MarkTagInfoList[30].toolTip}","${MarkTagInfoList[31].toolTip}"
+	,"${MarkTagInfoList[32].toolTip}","${MarkTagInfoList[33].toolTip}","${MarkTagInfoList[34].toolTip}","${MarkTagInfoList[35].toolTip}"
+	,"${MarkTagInfoList[36].toolTip}","${MarkTagInfoList[37].toolTip}","${MarkTagInfoList[38].toolTip}","${MarkTagInfoList[39].toolTip}"
+	,"${MarkTagInfoList[40].toolTip}","${MarkTagInfoList[41].toolTip}","${MarkTagInfoList[42].toolTip}","${MarkTagInfoList[43].toolTip}"
+	,"${MarkTagInfoList[44].toolTip}","${MarkTagInfoList[45].toolTip}","${MarkTagInfoList[46].toolTip}","${MarkTagInfoList[47].toolTip}"
+	,"${MarkTagInfoList[48].toolTip}","${MarkTagInfoList[49].toolTip}","${MarkTagInfoList[50].toolTip}","${MarkTagInfoList[51].toolTip}"
+	,"${MarkTagInfoList[52].toolTip}","${MarkTagInfoList[53].toolTip}","${MarkTagInfoList[54].toolTip}","${MarkTagInfoList[55].toolTip}"
+	,"${MarkTagInfoList[56].toolTip}","${MarkTagInfoList[57].toolTip}","${MarkTagInfoList[58].toolTip}","${MarkTagInfoList[59].toolTip}"
+	,"${MarkTagInfoList[60].toolTip}","${MarkTagInfoList[61].toolTip}","${MarkTagInfoList[62].toolTip}","${MarkTagInfoList[63].toolTip}"
+	,"${MarkTagInfoList[64].toolTip}","${MarkTagInfoList[65].toolTip}","${MarkTagInfoList[66].toolTip}","${MarkTagInfoList[67].toolTip}"
+	,"${MarkTagInfoList[68].toolTip}","${MarkTagInfoList[69].toolTip}","${MarkTagInfoList[70].toolTip}","${MarkTagInfoList[71].toolTip}"
+];
+
 $(function () {
 
 	if( $("input:radio[id='4']").is(":checked") ) {
@@ -49,6 +106,13 @@ $(function () {
 		setTimer(hogiHeader,'X',0);
 	});
 
+	$(document.body).delegate('#gentcrtd2_div td', 'dblclick', function() {		
+		var cId = this.id.indexOf('fValue') > -1 ? this.id.substring(4) : this.id;
+		if( cId != null && cId != '' && cId != 'undefined' ) {
+			showTag(cId,tMarkTagSeq[cId]);
+		}
+	});
+
 	setTimer(hogiHeader,xyHeader,5000);
 
 });	
@@ -72,7 +136,12 @@ function setTimer(hogiHeader,xyHeader,interval) {
 		comSubmit.submit();
 	}
 }
+
+function showTag(tagNo,iSeq) {	
+	alert("showTag");	
+}
 </script>
+
 </head>
 <body>
 <div class="wrap">
@@ -91,7 +160,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
 			<!-- //page_title -->
 			<form id="gentcrtd2Frm" style="display:none"></form>
             <!-- fx_layout -->
-            <div class="fx_layout">
+            <div class="fx_layout" id="gentcrtd2_div">
                 <div class="fx_block">
                     <!-- list_wrap -->
                     <div class="list_wrap">
@@ -117,11 +186,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                             <tbody>
                                 <tr>
                                     <td class="tc">37</td>
-                                    <td class="tc">
+                                    <td class="tc" id="0">
                                     <c:if test="${lblDataList[0].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[0].fValue ne null}"><input type="text" value="${lblDataList[0].fValue}" class="tr" /></c:if>
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="36">
                                     <c:if test="${lblDataList[36].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[36].fValue ne null}"><input type="text" value="${lblDataList[36].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -131,11 +200,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">38</td>
-                                    <td class="tc">
+                                    <td class="tc" id="1">
                                     <c:if test="${lblDataList[1].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[1].fValue ne null}"><input type="text" value="${lblDataList[1].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="37">
                                     <c:if test="${lblDataList[37].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[37].fValue ne null}"><input type="text" value="${lblDataList[37].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -145,11 +214,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">39</td>
-                                    <td class="tc">
+                                    <td class="tc" id="2">
                                     <c:if test="${lblDataList[2].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[2].fValue ne null}"><input type="text" value="${lblDataList[2].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="38">
                                     <c:if test="${lblDataList[38].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[38].fValue ne null}"><input type="text" value="${lblDataList[38].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -159,11 +228,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">40</td>
-                                    <td class="tc">
+                                    <td class="tc" id="3">
                                     <c:if test="${lblDataList[3].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[3].fValue ne null}"><input type="text" value="${lblDataList[3].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="39">
                                     <c:if test="${lblDataList[39].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[39].fValue ne null}"><input type="text" value="${lblDataList[39].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -173,11 +242,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">41</td>
-                                    <td class="tc">
+                                    <td class="tc" id="4">
                                     <c:if test="${lblDataList[4].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[4].fValue ne null}"><input type="text" value="${lblDataList[4].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="40">
                                     <c:if test="${lblDataList[40].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[40].fValue ne null}"><input type="text" value="${lblDataList[40].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -187,11 +256,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">42</td>
-                                    <td class="tc">
+                                    <td class="tc" id="5">
                                     <c:if test="${lblDataList[5].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[5].fValue ne null}"><input type="text" value="${lblDataList[5].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="41">
                                     <c:if test="${lblDataList[41].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[41].fValue ne null}"><input type="text" value="${lblDataList[41].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -201,11 +270,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">43</td>
-                                    <td class="tc">
+                                    <td class="tc" id="6">
                                     <c:if test="${lblDataList[6].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[6].fValue ne null}"><input type="text" value="${lblDataList[6].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="42">
                                     <c:if test="${lblDataList[42].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[42].fValue ne null}"><input type="text" value="${lblDataList[42].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -215,11 +284,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">44</td>
-                                    <td class="tc">
+                                    <td class="tc" id="7">
                                     <c:if test="${lblDataList[7].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[7].fValue ne null}"><input type="text" value="${lblDataList[7].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="43">
                                     <c:if test="${lblDataList[43].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[43].fValue ne null}"><input type="text" value="${lblDataList[43].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -229,10 +298,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">45</td>
-                                    <td class="tc">
+                                    <td class="tc" id="8">
                                     <c:if test="${lblDataList[8].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[8].fValue ne null}"><input type="text" value="${lblDataList[8].fValue}" class="tr" /></c:if>                                                                        
-                                    </td><td class="tc">
+                                    </td>
+                                    <td class="tc" id="44">
                                     <c:if test="${lblDataList[44].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[44].fValue ne null}"><input type="text" value="${lblDataList[44].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -242,11 +312,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">46</td>
-                                    <td class="tc">
+                                    <td class="tc" id="9">
                                     <c:if test="${lblDataList[9].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[9].fValue ne null}"><input type="text" value="${lblDataList[9].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="45">
                                     <c:if test="${lblDataList[45].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[45].fValue ne null}"><input type="text" value="${lblDataList[45].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -256,11 +326,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">47</td>
-                                    <td class="tc">
+                                    <td class="tc" id="10">
                                     <c:if test="${lblDataList[10].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[10].fValue ne null}"><input type="text" value="${lblDataList[10].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="46">
                                     <c:if test="${lblDataList[46].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[46].fValue ne null}"><input type="text" value="${lblDataList[46].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -270,11 +340,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">48</td>
-                                    <td class="tc">
+                                    <td class="tc" id="11">
                                     <c:if test="${lblDataList[11].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[11].fValue ne null}"><input type="text" value="${lblDataList[11].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="47">
                                     <c:if test="${lblDataList[47].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[47].fValue ne null}"><input type="text" value="${lblDataList[47].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -284,11 +354,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">49</td>
-                                    <td class="tc">
+                                    <td class="tc" id="12">
                                     <c:if test="${lblDataList[12].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[12].fValue ne null}"><input type="text" value="${lblDataList[12].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="48">
                                     <c:if test="${lblDataList[48].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[48].fValue ne null}"><input type="text" value="${lblDataList[48].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -298,11 +368,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">50</td>
-                                    <td class="tc">
+                                    <td class="tc" id="13">
                                     <c:if test="${lblDataList[13].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[13].fValue ne null}"><input type="text" value="${lblDataList[13].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="49">
                                     <c:if test="${lblDataList[49].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[49].fValue ne null}"><input type="text" value="${lblDataList[49].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -312,11 +382,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">51</td>
-                                    <td class="tc">
+                                    <td class="tc" id="14">
                                     <c:if test="${lblDataList[14].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[14].fValue ne null}"><input type="text" value="${lblDataList[14].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="50">
                                     <c:if test="${lblDataList[50].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[50].fValue ne null}"><input type="text" value="${lblDataList[50].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -326,11 +396,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">52</td>
-                                    <td class="tc">
+                                    <td class="tc" id="15">
                                     <c:if test="${lblDataList[15].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[15].fValue ne null}"><input type="text" value="${lblDataList[15].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="51">
                                     <c:if test="${lblDataList[51].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[51].fValue ne null}"><input type="text" value="${lblDataList[51].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -340,11 +410,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">53</td>
-                                    <td class="tc">
+                                    <td class="tc" id="16">
                                     <c:if test="${lblDataList[16].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[16].fValue ne null}"><input type="text" value="${lblDataList[16].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="52">
                                     <c:if test="${lblDataList[52].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[52].fValue ne null}"><input type="text" value="${lblDataList[52].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -354,11 +424,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">54</td>
-                                    <td class="tc">
+                                    <td class="tc" id="17">
                                     <c:if test="${lblDataList[17].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[17].fValue ne null}"><input type="text" value="${lblDataList[17].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="53">
                                     <c:if test="${lblDataList[53].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[53].fValue ne null}"><input type="text" value="${lblDataList[53].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -397,11 +467,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                             <tbody>
                                 <tr>
                                     <td class="tc">55</td>
-                                    <td class="tc">
+                                    <td class="tc" id="18">
                                     <c:if test="${lblDataList[18].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[18].fValue ne null}"><input type="text" value="${lblDataList[18].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="54">
                                     <c:if test="${lblDataList[54].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[54].fValue ne null}"><input type="text" value="${lblDataList[54].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -411,11 +481,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">56</td>
-                                    <td class="tc">
+                                    <td class="tc" id="19">
                                     <c:if test="${lblDataList[19].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[19].fValue ne null}"><input type="text" value="${lblDataList[19].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="55">
                                     <c:if test="${lblDataList[55].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[55].fValue ne null}"><input type="text" value="${lblDataList[55].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -425,11 +495,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">57</td>
-                                    <td class="tc">
+                                    <td class="tc" id="20">
                                     <c:if test="${lblDataList[20].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[20].fValue ne null}"><input type="text" value="${lblDataList[20].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="56">
                                     <c:if test="${lblDataList[56].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[56].fValue ne null}"><input type="text" value="${lblDataList[56].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -439,11 +509,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">58</td>
-                                    <td class="tc">
+                                    <td class="tc" id="21">
                                     <c:if test="${lblDataList[21].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[21].fValue ne null}"><input type="text" value="${lblDataList[21].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="57">
                                     <c:if test="${lblDataList[57].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[57].fValue ne null}"><input type="text" value="${lblDataList[57].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -453,11 +523,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">59</td>
-                                    <td class="tc">
+                                    <td class="tc" id="22">
                                     <c:if test="${lblDataList[22].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[22].fValue ne null}"><input type="text" value="${lblDataList[22].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="58">
                                     <c:if test="${lblDataList[58].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[58].fValue ne null}"><input type="text" value="${lblDataList[58].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -467,11 +537,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">60</td>
-                                    <td class="tc">
+                                    <td class="tc" id="23">
                                     <c:if test="${lblDataList[23].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[23].fValue ne null}"><input type="text" value="${lblDataList[23].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="59">
                                     <c:if test="${lblDataList[59].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[59].fValue ne null}"><input type="text" value="${lblDataList[59].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -481,11 +551,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">61</td>
-                                    <td class="tc">
+                                    <td class="tc" id="24">
                                     <c:if test="${lblDataList[24].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[24].fValue ne null}"><input type="text" value="${lblDataList[24].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="60">
                                     <c:if test="${lblDataList[60].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[60].fValue ne null}"><input type="text" value="${lblDataList[60].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -495,11 +565,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">62</td>
-                                    <td class="tc">
+                                    <td class="tc" id="25">
                                     <c:if test="${lblDataList[25].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[25].fValue ne null}"><input type="text" value="${lblDataList[25].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="61">
                                     <c:if test="${lblDataList[61].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[61].fValue ne null}"><input type="text" value="${lblDataList[61].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -509,11 +579,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">63</td>
-                                    <td class="tc">
+                                    <td class="tc" id="26">
                                     <c:if test="${lblDataList[26].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[26].fValue ne null}"><input type="text" value="${lblDataList[26].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="62">
                                     <c:if test="${lblDataList[62].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[62].fValue ne null}"><input type="text" value="${lblDataList[62].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -523,11 +593,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">64</td>
-                                    <td class="tc">
+                                    <td class="tc" id="27">
                                     <c:if test="${lblDataList[27].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[27].fValue ne null}"><input type="text" value="${lblDataList[27].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="63">
                                     <c:if test="${lblDataList[63].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[63].fValue ne null}"><input type="text" value="${lblDataList[63].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -537,11 +607,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">65</td>
-                                    <td class="tc">
+                                    <td class="tc" id="28">
                                     <c:if test="${lblDataList[28].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[28].fValue ne null}"><input type="text" value="${lblDataList[28].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="64">
                                     <c:if test="${lblDataList[64].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[64].fValue ne null}"><input type="text" value="${lblDataList[64].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -551,11 +621,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">66</td>
-                                    <td class="tc">
+                                    <td class="tc" id="29">
                                     <c:if test="${lblDataList[29].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[29].fValue ne null}"><input type="text" value="${lblDataList[29].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="65">
                                     <c:if test="${lblDataList[65].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[65].fValue ne null}"><input type="text" value="${lblDataList[65].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -565,11 +635,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">67</td>
-                                    <td class="tc">
+                                    <td class="tc" id="30">
                                     <c:if test="${lblDataList[30].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[30].fValue ne null}"><input type="text" value="${lblDataList[30].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="66">
                                     <c:if test="${lblDataList[66].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[66].fValue ne null}"><input type="text" value="${lblDataList[66].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -579,11 +649,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">68</td>
-                                    <td class="tc">
+                                    <td class="tc" id="31">
                                     <c:if test="${lblDataList[31].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[31].fValue ne null}"><input type="text" value="${lblDataList[31].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="67">
                                     <c:if test="${lblDataList[67].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[67].fValue ne null}"><input type="text" value="${lblDataList[67].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -593,11 +663,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">69</td>
-                                    <td class="tc">
+                                    <td class="tc" id="32">
                                     <c:if test="${lblDataList[32].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[32].fValue ne null}"><input type="text" value="${lblDataList[32].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="68">
                                     <c:if test="${lblDataList[68].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[68].fValue ne null}"><input type="text" value="${lblDataList[68].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -607,11 +677,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">70</td>
-                                    <td class="tc">
+                                    <td class="tc" id="33">
                                     <c:if test="${lblDataList[33].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[33].fValue ne null}"><input type="text" value="${lblDataList[33].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="69">
                                     <c:if test="${lblDataList[69].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[69].fValue ne null}"><input type="text" value="${lblDataList[69].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -621,11 +691,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">71</td>
-                                    <td class="tc">
+                                    <td class="tc" id="34">
                                     <c:if test="${lblDataList[34].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[34].fValue ne null}"><input type="text" value="${lblDataList[34].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="70">
                                     <c:if test="${lblDataList[70].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[70].fValue ne null}"><input type="text" value="${lblDataList[70].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
@@ -635,11 +705,11 @@ function setTimer(hogiHeader,xyHeader,interval) {
                                 </tr>
                                 <tr>
                                     <td class="tc">72</td>
-                                    <td class="tc">
+                                    <td class="tc" id="35">
                                     <c:if test="${lblDataList[35].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[35].fValue ne null}"><input type="text" value="${lblDataList[35].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
-                                    <td class="tc">
+                                    <td class="tc" id="71">
                                     <c:if test="${lblDataList[71].fValue eq null}"><input type="text" value="0" class="tr" /></c:if>
                                     <c:if test="${lblDataList[71].fValue ne null}"><input type="text" value="${lblDataList[71].fValue}" class="tr" /></c:if>                                                                        
                                     </td>
