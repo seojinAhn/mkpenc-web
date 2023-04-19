@@ -285,7 +285,7 @@
 		var chartConfig = {
 			global: {
 				svg: {
-					classname: 'customClass' // í´ë¹ ì°¨í¸ì svg  íê·¸ì ì»¤ì¤í í´ëì¤ ì¤ì 
+					classname: 'customClass' // 해당 차트의 svg 태그에 커스텀 클래스 설정
 				},
 				size: {
 					width: 840,
@@ -293,11 +293,11 @@
 				}
 			},
 			data: {
-				type: 'line', // ì°¨í¸ì íìì ì¤ì 
-				json: xData, // json ííë¡ ë°ì´í° ì¤ì íë©°, chartDataë¼ë ë³ìì ë°ì´í°ë¥¼ ê°ì ¸ìì ê·¸ë ¤ì¤
-				keys: { // json ííì ë°ì´í°ë¥¼ ì¬ì© ì, íìë¡ keys ìì±ì ì¬ì©í´ì¼ í¨
-					x: "name", // ê°ê°ì xì¶ ì´ë¦ì chartDataì nameê°ì¼ë¡ ì¤ì 
-					value: xAxis // chartDataì 2015, 2016, 2017 ë°ì´í°ë¥¼ ë³´ì¬ì£¼ëë¡ ì¤ì 
+				type: 'line', // 차트의 타입을 설정 
+				json: xData, // json 형태로 데이터 설정하며, chartData라는 변수의 데이터를 가져와서 그려줌
+				keys: { // json 형태의 데이터를 사용 시, 필수로 keys 속성을 사용해야 함
+					x: "name", // 각각의 x축 이름을 chartData의 name값으로 설정 
+					value: xAxis // chartData의 2015, 2016, 2017 데이터를 보여주도록 설정
 				}
 			},
 			extend: {
@@ -306,14 +306,14 @@
 				}
 			}
 		};
-		chart = new sb.chart("#chartArea", chartConfig) // ì²«ë²ì§¸ íë¼ë¯¸í°ë div ìì­ì id, ëë²ì§¸ íë¼ë¯¸í°ë ììì ì¤ì í chart config ê°ì²´ëª ê¸°ì
-		chart.render(); // render ë©ìëë¥¼ ì¬ì©í´ì¼ ì°¨í¸ê° ê·¸ë ¤ì§ (ëì ì¼ë¡ ì¬ì© ììë ë§ì§ë§ì ê¼­ render()ë¥¼ ì¨ì¤ì¼ ë³ê²½í ê°ë¤ì´ ë°ìëì´ ë³´ì¬ì§ëë¤.)
+		chart = new sb.chart("#chartArea", chartConfig) // 첫번째 파라미터는 div 영역의 id, 두번째 파라미터는 위에서 설정한 xhart config 객체명 기입
+		chart.render(); // render 메소드를 사용해야 차트가 그려짐 (동적으로 사용 시에도 마지막에 꼭 render()를 써줘야 변경한 값들이 반영되어 보여집니다.)
 	}
 
 	var chartData = [
-		{name: 'ìì¸', 2015: 10, 2016: 20, 2017: 30},
-		{name: 'ê²½ê¸°', 2015: 30, 2016: 10, 2017: 20},
-		{name: 'ì¸ì²', 2015: 20, 2016: 30, 2017: 10},
+		{name: '서울', 2015: 10, 2016: 20, 2017: 30},
+		{name: '경기', 2015: 30, 2016: 10, 2017: 20},
+		{name: '인천', 2015: 20, 2016: 30, 2017: 10},
 	]
 	
 	function loadTrendDataArray(data) {
@@ -321,6 +321,33 @@
 		
 		console.log('trend data :: '+arrTrendData);
 	}
+	
+	function cmdOK_click() {
+		
+	}
+	
+	function openModal(str) {
+		if( str != 'modal_3' ) {
+			openLayer(str);
+			
+		} else {
+			swSort = true;
+			openLayer(str);
+		}
+	}
+	
+	function closeModal(str) {
+		//textClear(str);
+		
+		if( str != 'modal_3' ) {
+			cmdOK_click();
+		} else {
+			swSort = false;
+		}
+		
+		closeLayer(str);
+	}
+	
 </script>
 
 </head>
@@ -500,11 +527,11 @@
 <!--  //wrap  -->
 
 <!-- layer_pop_wrap -->
-<div class="layer_pop_wrap big" id="modal_1">
+<div class="layer_pop_wrap big" id="modal_123">
     <!-- header_wrap -->
 	<div class="pop_header">
 	    <h3>변수설정</h3>
-        <a onclick="closeLayer('modal_1');" title="Close"></a>
+        <a onclick="closeLayer('modal_123');" title="Close"></a>
     </div>
 	<!-- //header_wrap -->
 	<!-- pop_contents -->
@@ -772,122 +799,350 @@
     <!-- pop_footer -->
     <div class="pop_footer">
         <a href="#none" class="btn_page primary">저장</a>
-        <a href="#none" class="btn_page" onclick="closeLayer('modal_1');">닫기</a>
+        <a href="#none" class="btn_page" onclick="closeLayer('modal_123');">닫기</a>
     </div>
     <!-- //pop_footer -->
 </div>
 <!-- //layer_pop_wrap -->
 
 <!-- layer_pop_wrap -->
-<div class="layer_pop_wrap large" id="modal_2">
+<div class="layer_pop_wrap big" id="modal_1">
     <!-- header_wrap -->
 	<div class="pop_header">
-	    <h3>엑셀로 저장</h3>
-        <a onclick="closeLayer('modal_2');" title="Close"></a>
+	    <h3>변수설정</h3>
+        <a onclick="closeModal('modal_1');" title="Close"></a>
     </div>
 	<!-- //header_wrap -->
 	<!-- pop_contents -->
 	<div class="pop_contents">
-
-        <!-- fx_layout -->
-        <div class="fx_layout"> 
-            <div class="fx_block">        
-                <!-- form_wrap -->
-                <div class="form_wrap">
-                    <div class="form_head">
-                        <h4>저장일자</h4>
-                    </div>
-                    <!-- form_table -->
-                    <table class="form_table">
-                        <colgroup>
-                            <col width="120px"/>
-                            <col />
-                        </colgroup>
-                        <tr>
-                            <th>시작 시간</th>
-                            <td>
-                                <div class="fx_form_multi">
-                                    <div class="fx_form_date">
-                                        <input type="text">
-                                        <a href="#none"></a>
-                                    </div>                                    
-                                    <input type="text" value="13:17:42">
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>끝 시간</th>
-                            <td>
-                                <div class="fx_form_multi">
-                                    <div class="fx_form_date">
-                                        <input type="text">
-                                        <a href="#none"></a>
-                                    </div>                                    
-                                    <input type="text" value="13:17:42">
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                    <!-- //form_table -->
-                </div>
-                <!-- //form_wrap -->
-            </div>
-            <div class="fx_block">        
-                <!-- form_wrap -->
-                <div class="form_wrap">
-                    <div class="form_head">
-                        <h4>주기</h4>
-                    </div>
-                    <!-- form_table -->
-                    <table class="form_table">
-                        <colgroup>
-                            <col />
-                        </colgroup>
-                        <tr>
-                            <td>
-                                <div class="fx_form">
-                                    <label><input type="radio" name="radio">0.5초 데이타</label>
-                                    <label><input type="radio" name="radio">5분 데이타</label>
-                                    <label><input type="radio" name="radio">5초 데이타</label>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="fx_form">
-                                    <label><input type="radio" name="radio">1시간 데이타</label>
-                                    <label><input type="radio" name="radio">1분 데이타</label>
-                                    <label><input type="radio" name="radio">직접입력</label>
-                                    <input type="text" class="tr fx_none" style="width:60px;">
-                                    <label>초</label>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                    <!-- //form_table -->
-                </div>
-                <!-- //form_wrap -->
-            </div>
+        <!-- form_wrap -->
+        <div class="form_wrap">
+            <!-- form_table -->
+            <table class="form_table">
+                <colgroup>
+                    <col width="120px"/>
+                    <col />
+                </colgroup>
+                <tr>
+                    <th>Title</th>
+                    <td>
+                        <div class="fx_form">
+                            <input id="txtTitle" type="text" value="${LvIOList[0].title}">
+                            <a class="btn_list" id="cmdGroupInsert" herf="none">그룹추가</a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <!-- //form_table -->
         </div>
-        <!-- //fx_layout -->    
-        <!-- file_upload -->
-        <div class="fx_form file_upload">
-            <div class="fx_form">
-                <input type="text" />
-                <a href="#none" class="btn_list">파일선택</a>
-            </div>
+        <!-- //form_wrap -->        
+        <!-- list_wrap -->
+        <div class="list_wrap">
+            <!-- list_table -->
+            <table id="lvIOListTable" class="list_table">
+                <colgroup>
+                    <col width="60px"/>
+                    <col width="60px"/>
+                    <col />
+                    <col width="80px"/>
+                    <col width="80px"/>
+                    <col width="80px"/>
+                    <col width="80px"/>
+                    <col width="80px"/>
+                    <col width="80px"/>
+                </colgroup>
+                <thead>
+                    <tr id="itemHeaders">
+                        <th>HOGI</th>
+                        <th>XY</th>
+                        <th>사용자지정이름</th>
+                        <th>TYPE</th>
+                        <th>ADDR</th>
+                        <th>BIT</th>
+                        <th>MIN</th>
+                        <th>MAX</th>
+                        <th>SCBIT</th>
+                    </tr>
+                </thead>
+                <tbody id="lvIolistTable">
+                <c:forEach var="oListItem" items="${LvIOList}">
+                    <tr>
+                        <td id="${oListItem.iSeq}hogi${oListItem.hogi}" class="tc">${oListItem.hogi}</td>
+                        <td id="${oListItem.iSeq}xyGubun${oListItem.hogi}" class="tc">${oListItem.xyGubun}</td>
+                        <td id="${oListItem.iSeq}descr${oListItem.hogi}">${oListItem.Descr}</td>
+                        <td id="${oListItem.iSeq}ioType${oListItem.hogi}" class="tc">${oListItem.ioType}</td>
+                        <td id="${oListItem.iSeq}address${oListItem.hogi}" class="tc">${oListItem.address}</td>
+                        <td id="${oListItem.iSeq}ioBit${oListItem.hogi}" class="tc">${oListItem.ioBit}</td>
+                        <td id="${oListItem.iSeq}minVal${oListItem.hogi}" class="tc">${oListItem.minVal}</td>
+                        <td id="${oListItem.iSeq}maxVal${oListItem.hogi}" class="tc">${oListItem.maxVal}</td>
+                        <td id="${oListItem.iSeq}saveCoreChk${oListItem.hogi}" class="tc">${oListItem.SaveCoreChk}</td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+            <!-- //list_table -->
         </div>
-        <!-- //file_upload -->
+        <!-- //list_wrap -->       
+        <!-- list_wrap -->
+        <div class="list_wrap">
+            <!-- list_table -->
+            <form id="ioListForm">
+            <table class="list_table">
+                <colgroup>
+                    <col width="60px"/>
+                    <col width="60px"/>
+                    <col />
+                    <col width="80px"/>
+                    <col width="80px"/>
+                    <col width="80px"/>
+                    <col width="80px"/>
+                    <col width="80px"/>
+                    <col width="80px"/>
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>UNIT</th>
+                        <th>XY</th>
+                        <th>사용자지정이름</th>
+                        <th>Type</th>
+                        <th>Address</th>
+                        <th>Bit</th>
+                        <th>Min</th>
+                        <th>Max</th>
+                        <th>SCBIT</th>
+                    </tr>
+                </thead>
+                <tbody id="filterBody">
+                    <tr>
+                        <td>
+                            <select id="cboHogi">
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>                        
+                        </td>
+                        <td>
+                            <select id="cboXYGubun">
+                                <option value="X">X</option>
+                                <option value="Y">Y</option>
+                            </select>                        
+                        </td>
+                        <td><input id="txtLOOPNAME" type="text"></td>
+                        <td>
+                            <select id="cboIOType">
+                                <option value="AI">AI</option>
+                                <option value="DT">DT</option>
+                            </select>                        
+                        </td>
+                        <td><input id="txtADDRESS" type="text" class="tc"></td>
+                        <td class="tc"><input id="txtIOBIT" type="text" class="tc"></td>
+                        <td class="tc"><input id="txtMin" type="text" class="tc"></td>
+                        <td class="tc"><input id="txtMax" type="text" class="tc"></td>
+                        <td class="tc"><input id="chkSaveCore" type="checkbox"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <form id="ioListModForm">
+            <table>
+            	<tbody id="ioListAjax">
+            	<tr>
+            		<td style="display:none">
+            			<input type="hidden" id="ajaxHogi" type="text" value="">
+            			<input type="hidden" id="ajaxXYGubun" type="text" value="">
+            			<input type="hidden" id="ajaxLoopName" type="text" value="">
+            			<input type="hidden" id="ajaxIOType" type="text" value="">
+            			<input type="hidden" id="ajaxAddress" type="text" value="">
+            			<input type="hidden" id="ajaxIOBit" type="text" value="">
+	                    <input type="hidden" id="ajaxMin" type="text" value="">
+	                    <input type="hidden" id="ajaxMax" type="text" value="">
+	                    <input type="hidden" id="ajaxSaveCore" type="text" value="">
+	                    <input type="hidden" id="ajaxFastIoChk" type="text" value="">
+	                    <input type="hidden" id="ajaxISeq" type="text" value="">
+            		</td>
+            	</tr>
+            	</tbody>
+            </table>
+            </form>
+            <table>
+            	<tbody id="ioLisMod">
+            	<tr>
+            		<td style="display:none">
+						<input type="hidden" id="hogiMod" type="text" value="">
+						<input type="hidden" id="xyGubunMod" type="text" value="">
+						<input type="hidden" id="DescrMod" type="text" value="">
+						<input type="hidden" id="ioTypeMod" type="text" value="">
+						<input type="hidden" id="addressMod" type="text" value="">
+						<input type="hidden" id="ioBitMod" type="text" value="">
+						<input type="hidden" id="minValMod" type="text" value="">
+						<input type="hidden" id="maxValMod" type="text" value="">
+						<input type="hidden" id="saveCoreMod" type="text" value="">
+						<input type="hidden" id="gubunMod" type="text" value="">
+						<input type="hidden" id="iSeqMod" type="text" value="">
+					</td>
+            	</tr>
+            	</tbody>
+            </table>
+            <!-- //list_table -->
+            <!-- list_bottom -->
+            <div class="list_bottom">
+                <div class="button">
+                    <a class="btn_list" href="#none" onclick="openModal('modal_3')">Tag Search</a>
+                </div>
+                <div class="button">
+                    <a class="btn_list" id="cmdInsert" href="#none">추가</a>
+                    <a class="btn_list" id="cmdUpdate" href="#none">수정</a>
+                    <a class="btn_list" id="cmdDelete" href="#none">삭제</a>
+                    <a class="btn_list" id="cmdUp" href="#none">위</a>
+                    <a class="btn_list" id="cmdDown" href="#none">아래</a>
+                </div>
+            </div>
+            </form>
+            <!-- //list_bottom -->            
+        </div>
+        <!-- //list_wrap -->              
 	</div>
 	<!-- pop_contents -->
     <!-- pop_footer -->
     <div class="pop_footer">
-        <a href="#none" class="btn_page primary">저장</a>
-        <a href="#none" class="btn_page" onclick="closeLayer('modal_2');">닫기</a>
+        <a href="#none" id="cmdOk" class="btn_page primary">저장</a>
+        <a href="#none" class="btn_page" onclick="javascript:closeModal('modal_1');">닫기</a>
     </div>
     <!-- //pop_footer -->
 </div>
 <!-- //layer_pop_wrap -->
+
+<!-- layer_pop_wrap -->
+<div class="layer_pop_wrap big" id="modal_3">
+    <!-- header_wrap -->
+<div class="pop_header">
+   <h3>태그목록</h3>
+        <a onclick="closeModal('modal_3');" title="Close"></a>
+    </div>
+<!-- //header_wrap -->
+<!-- pop_contents -->
+<div class="pop_contents" style="max-height:460px;">
+        <!-- form_wrap -->
+        <div class="form_wrap">
+            <!-- form_table -->
+            <form id="tagSearchForm" name="tagSearchForm">
+            <table class="form_table">
+                <colgroup>
+                    <col width="60px"/>
+                    <col width="60px"/>
+                    <col width="80px"/>
+                    <col width="60px"/>
+                    <col />
+                    <col width="140px"/>
+                    <col width="60px"/>
+                    <col width="120px"/>
+                </colgroup>
+                <tr>
+                    <th>호기</th>
+	                <td>
+	                    <select id="cboTagHogi">
+	                        <option value="3">3</option>
+	                        <option value="4">4</option>
+	                    </select>                        
+	                </td>
+	                <td>
+	                    <select id="cboTagIOType">
+	                        <option value="All">전체</option>
+	                        <option value="AI">AI</option>
+	                        <option value="AO">AO</option>
+	                        <option value="DI">DI</option>
+	                        <option value="DO">DO</option>
+	                        <option value="CI">CI</option>
+	                        <option value="SC">SC</option>
+	                        <option value="DT">DT</option>
+	                    </select>                        
+	                </td>
+                    <th>검색어</th>
+                    <td>
+                        <div class="fx_form">
+                          <input type="text" id="findData" name="findData">
+                        </div>
+                    </td>
+                    <td>
+	                   <div class="button">
+	                   	<a class="btn_list" href="#none" id="tagFind" name="tagFind">검색</a>
+	                   	<a class="btn_list" href="#none" id="tagFindAll" name="tagFindAll">Fast All</a>
+	                   </div>
+                    </td>
+                    <th>검색옵션</th>
+                    <td>
+                		<div class="fx_form">
+                          <input type="checkbox" id="chkOpt1" name="chkOpt1" value="1"> 태그명
+                          <input type="checkbox" id="chkOpt2" name="chkOpt2" value="1"> 태그설명
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            </form>
+            <!-- //form_table -->
+        </div>
+        <!-- //form_wrap -->
+        <!-- list_wrap -->
+        <div class="list_wrap">
+            <!-- list_table -->
+            <table class="list_table" id="tagSearchTable" name="tagSearchTable">
+                <colgroup>
+                    <col width="60px"/>
+                    <col width="60px"/>
+                    <col />
+                    <col />
+                    <col width="60px"/>
+                    <col width="80px"/>
+                    <col width="60px"/>
+                    <col width="60px"/>
+                    <col width="60px"/>
+                    <col width="60px"/>
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>UNIT</th>
+                        <th>XY</th>
+                        <th>LOOP NAME</th>
+                        <th>DESCR</th>
+                        <th>TYPE</th>
+                        <th>ADDR</th>
+                        <th>BIT</th>
+                        <th>MIN</th>
+                        <th>MAX</th>
+                        <th>SCBIT</th>
+                    </tr>
+                </thead>
+                <tbody id="tagSearchList" name="tagSearchList">
+                <tr>
+	                <td class="tc" id="tagHogi"></td>
+	                <td class="tc" id="tagXyGubun"></td>
+	                <td class="tc" id="tagLoopName"></td>
+	                <td class="tc" id="tagDescr"></td>
+	                <td class="tc" id="tagIoType"></td>
+	                <td class="tc" id="tagAddress"></td>
+	                <td class="tc" id="tagIoBit"></td>
+	                <td class="tc" id="tagMin"></td>
+	                <td class="tc" id="tagMax"></td>
+	                <td class="tc" id="tagSaveCore"></td>
+                </tr>
+                </tbody>
+            </table>
+            <!-- //list_table -->
+             <!-- list_bottom -->
+            <div class="list_bottom">
+                <div class="button">
+                </div>
+                <div class="button">
+                    <a href="#none" class="btn_page" id="tagSearchSelect" name="tagSearchSelect">선택</a>
+        			<a href="#none" class="btn_page" onclick="closeModal('modal_3');">닫기</a>
+                </div>
+            </div>
+            <!-- //list_bottom -->
+        </div>
+        <!-- //list_wrap -->      
+</div>
+<!-- pop_contents -->
+</div>
+<!-- //layer_pop_wrap -->
+
 <script type="text/javascript" src="<c:url value="/resources/js/context_menu.js" />" charset="utf-8"></script>
 </body>
 </html>

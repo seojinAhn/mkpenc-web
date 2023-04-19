@@ -30,7 +30,7 @@
 			var chartConfig = {
 				global: {
 					svg: {
-						classname: 'customClass' // 해당 차트의 svg  태그에 커스텀 클래스 설정
+						classname: 'customClass' // 해당 차트의 svg 태그에 커스텀 클래스 설정
 					},
 					size: {
 						width: 500,
@@ -51,7 +51,7 @@
 					}
 				}
 			};
-			chart = new sb.chart("#chartArea", chartConfig) // 첫번째 파라미터는 div 영역의 id, 두번째 파라미터는 위에서 설정한 chart config 객체명 기입
+			chart = new sb.chart("#chartArea", chartConfig) // 첫번째 파라미터는 div 영역의 id, 두번째 파라미터는 위에서 설정한 xhart config 객체명 기입
 			chart.render(); // render 메소드를 사용해야 차트가 그려짐 (동적으로 사용 시에도 마지막에 꼭 render()를 써줘야 변경한 값들이 반영되어 보여집니다.)
 		}
 
