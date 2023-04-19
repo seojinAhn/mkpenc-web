@@ -25,4 +25,10 @@ public interface DccTrendMapper {
 	int manageTrendProc(String procBody);
 	
 	List<Map> callTrendProc(Map procInfo);
+	
+	int deleteGrpTag(Map trendSearchMap);
+	
+	String selectISeqTagDccSearch(Map trendSearchMap);
+	
+	int insertGrpTag(Map trendSearchMap);
 }
