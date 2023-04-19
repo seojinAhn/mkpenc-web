@@ -725,4 +725,19 @@ public class DccTrendServiceImpl implements DccTrendService{
 	public List<Map> callTrendProc(Map procInfo) {
 		return dccTrendMapper.callTrendProc(procInfo);
 	}
+	
+	@Override
+	public int deleteGrpTag(Map trendSearchMap) {
+		return dccTrendMapper.deleteGrpTag(trendSearchMap);
+	}
+	
+	@Override
+	public String selectISeqTagDccSearch(Map trendSearchMap) {
+		return dccTrendMapper.selectISeqTagDccSearch(trendSearchMap);
+	}
+	
+	@Override
+	public int insertGrpTag(Map trendSearchMap) {
+		return dccTrendMapper.insertGrpTag(trendSearchMap);
+	}
 }

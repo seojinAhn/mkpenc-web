@@ -152,4 +152,31 @@
     <select id="callTrendProc" parameterType="java.util.Map" statementType="CALLABLE" resultType="java.util.Map">
     	EXEC ${procName} ${param}
     </select>
+    
+    <delete id="deleteGrpTag" parameterType="java.util.Map">
+    
+     		DELETE FROM MST_GRPTAG
+    		WHERE Gubun =#{gubun}
+               AND GrpHOGI = #{grpHOGI}
+   			   AND ID = #{id}
+               AND MenuNo = #{menuNo}
+    		   AND GrpNo =#{grpNo}
+    </delete>   
+    
+    <select id="selectISeqTagDccSearch" parameterType="java.util.Map" resultType="String">
+        	SELECT ISEQ
+        	 FROM MST_TAG_DCC 
+			WHERE IHOGI = #{iHogi}
+			    AND XYGUBUN = #{xyGubun}
+			    AND IOTYPE = #{ioType}
+			    AND ADDRESS = #{address}
+			   <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ioBit)">
+			            AND IOBIT = #{ioBit}
+			   </if>
+    </select>     
+    
+    <insert id="insertGrpTag" parameterType="java.util.Map">
+    	  INSERT INTO MST_GRPTAG (Gubun, ID, GrpHogi, MenuNo, GrpNo, Hogi	, TagNo, ISeq, MaxVal, MinVal, YSeq, YMaxVal, YMinVal, SaveCoreChk, Descr)
+    	  VALUES ( #{gubun},  #{id}, #{grpHogi}, #{menuNo}, #{grpNo}, #{hogi}, #{tagNo}, #{iSeq}, #{maxVal}, #{minVal}, #{ySeq}, #{yMaxVal}, #{yMinVal}, #{saveCoreChk}, #{descr} )        
+    </insert>
 </mapper>

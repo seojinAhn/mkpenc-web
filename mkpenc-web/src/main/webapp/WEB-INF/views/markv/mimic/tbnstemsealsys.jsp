@@ -23,6 +23,23 @@ var timerOn = false; //true로 변경
 var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
 var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
 
+var tMarkTagSeq = [	
+	${MarkTagInfoList[0].iSeq},${MarkTagInfoList[1].iSeq},${MarkTagInfoList[2].iSeq},${MarkTagInfoList[3].iSeq},${MarkTagInfoList[4].iSeq},
+	${MarkTagInfoList[5].iSeq},${MarkTagInfoList[6].iSeq},${MarkTagInfoList[7].iSeq},${MarkTagInfoList[8].iSeq},${MarkTagInfoList[9].iSeq}	
+];
+
+var tMarkTagXy = [
+	'${MarkTagInfoList[0].XYGubun}','${MarkTagInfoList[1].XYGubun}','${MarkTagInfoList[2].XYGubun}','${MarkTagInfoList[3].XYGubun}','${MarkTagInfoList[4].XYGubun}',
+	'${MarkTagInfoList[5].XYGubun}','${MarkTagInfoList[6].XYGubun}','${MarkTagInfoList[7].XYGubun}','${MarkTagInfoList[8].XYGubun}','${MarkTagInfoList[9].XYGubun}'	
+];
+
+
+var tToolTipText = [
+	"${MarkTagInfoList[0].toolTip}"	,"${MarkTagInfoList[1].toolTip}"	,"${MarkTagInfoList[2].toolTip}"	,"${MarkTagInfoList[3].toolTip}"
+	,"${MarkTagInfoList[4].toolTip}"	,"${MarkTagInfoList[5].toolTip}"	,"${MarkTagInfoList[6].toolTip}"	,"${MarkTagInfoList[7].toolTip}"
+	,"${MarkTagInfoList[8].toolTip}"	,"${MarkTagInfoList[9].toolTip}"
+];
+
 $(function () {
 
 	if( $("input:radio[id='4']").is(":checked") ) {
@@ -48,6 +65,13 @@ $(function () {
 	$(document.body).delegate('#X', 'click', function() {
 		setTimer(hogiHeader,'X',0);
 	});
+	
+	$(document.body).delegate('#tbnstemsealsys_div span', 'dblclick', function() {		
+		var cId = this.id.indexOf('fValue') > -1 ? this.id.substring(4) : this.id;
+		if( cId != null && cId != '' && cId != 'undefined' ) {
+			showTag(cId,tMarkTagSeq[cId]);
+		}
+	});
 
 	setTimer(hogiHeader,xyHeader,5000);
 
@@ -72,6 +96,10 @@ function setTimer(hogiHeader,xyHeader,interval) {
 		comSubmit.submit();
 	}
 }
+
+function showTag(tagNo,iSeq) {	
+	alert("showTag");	
+}
 </script>
 
 </head>
@@ -90,8 +118,9 @@ function setTimer(hogiHeader,xyHeader,interval) {
 				<div class="bc"><span>MARK_V</span><span>Mimic</span><span>AUX</span><strong>STEAM SEAL SYSTEM</strong></div>
 			</div>
 			<!-- //page_title -->
+			
 			<form id="tbnstemsealsysFrm" style="display:none"></form>
-			<div class="img_wrap tbn_steam_seal">          
+			<div class="img_wrap tbn_steam_seal" id="tbnstemsealsys_div">          
                 <!-- range_slider -->
                 <div class="range_slider">
                     <input type="range" id="opacity-change" value="100" min="20" max="100">
@@ -104,7 +133,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                     <div class="chart_block_s_contents only_box">
                         <div class="summary">
                             <p>
-                                <span><c:if test="${lblDataList[1].fValue eq null}">0</c:if>
+                                <span id="1"><c:if test="${lblDataList[1].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[1].fValue ne null}">${lblDataList[1].fValue}</c:if></span>
                             </p>
                         </div>
@@ -115,7 +144,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                     <div class="chart_block_s_contents only_box">
                         <div class="summary">
                             <p>
-                                <span><c:if test="${lblDataList[3].fValue eq null}">0</c:if>
+                                <span id="3"><c:if test="${lblDataList[3].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[3].fValue ne null}">${lblDataList[3].fValue}</c:if></span>
                             </p>
                         </div>
@@ -126,7 +155,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                     <div class="chart_block_s_contents only_box">
                         <div class="summary">
                             <p>
-                                <span><c:if test="${lblDataList[0].fValue eq null}">0</c:if>
+                                <span id="0"><c:if test="${lblDataList[0].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[0].fValue ne null}">${lblDataList[0].fValue}</c:if></span>
                             </p>
                         </div>
@@ -137,7 +166,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                     <div class="chart_block_s_contents only_box">
                         <div class="summary">
                             <p>
-                                <span><c:if test="${lblDataList[2].fValue eq null}">0</c:if>
+                                <span id="2"><c:if test="${lblDataList[2].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[2].fValue ne null}">${lblDataList[2].fValue}</c:if></span>
                             </p>
                         </div>
@@ -148,28 +177,28 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>SPE WATER LEVEL</span>
-                                <span><c:if test="${lblDataList[4].fValue eq null}">0.0572</c:if>
+                                <span id="4"><c:if test="${lblDataList[4].fValue eq null}">0.0572</c:if>
                                 <c:if test="${lblDataList[4].fValue ne null}">${lblDataList[4].fValue}</c:if></span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
                                 <span>SPE VACUUM</span>
-                                <span><c:if test="${lblDataList[5].fValue eq null}">0.0572</c:if>
+                                <span id="5"><c:if test="${lblDataList[5].fValue eq null}">0.0572</c:if>
                                 <c:if test="${lblDataList[5].fValue ne null}">${lblDataList[5].fValue}</c:if></span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
                                 <span>SPE MOTOR A</span>
-                                <span><c:if test="${lblDataList[6].fValue eq null}">0.0572</c:if>
+                                <span id="6"><c:if test="${lblDataList[6].fValue eq null}">0.0572</c:if>
                                 <c:if test="${lblDataList[6].fValue ne null}">${lblDataList[6].fValue}</c:if></span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
                                 <span>SPE MOTOR B</span>
-                                <span><c:if test="${lblDataList[7].fValue eq null}">0.0572</c:if>
+                                <span id="7"><c:if test="${lblDataList[7].fValue eq null}">0.0572</c:if>
                                 <c:if test="${lblDataList[7].fValue ne null}">${lblDataList[7].fValue}</c:if></span>
                             </p>
                         </div>                        
@@ -181,7 +210,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>SSH PRESSURE</span>
-                                <span><c:if test="${lblDataList[8].fValue eq null}">0.0572</c:if>
+                                <span id="8"><c:if test="${lblDataList[8].fValue eq null}">0.0572</c:if>
                                 <c:if test="${lblDataList[8].fValue ne null}">${lblDataList[8].fValue}</c:if></span>
                                 <span>bar</span>
                             </p>
@@ -189,7 +218,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>SSH TEMPERATURE</span>
-                                <span><c:if test="${lblDataList[9].fValue eq null}">0.0572</c:if>
+                                <span id="9"><c:if test="${lblDataList[9].fValue eq null}">0.0572</c:if>
                                 <c:if test="${lblDataList[9].fValue ne null}">${lblDataList[9].fValue}</c:if></span>
                                 <span>deg C</span>
                             </p>
