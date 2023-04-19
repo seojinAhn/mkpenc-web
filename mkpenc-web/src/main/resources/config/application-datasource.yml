@@ -4,7 +4,7 @@ spring:
 datasource:
   mssql-dcc:
     type: org.apache.commons.dbcp2.BasicDataSource
-    jdbc-url: jdbc:sqlserver://10.135.101.221:21433;databaseName=DCCDB
+    jdbc-url: jdbc:sqlserver://127.0.0.1:1433;databaseName=DCCDB
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     username: dcc
     password: dcc
@@ -14,7 +14,7 @@ datasource:
     minimum-idle: 5
   mssql-mark:
     type: org.apache.commons.dbcp2.BasicDataSource
-    jdbc-url: jdbc:sqlserver://10.135.101.221:21433;databaseName=MARKDB
+    jdbc-url: jdbc:sqlserver://127.0.0.1:1433;databaseName=MARKDB
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     username: dcc
     password: dcc
