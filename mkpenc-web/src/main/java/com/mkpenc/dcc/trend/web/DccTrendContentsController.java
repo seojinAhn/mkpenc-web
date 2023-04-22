@@ -209,6 +209,7 @@ public class DccTrendContentsController {
 		Map lblUnitList = new HashMap();
 		
 		for( int ll=0;ll<dccGrpTagList.size();ll++ ) {
+			System.out.println(((List) dccVal.get("lblDataList")).get(ll));
 			lblTagList.put(ll,dccGrpTagList.get(ll).getHogi()+dccGrpTagList.get(ll).getXYGubun()+" "+dccGrpTagList.get(ll).getDataLoop());
 			lblValueList.put(ll,((List) dccVal.get("lblDataList")).get(ll));
 			lblUnitList.put(ll,dccGrpTagList.get(ll).getUnit());
@@ -218,6 +219,8 @@ public class DccTrendContentsController {
 		lblInfoList.add(0,lblTagList);
 		lblInfoList.add(1,lblValueList);
 		lblInfoList.add(2,lblUnitList);
+		
+		System.out.println(lblInfoList.get(1));
 		
 		mav.addObject("LblInfoList",lblInfoList);
 	}
@@ -330,17 +333,6 @@ public class DccTrendContentsController {
 		
 		System.out.println(dccGrpTagList.size());
 		if( dccGrpTagList.size() > 0 ) {
-			List<Map> lblValue = new ArrayList<Map>();
-			List<Map> lblTagName = new ArrayList<Map>();
-			List<Map> lblUnit = new ArrayList<Map>();
-			List<Map> txtMax = new ArrayList<Map>();
-			List<Map> txtMin = new ArrayList<Map>();
-			List<Map> fHiAlarm = new ArrayList<Map>();
-			List<Map> fLoAlarm = new ArrayList<Map>();
-			List<Map> fDtabHi = new ArrayList<Map>();
-			List<Map> fDtabLo = new ArrayList<Map>();
-
-			Map tmpValue = new HashMap();
 			Map tmpTagName = new HashMap();
 			Map tmpUnit = new HashMap();
 			Map tmpMax = new HashMap();
@@ -400,9 +392,15 @@ public class DccTrendContentsController {
 				idx++;
 			}
 
-			mav.addObject("lblValue",dccVal.get("lblDataList"));
-			mav.addObject("lblTagName",tmpTagName);
-			mav.addObject("lblUnit",tmpUnit);
+			mav.addObject("LblValue",dccVal.get("lblDataList"));
+			mav.addObject("LblTagName",tmpTagName);
+			mav.addObject("LblUnit",tmpUnit);
+			mav.addObject("minList",tmpMin);
+			mav.addObject("maxList",tmpMax);
+			mav.addObject("FHiAlarm",tmpHiAlarm);
+			mav.addObject("FLoAlarm",tmpLoAlarm);
+			mav.addObject("FDtabHi",tmpDtabHi);
+			mav.addObject("FDtabLo",tmpDtabLo);
 		}
 		
 		getTrendView(dccSearchTrend, dccGrpTagList, grpTagList, searchMap, mav);
@@ -469,7 +467,7 @@ public class DccTrendContentsController {
 	}
 		
 		
-	private void getTrendView(DccSearchTrend dccSearchTrend, List<ComTagDccInfo> dccGrpTagList, List<Map> grpTagList, Map searchMap, ModelAndView mav) {
+private void getTrendView(DccSearchTrend dccSearchTrend, List<ComTagDccInfo> dccGrpTagList, List<Map> grpTagList, Map searchMap, ModelAndView mav) {
 		
 		String strUGrpNo = dccSearchTrend.getsUGrpNo();
 		String strTimeGap = dccSearchTrend.getTxtTimeGap();
@@ -608,20 +606,23 @@ public class DccTrendContentsController {
 		String sDateS = "";
 		String sDateE = "";
 		int iRow = 0;
+
+		for( int ht=0;ht<rsTrendListHistorical.size();ht++ ) {
 			Map rtnMapHistorical = new HashMap();
-			
-			for( int ht=0;ht<rsTrendListHistorical.size();ht++ ) {
-				for( int hi=0;hi<dccGrpTagList.size();hi++ ) {
-					String[] dccGrpTagArray = {
-						dccGrpTagList.get(hi).getIOTYPE(),
-						dccGrpTagList.get(hi).getIOBIT()+"",
-						dccGrpTagList.get(hi).getSaveCore()+"",
-						dccGrpTagList.get(hi).getBScale()+"",
-						dccGrpTagList.get(hi).getADDRESS(),
-						dccGrpTagList.get(hi).getFASTIOCHK()+""
-					};
+			Map timeNPosH = new HashMap();
+			timeNPosH.put("m_time",rsTrendListHistorical.get(ht).get("").toString());
+			timeNPosH.put("m_xpos",ht+"");
+			for( int hi=0;hi<dccGrpTagList.size();hi++ ) {
+				String[] dccGrpTagArray = {
+					dccGrpTagList.get(hi).getIOTYPE(),
+					dccGrpTagList.get(hi).getIOBIT()+"",
+					dccGrpTagList.get(hi).getSaveCore()+"",
+					dccGrpTagList.get(hi).getBScale()+"",
+					dccGrpTagList.get(hi).getADDRESS(),
+					dccGrpTagList.get(hi).getFASTIOCHK()+""
+				};
+				
 				String RetVal = setDataConv(ht,rsTrendListHistorical.get(ht).get("tvalue"+(hi+1)).toString(),dccGrpTagArray,dccSearchTrend.getsMenuNo(),lGap);
-				System.out.println(RetVal);
 				
 				int nRetValType = 0;
 				Double tmpN = 0d;
@@ -643,18 +644,19 @@ public class DccTrendContentsController {
 						rtnMapHistorical.put(hi,tmpN+"");
 					}
 					
-					sDateS = RetVal;
-					iRow++;
+					sDateS = rsTrendListHistorical.get(ht).get("").toString();
+					iRow = hi;
 				} else if( nRetValType == 1 ) {
 					rtnMapHistorical.put(hi,cnstErr+"");
 				} else {
 					rtnMapHistorical.put(hi,cnstNull+"");
 				}
 			}
-			Map timeNPosH = new HashMap();
+			for( int hii=0;hii<rtnMapHistorical.size();hii++ ) {
+				if( hii == 0 ) System.out.println(hii+" >>>>> "+rtnMapHistorical.get(hii));
+			}
+			
 			timeNPosH.put("m_data",rtnMapHistorical);
-			timeNPosH.put("m_time",rsTrendListHistorical.get(ht).get("").toString());
-			timeNPosH.put("m_xpos",ht+"");
 			
 			arrTrendData.add(ht,timeNPosH);
 		}
@@ -965,31 +967,15 @@ public class DccTrendContentsController {
 			
 			qryStr += "  from #temp\n";
 			
-			System.out.println(qryStr);
+			//System.out.println(qryStr);
 			
 			nRes = dccTrendService.manageTrendProc(qryStr);
 			
-			//if( nRes > 0 ) {
-				// exec tmp procedure
-				procInfo.put("procName",procName);
-				procInfo.put("param",lGap+"");
-				
-				rtnMapList = dccTrendService.callTrendProc(procInfo);
-
-				int resCnt = 0;
-				int rtnMapSize = 0;
-				do {
-					rtnMapSize = rtnMapList.size() == 0 ? 0 : rtnMapList.size();
-						
-					try {
-						Thread.sleep(1000);
-					} catch( Exception e) {
-						//
-					} finally {
-						resCnt++;
-					}
-				} while( rtnMapSize == 0 && resCnt < 5 );
-			//}
+			// exec tmp procedure
+			procInfo.put("procName",procName);
+			procInfo.put("param",lGap+"");
+			
+			rtnMapList = dccTrendService.callTrendProc(procInfo);
 			
 			// drop tmp procedure
 			qryStr = "DROP PROCEDURE " + procName;

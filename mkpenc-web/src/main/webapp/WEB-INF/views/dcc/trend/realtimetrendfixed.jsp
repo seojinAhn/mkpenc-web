@@ -30,6 +30,7 @@
 	var currentSelGrp = "";
 	var grpNos = [];
 	var selGrpNm = "";
+	var colorList = ['#801517','#B9529F','#1EBCBE','#282A73','#ED1E24','#7A57A4','#70CBD1','#364CA0'];
 	
 	var chart;
 
@@ -182,11 +183,21 @@
 	}
 	
 	function cmdReal_click() {
-		$("#cmdHistorical").css("display","");
-		$("#cmdReal").css("display","none");
-		$("#divUseGap").css("display","none");
-		$("#searchDate").css("display","none");
-		$("#txtTimeGap").attr("disabled",false);
+		//$("#cmdHistorical").css("display","");
+		//$("#cmdReal").css("display","none");
+		//$("#divUseGap").css("display","none");
+		//$("#searchDate").css("display","none");
+		//$("#txtTimeGap").attr("disabled",false);
+		
+		if( $("#txtTimeGap").val() == "0.5" ) {
+			var size = $("#lblValue0").attr("value");
+			for( var i=0;i<size;i++ ) {
+				if( $("#lblTagName"+i).attr("value") != '1' ) {
+					alert('태그 전체가 0.5초 태그가 아닙니다. 5초이상을 입력하세요');
+					break;
+				}
+			}
+		}
 	}
 	
 	function DatetimepickerDefaults(opts) {
@@ -246,7 +257,6 @@
 	}
 
 	function createChart(data){
-		console.log(data);
 		var xValues = data.split("},{");
 		var str0 = xValues[0];
 		var strLast = xValues[xValues.length-1];
@@ -261,26 +271,22 @@
 		var xAxis = [];
 		for( var j=0;j<xValues.length;j++ ) {
 			var xJson = xValues[j].split(', ');
-			//xJson.splice(0,1);
 			
-			//xData = [
-			//	{name:xJson[0], [xJson[1].split('=')[0]]:(xJson[1].split('=')[1])*1}
-			//];
-			//for( var d=1;d<xJson.length;d++ ) {
-					//var key = xJson[d].split('=')[0];
-					//var value = (xJson[d].split('=')[1])*1;
-					xData.push({name:xJson[0], [xJson[1].split('=')[0]]:(xJson[1].split('=')[1])*1, [xJson[2].split('=')[0]]:(xJson[2].split('=')[1])*1, [xJson[3].split('=')[0]]:(xJson[3].split('=')[1])*1, [xJson[4].split('=')[0]]:(xJson[4].split('=')[1])*1});
-					//xData.push({[key]:value});
+			var tJson = {};
+			tJson.name = xJson[0];
+			for( var ti=0;ti<xJson.length;ti++ ) {
+				var key = xJson[ti].split('=')[0];
+				var val = (xJson[ti].split('=')[1])*1;
+				tJson[key] = val;
+			}
+			
+			xData.push(tJson);
 			if( j == 0 ) {		
 				for( var d=1;d<xJson.length;d++ ) {
 					xAxis.push(xJson[d].split('=')[0]);
 				}
 			}
-			//}
 		}
-		
-		console.log(xData);
-		console.log(xAxis);
 		
 		var chartConfig = {
 			global: {
@@ -304,6 +310,14 @@
 				bar: {
 					topRadius: 15
 				}
+			},
+			axis: {
+				//x:{type:'category'}
+				x:{show:false}
+			},
+			grid: {
+				x:{show:false},
+				y:{show:false}
 			}
 		};
 		chart = new sb.chart("#chartArea", chartConfig) // 첫번째 파라미터는 div 영역의 id, 두번째 파라미터는 위에서 설정한 xhart config 객체명 기입
@@ -346,6 +360,12 @@
 		}
 		
 		closeLayer(str);
+	}
+	
+	function checkbox_click(data) {
+		console.log($("input:checkbox[id='"+data+"']").is(":checked"));
+		var idx = data.substring(11,data.length);
+		console.log($("#lblTagName"+idx).text());
 	}
 	
 </script>
@@ -428,6 +448,7 @@
                                 <c:forEach var="grpInfo" items="${DccGroupList}">
                                 	<option id="opt${grpInfo.groupNo}" value="${grpInfo.groupNo}">${grpInfo.groupName}</option>
                                 </c:forEach>
+                                </select>
                                 <a href="#none" class="btn_list">새창으로</a>
                                 <a href="#none" class="btn_list">Range 저장</a>
                                 <label>
@@ -440,35 +461,19 @@
 					</div>
 					<div class="fx_srch_row" id="lblBody1">
 						<div class="fx_srch_item line">
-                            <div class="fx_form" style="color:#F1881A"><!-- color : #801517 -->
-                                <input id="lblCheckbox0" type="checkbox" checked>
-                                <span><label id="lblTagName0">3X MOD. TEMP</label></span>
-                                <span><label id="lblValue0">68.74</label></span>
-                                <span><label id="lblUnit0">DEG C</label></span>
+                            <div class="fx_form chart_sum color_1" style="display:none"><!-- color : #801517 -->
                             </div>
 						</div>
 						<div class="fx_srch_item line">
-                            <div class="fx_form" style="color:#F2772A"><!-- color : #B9529F -->
-                                <input id="lblCheckbox1" type="checkbox" checked>
-                                <span><label id="lblTagName1">3X MOD. TEMP</label></span>
-                                <span><label id="lblValue1">68.74</label></span>
-                                <span><label id="lblUnit1">DEG C</label></span>
+                            <div class="fx_form chart_sum color_2" style="display:none"><!-- color : #B9529F -->
                             </div>
 						</div>
 						<div class="fx_srch_item line">
-                            <div class="fx_form" style="color:#F3663A"><!-- color : #1EBCBE -->
-                                <input id="lblCheckbox2" type="checkbox" checked>
-                                <span><label id="lblTagName2">3X MOD. TEMP</label></span>
-                                <span><label id="lblValue2">68.74</label></span>
-                                <span><label id="lblUnit2">DEG C</label></span>
+                            <div class="fx_form chart_sum color_3" style="display:none"><!-- color : #1EBCBE -->
                             </div>
 						</div>
 						<div class="fx_srch_item line">
-                            <div class="fx_form" style="color:#F4554A"><!-- color : #282A73 -->
-                                <input id="lblCheckbox3" type="checkbox" checked>
-                                <span><label id="lblTagName3">3X MOD. TEMP</label></span>
-                                <span><label id="lblValue3">68.74</label></span>
-                                <span><label id="lblUnit3">DEG C</label></span>
+                            <div class="fx_form chart_sum color_4" style="display:none"><!-- color : #282A73 -->
                             </div>
 						</div>
 					</div>
@@ -492,9 +497,11 @@
 					</div>
 				</div>
 			</div>
-			<!-- //fx_srch_wrap -->         
+			<!-- //fx_srch_wrap -->
+			<div id="rangeHi">
+			</div>
 			<!-- chart_wrap_area -->
-			<div class="chart_wrap_area" id="chartArea">
+			<div class="chart_wrap_area">
                 <!-- 마우스 우클릭 메뉴 -->
                 <div class="context_menu" id="mouse_area">
                     <ul>
@@ -511,11 +518,13 @@
                         <li><a href="#none">그래프 저장</a></li>
                     </ul>
                 </div>
-                <!-- //마우스 우클릭 메뉴 -->                
-                차트영역 (최종본 라인 제거)
+                <!-- //마우스 우클릭 메뉴 --> 
+                <div id="chartArea"></div>
             </div>
             <input id="testArea" type="hidden"></input>
             <!-- //chart_wrap_area -->
+			<div id="rangeLow">
+			</div>
 		</div>
 		<!-- //contents -->
 	</div>
