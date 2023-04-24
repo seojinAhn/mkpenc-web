@@ -17,6 +17,117 @@
 <script type="text/javascript" src="<c:url value="/resources/js/common.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/mimic.js" />" charset="utf-8"></script>
+
+<script type="text/javascript">
+var timerOn = true; //true로 변경
+var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
+var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
+
+var tMarkTagSeq = [	
+	${MarkTagInfoList[0].iSeq},${MarkTagInfoList[1].iSeq},${MarkTagInfoList[2].iSeq},${MarkTagInfoList[3].iSeq},${MarkTagInfoList[4].iSeq},
+	${MarkTagInfoList[5].iSeq},${MarkTagInfoList[6].iSeq},${MarkTagInfoList[7].iSeq},${MarkTagInfoList[8].iSeq},${MarkTagInfoList[9].iSeq},
+	${MarkTagInfoList[10].iSeq},${MarkTagInfoList[11].iSeq},${MarkTagInfoList[12].iSeq},${MarkTagInfoList[13].iSeq},${MarkTagInfoList[14].iSeq},
+	${MarkTagInfoList[15].iSeq},${MarkTagInfoList[16].iSeq},${MarkTagInfoList[17].iSeq},${MarkTagInfoList[18].iSeq},${MarkTagInfoList[19].iSeq},
+	${MarkTagInfoList[20].iSeq},${MarkTagInfoList[21].iSeq},${MarkTagInfoList[22].iSeq},${MarkTagInfoList[23].iSeq},${MarkTagInfoList[24].iSeq},
+	${MarkTagInfoList[25].iSeq},${MarkTagInfoList[26].iSeq},${MarkTagInfoList[27].iSeq},${MarkTagInfoList[28].iSeq},${MarkTagInfoList[29].iSeq},
+	${MarkTagInfoList[30].iSeq},${MarkTagInfoList[31].iSeq},${MarkTagInfoList[32].iSeq},${MarkTagInfoList[33].iSeq},${MarkTagInfoList[34].iSeq},
+	${MarkTagInfoList[35].iSeq},${MarkTagInfoList[36].iSeq},${MarkTagInfoList[37].iSeq},${MarkTagInfoList[38].iSeq},${MarkTagInfoList[39].iSeq},
+	${MarkTagInfoList[40].iSeq}
+];
+
+var tMarkTagXy = [
+	'${MarkTagInfoList[0].XYGubun}','${MarkTagInfoList[1].XYGubun}','${MarkTagInfoList[2].XYGubun}','${MarkTagInfoList[3].XYGubun}','${MarkTagInfoList[4].XYGubun}',
+	'${MarkTagInfoList[5].XYGubun}','${MarkTagInfoList[6].XYGubun}','${MarkTagInfoList[7].XYGubun}','${MarkTagInfoList[8].XYGubun}','${MarkTagInfoList[9].XYGubun}',
+	'${MarkTagInfoList[10].XYGubun}','${MarkTagInfoList[11].XYGubun}','${MarkTagInfoList[12].XYGubun}','${MarkTagInfoList[13].XYGubun}','${MarkTagInfoList[14].XYGubun}',
+	'${MarkTagInfoList[15].XYGubun}','${MarkTagInfoList[16].XYGubun}','${MarkTagInfoList[17].XYGubun}','${MarkTagInfoList[18].XYGubun}','${MarkTagInfoList[19].XYGubun}',
+	'${MarkTagInfoList[20].XYGubun}','${MarkTagInfoList[21].XYGubun}','${MarkTagInfoList[22].XYGubun}','${MarkTagInfoList[23].XYGubun}','${MarkTagInfoList[24].XYGubun}',
+	'${MarkTagInfoList[25].XYGubun}','${MarkTagInfoList[26].XYGubun}','${MarkTagInfoList[27].XYGubun}','${MarkTagInfoList[28].XYGubun}','${MarkTagInfoList[29].XYGubun}',
+	'${MarkTagInfoList[30].XYGubun}','${MarkTagInfoList[31].XYGubun}','${MarkTagInfoList[32].XYGubun}','${MarkTagInfoList[33].XYGubun}','${MarkTagInfoList[34].XYGubun}',
+	'${MarkTagInfoList[35].XYGubun}','${MarkTagInfoList[36].XYGubun}','${MarkTagInfoList[37].XYGubun}','${MarkTagInfoList[38].XYGubun}','${MarkTagInfoList[39].XYGubun}',
+	'${MarkTagInfoList[40].XYGubun}'
+];
+
+var tToolTipText = [
+	"${MarkTagInfoList[0].toolTip}"	,"${MarkTagInfoList[1].toolTip}"	,"${MarkTagInfoList[2].toolTip}"	,"${MarkTagInfoList[3].toolTip}"
+	,"${MarkTagInfoList[4].toolTip}"	,"${MarkTagInfoList[5].toolTip}"	,"${MarkTagInfoList[6].toolTip}"	,"${MarkTagInfoList[7].toolTip}"
+	,"${MarkTagInfoList[8].toolTip}"	,"${MarkTagInfoList[9].toolTip}"	,"${MarkTagInfoList[10].toolTip}"	,"${MarkTagInfoList[11].toolTip}"
+	,"${MarkTagInfoList[12].toolTip}"	,"${MarkTagInfoList[13].toolTip}"	,"${MarkTagInfoList[14].toolTip}"	,"${MarkTagInfoList[15].toolTip}"
+	,"${MarkTagInfoList[16].toolTip}"	,"${MarkTagInfoList[17].toolTip}"	,"${MarkTagInfoList[18].toolTip}"	,"${MarkTagInfoList[19].toolTip}"
+	,"${MarkTagInfoList[20].toolTip}"	,"${MarkTagInfoList[21].toolTip}"	,"${MarkTagInfoList[22].toolTip}"	,"${MarkTagInfoList[23].toolTip}"
+	,"${MarkTagInfoList[24].toolTip}"	,"${MarkTagInfoList[25].toolTip}"	,"${MarkTagInfoList[26].toolTip}"	,"${MarkTagInfoList[27].toolTip}"
+	,"${MarkTagInfoList[28].toolTip}"	,"${MarkTagInfoList[29].toolTip}"	,"${MarkTagInfoList[30].toolTip}"	,"${MarkTagInfoList[31].toolTip}"
+	,"${MarkTagInfoList[32].toolTip}"	,"${MarkTagInfoList[33].toolTip}"	,"${MarkTagInfoList[34].toolTip}"	,"${MarkTagInfoList[35].toolTip}"	
+	,"${MarkTagInfoList[36].toolTip}"	,"${MarkTagInfoList[37].toolTip}"	,"${MarkTagInfoList[38].toolTip}"	,"${MarkTagInfoList[39].toolTip}"
+	,"${MarkTagInfoList[40].toolTip}"
+];
+
+$(function () {
+	if( $("input:radio[id='4']").is(":checked") ) {	
+		hogiHeader = "4";
+	} else {
+		hogiHeader = "3";
+	}
+	if( $("input:radio[id='Y']").is(":checked") ) {
+		xyHeader = "Y";
+	} else {
+		xyHeader = "X";
+	}
+	
+	var lblDateVal = '${SearchTime}';
+	$("#lblDate").text(lblDateVal);
+	
+	$(document.body).delegate('#3', 'click', function() {
+		setTimer('3',xyHeader,0);
+	});
+	
+	$(document.body).delegate('#4', 'click', function() {
+		setTimer('4',xyHeader,0);
+	});
+	
+	$(document.body).delegate('#X', 'click', function() {		
+		setTimer(hogiHeader,'X',0);
+	});
+	
+	$(document.body).delegate('#Y', 'click', function() {		
+		setTimer(hogiHeader,'Y',0);
+	});
+	
+	$(document.body).delegate('#speedcontrol_div label', 'dblclick', function() {
+		var cId = this.id.indexOf('fValue') > -1 ? this.id.substring(4) : this.id;
+		if( cId != null && cId != '' && cId != 'undefined' ) {
+			showTag(cId,tMarkTagSeq[cId]);
+		}
+	});
+	
+	setTimer(hogiHeader,xyHeader,5000);
+});	
+
+function setTimer(hogiHeader,xyHeader,interval) {
+	if( interval > 0 ) {
+		setTimeout(function() {
+			if( timerOn ) {
+				var	comSubmit	=	new ComSubmit("speedcontrolFrm");
+				comSubmit.setUrl("/markv/mimic/speedcontrol");
+				comSubmit.addParam("hogiHeader",hogiHeader);
+				comSubmit.addParam("xyHeader",xyHeader);
+				comSubmit.submit();
+			}
+		},interval);
+	} else {
+		var	comSubmit	=	new ComSubmit("speedcontrolFrm");
+		comSubmit.setUrl("/markv/mimic/speedcontrol");
+		comSubmit.addParam("hogiHeader",hogiHeader);
+		comSubmit.addParam("xyHeader",xyHeader);
+		comSubmit.submit();
+	}
+}
+
+function showTag(tagNo,iSeq) {	
+	alert("showTag");	
+}
+
+</script>
+
 </head>
 <body>
 <div class="wrap">
@@ -33,7 +144,8 @@
 				<div class="bc"><span>MARK_V</span><span>Mimic</span><span>CONTROL</span><strong>SPEED CONTROL</strong></div>
 			</div>
 			<!-- //page_title -->
-			<div class="img_wrap speed_control">
+			<form id="speedcontrolFrm" style="display:none"></form>
+			<div class="img_wrap speed_control" id="speedcontrol_div">			
                 <!-- range_slider -->
                 <div class="range_slider">
                     <input type="range" id="opacity-change" value="100" min="20" max="100">
@@ -48,7 +160,7 @@
                         <div class="summary">
                             <p>
                                 <span>PRESS</span>
-                                <label>
+                                <label id="0">
                                 	<c:if test="${lblDataList[0].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[0].fValue ne null}">${lblDataList[0].fValue}</c:if>
                                 </label>
@@ -58,7 +170,7 @@
                         <div class="summary">
                             <p>
                                 <span>ACT TEMP</span>
-                                <label>
+                                <label id="1">
                                 	<c:if test="${lblDataList[1].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[1].fValue ne null}">${lblDataList[1].fValue}</c:if>
                                 </label>
@@ -73,7 +185,7 @@
                         <div class="summary">
                             <p>
                                 <span>PRESS</span>
-                                <label>
+                                <label id="2">
                                 	<c:if test="${lblDataList[2].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[2].fValue ne null}">${lblDataList[2].fValue}</c:if>
                                 </label>
@@ -83,7 +195,7 @@
                         <div class="summary">
                             <p>
                                 <span>ACT TEMP</span>
-                                <label>
+                                <label id="3">
                                 	<c:if test="${lblDataList[3].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[3].fValue ne null}">${lblDataList[3].fValue}</c:if>
                                 </label>
@@ -98,7 +210,7 @@
                         <div class="summary">
                             <p>
                                 <span>PRESS</span>
-                                <label>
+                                <label id="4">
                                 	<c:if test="${lblDataList[4].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[4].fValue ne null}">${lblDataList[4].fValue}</c:if>
                                 </label>
@@ -108,7 +220,7 @@
                         <div class="summary">
                             <p>
                                 <span>ACT TEMP</span>
-                                <label>
+                                <label id="5">
                                 	<c:if test="${lblDataList[5].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[5].fValue ne null}">${lblDataList[5].fValue}</c:if>
                                 </label>
@@ -122,7 +234,7 @@
                         <div class="summary">
                             <p>
                                 <span>CV DEMAND</span>
-                                <label>
+                                <label id="29">
                                 	<c:if test="${lblDataList[29].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[29].fValue ne null}">${lblDataList[29].fValue}</c:if>
                                 </label>
@@ -136,7 +248,7 @@
                         <div class="summary">
                             <p>
                                 <span>IV DEMAND</span>
-                                <label>
+                                <label id="30">
                                 	<c:if test="${lblDataList[30].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[30].fValue ne null}">${lblDataList[30].fValue}</c:if>
                                 </label>
@@ -150,12 +262,12 @@
                         <div class="summary">
                             <p>
                                 <span>1</span>
-                                <label>
+                                <label id="21">
                                 	<c:if test="${lblDataList[21].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[21].fValue ne null}">${lblDataList[21].fValue}</c:if>
                                 </label>
                                 <span class="per">%</span>
-                                <label>
+                                <label id="25">
                                 	<c:if test="${lblDataList[25].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[25].fValue ne null}">${lblDataList[25].fValue}</c:if>
                                 </label>
@@ -163,12 +275,12 @@
                             </p>
                             <p>
                                 <span>2</span>
-                                <label>
+                                <label id="22">
                                 	<c:if test="${lblDataList[22].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[22].fValue ne null}">${lblDataList[22].fValue}</c:if>
                                 </label>
                                  <span class="per">%</span>
-                                <label>
+                                <label id="26">
                                 	<c:if test="${lblDataList[26].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[26].fValue ne null}">${lblDataList[26].fValue}</c:if>
                                 </label>
@@ -176,12 +288,12 @@
                             </p>
                             <p>
                                 <span>3</span>
-                                <label>
+                                <label id="23">
                                 	<c:if test="${lblDataList[23].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[23].fValue ne null}">${lblDataList[23].fValue}</c:if>
                                 </label>
                                  <span class="per">%</span>
-                                <label>
+                                <label id="27">
                                 	<c:if test="${lblDataList[27].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[27].fValue ne null}">${lblDataList[27].fValue}</c:if>
                                 </label>
@@ -189,12 +301,12 @@
                             </p>
                             <p>
                                 <span>4</span>
-                                <label>
+                                <label id="24">
                                 	<c:if test="${lblDataList[24].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[24].fValue ne null}">${lblDataList[24].fValue}</c:if>
                                 </label>
                                  <span class="per">%</span>
-                                <label>
+                                <label id="28">
                                 	<c:if test="${lblDataList[28].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[28].fValue ne null}">${lblDataList[28].fValue}</c:if>
                                 </label>
@@ -208,7 +320,7 @@
                         <div class="summary">
                             <p>
                                 <span>BREAKER</span>
-                                <label>
+                                <label id="31">
                                 	<c:if test="${lblDataList[31].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[31].fValue ne null}">${lblDataList[31].fValue}</c:if>
                                 </label>
@@ -218,7 +330,7 @@
                         <div class="summary">
                             <p>
                                 <span>SPEED</span>
-                                <label>
+                                <label id="32">
                                 	<c:if test="${lblDataList[32].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[32].fValue ne null}">${lblDataList[32].fValue}</c:if>
                                 </label>
@@ -228,7 +340,7 @@
                         <div class="summary">
                             <p>
                                 <span>MODE</span>
-                                <label>
+                                <label id="33">
                                 	<c:if test="${lblDataList[33].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[33].fValue ne null}">${lblDataList[33].fValue}</c:if>
                                 </label>
