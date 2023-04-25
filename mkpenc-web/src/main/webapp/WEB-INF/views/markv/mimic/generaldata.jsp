@@ -22,6 +22,51 @@ var timerOn = true; //true로 변경
 var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
 var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
 
+var tMarkTagSeq = [	
+	${MarkTagInfoList[0].iSeq},${MarkTagInfoList[1].iSeq},${MarkTagInfoList[2].iSeq},${MarkTagInfoList[3].iSeq},${MarkTagInfoList[4].iSeq},
+	${MarkTagInfoList[5].iSeq},${MarkTagInfoList[6].iSeq},${MarkTagInfoList[7].iSeq},${MarkTagInfoList[8].iSeq},${MarkTagInfoList[9].iSeq},
+	${MarkTagInfoList[10].iSeq},${MarkTagInfoList[11].iSeq},${MarkTagInfoList[12].iSeq},${MarkTagInfoList[13].iSeq},${MarkTagInfoList[14].iSeq},
+	${MarkTagInfoList[15].iSeq},${MarkTagInfoList[16].iSeq},${MarkTagInfoList[17].iSeq},${MarkTagInfoList[18].iSeq},${MarkTagInfoList[19].iSeq},
+	${MarkTagInfoList[20].iSeq},${MarkTagInfoList[21].iSeq},${MarkTagInfoList[22].iSeq},${MarkTagInfoList[23].iSeq},${MarkTagInfoList[24].iSeq},
+	${MarkTagInfoList[25].iSeq},${MarkTagInfoList[26].iSeq},${MarkTagInfoList[27].iSeq},${MarkTagInfoList[28].iSeq},${MarkTagInfoList[29].iSeq},
+	${MarkTagInfoList[30].iSeq},${MarkTagInfoList[31].iSeq},${MarkTagInfoList[32].iSeq},${MarkTagInfoList[33].iSeq},${MarkTagInfoList[34].iSeq},
+	${MarkTagInfoList[35].iSeq},${MarkTagInfoList[36].iSeq},${MarkTagInfoList[37].iSeq},${MarkTagInfoList[38].iSeq},${MarkTagInfoList[39].iSeq},
+	${MarkTagInfoList[40].iSeq},${MarkTagInfoList[41].iSeq},${MarkTagInfoList[42].iSeq},${MarkTagInfoList[43].iSeq},${MarkTagInfoList[44].iSeq},
+	${MarkTagInfoList[45].iSeq},${MarkTagInfoList[46].iSeq},${MarkTagInfoList[47].iSeq},${MarkTagInfoList[48].iSeq},${MarkTagInfoList[49].iSeq},
+	${MarkTagInfoList[50].iSeq},${MarkTagInfoList[51].iSeq}
+];
+
+var tMarkTagXy = [
+	'${MarkTagInfoList[0].XYGubun}','${MarkTagInfoList[1].XYGubun}','${MarkTagInfoList[2].XYGubun}','${MarkTagInfoList[3].XYGubun}','${MarkTagInfoList[4].XYGubun}',
+	'${MarkTagInfoList[5].XYGubun}','${MarkTagInfoList[6].XYGubun}','${MarkTagInfoList[7].XYGubun}','${MarkTagInfoList[8].XYGubun}','${MarkTagInfoList[9].XYGubun}',
+	'${MarkTagInfoList[10].XYGubun}','${MarkTagInfoList[11].XYGubun}','${MarkTagInfoList[12].XYGubun}','${MarkTagInfoList[13].XYGubun}','${MarkTagInfoList[14].XYGubun}',
+	'${MarkTagInfoList[15].XYGubun}','${MarkTagInfoList[16].XYGubun}','${MarkTagInfoList[17].XYGubun}','${MarkTagInfoList[18].XYGubun}','${MarkTagInfoList[19].XYGubun}',
+	'${MarkTagInfoList[20].XYGubun}','${MarkTagInfoList[21].XYGubun}','${MarkTagInfoList[22].XYGubun}','${MarkTagInfoList[23].XYGubun}','${MarkTagInfoList[24].XYGubun}',
+	'${MarkTagInfoList[25].XYGubun}','${MarkTagInfoList[26].XYGubun}','${MarkTagInfoList[27].XYGubun}','${MarkTagInfoList[28].XYGubun}','${MarkTagInfoList[29].XYGubun}',
+	'${MarkTagInfoList[30].XYGubun}','${MarkTagInfoList[31].XYGubun}','${MarkTagInfoList[32].XYGubun}','${MarkTagInfoList[33].XYGubun}','${MarkTagInfoList[34].XYGubun}',
+	'${MarkTagInfoList[35].XYGubun}','${MarkTagInfoList[36].XYGubun}','${MarkTagInfoList[37].XYGubun}','${MarkTagInfoList[38].XYGubun}','${MarkTagInfoList[39].XYGubun}',
+	'${MarkTagInfoList[40].XYGubun}','${MarkTagInfoList[41].XYGubun}','${MarkTagInfoList[42].XYGubun}','${MarkTagInfoList[43].XYGubun}','${MarkTagInfoList[44].XYGubun}',
+	'${MarkTagInfoList[45].XYGubun}','${MarkTagInfoList[46].XYGubun}','${MarkTagInfoList[47].XYGubun}','${MarkTagInfoList[48].XYGubun}','${MarkTagInfoList[49].XYGubun}',
+	'${MarkTagInfoList[50].XYGubun}','${MarkTagInfoList[51].XYGubun}'
+];
+
+var tToolTipText = [
+	"${MarkTagInfoList[0].toolTip}"	,"${MarkTagInfoList[1].toolTip}"	,"${MarkTagInfoList[2].toolTip}"	,"${MarkTagInfoList[3].toolTip}"
+	,"${MarkTagInfoList[4].toolTip}"	,"${MarkTagInfoList[5].toolTip}"	,"${MarkTagInfoList[6].toolTip}"	,"${MarkTagInfoList[7].toolTip}"
+	,"${MarkTagInfoList[8].toolTip}"	,"${MarkTagInfoList[9].toolTip}"	,"${MarkTagInfoList[10].toolTip}"	,"${MarkTagInfoList[11].toolTip}"
+	,"${MarkTagInfoList[12].toolTip}"	,"${MarkTagInfoList[13].toolTip}"	,"${MarkTagInfoList[14].toolTip}"	,"${MarkTagInfoList[15].toolTip}"
+	,"${MarkTagInfoList[16].toolTip}"	,"${MarkTagInfoList[17].toolTip}"	,"${MarkTagInfoList[18].toolTip}"	,"${MarkTagInfoList[19].toolTip}"
+	,"${MarkTagInfoList[20].toolTip}"	,"${MarkTagInfoList[21].toolTip}"	,"${MarkTagInfoList[22].toolTip}"	,"${MarkTagInfoList[23].toolTip}"
+	,"${MarkTagInfoList[24].toolTip}"	,"${MarkTagInfoList[25].toolTip}"	,"${MarkTagInfoList[26].toolTip}"	,"${MarkTagInfoList[27].toolTip}"
+	,"${MarkTagInfoList[28].toolTip}"	,"${MarkTagInfoList[29].toolTip}"	,"${MarkTagInfoList[30].toolTip}"	,"${MarkTagInfoList[31].toolTip}"
+	,"${MarkTagInfoList[32].toolTip}"	,"${MarkTagInfoList[33].toolTip}"	,"${MarkTagInfoList[34].toolTip}"	,"${MarkTagInfoList[35].toolTip}"	
+	,"${MarkTagInfoList[36].toolTip}"	,"${MarkTagInfoList[37].toolTip}"	,"${MarkTagInfoList[38].toolTip}"	,"${MarkTagInfoList[39].toolTip}"
+	,"${MarkTagInfoList[40].toolTip}"	,"${MarkTagInfoList[41].toolTip}"	,"${MarkTagInfoList[42].toolTip}"	,"${MarkTagInfoList[43].toolTip}"
+	,"${MarkTagInfoList[44].toolTip}"	,"${MarkTagInfoList[45].toolTip}"	,"${MarkTagInfoList[46].toolTip}"	,"${MarkTagInfoList[47].toolTip}"
+	,"${MarkTagInfoList[48].toolTip}"	,"${MarkTagInfoList[49].toolTip}"	,"${MarkTagInfoList[50].toolTip}"	,"${MarkTagInfoList[51].toolTip}"
+];
+
+
 $(function () {
 
 	if( $("input:radio[id='4']").is(":checked") ) {
@@ -48,6 +93,13 @@ $(function () {
 		setTimer(hogiHeader,'X',0);
 	});
 
+	$(document.body).delegate('#generaldata_div label', 'dblclick', function() {
+		var cId = this.id.indexOf('fValue') > -1 ? this.id.substring(4) : this.id;
+		if( cId != null && cId != '' && cId != 'undefined' ) {
+			showTag(cId,tMarkTagSeq[cId]);
+		}
+	});	
+	
 	setTimer(hogiHeader,xyHeader,5000);
 
 });	
@@ -71,6 +123,12 @@ function setTimer(hogiHeader,xyHeader,interval) {
 		comSubmit.submit();
 	}
 }
+
+
+function showTag(tagNo,iSeq) {	
+	alert("showTag");	
+}
+
 </script>
 
 </head>
@@ -90,7 +148,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
 			</div>
 			<!-- //page_title -->
 			<form id="generaldataFrm" style="display:none"></form>
-			<div class="img_wrap general_data">
+			<div class="img_wrap general_data" id="generaldata_div">
                 <!-- range_slider -->
                 <div class="range_slider">
                     <input type="range" id="opacity-change" value="100" min="20" max="100">
@@ -105,7 +163,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>PRESS</span>
-                                <label><c:if test="${lblDataList[0].fValue eq null}">0</c:if>
+                                <label id="0"><c:if test="${lblDataList[0].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[0].fValue ne null}">${lblDataList[0].fValue}</c:if></label>
                                 <span>bar</span>
                             </p>
@@ -113,7 +171,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>ACT TEMP</span>
-                                <label><c:if test="${lblDataList[1].fValue eq null}">0</c:if>
+                                <label id="1"><c:if test="${lblDataList[1].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[1].fValue ne null}">${lblDataList[1].fValue}</c:if></label>
                                 <span>deg C</span>
                             </p>
@@ -126,7 +184,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>PRESS</span>
-                                <label><c:if test="${lblDataList[2].fValue eq null}">0</c:if>
+                                <label id="2"><c:if test="${lblDataList[2].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[2].fValue ne null}">${lblDataList[2].fValue}</c:if></label>
                                 <span>bar</span>
                             </p>
@@ -134,7 +192,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>ACT TEMP</span>
-                                <label><c:if test="${lblDataList[3].fValue eq null}">0</c:if>
+                                <label id="3"><c:if test="${lblDataList[3].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[3].fValue ne null}">${lblDataList[3].fValue}</c:if></label>
                                 <span>deg C</span>
                             </p>
@@ -147,7 +205,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>PRESS</span>
-                                <label><c:if test="${lblDataList[4].fValue eq null}">0</c:if>
+                                <label id="4"><c:if test="${lblDataList[4].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[4].fValue ne null}">${lblDataList[4].fValue}</c:if></label>
                                 <span>bar</span>
                             </p>
@@ -155,7 +213,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>ACT TEMP</span>
-                                <label><c:if test="${lblDataList[5].fValue eq null}">0</c:if>
+                                <label id="5"><c:if test="${lblDataList[5].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[5].fValue ne null}">${lblDataList[5].fValue}</c:if></label>
                                 <span>deg C</span>
                             </p>
@@ -167,7 +225,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>CV DEMAND</span>
-                                <label><c:if test="${lblDataList[14].fValue eq null}">0</c:if>
+                                <label id="14"><c:if test="${lblDataList[14].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[14].fValue ne null}">${lblDataList[14].fValue}</c:if></label>
                                 <span class="per">%</span>
                             </p>
@@ -179,7 +237,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>IV DEMAND</span>
-                                <label><c:if test="${lblDataList[15].fValue eq null}">0</c:if>
+                                <label id="15"><c:if test="${lblDataList[15].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[15].fValue ne null}">${lblDataList[15].fValue}</c:if></label>
                                 <span class="per">%</span>
                             </p>
@@ -191,37 +249,37 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>1</span>
-                                <label><c:if test="${lblDataList[6].fValue eq null}">0</c:if>
+                                <label id="6"><c:if test="${lblDataList[6].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[6].fValue ne null}">${lblDataList[6].fValue}</c:if></label>
                                 <span class="per">%</span>
-                                <label><c:if test="${lblDataList[10].fValue eq null}">0</c:if>
+                                <label id="10"><c:if test="${lblDataList[10].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[10].fValue ne null}">${lblDataList[10].fValue}</c:if></label>
                                  <span class="per">%</span>
                             </p>
                             <p>
                                 <span>2</span>
-                                <label><c:if test="${lblDataList[7].fValue eq null}">0</c:if>
+                                <label id="7"><c:if test="${lblDataList[7].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[7].fValue ne null}">${lblDataList[7].fValue}</c:if></label>
                                  <span class="per">%</span>
-                                <label><c:if test="${lblDataList[11].fValue eq null}">0</c:if>
+                                <label id="11"><c:if test="${lblDataList[11].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[11].fValue ne null}">${lblDataList[11].fValue}</c:if></label>
                                  <span class="per">%</span>
                             </p>
                             <p>
                                 <span>3</span>
-                                <label><c:if test="${lblDataList[8].fValue eq null}">0</c:if>
+                                <label id="8"><c:if test="${lblDataList[8].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[8].fValue ne null}">${lblDataList[8].fValue}</c:if></label>
                                  <span class="per">%</span>
-                                <label><c:if test="${lblDataList[12].fValue eq null}">0</c:if>
+                                <label id="12"><c:if test="${lblDataList[12].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[12].fValue ne null}">${lblDataList[12].fValue}</c:if></label>
                                  <span class="per">%</span>
                             </p>
                             <p>
                                 <span>4</span>
-                                <label><c:if test="${lblDataList[9].fValue eq null}">0</c:if>
+                                <label id="9"><c:if test="${lblDataList[9].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[9].fValue ne null}">${lblDataList[9].fValue}</c:if></label>
                                  <span class="per">%</span>
-                                <label><c:if test="${lblDataList[13].fValue eq null}">0</c:if>
+                                <label id="13"><c:if test="${lblDataList[13].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[13].fValue ne null}">${lblDataList[13].fValue}</c:if></label>
                                  <span class="per">%</span>
                             </p>
@@ -233,7 +291,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>BREAKER</span>
-                                <label><c:if test="${lblDataList[16].fValue eq null}">0</c:if>
+                                <label id="16"><c:if test="${lblDataList[16].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[16].fValue ne null}">${lblDataList[16].fValue}</c:if></label>
                                 <span></span>
                             </p>
@@ -241,7 +299,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>SPEED</span>
-                                <label><c:if test="${lblDataList[17].fValue eq null}">0</c:if>
+                                <label id="17"><c:if test="${lblDataList[17].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[17].fValue ne null}">${lblDataList[17].fValue}</c:if></label>
                                 <span>rpm</span>
                             </p>
@@ -249,7 +307,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>MODE</span>
-                                <label><c:if test="${lblDataList[18].fValue eq null}">0</c:if>
+                                <label id="18"><c:if test="${lblDataList[18].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[18].fValue ne null}">${lblDataList[18].fValue}</c:if></label>
                                 <span></span>
                             </p>
@@ -261,35 +319,35 @@ function setTimer(hogiHeader,xyHeader,interval) {
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <label><c:if test="${lblDataList[19].fValue eq null}">0</c:if>
+                                <label id="19"><c:if test="${lblDataList[19].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[19].fValue ne null}">${lblDataList[19].fValue}</c:if></label>
                                 <span>MW</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <label><c:if test="${lblDataList[20].fValue eq null}">0</c:if>
+                                <label id="20"><c:if test="${lblDataList[20].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[20].fValue ne null}">${lblDataList[20].fValue}</c:if></label>
                                 <span>MVAR</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <label><c:if test="${lblDataList[21].fValue eq null}">0</c:if>
+                                <label id="21"><c:if test="${lblDataList[21].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[21].fValue ne null}">${lblDataList[21].fValue}</c:if></label>
                                 <span>%</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <label><c:if test="${lblDataList[22].fValue eq null}">0</c:if>
+                                <label id="22"><c:if test="${lblDataList[22].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[22].fValue ne null}">${lblDataList[22].fValue}</c:if></label>
                                 <span>Hz</span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
-                                <label><c:if test="${lblDataList[23].fValue eq null}">0</c:if>
+                                <label id="23"><c:if test="${lblDataList[23].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[23].fValue ne null}">${lblDataList[23].fValue}</c:if></label>
                                 <span>PF</span>
                             </p>
@@ -302,7 +360,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>MAIN STEAM</span>
-                                <label><c:if test="${lblDataList[24].fValue eq null}">0</c:if>
+                                <label id="24"><c:if test="${lblDataList[24].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[24].fValue ne null}">${lblDataList[24].fValue}</c:if></label>
                                 <span>deg C</span>
                             </p>
@@ -310,7 +368,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>REHEAT STEAM</span>
-                                <label><c:if test="${lblDataList[25].fValue eq null}">0</c:if>
+                                <label id="25"><c:if test="${lblDataList[25].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[25].fValue ne null}">${lblDataList[25].fValue}</c:if></label>
                                 <span>deg C</span>
                             </p>
@@ -318,7 +376,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>OIL FROM BRG</span>
-                                <label><c:if test="${lblDataList[26].fValue eq null}">0</c:if>
+                                <label id="26"><c:if test="${lblDataList[26].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[26].fValue ne null}">${lblDataList[26].fValue}</c:if></label>
                                 <span>deg C</span>
                             </p>
@@ -326,7 +384,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>PEAK SPEED</span>
-                                <label><c:if test="${lblDataList[27].fValue eq null}">0</c:if>
+                                <label id="27"><c:if test="${lblDataList[27].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[27].fValue ne null}">${lblDataList[27].fValue}</c:if></label>
                                 <span>rpm</span>
                             </p>
@@ -334,7 +392,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>SPEED</span>
-                                <label><c:if test="${lblDataList[28].fValue eq null}">0</c:if>
+                                <label id="28"><c:if test="${lblDataList[28].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[28].fValue ne null}">${lblDataList[28].fValue}</c:if></label>
                                 <span>rpm</span>
                             </p>
@@ -342,7 +400,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>CV REF</span>
-                                <label><c:if test="${lblDataList[29].fValue eq null}">0</c:if>
+                                <label id="29"><c:if test="${lblDataList[29].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[29].fValue ne null}">${lblDataList[29].fValue}</c:if></label>
                                 <span>%</span>
                             </p>
@@ -350,7 +408,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>OIL TO BRG</span>
-                                <label><c:if test="${lblDataList[30].fValue eq null}">0</c:if>
+                                <label id="30"><c:if test="${lblDataList[30].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[30].fValue ne null}">${lblDataList[30].fValue}</c:if></label>
                                 <span>deg C</span>
                             </p>
@@ -358,7 +416,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>DC OIL PUMP</span>
-                                <label><c:if test="${lblDataList[31].fValue eq null}">0</c:if>
+                                <label id="31"><c:if test="${lblDataList[31].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[31].fValue ne null}">${lblDataList[31].fValue}</c:if></label>
                                 <span></span>
                             </p>
@@ -366,7 +424,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>TURNING GEAR</span>
-                                <label><c:if test="${lblDataList[32].fValue eq null}">0</c:if>
+                                <label id="32"><c:if test="${lblDataList[32].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[32].fValue ne null}">${lblDataList[32].fValue}</c:if></label>
                                 <span></span>
                             </p>
@@ -374,7 +432,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>ROTOR</span>
-                                <label><c:if test="${lblDataList[33].fValue eq null}">0</c:if>
+                                <label id="33"><c:if test="${lblDataList[33].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[33].fValue ne null}">${lblDataList[33].fValue}</c:if></label>
                                 <span></span>
                             </p>
@@ -382,7 +440,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>LUBE OIL PRS</span>
-                                <label><c:if test="${lblDataList[34].fValue eq null}">0</c:if>
+                                <label id="34"><c:if test="${lblDataList[34].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[34].fValue ne null}">${lblDataList[34].fValue}</c:if></label>
                                 <span></span>
                             </p>
@@ -395,7 +453,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>LOAD</span>
-                                <label><c:if test="${lblDataList[35].fValue eq null}">0</c:if>
+                                <label id="35"><c:if test="${lblDataList[35].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[35].fValue ne null}">${lblDataList[35].fValue}</c:if></label>
                                 <span>MW</span>
                             </p>
@@ -403,7 +461,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>LOAD</span>
-                                <label><c:if test="${lblDataList[36].fValue eq null}">0</c:if>
+                                <label id="36"><c:if test="${lblDataList[36].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[36].fValue ne null}">${lblDataList[36].fValue}</c:if></label>
                                 <span>MVAR</span>
                             </p>
@@ -411,7 +469,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>PWR FACTOR</span>
-                                <label><c:if test="${lblDataList[37].fValue eq null}">0</c:if>
+                                <label id="37"><c:if test="${lblDataList[37].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[37].fValue ne null}">${lblDataList[37].fValue}</c:if></label>
                                 <span>PF</span>
                             </p>
@@ -419,7 +477,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>FRQUENCY</span>
-                                <label><c:if test="${lblDataList[38].fValue eq null}">0</c:if>
+                                <label id="38"><c:if test="${lblDataList[38].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[38].fValue ne null}">${lblDataList[38].fValue}</c:if></label>
                                 <span>Hz</span>
                             </p>
@@ -427,7 +485,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>GEN FIELD</span>
-                                <label><c:if test="${lblDataList[40].fValue eq null}">0</c:if>
+                                <label id="40"><c:if test="${lblDataList[40].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[40].fValue ne null}">${lblDataList[40].fValue}</c:if></label>
                                 <span>AMPS</span>
                             </p>
@@ -435,7 +493,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>GEN FIELD</span>
-                                <label><c:if test="${lblDataList[41].fValue eq null}">0</c:if>
+                                <label id="41"><c:if test="${lblDataList[41].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[41].fValue ne null}">${lblDataList[41].fValue}</c:if></label>
                                 <span>V DC</span>
                             </p>
@@ -443,7 +501,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>HYD PRESS</span>
-                                <label><c:if test="${lblDataList[42].fValue eq null}">0</c:if>
+                                <label id="42"><c:if test="${lblDataList[42].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[42].fValue ne null}">${lblDataList[42].fValue}</c:if></label>
                                 <span>bar</span>
                             </p>
@@ -451,7 +509,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>HYD PURITY</span>
-                                <label><c:if test="${lblDataList[43].fValue eq null}">0</c:if>
+                                <label id="43"><c:if test="${lblDataList[43].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[43].fValue ne null}">${lblDataList[43].fValue}</c:if></label>
                                 <span>%</span>
                             </p>
@@ -459,7 +517,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>REG CON MODE</span>
-                                <label><c:if test="${lblDataList[44].fValue eq null}">0</c:if>
+                                <label id="44"><c:if test="${lblDataList[44].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[44].fValue ne null}">${lblDataList[44].fValue}</c:if></label>
                                 <span></span>
                             </p>
@@ -467,7 +525,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>GEN LINE BKR</span>
-                                <label><c:if test="${lblDataList[45].fValue eq null}">0</c:if>
+                                <label id="45"><c:if test="${lblDataList[45].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[45].fValue ne null}">${lblDataList[45].fValue}</c:if></label>
                                 <span></span>
                             </p>
@@ -480,7 +538,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>PH (A-B)</span>
-                                <label><c:if test="${lblDataList[46].fValue eq null}">0</c:if>
+                                <label id="46"><c:if test="${lblDataList[46].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[46].fValue ne null}">${lblDataList[46].fValue}</c:if></label>
                                 <span>KV</span>
                             </p>
@@ -488,7 +546,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>PH (B-C)</span>
-                                <label><c:if test="${lblDataList[47].fValue eq null}">0</c:if>
+                                <label id="47"><c:if test="${lblDataList[47].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[47].fValue ne null}">${lblDataList[47].fValue}</c:if></label>
                                 <span>KV</span>
                             </p>
@@ -496,7 +554,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>PH (C-A)</span>
-                                <label><c:if test="${lblDataList[48].fValue eq null}">0</c:if>
+                                <label id="48"><c:if test="${lblDataList[48].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[48].fValue ne null}">${lblDataList[48].fValue}</c:if></label>
                                 <span>KV</span>
                             </p>
@@ -509,7 +567,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>PH (A)</span>
-                                <label><c:if test="${lblDataList[49].fValue eq null}">0</c:if>
+                                <label id="49"><c:if test="${lblDataList[49].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[49].fValue ne null}">${lblDataList[49].fValue}</c:if></label>
                                 <span>AMPS</span>
                             </p>
@@ -517,7 +575,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>PH (B)</span>
-                                <label><c:if test="${lblDataList[50].fValue eq null}">0</c:if>
+                                <label id="50"><c:if test="${lblDataList[50].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[50].fValue ne null}">${lblDataList[50].fValue}</c:if></label>
                                 <span>AMPS</span>
                             </p>
@@ -525,7 +583,7 @@ function setTimer(hogiHeader,xyHeader,interval) {
                         <div class="summary">
                             <p>
                                 <span>PH (C)</span>
-                                <label><c:if test="${lblDataList[51].fValue eq null}">0</c:if>
+                                <label id="51"><c:if test="${lblDataList[51].fValue eq null}">0</c:if>
                                 <c:if test="${lblDataList[51].fValue ne null}">${lblDataList[51].fValue}</c:if></label>
                                 <span>AMPS</span>
                             </p>

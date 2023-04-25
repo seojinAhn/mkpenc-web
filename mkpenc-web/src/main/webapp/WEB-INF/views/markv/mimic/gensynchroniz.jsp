@@ -17,6 +17,114 @@
 <script type="text/javascript" src="<c:url value="/resources/js/common.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/mimic.js" />" charset="utf-8"></script>
+
+<script type="text/javascript">
+var timerOn = true; //true로 변경
+var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
+var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
+
+var tMarkTagSeq = [	
+	${MarkTagInfoList[0].iSeq},${MarkTagInfoList[1].iSeq},${MarkTagInfoList[2].iSeq},${MarkTagInfoList[3].iSeq},${MarkTagInfoList[4].iSeq},
+	${MarkTagInfoList[5].iSeq},${MarkTagInfoList[6].iSeq},${MarkTagInfoList[7].iSeq},${MarkTagInfoList[8].iSeq},${MarkTagInfoList[9].iSeq},
+	${MarkTagInfoList[10].iSeq},${MarkTagInfoList[11].iSeq},${MarkTagInfoList[12].iSeq},${MarkTagInfoList[13].iSeq},${MarkTagInfoList[14].iSeq},
+	${MarkTagInfoList[15].iSeq},${MarkTagInfoList[16].iSeq},${MarkTagInfoList[17].iSeq},${MarkTagInfoList[18].iSeq},${MarkTagInfoList[19].iSeq},
+	${MarkTagInfoList[20].iSeq},${MarkTagInfoList[21].iSeq},${MarkTagInfoList[22].iSeq},${MarkTagInfoList[23].iSeq},${MarkTagInfoList[24].iSeq},
+	${MarkTagInfoList[25].iSeq},${MarkTagInfoList[26].iSeq},${MarkTagInfoList[27].iSeq},${MarkTagInfoList[28].iSeq},${MarkTagInfoList[29].iSeq},
+	${MarkTagInfoList[30].iSeq},${MarkTagInfoList[31].iSeq},${MarkTagInfoList[32].iSeq},${MarkTagInfoList[33].iSeq},${MarkTagInfoList[34].iSeq},
+	${MarkTagInfoList[35].iSeq}	
+];
+
+var tMarkTagXy = [
+	'${MarkTagInfoList[0].XYGubun}','${MarkTagInfoList[1].XYGubun}','${MarkTagInfoList[2].XYGubun}','${MarkTagInfoList[3].XYGubun}','${MarkTagInfoList[4].XYGubun}',
+	'${MarkTagInfoList[5].XYGubun}','${MarkTagInfoList[6].XYGubun}','${MarkTagInfoList[7].XYGubun}','${MarkTagInfoList[8].XYGubun}','${MarkTagInfoList[9].XYGubun}',
+	'${MarkTagInfoList[10].XYGubun}','${MarkTagInfoList[11].XYGubun}','${MarkTagInfoList[12].XYGubun}','${MarkTagInfoList[13].XYGubun}','${MarkTagInfoList[14].XYGubun}',
+	'${MarkTagInfoList[15].XYGubun}','${MarkTagInfoList[16].XYGubun}','${MarkTagInfoList[17].XYGubun}','${MarkTagInfoList[18].XYGubun}','${MarkTagInfoList[19].XYGubun}',
+	'${MarkTagInfoList[20].XYGubun}','${MarkTagInfoList[21].XYGubun}','${MarkTagInfoList[22].XYGubun}','${MarkTagInfoList[23].XYGubun}','${MarkTagInfoList[24].XYGubun}',
+	'${MarkTagInfoList[25].XYGubun}','${MarkTagInfoList[26].XYGubun}','${MarkTagInfoList[27].XYGubun}','${MarkTagInfoList[28].XYGubun}','${MarkTagInfoList[29].XYGubun}',
+	'${MarkTagInfoList[30].XYGubun}','${MarkTagInfoList[31].XYGubun}','${MarkTagInfoList[32].XYGubun}','${MarkTagInfoList[33].XYGubun}','${MarkTagInfoList[34].XYGubun}',
+	'${MarkTagInfoList[35].XYGubun}'
+];
+
+var tToolTipText = [
+	"${MarkTagInfoList[0].toolTip}"	,"${MarkTagInfoList[1].toolTip}"	,"${MarkTagInfoList[2].toolTip}"	,"${MarkTagInfoList[3].toolTip}"
+	,"${MarkTagInfoList[4].toolTip}"	,"${MarkTagInfoList[5].toolTip}"	,"${MarkTagInfoList[6].toolTip}"	,"${MarkTagInfoList[7].toolTip}"
+	,"${MarkTagInfoList[8].toolTip}"	,"${MarkTagInfoList[9].toolTip}"	,"${MarkTagInfoList[10].toolTip}"	,"${MarkTagInfoList[11].toolTip}"
+	,"${MarkTagInfoList[12].toolTip}"	,"${MarkTagInfoList[13].toolTip}"	,"${MarkTagInfoList[14].toolTip}"	,"${MarkTagInfoList[15].toolTip}"
+	,"${MarkTagInfoList[16].toolTip}"	,"${MarkTagInfoList[17].toolTip}"	,"${MarkTagInfoList[18].toolTip}"	,"${MarkTagInfoList[19].toolTip}"
+	,"${MarkTagInfoList[20].toolTip}"	,"${MarkTagInfoList[21].toolTip}"	,"${MarkTagInfoList[22].toolTip}"	,"${MarkTagInfoList[23].toolTip}"
+	,"${MarkTagInfoList[24].toolTip}"	,"${MarkTagInfoList[25].toolTip}"	,"${MarkTagInfoList[26].toolTip}"	,"${MarkTagInfoList[27].toolTip}"
+	,"${MarkTagInfoList[28].toolTip}"	,"${MarkTagInfoList[29].toolTip}"	,"${MarkTagInfoList[30].toolTip}"	,"${MarkTagInfoList[31].toolTip}"
+	,"${MarkTagInfoList[32].toolTip}"	,"${MarkTagInfoList[33].toolTip}"	,"${MarkTagInfoList[34].toolTip}"	,"${MarkTagInfoList[35].toolTip}"	
+];
+
+$(function () {
+	if( $("input:radio[id='4']").is(":checked") ) {	
+		hogiHeader = "4";
+	} else {
+		hogiHeader = "3";
+	}
+	if( $("input:radio[id='Y']").is(":checked") ) {
+		xyHeader = "Y";
+	} else {
+		xyHeader = "X";
+	}
+	
+	var lblDateVal = '${SearchTime}';
+	$("#lblDate").text(lblDateVal);
+	
+	$(document.body).delegate('#3', 'click', function() {
+		setTimer('3',xyHeader,0);
+	});
+	
+	$(document.body).delegate('#4', 'click', function() {
+		setTimer('4',xyHeader,0);
+	});
+	
+	$(document.body).delegate('#X', 'click', function() {		
+		setTimer(hogiHeader,'X',0);
+	});
+	
+	$(document.body).delegate('#Y', 'click', function() {		
+		setTimer(hogiHeader,'Y',0);
+	});
+	
+	$(document.body).delegate('#gensynchroniz_div label', 'dblclick', function() {
+		var cId = this.id.indexOf('fValue') > -1 ? this.id.substring(4) : this.id;
+		if( cId != null && cId != '' && cId != 'undefined' ) {
+			showTag(cId,tMarkTagSeq[cId]);
+		}
+	});
+	
+	setTimer(hogiHeader,xyHeader,5000);
+});	
+
+function setTimer(hogiHeader,xyHeader,interval) {
+	if( interval > 0 ) {
+		setTimeout(function() {
+			if( timerOn ) {
+				var	comSubmit	=	new ComSubmit("gensynchronizlFrm");
+				comSubmit.setUrl("/markv/mimic/gensynchroniz");
+				comSubmit.addParam("hogiHeader",hogiHeader);
+				comSubmit.addParam("xyHeader",xyHeader);
+				comSubmit.submit();
+			}
+		},interval);
+	} else {
+		var	comSubmit	=	new ComSubmit("gensynchronizlFrm");
+		comSubmit.setUrl("/markv/mimic/gensynchroniz");
+		comSubmit.addParam("hogiHeader",hogiHeader);
+		comSubmit.addParam("xyHeader",xyHeader);
+		comSubmit.submit();
+	}
+}
+
+function showTag(tagNo,iSeq) {	
+	alert("showTag");	
+}
+
+</script>
+
+
 </head>
 <body>
 <div class="wrap">
@@ -50,7 +158,8 @@
                 </ul>
             </div>
             <!-- fx_layout -->
-            <div class="fx_layout w_full">
+            <form id="gensynchronizlFrm" style="display:none"></form>
+            <div class="fx_layout w_full" id="speedcontrol_div">
                 <div class="fx_block">
                     <div class="chart_line_table">
                         <h4>METERING</h4>
@@ -58,7 +167,7 @@
                             <h6>PHASE ANGEL</h6>
                             <div class="summary">
                                 <p>
-                                    <label>
+                                    <label id="0">
                                     	<c:if test="${lblDataList[0].fValue eq null}">0</c:if>
                                 		<c:if test="${lblDataList[0].fValue ne null}">${lblDataList[0].fValue}</c:if>
                                     </label>
@@ -70,7 +179,7 @@
                             <h6>DIFFERENCE VOLTS</h6>
                             <div class="summary">
                                 <p>
-                                    <label>
+                                    <label id="1">
                                     	<c:if test="${lblDataList[1].fValue eq null}">0</c:if>
                                 		<c:if test="${lblDataList[1].fValue ne null}">${lblDataList[1].fValue}</c:if>
                                     </label>
@@ -82,7 +191,7 @@
                             <h6>SLIP FREQUENCY</h6>
                             <div class="summary">
                                 <p>
-                                    <label>
+                                    <label id="2">
                                     	<c:if test="${lblDataList[2].fValue eq null}">0</c:if>
                                 		<c:if test="${lblDataList[2].fValue ne null}">${lblDataList[2].fValue}</c:if>
                                     </label>
@@ -99,7 +208,7 @@
                             <h6 class="double">PRIMARY VOLTS(KV)</h6>
                             <div class="summary">
                                 <p>
-                                    <label>
+                                    <label id="3">
                                     	<c:if test="${lblDataList[3].fValue eq null}">0</c:if>
                                 		<c:if test="${lblDataList[3].fValue ne null}">${lblDataList[3].fValue}</c:if>
                                     </label>
@@ -107,7 +216,7 @@
                             </div>
                             <div class="summary">
                                 <p>
-                                    <label>
+                                    <label id="6">
                                     	<c:if test="${lblDataList[6].fValue eq null}">0</c:if>
                                 		<c:if test="${lblDataList[6].fValue ne null}">${lblDataList[6].fValue}</c:if>
                                     </label>
@@ -118,7 +227,7 @@
                             <h6 class="double">% RATED VOLTS</h6>
                             <div class="summary">
                                 <p>
-                                    <label>
+                                    <label id="4">
                                     	<c:if test="${lblDataList[4].fValue eq null}">0</c:if>
                                 		<c:if test="${lblDataList[4].fValue ne null}">${lblDataList[4].fValue}</c:if>
                                     </label>
@@ -126,7 +235,7 @@
                             </div>
                             <div class="summary">
                                 <p>
-                                    <label>
+                                    <label id="7">
                                     	<c:if test="${lblDataList[7].fValue eq null}">0</c:if>
                                 		<c:if test="${lblDataList[7].fValue ne null}">${lblDataList[7].fValue}</c:if>
                                     </label>
@@ -137,7 +246,7 @@
                             <h6 class="double">FREQUENCY(Hz)</h6>
                             <div class="summary">
                                 <p>
-                                    <label>
+                                    <label id="5">
                                     	<c:if test="${lblDataList[5].fValue eq null}">0</c:if>
                                 		<c:if test="${lblDataList[5].fValue ne null}">${lblDataList[5].fValue}</c:if>
                                     </label>
@@ -145,7 +254,7 @@
                             </div>
                             <div class="summary">
                                 <p>
-                                    <label>
+                                    <label id="8">
                                     	<c:if test="${lblDataList[8].fValue eq null}">0</c:if>
                                 		<c:if test="${lblDataList[8].fValue ne null}">${lblDataList[8].fValue}</c:if>
                                     </label>
@@ -164,7 +273,7 @@
                                     <h6>WAT TS</h6>
                                     <div class="summary">
                                         <p>
-                                            <label>
+                                            <label id="9">
                                             	<c:if test="${lblDataList[9].fValue eq null}">0</c:if>
                                 				<c:if test="${lblDataList[9].fValue ne null}">${lblDataList[9].fValue}</c:if>
                                             </label>
@@ -176,7 +285,7 @@
                                     <h6>WAT TS</h6>
                                     <div class="summary">
                                         <p>
-                                            <label>
+                                            <label id="10">
                                             	<c:if test="${lblDataList[10].fValue eq null}">0</c:if>
                                 				<c:if test="${lblDataList[10].fValue ne null}">${lblDataList[10].fValue}</c:if>
                                             </label>
@@ -188,7 +297,7 @@
                                     <h6>WAT TS</h6>
                                     <div class="summary">
                                         <p>
-                                            <label>
+                                            <label id="11">
                                             	<c:if test="${lblDataList[11].fValue eq null}">0</c:if>
                                 				<c:if test="${lblDataList[11].fValue ne null}">${lblDataList[11].fValue}</c:if>
                                             </label>
@@ -269,7 +378,7 @@
                                 </div>
                                 <div class="summary">
                                     <p>
-                                        <label>
+                                        <label id="12">
                                         	<c:if test="${lblDataList[12].fValue eq null}">0</c:if>
                                 			<c:if test="${lblDataList[12].fValue ne null}">${lblDataList[12].fValue}</c:if>
                                         </label>
