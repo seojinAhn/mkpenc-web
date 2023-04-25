@@ -1029,7 +1029,7 @@
                                 </div>
                             </th>
                             <td class="tc"></td>
-                            <td class="tc" colspan="4"><label id="56">${lblDataList[56].fValue}</label></td>
+                            <td class="tc" colspan="4"><label id="56">${lblDataList[56].fValue}</label></td> 
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>

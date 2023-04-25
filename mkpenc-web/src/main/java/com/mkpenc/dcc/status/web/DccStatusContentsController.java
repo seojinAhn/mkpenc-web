@@ -2292,7 +2292,7 @@ public class DccStatusContentsController {
     				}// end if iError
     				
     				lblDataList.get(fTmpIdx).put("visible",  true); 
-    				lblDataList.get(fTmpIdx).put("fValue",  lblDataList.get(fTmpIdx));
+    				lblDataList.get(fTmpIdx).put("fValue",  lblDataList.get(fTmpIdx)); 
     				 
     				
     			} // end if =  i 2, 7, 10, 13, 20

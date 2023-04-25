@@ -1059,7 +1059,7 @@
                             <th class="tc">PIC14</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="42" class="double flex_end">${lblDataList[42].fValue}</label>
+                                    <label id="42" class="double flex_end">${lblDataList[42].fValue}</label> 
                                     <label class="full"></label>
                                 </div>
                             </td>
