@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.apache.commons.lang3.StringUtils;
 
 import com.mkpenc.dcc.status.model.DccGrpTagInfo;
 import com.mkpenc.dcc.status.model.DccLogTrendInfo;
@@ -1862,13 +1863,212 @@ public class DccStatusContentsController {
     		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()==null?  "": dccSearchStatus.getGrpNo());
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
-
+    		
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		List<Map> lblDataList = (ArrayList)dccVal;
+    		
+    		for(int i=0;i<lblDataList.size();i++) {
+    			
+    			lblDataList.get(i).put("visible", true);
+    			
+    			if(i >= 12 && i<=23) {
+    				lblDataList.get(i).put("visible", false);
+    			}
+    			
+    			if(i >= 28 && i<=55) {
+    				lblDataList.get(i).put("visible", false);
+    			}
+    		}
+    	   
+    		String[] vData = basDccOsmsService.getDccValueReturn(dccGrpTagSearchMap);
+    		
+    		int iError =0;
+    		int fTmpVal = 0;
+    		String sTipMsg = "";
+    		
+    		List<Map> lblConvList = new ArrayList<Map>();
+    		List<Map> vINDValList= new ArrayList<Map>();
+    		boolean[] shpIND = new boolean[9];
+    		boolean[] shpIND2 = new boolean[9];
+    		
+    		for(int i=0;i<tagDccInfoList.size();i++) {
+    			if(i< 6) {
+    				    iError = iError + ((Integer.parseInt(vData[i+1]) == -32768)? 1:0);
+    				    
+    				    fTmpVal = fTmpVal + ((Integer.parseInt(vData[i+1]) == -32768)? 0: (Integer.parseInt(lblDataList.get(i).get("fValue").toString())));
+    				    
+    				    sTipMsg = sTipMsg + tagDccInfoList.get(i).getToolTip() + ((i == 2 || i == 5)? "":",");
+    				    
+    				    if(i == 2 || i == 5) {
+    				    	
+    				    	Map lblConv = new HashMap();
+	    				    if(iError > 0) {
+	    				    		lblConv.put("fValue", "***IRR");
+	    				    }else {
+	    				    		lblConv.put("fValue", (fTmpVal < 2)? "YES":"NO");
+	    				    }
+	    				    lblConv.put("TooTipTest", sTipMsg);
+	    				    
+	    				    lblConvList.add(lblConv);
+	    				    
+	    				    if(i ==5) {
+	    				    	if(lblConvList.get(0).get("fValue").toString().equals("YES") || lblConvList.get(1).get("fValue").toString().equals("YES")  ) {
+	    				    		shpIND[0] = true;	    				    		
+	    				    	}else {
+	    				    		shpIND[0] = false;
+	    				    	}
+	    				    }
+	    				    
+	    				    iError =0;
+	    		    		fTmpVal = 0;
+	    		    		sTipMsg = "";
+	    				    
+    				    }
+    			} // i < 6
+    			
+    			if(i>=6 && i<=9) {
+    				Map vINDVal = new HashMap();
+    				if(Integer.parseInt(vData[i+1]) != -32768) {
+    					vINDVal.put("fValue", lblDataList.get(i).get("fValue").toString());
+    					vINDVal.put("fData", (Integer.parseInt(lblDataList.get(i).get("fValue").toString()) > 0)? "ON":"OFF");
+    				}
+    				
+    				vINDValList.add(vINDVal);
+    				
+    				if(i == 9) {
+    					if((Integer.parseInt(vINDValList.get(0).get("fValue").toString()) + Integer.parseInt(vINDValList.get(2).get("fValue").toString()) <  2) ||
+    				         (Integer.parseInt(vINDValList.get(1).get("fValue").toString()) + Integer.parseInt(vINDValList.get(3).get("fValue").toString()) < 2)){
+    								shpIND[1] = true;	
+    					}else  if((Integer.parseInt(vINDValList.get(0).get("fValue").toString()) + Integer.parseInt(vINDValList.get(1).get("fValue").toString()) <  1) ||
+       				         (Integer.parseInt(vINDValList.get(1).get("fValue").toString()) + Integer.parseInt(vINDValList.get(3).get("fValue").toString()) < 1)){
+    								shpIND[2] = true;	
+    					}    							
+    				}    				
+    			}// i >=6 && i <=9
+    			
+    			int fTmpIdx = 0;
+    			if(i==14 || i == 17 || i==20 || i == 23) {
+    				
+    				 iError = ((Integer.parseInt(vData[i-1]) == -32768)? 1:0) +
+    						 		((Integer.parseInt(vData[i]) == -32768)? 1:0) + 
+    						 		((Integer.parseInt(vData[i+1]) == -32768)? 1:0);
+    				 
+    				 if(iError > 1) {
+    					 lblDataList.get(i).put("fValue",  "***IRR");
+    				 }else {
+    					if( iError == 1) {
+    						for(int j=(i-2); j<=i;j++) {
+    							if((Integer.parseInt(vData[i+1])) != -32768){
+    								if(fTmpIdx == -1) {
+    									fTmpIdx = j;
+    									fTmpVal = (Integer.parseInt(vData[i+1]));
+    								}else {
+    										if(fTmpVal > (Integer.parseInt(vData[i+1]))) {
+    											fTmpIdx = j;
+    	    									fTmpVal = (Integer.parseInt(vData[i+1]));
+    										}
+    								}    								
+    							}
+    						} // end for
+    					}else {
+    						fTmpIdx = i - getMidData(Integer.parseInt(vData[i-1]), Integer.parseInt(vData[i]), Integer.parseInt(vData[i+1]));
+    					}
+    					
+    					lblDataList.get(fTmpIdx).put("visible", true); 
+    					lblDataList.get(fTmpIdx).put("fValue",  lblDataList.get(fTmpIdx));
+    					
+    				 }    				
+    			} // i==14 || i == 17 || i==20 || i == 23
+    			
+    			if(i >= 28 && i <=55) {
+    				if((i % 2) == 1) {
+    					 iError = ((Integer.parseInt(vData[i]) == -32768)?1:0) + ((Integer.parseInt(vData[i+1]) == -32768)?1:0) ;
+    					 
+    					 if(iError > 1) {
+    						 iError = ((Integer.parseInt(vData[62]) == -32768)?1:0) + ((Integer.parseInt(vData[63]) == -32768)?1:0) + ((Integer.parseInt(vData[64]) == -32768)?1:0) ;
+    						 
+    						 if (iError > 0){
+    							 lblDataList.get(i).put("fValue",  "1.2");
+    						 }else {
+    							 fTmpIdx = 64 - getMidData(Integer.parseInt(vData[i-1]), Integer.parseInt(vData[i]), Integer.parseInt(vData[i+1]));
+    							 
+    							 lblDataList.get(i).put("fValue",  lblDataList.get(fTmpIdx).get("fValue"));
+    							 tagDccInfoList.get(i).setToolTip(tagDccInfoList.get(fTmpIdx).getToolTip());    							 
+    						 }    						 
+    					 }else if(iError == 1) {
+    						 if (Integer.parseInt(vData[i]) != -32768){
+    							 lblDataList.get(i-1).put("fValue",  lblDataList.get(i).get("fValue"));
+    							 lblDataList.get(i-1).put("visible",  true);
+    						 }else if (Integer.parseInt(vData[i+1]) != -32768){
+    							 lblDataList.get(i).put("fValue",  lblDataList.get(i+1).get("fValue"));
+    							 lblDataList.get(i).put("visible",  true);
+    						 }
+    					 }else {
+    						 if (Integer.parseInt(vData[i]) >  Integer.parseInt(vData[i+1]) ){
+    							 lblDataList.get(i-1).put("fValue",  lblDataList.get(i-1).get("fValue"));
+    							 lblDataList.get(i-1).put("visible",  true);
+    						 }else {
+    							 lblDataList.get(i).put("fValue",  lblDataList.get(i+1).get("fValue"));
+    							 lblDataList.get(i).put("visible",  true);
+    						 }
+    						 
+    					 }
+    				}
+    			}
+    			
+    			if(i == 56) {
+    				 if (Integer.parseInt(vData[i+1]) > -32768){
+    					 if(Integer.parseInt(lblDataList.get(i).get("fValue").toString()) > 0) {
+    						lblDataList.get(i).put("fValue", "YES");    
+    						shpIND[8] = true;	  
+    					 }else {    						 
+    						 lblDataList.get(i).put("fValue", "NO");
+    						 shpIND[8] = false;
+    					 }
+    				 }else {
+    					 lblDataList.get(i).put("fValue", -32768);
+    					 shpIND[8] = false;
+    				 }    				
+    			}
+    			
+    			if(i == 61) {   				
+	   				 if (StringUtils.isNumeric(vData[i+1])){
+	   					 if(Integer.parseInt(vData[13]) < Integer.parseInt(vData[i+1])) {
+	   						shpIND[5] = true;	  
+	   					 }else {    						 
+	   						shpIND[5] = false;
+	   					 }
+	   				 }
+	   			}    			
+    			
+    			if(i == 65) {
+    				double[] lblFP = {0.0, 0.01, 0.0, 0.005, 0.0, 0.005, 0.005, 0.0, 0.02};
+    				
+    				for( int j=0;j<lblFP.length;j++) {
+    					 if (StringUtils.isNumeric(vData[i+1])){
+    						 if( Integer.parseInt(vData[i+1]) > -32768) {
+    							 if( Math.pow(10, Integer.parseInt(lblDataList.get(i).get("fValue" ).toString())) <  lblFP[j]) {
+    								 shpIND2[j] = true;
+    							 }else {
+    								 shpIND2[j] = false;
+    							 }
+    						 }
+    					 }
+    				}
+    				
+    			}
+    			
+    		}// end for
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
-        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("lblDataList", lblDataList);
         	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("lblConvList", lblConvList);
+        	mav.addObject("vINDValList", vINDValList);
+        	mav.addObject("shpIND", shpIND);
+        	mav.addObject("shpIND2", shpIND2);
         	
         	mav.addObject("BaseSearch", dccSearchStatus);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
@@ -2018,11 +2218,181 @@ public class DccStatusContentsController {
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		List<Map> lblDataList = (ArrayList)dccVal;
+    		
+    		for(int i=0;i<lblDataList.size();i++) {
+    			
+    			lblDataList.get(i).put("visible", true);
+    			
+    			if(i >= 0 && i<=2) {
+    				lblDataList.get(i).put("visible", false);
+    			}
+    			
+    			if(i >= 5 && i<=20) {
+    				lblDataList.get(i).put("visible", false);
+    			}
+    		}
+     	   
+    		String[] vData = basDccOsmsService.getDccValueReturn(dccGrpTagSearchMap);
+    		
+    		int iError =0;
+    		int fTmpVal = 0;
+    		String sTipMsg = "";
+    		
+    		List<Map> lblConvList = new ArrayList<Map>();
+    		boolean[] shpIND = new boolean[10];
+    		int fTmpIdx = 0;
+    		
+    		for(int i=0;i<tagDccInfoList.size();i++) {
+    			
+    			if(i == 2 || i == 7 || i == 10 || i == 13 || i ==20) {
+    				iError =(( Integer.parseInt(vData[i - 1]) == -32768)? 1: 0) + 
+    						(( Integer.parseInt(vData[i ]) == -32768)? 1: 0) +
+    						(( Integer.parseInt(vData[i + 1]) == -32768)? 1: 0);
+    				
+    				if(iError > 1) {
+    					lblDataList.get(i).put("fValue",  "***IRR");
+    					lblDataList.get(i).put("visible",  true);
+    				}else if(iError == 1) {
+    					fTmpIdx = -1;
+    					
+    					if(i == 2 || i == 7 || i ==20) {
+    						for(int j=(i-2); j<=i;j++) {
+    							if((Integer.parseInt(vData[i+1])) != -32768){
+    								if(fTmpIdx == -1) {
+    									fTmpIdx = j;
+    									fTmpVal = (Integer.parseInt(vData[i+1]));
+    								}else {
+    										if(fTmpVal > (Integer.parseInt(vData[i+1]))) {
+    											fTmpIdx = j;
+    	    									fTmpVal = (Integer.parseInt(vData[i+1]));
+    										}
+    								}    								
+    							}
+    						} // end for    						
+    					}else if( i == 10 || i == 13) {
+    						if((Integer.parseInt(vData[i+1])) != -32768){
+    							for(int j=(i-2); j<=i;j++) {
+        							if((Integer.parseInt(vData[i+1])) != -32768){
+        								if(fTmpIdx == -1) {
+        									fTmpIdx = j;
+        									fTmpVal = (Integer.parseInt(vData[i+1]));
+        								}else {
+        										if(fTmpVal < (Integer.parseInt(vData[i+1]))) {
+        											fTmpIdx = j;
+        	    									fTmpVal = (Integer.parseInt(vData[i+1]));
+        										}
+        								}    								
+        							}
+        						} // end for       								
+							}
+    					}// end if sub i = 10, 13    					
+    				}else { 
+    					fTmpIdx = i - getMidData(Integer.parseInt(vData[i-1]), Integer.parseInt(vData[i]), Integer.parseInt(vData[i+1]));
+    				}// end if iError
+    				
+    				lblDataList.get(fTmpIdx).put("visible",  true); 
+    				lblDataList.get(fTmpIdx).put("fValue",  lblDataList.get(fTmpIdx));
+    				 
+    				
+    			} // end if =  i 2, 7, 10, 13, 20
+    			
+    			if(i >= 14 && i <= 17) {
+    				if(i == 14) {
+    					fTmpIdx = i;
+						fTmpVal = (Integer.parseInt(vData[i+1]));
+    				}else {
+    					if(fTmpVal < (Integer.parseInt(vData[i+1]))) {
+							fTmpIdx = i;
+							fTmpVal = (Integer.parseInt(vData[i+1]));
+						}
+    				} // end if i = 14
+    				
+    				
+    				if(i == 17) {
+    					lblDataList.get(fTmpIdx).put("visible",  true); 
+    					lblDataList.get(fTmpIdx).put("fValue",  lblDataList.get(fTmpIdx));
+    				}
+    			} // end if i == 14 to 17
+    			
+    			if(i >= 3&& i <= 4) {
+    				
+    				sTipMsg = sTipMsg +  tagDccInfoList.get(i).getToolTip() + ((i == 4)? "": ", ");   
+    				
+    				if(i == 4) {
+    					Map lblConv = new HashMap();
+    					  
+    					if(Integer.parseInt(vData[i+1]) != -32768){
+    						lblConv.put("fValue", (1.1/Integer.parseInt(vData[i])) * Integer.parseInt(vData[i+1]));
+    					}else {
+    						lblConv.put("fValue", -32768);
+    					}
+    					
+    					lblConv.put("Tooltip", sTipMsg);    					
+    					
+    					lblConvList.add(lblConv);
+    				}    				
+    			}// end if i = 3, 4
+    			
+    			if(i >= 25&& i <= 27) {
+    				
+    				if(i == 25) {
+    					iError = 0;
+    					fTmpVal = 0;
+    				}
+    				
+    				iError = iError + ((Integer.parseInt(vData[i+1]) == -32768)? 1:0);
+    				
+    				fTmpVal = fTmpVal + ((Integer.parseInt(vData[i+1]) == -32768)? 0: (Integer.parseInt(lblDataList.get(i).get("fValue").toString())));
+    				
+    				sTipMsg = sTipMsg +  tagDccInfoList.get(i).getToolTip() + ((i == 27)? "": ", ");    				
+    				
+    				if(i == 27) {
+    				
+	    				Map lblConv = new HashMap();
+	    				
+	    				if(iError > 0) {
+	    						lblConv.put("fValue", -32768);
+	    				}else {
+    					
+	    					lblConv.put("fValue", (fTmpVal >=2)? "YES": "NO");
+	   					
+	    					lblConv.put("Tooltip", sTipMsg);
+	    				}    	
+	    				
+    					lblConvList.add(lblConv);
+    					
+    				} // i = 27
+    			}// end if i = 25 to 27
+    			
+    			if(i == 28 || i == 43) {
+    				
+    				Map lblConv = new HashMap();
+    				
+					if((Integer.parseInt(vData[i+1]) == -32768)) {
+						lblConv.put("fValue", -32768);
+					}else {
+						lblConv.put("fValue", ((Integer.parseInt(lblDataList.get(i).get("fValue").toString()) == 1)? "YES": "NO"));
+					}
+	    				
+    				lblConvList.add(lblConv);
+    				
+    			}// end if i = 28,43    			
+    			
+    			if(i >=44 && i<=54) {
+    				shpIND[i-44] = ((Integer.parseInt(lblDataList.get(i).get("fValue").toString()) == 0)? false: true);
+    			}
+    			
+    		}// end for
+    		
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
-        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("lblDataList", lblDataList);
         	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("lblConvList", lblConvList);
+        	mav.addObject("shpIND", shpIND);
         	
         	mav.addObject("BaseSearch", dccSearchStatus);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));        	
@@ -2294,4 +2664,36 @@ public class DccStatusContentsController {
         }
         return mav;
     }
+	
+	private int getMidData(int iVal1, int iVal2, int iVal3) {
+		
+		int rtn = 0 ;
+		
+		if((iVal1 > iVal2) && (iVal1 > iVal3)){
+				if(iVal2 > iVal3) {
+					rtn = 1;
+				}else {
+					rtn = 0;
+				}
+		}
+		
+		if((iVal2 > iVal3) && (iVal2 > iVal1)){
+			if(iVal3 > iVal1) {
+				rtn = 0;
+			}else {
+				rtn = 2;
+			}
+		}
+		
+		if((iVal3 > iVal1) && (iVal3 > iVal2)){
+			if(iVal1 > iVal2) {
+				rtn = 2;
+			}else {
+				rtn = 1;
+			}
+		}	
+		
+		return rtn;
+		
+	}
 }
