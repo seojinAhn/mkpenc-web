@@ -52,6 +52,11 @@ public class DccStatusContentsController {
 	@Autowired	
 	private BasDccOsmsService basDccOsmsService;
 	
+	//reactive coordx, coord&
+	double[] gCoordX = new double[27];
+	double[] gCoordY = new double[27];
+	List<Map> glblXYList = new ArrayList<Map>();
+	
 	private ModelAndView tagSearch(ModelAndView mav, DccSearchStatus dccSearchStatus, HttpServletRequest request) {
 
     	List<DccMstTagInfo> dccMstTagInfo = dccStatusService.selectTagSearch(dccSearchStatus);
@@ -1710,12 +1715,69 @@ public class DccStatusContentsController {
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		List<Map> lblDataList = (ArrayList)dccVal.get("lblDataList");
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
-        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
-        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	mav.addObject("lblDataList", lblDataList);
+        	mav.addObject("DccTagInfoList", tagDccInfoList);        	
         	
+        	//lblxy init
+        	if(glblXYList.size() == 0) {
+	        	for(int i=0;i<27;i++) {
+	        		Map lblXY = new HashMap();
+	        		lblXY.put("Visiable", false);
+	        		lblXY.put("Left", 0);
+	        		lblXY.put("Right", 0);        		
+	        		
+	        		glblXYList.add(lblXY);
+	        	}
+        	}
+        	
+        	int fValue = 0;
+        	if(StringUtils.isNumeric(lblDataList.get(0).get("fValue").toString())) {
+        		fValue = Integer.parseInt(lblDataList.get(0).get("fValue").toString());        		
+        	}
+        	
+        	for(int i=gCoordX.length -1; i >=0;i-- ) {
+        		 gCoordX[i + 1] = gCoordX[i];
+        		 gCoordY[i + 1] = gCoordY[i];
+        	}
+        	
+        	if(StringUtils.isNumeric(lblDataList.get(0).get("fValue").toString())) {
+        		gCoordX[0]= Double.parseDouble(lblDataList.get(0).get("fValue").toString());        		
+        	}
+        	
+        	if(StringUtils.isNumeric(lblDataList.get(1).get("fValue").toString())) {
+        		gCoordX[1]= Double.parseDouble(lblDataList.get(0).get("fValue").toString());        		
+        	}
+        	
+        	int nCntVisible = Integer.parseInt(dccSearchStatus.getnCntVisible().isEmpty()? "0":dccSearchStatus.getnCntVisible());
+        	
+        	//movelebel
+        	for(int i=0;i<nCntVisible;i++) {
+        		
+        		
+        		/*
+        	 	For i = 0 To nCnt
+			        nLeft = nXBase + CInt(nXWidth * (coordX(i) + 5) / 10)
+			        nTop = nYBase - CInt(nYHeight * coordY(i) / 100)
+			        If nLeft < nXBase Then nLeft = nXBase
+			        If nLeft > nXBase + nXWidth Then nLeft = nXBase + nXWidth
+			        If nTop > nYBase Then nTop = nYBase
+			        If nTop < nYBase - nYHeight Then nTop = nYBase + nYHeight
+			        lblXY(i).Left = nLeft - lblXY(i).Width / 2
+			        lblXY(i).Top = nTop - lblXY(i).Height / 2
+			    Next
+        	 * */
+        	}
+        	
+        	if(nCntVisible < 27) {
+        		glblXYList.get(nCntVisible).put("Visible", true);
+        		nCntVisible = nCntVisible + 1;
+        	}
+        	
+        	mav.addObject("lblXYList", glblXYList);
         	mav.addObject("BaseSearch", dccSearchStatus);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
         }
