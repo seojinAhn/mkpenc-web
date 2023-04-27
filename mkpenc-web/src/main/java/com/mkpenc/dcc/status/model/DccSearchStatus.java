@@ -6,6 +6,7 @@ import com.mkpenc.common.base.BaseSearch;
 @SuppressWarnings("serial")
 @Model
 public class DccSearchStatus   extends BaseSearch {
+	
 	private String hogiHeader;
 	private String xyHeader;
 
@@ -42,6 +43,8 @@ public class DccSearchStatus   extends BaseSearch {
 	private String chkOpt1;
 	private String chkOpt2;
 	private String findAll;
+	
+	private String nCntVisible;
 
 	/**
 	 * @return the hogiHeader3
@@ -434,4 +437,14 @@ public class DccSearchStatus   extends BaseSearch {
 	public void setFindAll(String findAll) {
 		this.findAll = findAll;
 	}
+
+	public String getnCntVisible() {
+		return nCntVisible;
+	}
+
+	public void setnCntVisible(String nCntVisible) {
+		this.nCntVisible = nCntVisible;
+	}
+	
+	
 }

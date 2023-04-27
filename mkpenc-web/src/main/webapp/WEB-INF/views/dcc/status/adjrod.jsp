@@ -99,9 +99,204 @@
                     </ul>
                 </div>
                 <!-- //마우스 우클릭 메뉴 -->                
-                차트영역 (최종본 라인 제거)
+               <div class="barchart_line_wrap">
+                    <div class="barchart_legend left">
+                        <span>0</span>
+                        <span>20</span>
+                        <span>40</span>
+                        <span>60</span>
+                        <span>80</span>
+                        <span>100</span>
+                    </div>
+                    <div class="barchart_line">
+                        <span class="red">11</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span>100.71</span>
+                        <span>I</span>
+                        <span>X</span>
+                    </div>
+                    <div class="barchart_line">
+                        <span class="red">11</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span>100.71</span>
+                        <span>I</span>
+                        <span>X</span>
+                    </div>
+                    <div class="barchart_line">
+                        <span class="red">11</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span>100.71</span>
+                        <span>I</span>
+                        <span>X</span>
+                    </div>
+                    <div class="barchart_line">
+                        <span class="red">11</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span>100.71</span>
+                        <span>I</span>
+                        <span>X</span>
+                    </div>
+                    <div class="barchart_line">
+                        <span class="red">11</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span>100.71</span>
+                        <span>I</span>
+                        <span>X</span>
+                    </div>
+                    <div class="barchart_line"></div>
+                    <div class="barchart_line"></div>
+                    <div class="barchart_line">
+                        <span class="red">11</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span>100.71</span>
+                        <span>I</span>
+                        <span>X</span>
+                    </div>
+                    <div class="barchart_line">
+                        <span class="red">11</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span>100.71</span>
+                        <span>I</span>
+                        <span>X</span>
+                    </div>
+                    <div class="barchart_line">
+                        <span class="red">11</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span>100.71</span>
+                        <span>I</span>
+                        <span>X</span>
+                    </div>
+                    <div class="barchart_line"></div>
+                    <div class="barchart_line"></div>
+                    <div class="barchart_line">
+                        <span class="red">11</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span>100.71</span>
+                        <span>I</span>
+                        <span>X</span>
+                    </div>
+                    <div class="barchart_line">
+                        <span class="red">11</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span>100.71</span>
+                        <span>I</span>
+                        <span>X</span>
+                    </div>
+                    <div class="barchart_line">
+                        <span class="red">11</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span>100.71</span>
+                        <span>I</span>
+                        <span>X</span>
+                    </div>
+                    <div class="barchart_legend right">
+                        <span>ROD No</span>
+                        <span class="green">AUTO</span>
+                        <span>SPEED</span>
+                        <span>CONTROL</span>
+                    </div>
+                    <div class="barchart_legend fixed">
+                        <span>% IN</span>
+                        <span class="green">DRIVE</span>
+                        <span>STATUS</span>
+                        <span class="green mid">MODE</span>
+                        <span>STATUS</span>
+                        <span class="green">DRIVE</span>
+                        <span>% IN</span>
+                    </div>
+                </div>
+                <div class="barchart_line_middle">MANUAL</div>
+                <div class="barchart_line_wrap rev">
+                    <div class="barchart_legend left">
+                        <span>0</span>
+                        <span>20</span>
+                        <span>40</span>
+                        <span>60</span>
+                        <span>80</span>
+                        <span>100</span>
+                    </div>                    
+                    <div class="barchart_line">
+                        <span>X</span>
+                        <span>I</span>
+                        <span>100.71</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span class="red">11</span>
+                    </div>
+                    <div class="barchart_line">
+                        <span>X</span>
+                        <span>I</span>
+                        <span>100.71</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span class="red">11</span>
+                    </div>
+                    <div class="barchart_line">
+                        <span>X</span>
+                        <span>I</span>
+                        <span>100.71</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span class="red">11</span>
+                    </div>
+                    <div class="barchart_line">
+                        <span>X</span>
+                        <span>I</span>
+                        <span>100.71</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span class="red">11</span>
+                    </div>
+                    <div class="barchart_line"></div>
+                    <div class="barchart_line"></div>
+                    <div class="barchart_line">
+                        <span>X</span>
+                        <span>I</span>
+                        <span>100.71</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span class="red">11</span>
+                    </div>
+                    <div class="barchart_line">
+                        <span>X</span>
+                        <span>I</span>
+                        <span>100.71</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span class="red">11</span>
+                    </div>
+                    <div class="barchart_line"></div>
+                    <div class="barchart_line"></div>
+                    <div class="barchart_line">
+                        <span>X</span>
+                        <span>I</span>
+                        <span>100.71</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span class="red">11</span>
+                    </div>
+                    <div class="barchart_line">
+                        <span>X</span>
+                        <span>I</span>
+                        <span>100.71</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span class="red">11</span>
+                    </div>
+                    <div class="barchart_line"></div>
+                    <div class="barchart_line"></div>
+                    <div class="barchart_line">
+                        <span>X</span>
+                        <span>I</span>
+                        <span>100.71</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span class="red">11</span>
+                    </div>
+                    <div class="barchart_line">
+                        <span>X</span>
+                        <span>I</span>
+                        <span>100.71</span>
+                        <div class="barchart" style="height:160px;">차트</div>
+                        <span class="red">11</span>
+                    </div>
+                    <div class="barchart_legend right">
+                        <span>ROD No</span>
+                    </div>                     
+                </div>
             </div>
-            <!-- //chart_wrap_area -->
+            <!-- //barchart_layout -->     
 		</div>
 		<!-- //contents -->
 	</div>

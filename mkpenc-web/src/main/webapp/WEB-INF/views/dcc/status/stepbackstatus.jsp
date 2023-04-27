@@ -604,15 +604,23 @@
                         <tr>
                             <th>
                                 <div class="fx_form">
-                                    <span id="shpIND0" class="st_label st_no"></span>
+                               		<c:if test="${shpIND[0] ne true && shpIND2[0] ne true}">
+	                                    <span id="shpIND0" class="st_label st_no"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[0] eq true}">
+	                                    <span id="shpIND0" class="st_label st_yes"></span>
+	                                </c:if>
+	                               	<c:if test="${shpIND2[6] eq true}">
+	                                    <span id="shpIND0" class="st_label st_cond_out"></span>
+	                                </c:if>
                                     <label>RX TRIP</label>
                                 </div>
                             </th>
                             <td class="tc">-----------</td>
                             <th class="tc">SDS #1</th>
-                            <td class="tc"><label id="0">${lblDataList[0].fValue}</label></td>
+                            <td class="tc"><label id="0">${lblConvList[0].fValue}</label></td>
                             <th class="tc">SDS #2</th>
-                            <td class="tc"><label id="3">${lblDataList[3].fValue}</label></td>
+                            <td class="tc"><label id="3">${lblConvList[1].fValue}</label></td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
@@ -623,15 +631,23 @@
                         <tr>
                             <th>
                                 <div class="fx_form">
-                                    <span id="shpIND1" class="st_label st_no"></span>
+                                	<c:if test="${shpIND[1] ne true && shpIND2[1] ne true}">
+	                                    <span id="shpIND1" class="st_label st_no"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[1] eq true}">
+	                                    <span id="shpIND1" class="st_label st_yes"></span>
+	                                </c:if>
+	                               	<c:if test="${shpIND2[1] eq true}">
+	                                    <span id="shpIND1" class="st_label st_cond_out"></span>
+	                                </c:if>
                                     <label>PHT 1P TRIP</label>
                                 </div>
                             </th>
                             <td class="tc">-----------</td>
                             <th class="tc">PHP #1</th>
-                            <td class="tc"><label id="6">${lblDataList[6].fValue}</label></td>
+                            <td class="tc"><label id="6">${vINDValList[0].fData}</label></td>
                             <th class="tc">PHP #2</th>
-                            <td class="tc"><label id="7">${lblDataList[7].fValue}</label></td>
+                            <td class="tc"><label id="7">${vINDValList[1].fData}</label></td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
@@ -642,15 +658,24 @@
                         <tr>
                             <th>
                                 <div class="fx_form">
+                                	<c:if test="${shpIND[2] ne true && shpIND2[2] ne true}">
+	                                    <span id="shpIND2" class="st_label st_no"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[2] eq true}">
+	                                    <span id="shpIND2"  class="st_label st_yes"></span>
+	                                </c:if>
+	                               	<c:if test="${shpIND2[2] eq true}">
+	                                    <span id="shpIND2" class="st_label st_cond_out"></span>
+	                                </c:if>
                                     <span id="shpIND2" class="st_label st_no"></span>
                                     <label>PHT 2P TRIP</label>
                                 </div>
                             </th>
                             <td class="tc">-----------</td>
                             <th class="tc">PHP #3</th>
-                            <td class="tc"><label id="8">${lblDataList[8].fValue}</label></td>
+                            <td class="tc"><label id="8">${vINDValList[2].fData}</label></td>
                             <th class="tc">PHP #4</th>
-                            <td class="tc"><label id="9">${lblDataList[9].fValue}</label></td>
+                            <td class="tc"><label id="9">${vINDValList[3].fData}</label></td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
@@ -661,14 +686,22 @@
                         <tr>
                             <th>
                                 <div class="fx_form">
-                                    <span id="shpIND3" class="st_label st_no"></span>
+                                	<c:if test="${shpIND[3] ne true && shpIND2[3] ne true}">
+	                                    <span id="shpIND3" class="st_label st_no"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[3] eq true}">
+	                                    <span id="shpIND3" class="st_label st_yes"></span>
+	                                </c:if>
+	                               	<c:if test="${shpIND2[3] eq true}">
+	                                    <span id="shpIND3" class="st_label st_cond_out"></span>
+	                                </c:if>
                                     <label>MOD LVL LO</label>
                                 </div>
                             </th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="lblSP0" class="full flex_end"></label>
-                                    <label id="lblSPUnit0" class="full"></label>
+                                    <label id="lblSP0" class="full flex_end">7550</label>
+                                    <label id="lblSPUnit0" class="full">M</label>
                                 </div>                                
                             </td>
                             <td class="tc" colspan="4">
@@ -687,14 +720,22 @@
                         <tr>
                             <th>
                                 <div class="fx_form">
-                                    <span id="shpIND4" class="st_label st_no"></span>
+                                	<c:if test="${shpIND[4] ne true && shpIND2[4] ne true}">
+	                                    <span id="shpIND4" class="st_label st_no"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[4] eq true}">
+	                                    <span id="shpIND4" class="st_label st_yes"></span>
+	                                </c:if>
+	                               	<c:if test="${shpIND2[4] eq true}">
+	                                    <span id="shpIND4" class="st_label st_cond_out"></span>
+	                                </c:if>
                                     <label>LOG RATE HI</label>
                                 </div>
                             </th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="lblSP1" class="full flex_end"></label>
-                                    <label id="lblSPUnit1" class="full"></label>
+                                    <label id="lblSP1" class="full flex_end">0.0334</label>
+                                    <label id="lblSPUnit1" class="full">DPS</label>
                                 </div>                                
                             </td>
                             <td class="tc" colspan="4">
@@ -713,14 +754,22 @@
                         <tr>
                             <th rowspan="2">
                                 <div class="fx_form">
-                                    <span id="shpIND5" class="st_label st_yes"></span>
+                                	<c:if test="${shpIND[5] ne true && shpIND2[5] ne true}">
+	                                    <span id="shpIND5" class="st_label st_no"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[5] eq true}">
+	                                    <span id="shpIND5" class="st_label st_yes"></span>
+	                                </c:if>
+	                               	<c:if test="${shpIND2[5] eq true}">
+	                                    <span id="shpIND5 class="st_label st_cond_out"></span>
+	                                </c:if>
                                     <label>SG LVL LO</label>
                                 </div>
                             </th>
                             <td class="tc" rowspan="2">
                                 <div class="fx_form">
                                     <label id="61" class="full flex_end">${lblDataList[61].fValue}</label>
-                                    <label id="lblSPUnit2" class="full"></label>
+                                    <label id="lblSPUnit2" class="full">M</label>
                                 </div>                                  
                             </td>
                             <th class="tc">SG #1</th>
@@ -763,20 +812,28 @@
                         <tr>
                             <th rowspan="2">
                                 <div class="fx_form">
-                                    <span id="shpIND6" class="st_label st_cond_out"></span>
+	                                <c:if test="${shpIND[6] ne true && shpIND2[6] ne true}">
+	                                    <span id="shpIND6" class="st_label st_no"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[6] eq true}">
+	                                    <span id="shpIND6" class="st_label st_yes"></span>
+	                                </c:if>
+	                               	<c:if test="${shpIND2[6] eq true}">
+	                                    <span id="shpIND6" class="st_label st_cond_out"></span>
+	                                </c:if>
                                     <label>HT PR HI</label>
                                 </div>
                             </th>
                             <td class="tc" rowspan="2">
                                 <div class="fx_form">
-                                    <label id="lblSP3" class="full flex_end"></label>
-                                    <label id="lblSPUnit3" class="full"></label>
+                                    <label id="lblSP3" class="full flex_end">10.24</label>
+                                    <label id="lblSPUnit3" class="full">MPA</label>
                                 </div>                                  
                             </td>
                             <th class="tc">ROH #1</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="24" class="double flex_end">${lblDataList[24].TVALUE25}</label>
+                                    <label id="24" class="double flex_end">${lblDataList[24].fValue}</label>
                                     <label class="full"></label>
                                 </div>                                  
                             </td>
@@ -813,21 +870,29 @@
                         <tr>
                             <th rowspan="7">
                                 <div class="fx_form">
-                                    <span id="shpIND7" class="st_label st_no"></span>
+                                	<c:if test="${shpIND[7] ne true && shpIND2[7] ne true}">
+	                                    <span id="shpIND7" class="st_label st_no"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[7] eq true}">
+	                                    <span id="shpIND7" class="st_label st_yes"></span>
+	                                </c:if>
+	                               	<c:if test="${shpIND2[7] eq true}">
+	                                    <span id="shpIND7 class="st_label st_cond_out"></span>
+	                                </c:if>
                                     <label>ZONE PWR HI</label>
                                 </div>
                             </th>
                             <td class="tc" rowspan="7">
                                 <div class="fx_form_column">
                                     <div class="fx_form">
-                                        <label id="lblSP4" class="full flex_end"></label>
-                                        <label id="lblSPUnit4" class="full"></label>
+                                        <label id="lblSP4" class="full flex_end">1.08</label>
+                                        <label id="lblSPUnit4" class="full">FFP</label>
                                     </div>
                                     <div class="fx_form">
-                                        <label id="lblSPUnit5" class="full flex_center"></label>
+                                        <label id="lblSPUnit5" class="full flex_center">AT LEAST</label>
                                     </div>
                                     <div class="fx_form">
-                                        <label id="lblSP5" class="full flex_center"></label>
+                                        <label id="lblSP5" class="full flex_center">4 OF 14</label>
                                     </div>
                                 </div>
                             </td>
@@ -951,12 +1016,20 @@
                         <tr>
                             <th>
                                 <div class="fx_form">
-                                    <span id="shpIND8" class="st_label st_no"></span>
+                               		<c:if test="${shpIND[8] ne true && shpIND2[8] ne true}">
+	                                    <span id="shpIND8 class="st_label st_no"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[8] eq true}">
+	                                    <span id="shpIND8" class="st_label st_yes"></span>
+	                                </c:if>
+	                               	<c:if test="${shpIND2[8] eq true}">
+	                                    <span id="shpIND8 class="st_label st_cond_out"></span>
+	                                </c:if>
                                     <label>TEST</label>
                                 </div>
                             </th>
                             <td class="tc"></td>
-                            <td class="tc" colspan="4"><label id="56">${lblDataList[56].fValue}</label></td>
+                            <td class="tc" colspan="4"><label id="56">${lblDataList[56].fValue}</label></td> 
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>

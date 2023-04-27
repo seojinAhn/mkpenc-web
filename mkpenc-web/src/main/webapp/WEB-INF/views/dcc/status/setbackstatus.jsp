@@ -572,196 +572,289 @@
                         <tr>
                             <th>
                                 <div id="imgTooltip0" class="fx_form">
-                                    <span id="shpIND0" class="st_label st_no"></span>
+                                	<c:if test="${shpIND[0] eq true}">
+	                                    <span id="shpIND0"  class="st_label st_yes"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[0] eq false}">
+	                                    <span id="shpIND0"  class="st_label st_no"></span>
+	                                </c:if>
                                     <label>MOD DP LO</label>
                                 </div>
                             </th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="lblSP0" class="full flex_end"></label>
-                                    <label id="lblSPUnit0" class="full"></label>
+                                    <label id="lblSP0" class="full flex_end">0.28</label>
+                                    <label id="lblSPUnit0" class="full">MPA</label>
                                 </div>                                
                             </td>
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
-                                    <label id="0" class="double flex_end">${lblDataList[0].fValue}</label>
+                                	<c:if test="${lblDataList[0].visible eq true}">
+                                    	<label id="0" class="double flex_end">${lblDataList[0].fValue}</label>
+                                    </c:if>
+                                    <c:if test="${lblDataList[1].visible eq true}">
+                                    	<label id="1" class="double flex_end">${lblDataList[1].fValue}</label>
+                                    </c:if>
+                                    <c:if test="${lblDataList[2].visible eq true}">
+                                    	<label id="2" class="double flex_end">${lblDataList[2].fValue}</label>
+                                    </c:if>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
-                                    <label id="lblFP0" class="double"></label>
+                                    <label id="lblFP0" class="double">0.02</label>
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <th>
                                 <div id="imgTooltip1" class="fx_form">
-                                    <span id="shpIND1" class="st_label st_no"></span>
+                               		<c:if test="${shpIND[1] eq true}">
+	                                    <span id="shpIND1"  class="st_label st_yes"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[1] eq false}">
+	                                    <span id="shpIND1"  class="st_label st_no"></span>
+	                                </c:if>
                                     <label>LOCAL N HI</label>
                                 </div>
                             </th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="lblSP1" class="full flex_end"></label>
-                                    <label id="lblSPUnit1" class="full"></label>
+                                    <label id="lblSP1" class="full flex_end">1.1</label>
+                                    <label id="lblSPUnit1" class="full">FFP</label>
                                 </div>
                             </td>
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
-                                    <label id="3" class="double flex_end">${lblDataList[3].fValue}</label>
+                                    <label id="3" class="double flex_end">${lblConvList[0].fValue}</label>
                                     <label class="full"></label>
                                 </div>                                
                             </td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
-                                    <label id="lblFP1" class="double"></label>
+                                    <label id="lblFP1" class="double">0.6</label>
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <th>
                                 <div id="imgTooltip2" class="fx_form">
-                                    <span id="shpIND2" class="st_label st_no"></span>
+                                	<c:if test="${shpIND[2] eq true}">
+	                                    <span id="shpIND2"  class="st_label st_yes"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[2] eq false}">
+	                                    <span id="shpIND2"  class="st_label st_no"></span>
+	                                </c:if>
                                     <label>ZONE FAIL</label>
                                 </div>
                             </th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="lblSP2" class="full flex_end"></label>
-                                    <label id="lblSPUnit2" class="full"></label>
+                                    <label id="lblSP2" class="full flex_end">0.827</label>
+                                    <label id="lblSPUnit2" class="full">MPA</label>
                                 </div>                                
                             </td>
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
-                                    <label id="5" class="double flex_end">${lblDataList[5].fValue}</label>
+                                	<c:if test="${lblDataList[5].visible eq true}">
+                                    	<label id="5" class="double flex_end">${lblDataList[5].fValue}</label>
+                                    </c:if>
+                                    <c:if test="${lblDataList[6].visible eq true}">
+                                    	<label id="6" class="double flex_end">${lblDataList[6].fValue}</label>
+                                    </c:if>
+                                    <c:if test="${lblDataList[7].visible eq true}">
+                                    	<label id="7" class="double flex_end">${lblDataList[7].fValue}</label>
+                                    </c:if>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
-                                    <label id="lblFP2" class="double"></label>
+                                    <label id="lblFP2" class="double">0.6</label>
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <th>
                                 <div id="imgTooltip3" class="fx_form">
-                                    <span id="shpIND3" class="st_label st_no"></span>
+                                	<c:if test="${shpIND[3] eq true}">
+	                                    <span id="shpIND3"  class="st_label st_yes"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[3] eq false}">
+	                                    <span id="shpIND3"  class="st_label st_no"></span>
+	                                </c:if>
                                     <label>D/C PR HI</label>
                                 </div>
                             </th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="lblSP3" class="full flex_end"></label>
-                                    <label id="lblSPUnit3" class="full"></label>
+                                    <label id="lblSP3" class="full flex_end">3.9</label>
+                                    <label id="lblSPUnit3" class="full">MPA</label>
                                 </div>                                
                             </td>
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
-                                    <label id="8" class="double flex_end">${lblDataList[8].fValue}</label>
+                                	<c:if test="${lblDataList[8].visible eq true}">
+                                    	<label id="8" class="double flex_end">${lblDataList[8].fValue}</label>
+                                    </c:if>
+                                    <c:if test="${lblDataList[9].visible eq true}">
+                                    	<label id="9" class="double flex_end">${lblDataList[9].fValue}</label>
+                                    </c:if>
+                                    <c:if test="${lblDataList[10].visible eq true}">
+                                    	<label id="10" class="double flex_end">${lblDataList[10].fValue}</label>
+                                    </c:if>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
-                                    <label id="lblFP3" class="double"></label>
+                                    <label id="lblFP3" class="double">0.02</label>
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <th>
                                 <div id="imgTooltip4" class="fx_form">
+                                	<c:if test="${shpIND[4] eq true}">
+	                                    <span id="shpIND4"  class="st_label st_yes"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[4] eq false}">
+	                                    <span id="shpIND4"  class="st_label st_no"></span>
+	                                </c:if>
                                     <span id="shpIND4" class="st_label st_no"></span>
                                     <label>MOD TEMP HI</label>
                                 </div>
                             </th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="lblSP4" class="full flex_end"></label>
-                                    <label id="lblSPUnit4" class="full"></label>
+                                    <label id="lblSP4" class="full flex_end">79</label>
+                                    <label id="lblSPUnit4" class="full">°C</label>
                                 </div>                                
                             </td>
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
-                                    <label id="11" class="double flex_end">${lblDataList[11].fValue}</label>
+                                	<c:if test="${lblDataList[11].visible eq true}">
+                                    	<label id="11" class="double flex_end">${lblDataList[11].fValue}</label>
+                                    </c:if>
+                                    <c:if test="${lblDataList[12].visible eq true}">
+                                    	<label id="12" class="double flex_end">${lblDataList[12].fValue}</label>
+                                    </c:if>
+                                    <c:if test="${lblDataList[13].visible eq true}">
+                                    	<label id="13" class="double flex_end">${lblDataList[13].fValue}</label>
+                                    </c:if>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
-                                    <label id="lblFP4" class="double"></label>
+                                    <label id="lblFP4" class="double">0.02</label>
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <th>
                                 <div id="imgTooltip5" class="fx_form">
-                                    <span id="shpIND5" class="st_label st_no"></span>
+                                	<c:if test="${shpIND[5] eq true}">
+	                                    <span id="shpIND5"  class="st_label st_yes"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[5] eq false}">
+	                                    <span id="shpIND5"  class="st_label st_no"></span>
+	                                </c:if>
                                     <label>ESC LVL LO</label>
                                 </div>
                             </th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="lblSP5" class="full flex_end"></label>
-                                    <label id="lblSPUnit5" class="full"></label>
+                                    <label id="lblSP5" class="full flex_end">109.7</label>
+                                    <label id="lblSPUnit5" class="full">M</label>
                                 </div>                                
                             </td>
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
-                                    <label id="14" class="double flex_end">${lblDataList[14].fValue}</label>
+                                	<c:if test="${lblDataList[14].visible eq true}">
+                                    	<label id="14" class="double flex_end">${lblDataList[14].fValue}</label>
+                                    </c:if>
+                                    <c:if test="${lblDataList[15].visible eq true}">
+                                    	<label id="15" class="double flex_end">${lblDataList[15].fValue}</label>
+                                    </c:if>
+                                    <c:if test="${lblDataList[16].visible eq true}">
+                                    	<label id="16" class="double flex_end">${lblDataList[16].fValue}</label>
+                                    </c:if>
+                                    <c:if test="${lblDataList[17].visible eq true}">
+                                    	<label id="17" class="double flex_end">${lblDataList[17].fValue}</label>
+                                    </c:if>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
-                                    <label id="lblFP5" class="double"></label>
+                                    <label id="lblFP5" class="double">0.02</label>
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <th>
                                 <div id="imgTooltip6" class="fx_form">
-                                    <span id="shpIND6" class="st_label st_no"></span>
+                                	<c:if test="${shpIND[6] eq true}">
+	                                    <span id="shpIND6"  class="st_label st_yes"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[6] eq false}">
+	                                    <span id="shpIND6"  class="st_label st_no"></span>
+	                                </c:if>
                                     <label>D/A LVL LO</label>
                                 </div>
                             </th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="lblSP6" class="full flex_end"></label>
-                                    <label id="lblSPUnit6" class="full"></label>
+                                    <label id="lblSP6" class="full flex_end">2440</label>
+                                    <label id="lblSPUnit6" class="full">MM</label>
                                 </div>
                             </td>
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
-                                    <label id="18" class="double flex_end">${lblDataList[18].fValue}</label>
+                                	<c:if test="${lblDataList[18].visible eq true}">
+                                    	<label id="18" class="double flex_end">${lblDataList[18].fValue}</label>
+                                    </c:if>
+                                    <c:if test="${lblDataList[19].visible eq true}">
+                                    	<label id="19" class="double flex_end">${lblDataList[19].fValue}</label>
+                                    </c:if>
+                                    <c:if test="${lblDataList[20].visible eq true}">
+                                    	<label id="20" class="double flex_end">${lblDataList[20].fValue}</label>
+                                    </c:if>
+
                                     <label class="full"></label>
                                 </div>                                
                             </td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
-                                    <label id="lblFP6" class="double"></label>
+                                    <label id="lblFP6" class="double">0.02</label>
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <th rowspan="2">
                                 <div id="imgTooltip7" class="fx_form">
-                                    <span id="shpIND7" class="st_label st_yes"></span>
+                                	<c:if test="${shpIND[7] eq true}">
+	                                    <span id="shpIND7"  class="st_label st_yes"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[7] eq false}">
+	                                    <span id="shpIND7"  class="st_label st_no"></span>
+	                                </c:if>
                                     <label>SG PR HI</label>
                                 </div>
                             </th>
                             <td class="tc" rowspan="2">
                                 <div class="fx_form">
-                                    <label id="lblSP7" class="full flex_end"></label>
-                                    <label id="lblSPUnit7" class="full"></label>
+                                    <label id="lblSP7" class="full flex_end">4.83</label>
+                                    <label id="lblSPUnit7" class="full">MPA</label>
                                 </div>                                  
                             </td>
                             <th class="tc">SG #1</th>
@@ -781,7 +874,7 @@
                             <td rowspan="2">
                                 <div class="fx_form">
                                     <label class="full"></label>
-                                    <label id="lblFP7" class="double"></label>
+                                    <label id="lblFP7" class="double">0.00</label>
                                 </div>
                             </td>
                         </tr>
@@ -804,13 +897,18 @@
                         <tr>
                             <th rowspan="2">
                                 <div id="imgTooltip8" class="fx_form">
-                                    <span id="shpIND8" class="st_label st_cond_out"></span>
+                                	<c:if test="${shpIND[8] eq true}">
+	                                    <span id="shpIND8"  class="st_label st_yes"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[8] eq false}">
+	                                    <span id="shpIND8"  class="st_label st_no"></span>
+	                                </c:if>
                                     <label>TBN TRIP PLU</label>
                                 </div>
                             </th>
                             <td class="tc" rowspan="2">---------------</td>
                             <th colspan="2">TBN TRIP</th>
-                            <td class="tc" colspan="2"><label id="25">${lblDataList[25].fValue}</label></td>
+                            <td class="tc" colspan="2"><label>${lblConvList[1].fValue}</label></td>
                             <td rowspan="2">
                                 <div class="fx_form">
                                     <label class="full"></label>
@@ -820,27 +918,32 @@
                         </tr>
                         <tr>
                             <th class="bd_l_line" colspan="2">PWE LOAD UNBALANCE</th>
-                            <td class="tc" colspan="2"><label id="28">${lblDataList[28].fValue}</label></td>
+                            <td class="tc" colspan="2"><label>${lblConvList[2].fValue}</label></td>
                         </tr>
                         <tr>
                             <th rowspan="7">
                                 <div id="imgTooltip9" class="fx_form">
-                                    <span id="shpIND9" class="st_label st_no"></span>
+                                	<c:if test="${shpIND[9] eq true}">
+	                                    <span id="shpIND9"  class="st_label st_yes"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[9] eq false}">
+	                                    <span id="shpIND9"  class="st_label st_no"></span>
+	                                </c:if>
                                     <label>SPATIAL OF NORMAL</label>
                                 </div>
                             </th>
                             <td class="tc" rowspan="7">
                                 <div class="fx_form_column">
                                     <div class="fx_form">
-                                        <label id="lblSP8" class="full flex_end"></label>
-                                        <label id="lblSPUnit8" class="full"></label>
+                                        <label id="lblSP8" class="full flex_end">1.1</label>
+                                        <label id="lblSPUnit8" class="full">FFP</label>
                                     </div>
                                     <div class="fx_form">
-                                        <label id="lblSPUnit9" class="full flex_center"></label>
+                                        <label id="lblSPUnit9" class="full flex_center">TILT</label>
                                     </div>
                                     <div class="fx_form">
-                                        <label id="lblSP9" class="full flex_end"></label>
-                                        <label id="lblSPUnit10" class="full"></label>
+                                        <label id="lblSP9" class="full flex_end">0.2</label>
+                                        <label id="lblSPUnit10" class="full">FFP</label>
                                     </div>
                                 </div>
                             </td>
@@ -861,7 +964,7 @@
                             <td rowspan="7">
                                 <div class="fx_form">
                                     <label class="full"></label>
-                                    <label id="lblFP9" class="double"></label>
+                                    <label id="lblFP9" class="double">0.6</label>
                                 </div>
                             </td>
                         </tr>
@@ -956,7 +1059,7 @@
                             <th class="tc">PIC14</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="42" class="double flex_end">${lblDataList[42].fValue}</label>
+                                    <label id="42" class="double flex_end">${lblDataList[42].fValue}</label> 
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -964,16 +1067,21 @@
                         <tr>
                             <th>
                                 <div id="imgTooltip10" class="fx_form">
-                                    <span id="shpIND10" class="st_label st_no"></span>
+                                	<c:if test="${shpIND[10] eq true}">
+	                                    <span id="shpIND10"  class="st_label st_yes"></span>
+	                                </c:if>
+	                                <c:if test="${shpIND[10] eq false}">
+	                                    <span id="shpIND10"  class="st_label st_no"></span>
+	                                </c:if>
                                     <label>MANUAL</label>
                                 </div>
                             </th>
                             <td class="tc">----------------</td>
-                            <td class="tc" colspan="4"><label id="43">${lblDataList[43].fValue}</label></td>
+                            <td class="tc" colspan="4"><label>${lblConvList[3].fValue}</label></td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
-                                    <label id="lblFP10" class="double"></label>
+                                    <label id="lblFP10" class="double">0.02</label>
                                 </div>
                             </td>
                         </tr>
