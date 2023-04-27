@@ -18,6 +18,96 @@
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/mimic.js" />" charset="utf-8"></script>
 
+<script type="text/javascript">
+
+var timerOn = false; //true로 변경
+var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
+var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
+
+var tMarkTagSeq = [	
+	${MarkTagInfoList[0].iSeq},${MarkTagInfoList[1].iSeq},${MarkTagInfoList[2].iSeq},${MarkTagInfoList[3].iSeq},${MarkTagInfoList[4].iSeq},
+	${MarkTagInfoList[5].iSeq},${MarkTagInfoList[6].iSeq},${MarkTagInfoList[7].iSeq},${MarkTagInfoList[8].iSeq},${MarkTagInfoList[9].iSeq},
+	${MarkTagInfoList[10].iSeq},${MarkTagInfoList[11].iSeq}
+];
+
+var tMarkTagXy = [
+	'${MarkTagInfoList[0].XYGubun}','${MarkTagInfoList[1].XYGubun}','${MarkTagInfoList[2].XYGubun}','${MarkTagInfoList[3].XYGubun}','${MarkTagInfoList[4].XYGubun}',
+	'${MarkTagInfoList[5].XYGubun}','${MarkTagInfoList[6].XYGubun}','${MarkTagInfoList[7].XYGubun}','${MarkTagInfoList[8].XYGubun}','${MarkTagInfoList[9].XYGubun}',
+	'${MarkTagInfoList[10].XYGubun}','${MarkTagInfoList[11].XYGubun}'
+];
+
+var tToolTipText = [
+	"${MarkTagInfoList[0].toolTip}"	,"${MarkTagInfoList[1].toolTip}","${MarkTagInfoList[2].toolTip}","${MarkTagInfoList[3].toolTip}"
+	,"${MarkTagInfoList[4].toolTip}","${MarkTagInfoList[5].toolTip}","${MarkTagInfoList[6].toolTip}","${MarkTagInfoList[7].toolTip}"
+	,"${MarkTagInfoList[8].toolTip}","${MarkTagInfoList[9].toolTip}","${MarkTagInfoList[10].toolTip}","${MarkTagInfoList[11].toolTip}"	
+];
+
+
+$(function () {
+
+	if( $("input:radio[id='4']").is(":checked") ) {
+		hogiHeader = "4";
+	} else {
+		hogiHeader = "3";
+	}
+	if( $("input:radio[id='Y']").is(":checked") ) {
+		xyHeader = "Y";
+	} else {
+		xyHeader = "X";
+	}
+	
+	var lblDateVal = '${SearchTime}';
+	$("#lblDate").text(lblDateVal);
+	
+	$(document.body).delegate('#3', 'click', function() {
+		setTimer('3',xyHeader,0);
+	});
+	$(document.body).delegate('#4', 'click', function() {
+		setTimer('4',xyHeader,0);
+	});
+	$(document.body).delegate('#X', 'click', function() {
+		setTimer(hogiHeader,'X',0);
+	});
+
+	$(document.body).delegate('#hydraulictripsys_div span', 'dblclick', function() {	
+		debugger;
+		var cId = this.id.indexOf('fValue') > -1 ? this.id.substring(4) : this.id;
+		if( cId != null && cId != '' && cId != 'undefined' ) {
+			showTag(cId,tMarkTagSeq[cId]);
+		}
+	});
+	
+	setTimer(hogiHeader,xyHeader,5000);
+	
+});
+
+function setTimer(hogiHeader,xyHeader,interval) {
+	if( interval > 0 ) {
+		setTimeout(function() {
+			if( timerOn ) {
+				var	comSubmit	=	new ComSubmit("hydraulictripsysFrm");
+				comSubmit.setUrl("/markv/mimic/hydraulictripsys");
+				comSubmit.addParam("hogiHeader",hogiHeader);
+				comSubmit.addParam("xyHeader",xyHeader);
+				comSubmit.submit();
+			}
+		},interval);
+	} else {
+		var	comSubmit	=	new ComSubmit("hydraulictripsysFrm");
+		comSubmit.setUrl("/markv/mimic/hydraulictripsys");
+		comSubmit.addParam("hogiHeader",hogiHeader);
+		comSubmit.addParam("xyHeader",xyHeader);
+		comSubmit.submit();
+	}
+}
+
+function showTag(tagNo,iSeq) {	
+	alert("showTag");	
+}
+
+</script>
+
+
 </head>
 <body>
 <div class="wrap">
@@ -34,7 +124,8 @@
 				<div class="bc"><span>MARK_V</span><span>Mimic</span><span>AUX</span><strong>HYDRAULIC TRIP SYSTEM</strong></div>
 			</div>
 			<!-- //page_title -->
-			<div class="img_wrap hydraulic_trip">
+			<form id="hydraulictripsysFrm" style="display:none"></form>
+			<div class="img_wrap hydraulic_trip" id="hydraulictripsys_div">
                 <!-- range_slider -->
                 <div class="range_slider">
                     <input type="range" id="opacity-change" value="100" min="20" max="100">
@@ -46,7 +137,7 @@
                     <div class="chart_block_contents only_txt white_txt">
                         <div class="summary">
                             <p>
-                                <span class="fx_full">
+                                <span class="fx_full" id="4">
                                 	<c:if test="${lblDataList[4].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[4].fValue ne null}">${lblDataList[4].fValue}</c:if>
                                 </span>
@@ -58,7 +149,7 @@
                     <div class="chart_block_contents only_txt white_txt">
                         <div class="summary">
                             <p>
-                                <span class="fx_full">
+                                <span class="fx_full" id="5">
                                 	<c:if test="${lblDataList[5].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[5].fValue ne null}">${lblDataList[5].fValue}</c:if>
                                 </span>
@@ -70,7 +161,7 @@
                     <div class="chart_block_contents only_txt white_txt">
                         <div class="summary">
                             <p>
-                                <span class="fx_full">
+                                <span class="fx_full" id="0">
                                 	<c:if test="${lblDataList[0].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[0].fValue ne null}">${lblDataList[0].fValue}</c:if>
                                 </span>
@@ -82,7 +173,7 @@
                     <div class="chart_block_contents only_txt white_txt">
                         <div class="summary">
                             <p>
-                                <span class="fx_full">
+                                <span class="fx_full" id="7">
                                 	<c:if test="${lblDataList[7].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[7].fValue ne null}">${lblDataList[7].fValue}</c:if>
                                 </span>
@@ -94,7 +185,7 @@
                     <div class="chart_block_contents only_txt white_txt">
                         <div class="summary">
                             <p>
-                                <span class="fx_full">
+                                <span class="fx_full" id="1">
                                 	<c:if test="${lblDataList[1].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[1].fValue ne null}">${lblDataList[1].fValue}</c:if>
                                 </span>
@@ -106,7 +197,7 @@
                     <div class="chart_block_contents only_txt white_txt">
                         <div class="summary">
                             <p>
-                                <span class="fx_full">
+                                <span class="fx_full" id="2">
 									<c:if test="${lblDataList[2].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[2].fValue ne null}">${lblDataList[2].fValue}</c:if>
 								</span>
@@ -118,7 +209,7 @@
                     <div class="chart_block_contents only_txt white_txt">
                         <div class="summary">
                             <p>
-                                <span class="fx_full">
+                                <span class="fx_full" id="8">
                                 	<c:if test="${lblDataList[8].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[8].fValue ne null}">${lblDataList[8].fValue}</c:if>
                                 </span>
@@ -130,7 +221,7 @@
                     <div class="chart_block_contents only_txt white_txt">
                         <div class="summary">
                             <p>
-                                <span class="fx_full">
+                                <span class="fx_full" id="9">
                                 	<c:if test="${lblDataList[9].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[9].fValue ne null}">${lblDataList[9].fValue}</c:if>
                                 </span>
@@ -142,7 +233,7 @@
                     <div class="chart_block_contents only_txt white_txt">
                         <div class="summary">
                             <p>
-                                <span class="fx_full">
+                                <span class="fx_full" id="10">
                                 	<c:if test="${lblDataList[10].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[10].fValue ne null}">${lblDataList[10].fValue}</c:if>
                                 </span>
@@ -154,7 +245,7 @@
                     <div class="chart_block_contents only_txt white_txt">
                         <div class="summary">
                             <p>
-                                <span class="fx_full">
+                                <span class="fx_full" id="3">
                                 	<c:if test="${lblDataList[3].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[3].fValue ne null}">${lblDataList[3].fValue}</c:if>
                                 </span>
@@ -166,7 +257,7 @@
                     <div class="chart_block_contents only_txt white_txt">
                         <div class="summary">
                             <p>
-                                <span class="fx_full">
+                                <span class="fx_full" id="11">
                                 	<c:if test="${lblDataList[11].fValue eq null}">0</c:if>
                                 	<c:if test="${lblDataList[11].fValue ne null}">${lblDataList[11].fValue}</c:if>
                                 </span>
