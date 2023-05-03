@@ -77,6 +77,14 @@ public class MarkvMimicContentsController {
     		
     		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
     		
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+    		
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -125,6 +133,13 @@ public class MarkvMimicContentsController {
     		
     		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
     		
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -174,6 +189,13 @@ public class MarkvMimicContentsController {
         	
         	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
         	
+        	List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -223,6 +245,14 @@ public class MarkvMimicContentsController {
         	
         	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
         	
+        	List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -270,6 +300,14 @@ public class MarkvMimicContentsController {
     		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
     		
     		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
     		
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
@@ -319,6 +357,14 @@ public class MarkvMimicContentsController {
     		
     		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
     		
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -366,7 +412,14 @@ public class MarkvMimicContentsController {
     		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
     		
     		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
-    		
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -415,6 +468,14 @@ public class MarkvMimicContentsController {
     		
     		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
     		
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -463,6 +524,14 @@ public class MarkvMimicContentsController {
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
         	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
         	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
@@ -569,6 +638,14 @@ public class MarkvMimicContentsController {
     		
     		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
     		
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -618,6 +695,14 @@ public class MarkvMimicContentsController {
         	
         	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
         	
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -666,6 +751,14 @@ public class MarkvMimicContentsController {
     		
     		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
     		
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -714,6 +807,14 @@ public class MarkvMimicContentsController {
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
         	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
         	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
@@ -764,6 +865,14 @@ public class MarkvMimicContentsController {
         	
         	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
         	
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -812,6 +921,14 @@ public class MarkvMimicContentsController {
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
         	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
         	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
@@ -863,6 +980,14 @@ public class MarkvMimicContentsController {
         	
         	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
         	
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -911,6 +1036,14 @@ public class MarkvMimicContentsController {
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
         	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
         	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
@@ -1019,6 +1152,14 @@ public class MarkvMimicContentsController {
         	
         	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
         	
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -1067,6 +1208,14 @@ public class MarkvMimicContentsController {
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
         	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
         	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
@@ -1117,6 +1266,14 @@ public class MarkvMimicContentsController {
         	
         	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
         	
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -1166,6 +1323,14 @@ public class MarkvMimicContentsController {
     		
     		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
     		
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -1214,6 +1379,14 @@ public class MarkvMimicContentsController {
     		
     		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
     		
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -1262,6 +1435,14 @@ public class MarkvMimicContentsController {
     		
     		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
     		
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -1310,6 +1491,14 @@ public class MarkvMimicContentsController {
     		
     		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
     		
+    		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
