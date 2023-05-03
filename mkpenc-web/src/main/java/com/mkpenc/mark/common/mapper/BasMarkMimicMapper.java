@@ -8,7 +8,7 @@ import com.mkpenc.mark.common.model.ComShowTagMarkInfo;
 import com.mkpenc.mark.common.model.ComTagMarkInfo;
 import com.mkpenc.mark.mimic.model.MarkvSearchMimic;
 
-
+ 
 @Mapper
 public interface BasMarkMimicMapper {	
 	

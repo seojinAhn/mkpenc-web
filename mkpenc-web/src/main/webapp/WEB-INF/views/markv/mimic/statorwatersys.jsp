@@ -79,7 +79,7 @@ $(function () {
 			showTag(cId,tMarkTagSeq[cId]);
 		}
 	});
-	
+
 	$("#tagSearch").click(function() {
 		tagSearchEvent();
 	});

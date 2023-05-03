@@ -5,7 +5,7 @@ import com.mkpenc.common.annotaion.Model;
 @SuppressWarnings("serial")
 @Model
 public class ComTagMarkInfo {
-	
+	 
 		private int iSeq;
 	    private String Hogi;
 	    private String UNIT_DIV;

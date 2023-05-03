@@ -22,7 +22,7 @@ public  interface BasMarkMimicService {
 	List<ComShowTagMarkInfo> selectMarkTagFind(MarkvSearchMimic searchMimic);
 	
 	List<ComTagMarkInfo> getComboCodeList();
-	
+	 
 	List<ComTagMarkInfo> getComboDescList(MarkvSearchMimic searchMimic);
 	
 	String getSaveCoreInfo(MarkvSearchMimic markvSearchMimic);

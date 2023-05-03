@@ -68,4 +68,3 @@ function tagFindMarkCallback(data){
 	tagSearhcListBody.empty();
 	tagSearhcListBody.append(tagSearhcListBodyStr);
 }
-

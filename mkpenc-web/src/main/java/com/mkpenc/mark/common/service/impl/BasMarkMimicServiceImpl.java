@@ -55,7 +55,7 @@ public class BasMarkMimicServiceImpl implements BasMarkMimicService{
 	   return tAnalogChar;
 	}
 
-
+ 
 	
 	@Override
 	public int updateMarkTagInfo1(MarkvSearchMimic searchMimic) {

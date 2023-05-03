@@ -23,7 +23,7 @@ public class ComShowTagMarkInfo {
 	private String txtD0;
 	private String txtD1;
 	private String txtBSCal;
-	
+	 
 	
 	public String getiSeq() {
 		return iSeq;

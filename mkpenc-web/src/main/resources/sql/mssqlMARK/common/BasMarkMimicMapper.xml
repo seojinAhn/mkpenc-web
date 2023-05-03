@@ -59,7 +59,7 @@
     </select> 
     
     <select id="selectComboDescList" parameterType="MarkvSearchMimic" resultType="ComTagMarkInfo">
-        
+         
 			SELECT CODE2, CODE3, CODEDESC FROM MST_CODE_MARK
 			 WHERE CODE1 = 1
 		     <if test="comboCnt > 0">
