@@ -659,6 +659,122 @@ function showTag(tagNo,iSeq) {
 <!-- showTag3 추가시작 -->
 
 <!-- layer_pop_wrap -->
+<div class="layer_pop_wrap large" id="modal_1">
+    <!-- header_wrap -->
+	<div class="pop_header">
+	    <h3>태그정보</h3>
+        <a onclick="closeLayer('modal_1');" title="Close"></a>
+    </div>
+	<!-- //header_wrap -->
+	<!-- pop_contents -->
+	<div class="pop_contents">
+        <!-- form_wrap -->
+        <div class="form_wrap">
+            <!-- form_table -->
+            <form id="setIOForm" name="setIOForm">
+            <input type="hidden" id="txtISeq" name="txtISeq">
+            <input type="hidden" id="txtIOBit" name="txtIOBit">
+            <input type="hidden" id="txtHogi" name="txtHogi">
+            <table class="form_table">
+                <colgroup>
+                    <col width="120px"/>
+                    <col />
+                </colgroup>
+                <tr>
+                    <th>태그번호</th>
+                    <td>
+                        <div class="fx_form">
+                            <input type="text" id="txtTagNo" name="txtTagNo">
+                            <a class="btn_list" herf="none" onclick="openLayer('modal_2');">태그찾기</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>태그명</th>
+                    <td><input type="text" id="txtSignalName" name="txtSignalName"></td>
+                </tr>
+                <tr>
+                    <th>태그설명</th>
+                    <td><input type="text" id="txtSignalDesc" name="txtSignalDesc"></td>
+                </tr>
+                <tr>
+                    <th>표현방식</th>
+                    <td>
+                        <div class="fx_form_multi">
+                            <div class="fx_form">
+                                <label>
+                                    <input type="radio" id="txtOptVal0" name="txtOptVal" value="0" checked="checked">
+                                    수치표현
+                                </label>
+                                <label>
+                                    <input type="radio" id="txtOptVal1" name="txtOptVal" value="1">
+                                    문자표현
+                                </label>
+                                <label>
+                                    <input type="radio" id="txtOptVal2" name="txtOptVal" value="2">
+                                    문자표현(A)
+                                </label>
+                                <a class="btn_list" herf="none" onclick="openLayer('modal_3');">문자(A) 표현관리</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>소수점 자리수</th>
+                    <td>
+                        <select class="fx_none" style="width:120px;" id="txtBSCal" name="txtBSCal">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>                        
+                    </td>
+                </tr>
+                <tr>
+                    <th>0 상태 문자표현(0)</th>
+                    <td><input type="text" id="txtD0" name="txtD0"></td>
+                </tr>
+                <tr>
+                    <th>1 상태 문자표현(0)</th>
+                    <td><input type="text" id="txtD1" name="txtD1"></td>
+                </tr>
+                <tr>
+                    <th>문자표현(A)</th>
+                    <td>
+                        <div class="fx_form">
+                            <select class="fx_none" style="width:260px;" id="txtCboCode" name="txtCboCode">
+							    <c:forEach items="${tagComboCodeList}" var="tagComboCodeList">
+							      <option value="${tagComboCodeList.code2}">${tagComboCodeList.codedesc}</option>
+							    </c:forEach>
+							</select>
+                            <select class="fx_none" style="width:260px;" id="txtCboDesc" name="txtCboDesc" varStatus="status">
+                                <c:forEach items="${tagComboDescList}" var="tagComboDescList">
+							      <option value="${status.count}">${tagComboDescList.codedesc}</option>
+							    </c:forEach>
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <!-- //form_table -->
+            </form>
+        </div>
+        <!-- //form_wrap -->
+	</div>
+	<!-- pop_contents -->
+    <!-- pop_footer -->
+    <div class="pop_footer">
+        <a href="#none" class="btn_page primary" id="saveVarTable" name="saveVarTable">저장</a>
+        <a href="#none" class="btn_page" onclick="closeLayer('modal_1');">닫기</a>
+        <a href="#none" class="btn_page">Command1</a>
+    </div>
+    <!-- //pop_footer -->
+</div>
+<!-- //layer_pop_wrap -->
+
+<!-- layer_pop_wrap -->
 <div class="layer_pop_wrap large" id="modal_2">
     <!-- header_wrap -->
 	<div class="pop_header">
