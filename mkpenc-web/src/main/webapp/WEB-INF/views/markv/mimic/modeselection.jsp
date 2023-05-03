@@ -238,15 +238,14 @@ function getSaveCoreInfoCallback(data){
 function saveTag() {
 	var comSubmit = new ComSubmit("setIOForm");
 	var frm = document.getElementById("setIOForm");
-	//var radioVal = $('input[name=txtOptVal]:checked').val();
 	
+	comSubmit.addParam("rUrl", 'modeselection');	//return param 해당파일명 입력
 	comSubmit.addParam("sSeq", $("#txtTagNo").val());
 	comSubmit.addParam("sTagNo", $("#txtTagNo").val());
 	comSubmit.addParam("sHogi", '${BaseSearch.sHogi}');
 	comSubmit.addParam("sScreenId", '${BaseSearch.sGrpID}');
 	comSubmit.addParam("sMenuNo", '${BaseSearch.sMenuNo}');
 	comSubmit.addParam("sGrpNo", '${BaseSearch.sUGrpNo}');
-	comSubmit.addParam("rUrl", 'modeselection');
 	comSubmit.addParam("txtCboCode", $("#txtCboCode option").size());
 	
 	if($("#txtD0").val() == 'undefined') {
