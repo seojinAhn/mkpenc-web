@@ -38,7 +38,7 @@ public class MarkvSearchMimic  extends BaseSearch {
 	private String txtHogi;
 	private String txtXyGubun;
 	private String txtDescr;
-	private String txtIoType;
+	private String txtIoType; 
 	private String txtAddress;
 	private String txtIoBit;
     private String txtOptVal;
