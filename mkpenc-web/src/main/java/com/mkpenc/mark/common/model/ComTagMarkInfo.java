@@ -6,7 +6,7 @@ import com.mkpenc.common.annotaion.Model;
 @Model
 public class ComTagMarkInfo {
 	
-	 	private int iSeq;
+		private int iSeq;
 	    private String Hogi;
 	    private String UNIT_DIV;
 	    private String Signal_Name;
@@ -29,6 +29,28 @@ public class ComTagMarkInfo {
 	    
 		private String toolTip;
 		
+		private String code2;
+		private String code3;
+		private String codedesc;
+		
+		public String getCode3() {
+			return code3;
+		}
+		public void setCode3(String code3) {
+			this.code3 = code3;
+		}
+		public String getCode2() {
+			return code2;
+		}
+		public void setCode2(String code2) {
+			this.code2 = code2;
+		}
+		public String getCodedesc() {
+			return codedesc;
+		}
+		public void setCodedesc(String codedesc) {
+			this.codedesc = codedesc;
+		}
 		/**
 		 * @return the iSeq
 		 */

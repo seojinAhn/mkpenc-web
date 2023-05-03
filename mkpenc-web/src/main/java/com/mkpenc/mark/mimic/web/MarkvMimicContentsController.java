@@ -3,9 +3,12 @@ package com.mkpenc.mark.mimic.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mkpenc.dcc.admin.model.MemberInfo;
+import com.mkpenc.mark.common.model.ComShowTagMarkInfo;
 import com.mkpenc.mark.common.model.ComTagMarkInfo;
 import com.mkpenc.dcc.common.service.BasCommonService;
 import com.mkpenc.mark.common.service.BasMarkMimicService;
@@ -958,6 +961,14 @@ public class MarkvMimicContentsController {
         	
         	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
         	
+        	List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
+        	
+        	markvSearchMimic.setComboCnt(tagComboCodeList.size());
+        	List<ComTagMarkInfo> tagComboDescList = basMarkMimicService.getComboDescList(markvSearchMimic);
+        	
+        	mav.addObject("tagComboCodeList", tagComboCodeList);
+        	mav.addObject("tagComboDescList", tagComboDescList);
+        	
     		mav.addObject("SearchTime", markVal.get("SearchTime"));
         	mav.addObject("ForeColor", markVal.get("ForeColor"));
         	mav.addObject("lblDataList", markVal.get("lblDataList"));
@@ -1311,5 +1322,108 @@ public class MarkvMimicContentsController {
 
         return mav;
     }	
+	
+	@RequestMapping(value="markvTagSearch", method = { RequestMethod.POST })
+	@ResponseBody
+	public ModelAndView mimicTagSearch(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ markvTagSearch");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	mav = tagSearch(mav,markvSearchMimic,request);
+        	
+        }
+        return mav;
+    }
+	
+	@RequestMapping(value="markvTagFind", method = { RequestMethod.POST })
+	@ResponseBody
+	public ModelAndView mimicTagFind(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+
+		ModelAndView mav = new ModelAndView("jsonView");
+    	
+        logger.info("############ markvTagFind");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	mav = markvTagFind(mav,markvSearchMimic,request);
+        }
+        return mav;
+    }
+	
+
+	private ModelAndView tagSearch(ModelAndView mav, MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+
+		List<ComShowTagMarkInfo> markvTagSearchList = basMarkMimicService.selectMarkTagSearch(markvSearchMimic);
+    	markvSearchMimic.setMenuName(this.menuName);
+    	
+    	mav.addObject("BaseSearch", markvSearchMimic);
+    	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+    	mav.addObject("TagSearchInfo", markvTagSearchList);
+    	
+        return mav;
+    }
+	
+	private ModelAndView markvTagFind(ModelAndView mav,MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+
+		List<ComShowTagMarkInfo> markvTagFindList = basMarkMimicService.selectMarkTagFind(markvSearchMimic);
+		markvSearchMimic.setMenuName(this.menuName);
+		
+		mav.addObject("BaseSearch", markvSearchMimic);
+		mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+		mav.addObject("TagFindList", markvTagFindList);
+        	
+        return mav;
+    }
+	
+
+	@RequestMapping("markvSaveTag")
+	public ModelAndView markvSaveTag(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+        ModelAndView mav = new ModelAndView();
+        String returnUrl = "";
+        
+        logger.info("############ markvSaveTag");
+        int res1 = 0;
+        int res2 = 0;
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	markvSearchMimic.setMenuName(this.menuName);
+
+        	if( markvSearchMimic.getGubun() == null ) markvSearchMimic.setGubun("M");
+        	
+        	res1 = basMarkMimicService.updateMarkTagInfo1(markvSearchMimic);
+        	res2 = basMarkMimicService.updateMarkTagInfo2(markvSearchMimic);
+        	
+        	returnUrl = "redirect:/markv/mimic/"+markvSearchMimic.getrUrl();
+        	
+        	mav.addObject("BaseSearch", markvSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        	mav.setViewName(returnUrl);
+        
+        }
+        
+        return mav;
+	}
+	
+	@RequestMapping(value="getSaveCoreInfo", method = { RequestMethod.POST })
+	@ResponseBody
+	public ModelAndView getSaveCoreInfo(MarkvSearchMimic markvSearchMimic, HttpServletRequest request) {
+
+		ModelAndView mav = new ModelAndView("jsonView");
+    	
+        logger.info("############ getSaveCoreInfo");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+    		markvSearchMimic.setMenuName(this.menuName);
+        	
+        	String saveCoreChk = basMarkMimicService.getSaveCoreInfo(markvSearchMimic);
+     		mav.addObject("saveCoreChk", saveCoreChk);
+        }
+        
+        return mav;
+    }
 	
 }

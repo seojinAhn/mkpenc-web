@@ -45,3 +45,27 @@ function tagFindCallback(data){
 	tagSearhcListBody.empty();
 	tagSearhcListBody.append(tagSearhcListBodyStr);
 }
+
+function tagFindMarkCallback(data){
+	var tagSearhcListBody = $("#tagSearchList");
+	var tagSearhcListBodyStr = "";
+	var i=0;
+	
+	$.each(data.TagFindList, function(key, value){
+		tagSearhcListBodyStr += "<tr id='tag"+i+"'>"
+		  		  + "	<td class='tc' id='tagISeq' name='tagISeq' value='"+value.iSeq+"'>"+value.iSeq+"</td>"
+	              + "	<td class='tc' id='tagRegister' name='tagRegister' value='"+value.register+"'>"+value.register+"</td>"
+	              + "	<td class='tc' id='tagIOBit' name='tagIOBit' value='"+value.iOBit+"'>"+value.iOBit+"</td>"
+	              + "	<td class='tc' id='tagSignalName' name='tagSignalName' value='"+value.signalName+"'>"+value.signalName+"</td>"
+	              + "	<td class='tc' id='tagSignalDesc' name='tagSignalDesc' value='"+value.signalDesc+"'>"+value.signalDesc+"</td>"
+	              + "	<td class='tc' id='tagD0' name='tagD0' value='"+value.d0+"'>"+value.d0+"</td>"
+	              + "	<td class='tc' id='tagD1' name='tagD1' value='"+value.d1+"'>"+value.d1+"</td>"
+	              + "	<td class='tc' id='tagBSCal' name='tagBSCal' value='"+value.bSCal+"'>"+value.bSCal+"</td>"
+	              + "</tr>";
+          i++;
+  	});
+
+	tagSearhcListBody.empty();
+	tagSearhcListBody.append(tagSearhcListBodyStr);
+}
+

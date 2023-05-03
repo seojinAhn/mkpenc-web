@@ -20,6 +20,94 @@
 			 ORDER BY CODE2, CODE3                 
     </select> 
 
+	<select id="selectMarkTagFind" parameterType="MarkvSearchMimic" resultType="ComShowTagMarkInfo">
+    	SELECT 
+    			ISEQ 		as iSeq
+    		  , REGISTER	as register
+    		  , IOBIT		as IOBit
+    		  , SIGNAL_NAME	as signalName
+    		  , SIGNAL_DESC	as signalDesc
+    		  , D0			as d0
+    		  , D1			as d1
+    		  , BScal 		as bSCal
+    	FROM MST_TAG_MARK
+		WHERE HOGI =  #{txtHogi}
+		AND UNIT_DIV <![CDATA[<>]]> '2'
+		<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(searchStr)'>
+			<if test='@org.apache.commons.lang3.StringUtils@containsNone(findAll,"1")'>
+				<if test='@org.apache.commons.lang3.StringUtils@equals(chkOpt0,"1") and @org.apache.commons.lang3.StringUtils@containsNone(chkOpt1,"1")'>
+					AND SIGNAL_NAME like '%${searchStr}%'
+			    </if>
+				<if test='@org.apache.commons.lang3.StringUtils@equals(chkOpt1,"1") and @org.apache.commons.lang3.StringUtils@containsNone(chkOpt0,"1")'>
+					AND SIGNAL_DESC like '%${searchStr}%'
+				</if>
+				<if test='@org.apache.commons.lang3.StringUtils@equals(chkOpt0,"1") and @org.apache.commons.lang3.StringUtils@equals(chkOpt1,"1")'>
+					AND (SIGNAL_NAME like '%${searchStr}%' OR SIGNAL_DESC like '%${searchStr}%')
+				</if>
+			</if>
+		</if>
+		ORDER BY ISEQ
+    </select>
 
+	<select id="selectComboCodeList" resultType="ComTagMarkInfo">
+        
+			SELECT code2, codedesc 
+			  FROM MST_CODE_MARK
+			 WHERE CODE1 = 1
+			   AND CODE3 = 0
+			 ORDER BY CODE2  
+    </select> 
+    
+    <select id="selectComboDescList" parameterType="MarkvSearchMimic" resultType="ComTagMarkInfo">
+        
+			SELECT CODE2, CODE3, CODEDESC FROM MST_CODE_MARK
+			 WHERE CODE1 = 1
+		     <if test="comboCnt > 0">
+			 AND CODE2 = #{comboCnt}
+		     </if>
+			 AND CODE3 <![CDATA[<>]]> 0
+			 ORDER BY CODE2, CODE3
+    </select> 
+    
+    <update id="updateMarkTagInfo1" parameterType="MarkvSearchMimic" >
+    	UPDATE MST_GRPTAG SET
+			 iSeq=#{iSeq}
+		
+		<if test='@org.apache.commons.lang3.StringUtils@equals(txtOptVal,"2")'>
+			,SaveCoreChk = #{txtCboCode} + 1
+		</if>
+		
+		<if test='@org.apache.commons.lang3.StringUtils@containsNone(txtOptVal,"2")'>
+			,SaveCoreChk = #{txtOptVal}
+		</if>
+		
+		
+		WHERE Gubun=#{gubun}
+		  AND ID=#{sScreenId}
+		  AND MenuNo=#{sMenuNo}
+		  AND GrpNo=#{sGrpNo}
+		  AND Hogi=#{sHogi}
+		  AND TagNo=#{sTagNo}
+    </update>  
+    
+    <update id="updateMarkTagInfo2" parameterType="MarkvSearchMimic" >
+    	UPDATE MST_TAG_MARK SET
+				D0 = trim(#{txtD0})
+			   ,D1 = trim(#{txtD1})
+			   ,BScal = trim(#{txtBSCal})
+		 WHERE Hogi = #{sHogi}
+		   AND iSeq = #{iSeq}
+    </update>  
+    
+    <select id="getSaveCoreInfo" resultType="String" parameterType="MarkvSearchMimic">
+		SELECT SaveCoreChk 
+		  FROM MST_GrpTag
+		 WHERE ISEQ = #{sSeq}
+		   AND GUBUN = 'M'
+		   AND HOGI = #{sHogi}
+		   AND ID = #{sScreenId}
+		   AND MenuNo = #{sMenuNo}
+		   AND GrpNo = #{sGrpNo}
+	</select>
 
 </mapper>

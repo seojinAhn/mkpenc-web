@@ -11,12 +11,14 @@ public class MarkvSearchMimic  extends BaseSearch {
 	private String sMenuNo;
 	private String sDive;
 	private String sUGrpNo;
-	
-	private String  sHogi;
-	private String  sXYGubun;
-	private String  sChkHogi;
-	
-	private String  sScreenId;
+	private String sSeq;
+	private String sGrpNo;
+	private String sIOType;
+	private String sHogi;
+	private String sXYGubun;
+	private String sChkHogi;
+	private String sScreenId;
+	private String sTagNo;
 	
 	private String hogiHeader;
 	private String xyHeader;
@@ -32,15 +34,121 @@ public class MarkvSearchMimic  extends BaseSearch {
 	private String tagNo;
 	private String gubun;
 	
+	private String searchStr;
 	private String txtHogi;
 	private String txtXyGubun;
 	private String txtDescr;
 	private String txtIoType;
 	private String txtAddress;
 	private String txtIoBit;
-	
-	private String searchStr;
+    private String txtOptVal;
+    private String txtCboCode;
+    private String txtCboDesc;
+    private String txtD0;
+    private String txtD1;
+    private String txtBSCal;
+    
+    
 	private String findAll;
+	
+	private String findData;
+	private String chkOpt0;
+	private String chkOpt1;
+	
+	private String rUrl;
+	
+	private int comboCnt = 0;
+	
+	public int getComboCnt() {
+		return comboCnt;
+	}
+	public void setComboCnt(int comboCnt) {
+		this.comboCnt = comboCnt;
+	}
+	public String getsSeq() {
+		return sSeq;
+	}
+	public void setsSeq(String sSeq) {
+		this.sSeq = sSeq;
+	}
+	public String getsGrpNo() {
+		return sGrpNo;
+	}
+	public void setsGrpNo(String sGrpNo) {
+		this.sGrpNo = sGrpNo;
+	}
+	public String getsIOType() {
+		return sIOType;
+	}
+	public void setsIOType(String sIOType) {
+		this.sIOType = sIOType;
+	}
+	public String getsTagNo() {
+		return sTagNo;
+	}
+	public void setsTagNo(String sTagNo) {
+		this.sTagNo = sTagNo;
+	}
+	public String getTxtOptVal() {
+		return txtOptVal;
+	}
+	public void setTxtOptVal(String txtOptVal) {
+		this.txtOptVal = txtOptVal;
+	}
+	public String getTxtCboCode() {
+		return txtCboCode;
+	}
+	public void setTxtCboCode(String txtCboCode) {
+		this.txtCboCode = txtCboCode;
+	}
+	public String getTxtCboDesc() {
+		return txtCboDesc;
+	}
+	public void setTxtCboDesc(String txtCboDesc) {
+		this.txtCboDesc = txtCboDesc;
+	}
+	public String getTxtD0() {
+		return txtD0;
+	}
+	public void setTxtD0(String txtD0) {
+		this.txtD0 = txtD0;
+	}
+	public String getTxtD1() {
+		return txtD1;
+	}
+	public void setTxtD1(String txtD1) {
+		this.txtD1 = txtD1;
+	}
+	public String getTxtBSCal() {
+		return txtBSCal;
+	}
+	public void setTxtBSCal(String txtBSCal) {
+		this.txtBSCal = txtBSCal;
+	}
+	public String getFindData() {
+		return findData;
+	}
+	public void setFindData(String findData) {
+		this.findData = findData;
+	}
+	public String getChkOpt0() {
+		return chkOpt0;
+	}
+	public void setChkOpt0(String chkOpt0) {
+		this.chkOpt0 = chkOpt0;
+	}
+	public String getChkOpt1() {
+		return chkOpt1;
+	}
+	public void setChkOpt1(String chkOpt1) {
+		this.chkOpt1 = chkOpt1;
+	}
+	public String getrUrl() {
+		return rUrl;
+	}
+	public void setrUrl(String rUrl) {
+		this.rUrl = rUrl;
+	}
 	public String getsGrpID() {
 		return sGrpID;
 	}
