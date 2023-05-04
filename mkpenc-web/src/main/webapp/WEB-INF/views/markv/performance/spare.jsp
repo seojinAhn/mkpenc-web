@@ -21,7 +21,6 @@
 <link rel="stylesheet" type="text/css" href="<c:url value="/resources/datetimepicker/jquery.datetimepicker.css" />">
 <script type="text/javascript" src="<c:url value="/resources/datetimepicker/jquery.datetimepicker.full.min.js" />" charset="utf-8"></script>
 
-
 <script type="text/javascript">
 
 $(function () {
@@ -69,13 +68,12 @@ $(function () {
 	  	$("#sUGrpNo").change(function(){
 	  		
 	  		if($("#sUGrpNo option:selected").val() != ""){
-
+		  
 				var comAjax = new ComAjax("compareVarSearch");
 				comAjax.setUrl("/markv/performance/getDccGrpTag");
 				comAjax.setCallback("mbr_DccGrpTagEventCallback");
 				comAjax.ajax();					  
 	  		}else {
-
 	  			// 화면초기화
 	  			var	comSubmit	=	new ComSubmit("compareVarSearch");
 				comSubmit.setUrl("/markv/performance/fixed");
@@ -192,7 +190,7 @@ $(function () {
 		  	  }
 			  
 			  var	comSubmit	=	new ComSubmit("compareVarSearch");
-			  comSubmit.setUrl("/markv/performance/fixed");
+			  comSubmit.setUrl("/markv/performance/spare");
 			  comSubmit.submit();			
 		 });	  		
 		
@@ -211,13 +209,12 @@ function DatetimepickerDefaults(opts) {
     format:'Y-m-d H:i',
 	formatTime:'H:i',
     formatDate:'Y-m-d',
-	step : 1,
+	step : 5,
 	monthChangeSpinner:true,
     sideBySide: true
     
     }, opts);
 }
-
 
 </script>
 
@@ -242,8 +239,8 @@ function DatetimepickerDefaults(opts) {
 			<div class="fx_srch_wrap">	
 				<div class="fx_srch_form">
 					<form id="compareVarSearch" name=compareVarSearch">
-					<input type = "hidden" id="sGrpID" name="sGrpID" value="CompareVar">
-					<input type = "hidden" id="sMenuNo" name="sMenuNo" value = "41">
+					<input type = "hidden" id="sGrpID" name="sGrpID" value="${UserInfo.id }">
+					<input type = "hidden" id="sMenuNo" name="sMenuNo" value = "42">
 					<input type = "hidden" id="sDive" name="sDive" value = "D">
 					<input type = "hidden" id="sHogi" name="sHogi" value="${UserInfo.hogi }">
 					<input type = "hidden" id="sXYGubun" name="sXYGubun" value="${UserInfo.xyGubun }">
@@ -255,11 +252,11 @@ function DatetimepickerDefaults(opts) {
                             	<option  value="">그룹을 선택하세요</option>
                            		<c:forEach var="GroupName" items="${GroupNameList}">
                            			<c:choose>
-			                           		 <c:when test="${GroupName.UGrpNo eq BaseSearch.sUGrpNo }">
-			                            			<option  value="${GroupName.UGrpNo}" selected>${UserInfo.hogi}-${GroupName.UGrpNo}&nbsp;${GroupName.UGrpName}</option>
+			                           		 <c:when test="${GroupName.uGrpNo eq BaseSearch.sUGrpNo }">
+			                            			<option  value="${GroupName.uGrpNo}" selected>${UserInfo.hogi } - ${GroupName.uGrpNo} ${GroupName.uGrpName}</option>
 			                            	</c:when>
-			                            	<c:when test="${GroupName.UGrpNo ne BaseSearch.sUGrpNo }">
-			                            			<option  value="${GroupName.UGrpNo}">${UserInfo.hogi}-${GroupName.UGrpNo}&nbsp;${GroupName.UGrpName}</option>
+			                            	<c:when test="${GroupName.uGrpNo ne BaseSearch.sUGrpNo }">
+			                            			<option  value="${GroupName.uGrpNo}">${UserInfo.hogi } - ${GroupName.uGrpNo} ${GroupName.uGrpName}</option>
 			                            	</c:when>
                                 	</c:choose>
                                 </c:forEach>
@@ -302,6 +299,7 @@ function DatetimepickerDefaults(opts) {
 				</div>
 				<!-- //fx_srch_button -->
 			</div>
+			</form>
 			<!-- //fx_srch_wrap -->         
 			<!-- list_wrap -->
 			<div class="list_wrap">
@@ -311,7 +309,7 @@ function DatetimepickerDefaults(opts) {
                         <c:if test="${UserInfo.grade eq 1 or UserInfo.grade eq 2 }">
                         <li><a href="#none" id="setVar" name="setVar">변수설정</a></li>
                         </c:if>
-                        <li><a href="#none" onclick="openLayer('modal_3');">엑셀로 저장</a></li>
+                        <li><a href="#none" onclick="openLayer('modal_2');">엑셀로 저장</a></li>
                     </ul>
                 </div>
                 <!-- //마우스 우클릭 메뉴 -->                
@@ -357,7 +355,7 @@ function DatetimepickerDefaults(opts) {
                     <tbody id="compareVarList" name = "compareVarList">
                     <c:forEach var="tagDccInfo" items="${TagDccInfoList}">
                         <tr>
-                            <td>${tagDccInfo.dataLoop}</td>
+                            <td>${tagDccInfo.LOOPNAME}- ${tagDccInfo.spareAvgFldNo}</td>
                             <c:choose>
                             	   <c:when test="${tagDccInfo.IOTYPE eq 'DT' and (tagDccInfo.alarmType eq 4 or tagDccInfo.alarmType eq 12) }">
                             			<td class="tc">%</td>
@@ -416,7 +414,7 @@ function DatetimepickerDefaults(opts) {
                         </tr>
                         </c:if>
                     </tbody>
-                </table>                
+                </table>
                 <!-- //list_table -->
             </div>
             <!-- //list_wrap -->
@@ -445,8 +443,8 @@ function DatetimepickerDefaults(opts) {
         <div class="form_wrap">
             <!-- form_table -->
             <form id = "ioGrpNameForm" name ="ioGrpNameForm" >
-            	<input type ="hidden" id="sGrpID" name="sGrpID" value="CompareVar">
-				<input type ="hidden" id="sMenuNo" name="sMenuNo" value = "41">
+            	<input type ="hidden" id="sGrpID" name="sGrpID" value="${UserInfo.id }">
+				<input type ="hidden" id="sMenuNo" name="sMenuNo" value = "42">
 				<input type ="hidden" id="sDive" name="sDive" value = "D">
 				<input type ="hidden" id="sHogi" name="sHogi" value="${UserInfo.hogi }">
 				<input type ="hidden" id="sXYGubun" name="sXYGubun" value="${UserInfo.xyGubun }">
