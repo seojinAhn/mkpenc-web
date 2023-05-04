@@ -71,8 +71,8 @@ $(function () {
 	  		if($("#sUGrpNo option:selected").val() != ""){
 
 				var comAjax = new ComAjax("compareVarSearch");
-				comAjax.setUrl("/markv/performance/getDccGrpTag");
-				comAjax.setCallback("mbr_DccGrpTagEventCallback");
+				comAjax.setUrl("/markv/performance/getMarkGrpTag");
+				comAjax.setCallback("mbr_MarkGrpTagEventCallback");
 				comAjax.ajax();					  
 	  		}else {
 
@@ -355,50 +355,50 @@ function DatetimepickerDefaults(opts) {
                         </tr>
                     </thead>
                     <tbody id="compareVarList" name = "compareVarList">
-                    <c:forEach var="tagDccInfo" items="${TagDccInfoList}">
+                    <c:forEach var="tagMarkInfo" items="${TagMarkInfoList}">
                         <tr>
-                            <td>${tagDccInfo.dataLoop}</td>
+                            <td>${tagMarkInfo.dataLoop}</td>
                             <c:choose>
-                            	   <c:when test="${tagDccInfo.IOTYPE eq 'DT' and (tagDccInfo.alarmType eq 4 or tagDccInfo.alarmType eq 12) }">
+                            	   <c:when test="${tagMarkInfo.IOTYPE eq 'DT' and (tagMarkInfo.alarmType eq 4 or tagMarkInfo.alarmType eq 12) }">
                             			<td class="tc">%</td>
                             	</c:when>
                             	<c:otherwise>
-                            			<td class="tc">${tagDccInfo.unit}</td>
+                            			<td class="tc">${tagMarkInfo.unit}</td>
                             	</c:otherwise>
                             </c:choose>
              				<c:choose>
-                            	<c:when test="${tagDccInfo.minVal eq 0}">
-                            			<td class="tc">${tagDccInfo.maxVal}</td>
+                            	<c:when test="${tagMarkInfo.minVal eq 0}">
+                            			<td class="tc">${tagMarkInfo.maxVal}</td>
                             	</c:when>
-                            	<c:when test="${tagDccInfo.minVal eq -1}">
-                            			<td class="tc">> ${tagDccInfo.maxVal}</td>
+                            	<c:when test="${tagMarkInfo.minVal eq -1}">
+                            			<td class="tc">> ${tagMarkInfo.maxVal}</td>
                             	</c:when>
-                            	<c:when test="${tagDccInfo.minVal eq -2}">
-                            			<td class="tc">< ${tagDccInfo.maxVal}</td>
+                            	<c:when test="${tagMarkInfo.minVal eq -2}">
+                            			<td class="tc">< ${tagMarkInfo.maxVal}</td>
                             	</c:when>
-                            	<c:when test="${tagDccInfo.minVal eq -3}">
+                            	<c:when test="${tagMarkInfo.minVal eq -3}">
                             			<td class="tc"></td>
                             	</c:when>
                             	<c:otherwise>
-                            			<td class="tc">${tagDccInfo.minVal} ~ ${tagDccInfo.maxVal}</td>
+                            			<td class="tc">${tagMarkInfo.minVal} ~ ${tagMarkInfo.maxVal}</td>
                             	</c:otherwise>
                             </c:choose>
-                            <td class="tc">${tagDccInfo.spareAvgFldNo}</td>
-                            <td class="tc">${tagDccInfo.spareStdevFldNo}</td>
-                            <td class="tc">${tagDccInfo.spareMaxFldNo}</td>
-                            <td class="tc">${tagDccInfo.spareMinFldNo}</td>
+                            <td class="tc">${tagMarkInfo.spareAvgFldNo}</td>
+                            <td class="tc">${tagMarkInfo.spareStdevFldNo}</td>
+                            <td class="tc">${tagMarkInfo.spareMaxFldNo}</td>
+                            <td class="tc">${tagMarkInfo.spareMinFldNo}</td>
                             
-                            <td class="tc">${tagDccInfo.fixedAvgFldNo}</td>
-                            <td class="tc">${tagDccInfo.fixedStdevFldNo}</td>
-                            <td class="tc">${tagDccInfo.fixedMaxFldNo}</td>
-                            <td class="tc">${tagDccInfo.fixedMinFldNo}</td>
+                            <td class="tc">${tagMarkInfo.fixedAvgFldNo}</td>
+                            <td class="tc">${tagMarkInfo.fixedStdevFldNo}</td>
+                            <td class="tc">${tagMarkInfo.fixedMaxFldNo}</td>
+                            <td class="tc">${tagMarkInfo.fixedMinFldNo}</td>
                             
-                            <td class="tc">${tagDccInfo.gapAB}</td>
-                            <td class="tc">${tagDccInfo.rateAB}</td>
+                            <td class="tc">${tagMarkInfo.gapAB}</td>
+                            <td class="tc">${tagMarkInfo.rateAB}</td>
 
                         </tr>
                         </c:forEach>
-                        <c:if test="${TagDccInfoList eq null}">
+                        <c:if test="${tagMarkInfoList eq null}">
                         <tr>
                             <td></td>
                             <td class="tc"></td>

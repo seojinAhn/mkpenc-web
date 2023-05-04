@@ -13,6 +13,8 @@ public  interface BasMarkOsmsService {
 	 
 	public List<ComTagMarkInfo> getMarkGrpTagList(Map searchMap); 
 	
+	public String[] getMarkValueReturn(Map searchMap);
+	
 	public Map getMarkValue(Map searchMap, List<ComTagMarkInfo> tagMarkInfoList,  ModelAndView mav);
 
 }

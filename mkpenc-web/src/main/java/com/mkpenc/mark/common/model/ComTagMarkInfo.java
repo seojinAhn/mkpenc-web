@@ -33,6 +33,19 @@ public class ComTagMarkInfo {
 		private String code3;
 		private String codedesc;
 		
+		private String spareMinFldNo;
+	 	private String spareMaxFldNo;
+	 	private String spareAvgFldNo;
+	 	private String spareStdevFldNo;
+	 	
+	 	private String fixedMinFldNo;
+	 	private String fixedMaxFldNo;
+	 	private String fixedAvgFldNo;
+	 	private String fixedStdevFldNo;
+	 	
+	 	private String gapAB;
+	 	private String rateAB;
+		
 		public String getCode3() {
 			return code3;
 		}
@@ -300,10 +313,132 @@ public class ComTagMarkInfo {
 		/**
 		 * @param toolTip the toolTip to set
 		 */
+		
 		public void setToolTip(String toolTip) {
 			this.toolTip = toolTip;
 		}
-	    
+		/**
+		 * @return the spareMinFldNo
+		 */
+		public String getSpareMinFldNo() {
+			return spareMinFldNo;
+		}
+		/**
+		 * @param spareMinFldNo the spareMinFldNo to set
+		 */
+		public void setSpareMinFldNo(String spareMinFldNo) {
+			this.spareMinFldNo = spareMinFldNo;
+		}
+		/**
+		 * @return the spareMaxFldNo
+		 */
+		public String getSpareMaxFldNo() {
+			return spareMaxFldNo;
+		}
+		/**
+		 * @param spareMaxFldNo the spareMaxFldNo to set
+		 */
+		public void setSpareMaxFldNo(String spareMaxFldNo) {
+			this.spareMaxFldNo = spareMaxFldNo;
+		}
+		/**
+		 * @return the spareAvgFldNo
+		 */
+		public String getSpareAvgFldNo() {
+			return spareAvgFldNo;
+		}
+		/**
+		 * @param spareAvgFldNo the spareAvgFldNo to set
+		 */
+		public void setSpareAvgFldNo(String spareAvgFldNo) {
+			this.spareAvgFldNo = spareAvgFldNo;
+		}
+		/**
+		 * @return the spareStdevFldNo
+		 */
+		public String getSpareStdevFldNo() {
+			return spareStdevFldNo;
+		}
+		/**
+		 * @param spareStdevFldNo the spareStdevFldNo to set
+		 */
+		public void setSpareStdevFldNo(String spareStdevFldNo) {
+			this.spareStdevFldNo = spareStdevFldNo;
+		}
+		/**
+		 * @return the fixedMinFldNo
+		 */
+		public String getFixedMinFldNo() {
+			return fixedMinFldNo;
+		}
+		/**
+		 * @param fixedMinFldNo the fixedMinFldNo to set
+		 */
+		public void setFixedMinFldNo(String fixedMinFldNo) {
+			this.fixedMinFldNo = fixedMinFldNo;
+		}
+		/**
+		 * @return the fixedMaxFldNo
+		 */
+		public String getFixedMaxFldNo() {
+			return fixedMaxFldNo;
+		}
+		/**
+		 * @param fixedMaxFldNo the fixedMaxFldNo to set
+		 */
+		public void setFixedMaxFldNo(String fixedMaxFldNo) {
+			this.fixedMaxFldNo = fixedMaxFldNo;
+		}
+		/**
+		 * @return the fixedAvgFldNo
+		 */
+		public String getFixedAvgFldNo() {
+			return fixedAvgFldNo;
+		}
+		/**
+		 * @param fixedAvgFldNo the fixedAvgFldNo to set
+		 */
+		public void setFixedAvgFldNo(String fixedAvgFldNo) {
+			this.fixedAvgFldNo = fixedAvgFldNo;
+		}
+		/**
+		 * @return the fixedStdevFldNo
+		 */
+		public String getFixedStdevFldNo() {
+			return fixedStdevFldNo;
+		}
+		/**
+		 * @param fixedStdevFldNo the fixedStdevFldNo to set
+		 */
+		public void setFixedStdevFldNo(String fixedStdevFldNo) {
+			this.fixedStdevFldNo = fixedStdevFldNo;
+		}
+		/**
+		 * @return the gapAB
+		 */
+		public String getGapAB() {
+			return gapAB;
+		}
+		/**
+		 * @param gapAB the gapAB to set
+		 */
+		public void setGapAB(String gapAB) {
+			this.gapAB = gapAB;
+		}
+		/**
+		 * @return the rateAB
+		 */
+		public String getRateAB() {
+			return rateAB;
+		}
+		/**
+		 * @param rateAB the rateAB to set
+		 */
+		public void setRateAB(String rateAB) {
+			this.rateAB = rateAB;
+		}
+
+		
 	    
 
 }

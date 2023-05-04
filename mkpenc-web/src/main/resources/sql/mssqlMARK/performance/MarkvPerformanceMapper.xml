@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mkpenc.mark.performance.mapper.MarkvPerformanceMapper">
+    
+    <insert id="insertGrpName" parameterType="java.util.Map">
+    	  INSERT INTO MST_GrpName (Gubun, ID, MenuNo, UGrpNo, UGrpName) 
+    	  values ( #{gubun}, #{id}, #{menuNo}, #{uGrpNo}, #{uGrpName} )        
+    </insert>
+    
+    <update id="updateGrpName" parameterType="java.util.Map">
+          UPDATE MST_GrpName 
+        	    SET UGrpName = #{uGrpName}
+	       WHERE Gubun =#{gubun}
+	       	AND ID =#{id}
+	      	AND MenuNo = #{menuNo}
+			AND UGrpNo = #{uGrpNo}
+    </update>
+
+        
+    <select id="selectTrendInfoA" parameterType="java.util.Map" resultType="java.util.Map">
+    
+        	SELECT Min(TVALUE${fldno}) as minTvalue
+        			, Max(TVALUE${fldno}) as maxTvalue
+                    , AVG(TVALUE${fldno}) as avgTvalue
+                    , STDEV(TVALUE${fldno}) as stdevTvalue
+		              <if test="@org.apache.commons.lang3.StringUtils@isEmpty(chkHogi)">
+		              	     	FROM LOG_3MARK_TREND
+		              </if>
+		              <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty((chkHogi)">
+		              	     	FROM LOG_${hogi}MARK_TREND
+		              </if>
+                   WHERE SCANTIME BETWEEN #{mskSpareS}  AND #{mskSpareE}
+                      AND SEQ = #{tblno}
+    </select>
+    
+        <select id="selectTrendInfoB" parameterType="java.util.Map" resultType="java.util.Map">
+    
+        	SELECT Min(TVALUE${fldno}) as minTvalue
+        			, Max(TVALUE${fldno}) as maxTvalue
+                    , AVG(TVALUE${fldno}) as avgTvalue
+                    , STDEV(TVALUE${fldno}) as stdevTvalue
+		              <if test="@org.apache.commons.lang3.StringUtils@isEmpty(chkHogi)">
+		              	     	FROM LOG_4MARK_TREND
+		              </if>
+		              <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty((chkHogi)">
+		              	     	FROM LOG_${hogi}MARK_TREND
+		              </if>
+                   WHERE SCANTIME BETWEEN #{mskFixedS}  AND #{mskFixedE}
+                      AND SEQ = #{tblno}
+    </select>
+    
+	<select id="selectTagSearch" parameterType="MarkSearchPerformance" resultType="java.util.Map">
+        	SELECT * 
+        	 FROM MST_TAG_MARK 
+           <trim prefix="WHERE" prefixOverrides="AND | OR">
+			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sHogi)">
+			            AND IHOGI = #{sHogi}
+			        </if>
+			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sIOType)">
+			            AND IOTYPE = #{sIOType}
+			        </if>
+			        AND IOTYPE <![CDATA[<>]]> 'CI'
+			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(findData)">
+			            AND (ADDRESS LIKE '%' + #{findData} + '%'
+			        </if>  
+			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(chkOpt1)">
+			            OR LOOPNAME LIKE '%' + #{findData} + '%'
+			        </if>  
+			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(chkOpt2)">
+			            OR DESCR LIKE '%' + #{findData} + '%'
+			        </if>      
+			        )		        	        
+		        </trim>        
+                ORDER BY ISEQ
+    </select>    
+    
+	<select id="selectFastIOSearch" parameterType="MarkSearchPerformance" resultType="java.util.Map">
+        	SELECT * 
+        	 FROM MST_TAG_MARK 
+           <trim prefix="WHERE" prefixOverrides="AND | OR">
+			        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(sHogi)">
+			            AND IHOGI = #{sIHogi}
+			        </if>
+			        AND FASTIOCHK = 1
+		        </trim>        
+                ORDER BY IOTYPE, convert(int, address)
+    </select>     
+    
+    <delete id="deleteGrpTag" parameterType="java.util.Map">
+    
+     		DELETE FROM MST_GRPTAG
+    		WHERE Gubun =#{gubun}
+               AND GrpHOGI = #{grpHOGI}
+   			   AND ID = #{id}
+               AND MenuNo = #{menuNo}
+    		   AND GrpNo =#{grpNo}
+    </delete>   
+    
+    <select id="selectISeqTagMarkSearch" parameterType="java.util.Map" resultType="java.util.Map">
+        	SELECT ISEQ
+        	 FROM MST_TAG_MARK 
+			WHERE IHOGI = #{iHogi}
+			    AND XYGUBUN = #{xyGubun}
+			    AND IOTYPE = #{ioType}
+			    AND ADDRESS = #{address}
+			   <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ioBit)">
+			            AND IOBIT = #{ioBit}
+			   </if>
+    </select>     
+    
+    <insert id="insertGrpTag" parameterType="java.util.Map">
+    	  INSERT INTO MST_GRPTAG (Gubun, ID, GrpHogi, MenuNo, GrpNo, Hogi	, TagNo, ISeq, MaxVal, MinVal, YSeq, YMaxVal, YMinVal, SaveCoreChk, Descr)
+    	  VALUES ( #{gubun},  #{id}, #{grpHogi}, #{menuNo}, #{grpNo}, #{hogi}, #{tagNo}, #{iSeq}, #{maxVal}, #{minVal}, #{ySeq}, #{yMaxVal}, #{yMinVal}, #{saveCoreChk}, #{descr} )        
+    </insert>
+    
+   <select id="selectScanTime" parameterType="MarkSearchPerformance" resultType="java.util.Map">
+        	SELECT Convert(varchar,ScanTime,120) as SCANTIME
+        	 FROM LOG_Timer
+            WHERE GUBUN = 'D'
+               AND HOGI = #{sHogi}
+                AND DATATYPE = #{sXYGubun}
+    </select>
+           
+    
+</mapper>

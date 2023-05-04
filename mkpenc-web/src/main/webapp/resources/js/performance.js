@@ -53,6 +53,59 @@ function mbr_DccGrpTagEventCallback(data){
 	compareVarBody.append(compareVarBodyStr);		
 }
 
+
+function mbr_MarkGrpTagEventCallback(data){
+	
+	var compareVarBody = $("#compareVarList");
+	var compareVarBodyStr = "";
+	
+	$.each(data.TagMarkInfoList, function(key, value){
+
+	  			compareVarBodyStr += "<tr>"
+                          					+ "  <td>"+  value.dataLoop  +"</td>";
+
+            	if( value.IOTYPE == "DT" && (value.alarmType == 4 || value.alarmType == 12)){
+                	   compareVarBodyStr	  += " <td class='tc'>%</td>";
+                }else {
+                	   compareVarBodyStr	  += " <td class='tc'>"+  value.unit  +"</td>";
+                }
+                
+                
+           switch (value.minVal){
+                case 0 : 
+                   compareVarBodyStr	  += " <td class='tc'>"+  value.maxVal  +"</td>";
+                   break;
+                case -1 :
+                	compareVarBodyStr	  += " <td class='tc'> > "+  value.maxVal  +"</td>";
+                	break;
+                case -2 :
+                    compareVarBodyStr	  += " <td class='tc'> < "+  value.maxVal  +"</td>";
+                    break; 
+                case -3 :
+                    compareVarBodyStr	  += " <td class='tc'></td>";
+                    break;
+                default : 
+                	compareVarBodyStr	  += ("<td class='tc'>"+  value.minVal  + "~" + value.maxVal  + "</td>");
+             } 
+
+                compareVarBodyStr	+= " <td class='tc'></td>"
+				                           + " <td class='tc'></td>"
+				                           + " <td class='tc'></td>"
+				                           + " <td class='tc'></td>"
+				                           + " <td class='tc'></td>"
+				                           + " <td class='tc'></td>"
+				                           + " <td class='tc'></td>"
+				                           + " <td class='tc'></td>"
+				                           + " <td class='tc'></td>"
+				                           + " <td class='tc'></td>"
+					  		  + "</tr>";
+				
+	});
+	
+	compareVarBody.empty();
+	compareVarBody.append(compareVarBodyStr);		
+}
+
 function mbr_UGrpNoInfoEventCallback(data){
 		
 	if(data.GrpName != null){

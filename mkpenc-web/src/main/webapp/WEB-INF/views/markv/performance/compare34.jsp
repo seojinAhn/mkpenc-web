@@ -126,24 +126,24 @@ $(function () {
 	                            <th>Unit</th>
 	                        </tr>
 	                    </thead>
-	                    <tbody id="tagDccInfoList" name="tagDccInfoList">
-	                      <c:forEach var="tagDccInfo" items="${TagDccInfoList}" varStatus="status">
+	                    <tbody id="tagMarknfoList" name="tagMarkInfoList">
+	                      <c:forEach var="tagMarkInfo" items="${TagMarkInfoList}" varStatus="status">
 	                        <tr>
 	                            <td class="tc">${status.count}</td>
-	                            <td class="tc">${tagDccInfo.IOTYPE}</td>
+	                            <td class="tc">${tagMarkInfo.IOTYPE}</td>
 	                            <c:choose>
-	                            	<c:when test="${tagDccInfo.IOTYPE eq 'DI' or tagDccInfo.IOTYPE eq 'DO' }">
-		                            	<td class="tc">${tagDccInfo.ADDRESS} - ${tagDccInfo.IOBIT}</td>
+	                            	<c:when test="${tagMarkInfo.IOTYPE eq 'DI' or tagMarkInfo.IOTYPE eq 'DO' }">
+		                            	<td class="tc">${tagMarkInfo.ADDRESS} - ${tagMarkInfo.IOBIT}</td>
 		                            </c:when>
 		                            <c:otherwise>
-                            			<td class="tc">${tagDccInfo.ADDRESS}</td>
+                            			<td class="tc">${tagMarkInfo.ADDRESS}</td>
                             		</c:otherwise>
 	                            </c:choose>
-	                            <td class="tc">${tagDccInfo.DataLoop}</td>
-	                            <td class="tc">${tagDccInfo.Descr}</td>
+	                            <td class="tc">${tagMarkInfo.DataLoop}</td>
+	                            <td class="tc">${tagMarkInfo.Descr}</td>
 	                            <td class="tc"></td>
 	                            <td class="tc"></td>
-	                            <td class="tc">${tagDccInfo.Unit}</td>
+	                            <td class="tc">${tagMarkInfo.Unit}</td>
 	                        </tr>
 	                        </c:forEach>
 	                    </tbody>
