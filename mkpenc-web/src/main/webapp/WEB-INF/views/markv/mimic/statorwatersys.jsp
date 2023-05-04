@@ -150,23 +150,6 @@ $(function () {
 	setTimer(hogiHeader,xyHeader,5000);
 });	
 
-var selectTag = [{name:"iSeq",value:""},{name:"register",value:""},{name:"iOBit",value:""},{name:"signalName",value:""}
-				,{name:"signalDesc",value:""},{name:"d0",value:""},{name:"d1",value:""},{name:"bSCal",value:""}];
-
-function tagSelect() {
-	for( var tr=0;tr<selectTag.length;tr++ ) {
-		if( selectTag[tr].name == "iSeq" ) $("#txtISeq").val(selectTag[tr].value);
-		if( selectTag[tr].name == "register" ) $("#txtRegister").val(selectTag[tr].value);
-		if( selectTag[tr].name == "iOBit" ) $("#txtIOBit").val(selectTag[tr].value);
-		if( selectTag[tr].name == "signalName" ) $("#txtSignalName").val(selectTag[tr].value);
-		if( selectTag[tr].name == "signalDesc" ) $("#txtSignalDesc").val(selectTag[tr].value);
-		if( selectTag[tr].name == "d0" ) $("#txtD0").val(selectTag[tr].value);
-		if( selectTag[tr].name == "d1" ) $("#txtD1").val(selectTag[tr].value);
-		if( selectTag[tr].name == "bSCal" ) $("#txtBSCal").val(selectTag[tr].value).prop("selected",true);
-	}
-	closeLayer('modal_2');
-}
-
 function setTimer(hogiHeader,xyHeader,interval) {
 	if( interval > 0 ) {
 		setTimeout(function() {
@@ -185,6 +168,23 @@ function setTimer(hogiHeader,xyHeader,interval) {
 		comSubmit.addParam("xyHeader",xyHeader);
 		comSubmit.submit();
 	}
+}
+
+var selectTag = [{name:"iSeq",value:""},{name:"register",value:""},{name:"iOBit",value:""},{name:"signalName",value:""}
+				,{name:"signalDesc",value:""},{name:"d0",value:""},{name:"d1",value:""},{name:"bSCal",value:""}];
+
+function tagSelect() {
+	for( var tr=0;tr<selectTag.length;tr++ ) {
+		if( selectTag[tr].name == "iSeq" ) $("#txtISeq").val(selectTag[tr].value);
+		if( selectTag[tr].name == "register" ) $("#txtRegister").val(selectTag[tr].value);
+		if( selectTag[tr].name == "iOBit" ) $("#txtIOBit").val(selectTag[tr].value);
+		if( selectTag[tr].name == "signalName" ) $("#txtSignalName").val(selectTag[tr].value);
+		if( selectTag[tr].name == "signalDesc" ) $("#txtSignalDesc").val(selectTag[tr].value);
+		if( selectTag[tr].name == "d0" ) $("#txtD0").val(selectTag[tr].value);
+		if( selectTag[tr].name == "d1" ) $("#txtD1").val(selectTag[tr].value);
+		if( selectTag[tr].name == "bSCal" ) $("#txtBSCal").val(selectTag[tr].value).prop("selected",true);
+	}
+	closeLayer('modal_2');
 }
 
 function tagFind(type) {
