@@ -73,6 +73,10 @@ $(function () {
 	$(document.body).delegate('#X', 'click', function() {
 		setTimer(hogiHeader,'X',0);
 	});
+	$(document.body).delegate('#Y', 'click', function() {
+		setTimer(hogiHeader,'Y',0);
+	});
+	
 	
 	$(document.body).delegate('#rotorprewarmFrm_div label', 'dblclick', function() {		
 		var cId = this.id.indexOf('fValue') > -1 ? this.id.substring(4) : this.id;
