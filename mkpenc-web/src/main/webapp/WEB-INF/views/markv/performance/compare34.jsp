@@ -32,7 +32,7 @@ $(function () {
   				
   				var comAjax = new ComAjax("compare34Frm");
   				comAjax.setUrl("/markv/performance/runtimer34");
-  				comAjax.setCallback("mbr_RuntimerEventCallback");
+  				comAjax.setCallback("mbr_RuntimerEventCallback"); 
   				//comAjax.ajax();		
   				
   				 }, 500); 	  

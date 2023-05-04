@@ -230,7 +230,7 @@ function DatetimepickerDefaults(opts) {
 	<!-- container -->
 	<div class="container">
 		<!-- contents -->
-		<div class="contents">
+		<div class="contents"> 
 			<!-- page_title -->
 			<div class="page_title">
 				<h3>주요기기 성능감시</h3>
