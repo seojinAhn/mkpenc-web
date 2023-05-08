@@ -561,6 +561,217 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		
 	}
 	
+	public Map getNumericRealValue(Map searchMap, List<ComTagDccInfo> tagDccInfoList){
+		
+		Map rtnMap = new HashMap();
+		
+		String[] varValue = null;
+		
+		if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {
+			varValue = sqlQueryDccReal4Hogi(searchMap).split("\\|");
+		}else {		
+			varValue = sqlQueryDccReal(searchMap).split("\\|");
+		}
+		
+		//*** Start getDccValue 에 포함 된 로직
+    	if(varValue != null && varValue.length != 0) {
+    		if(varValue[0].length() == 19) {
+    			
+    			rtnMap.put("SearchTime", searchMap.get("hogi").toString() + " " +  searchMap.get("xyGubun").toString() + " " + varValue[0]);
+    			
+    			try {
+	        			java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	       			    java.util.Date date = format.parse(varValue[0]);
+	        			
+	        			Calendar c = Calendar.getInstance();
+	        			c.setTime(date); 
+	        			c.add(Calendar.MILLISECOND, 1);
+	        			
+	        			long searchTime = date.getTime();
+	        			long currentTime = System.currentTimeMillis();
+	        			
+	        			long secondsDifference = (currentTime -searchTime)  / 1000;   
+	        			
+	        			searchMap.put("TimeGap", secondsDifference);
+	        			
+	        			 if (secondsDifference > 1800) {
+	        				 rtnMap.put("ForeColor", "#FF");
+	        			 }else {
+	        				 rtnMap.put("ForeColor", "#808000");
+	        			 }
+	        			
+    			}catch (Exception e) {
+    				e.printStackTrace();
+    			}        			
+    		} // end if varVal[0] len 19
+    	} // end if varValue is not null
+		
+    	List<Map> lblDataList = new ArrayList<Map>();
+    	List<String> lblCountList = new ArrayList<String>();
+    	List<String> pCountList = new ArrayList<String>();
+    	
+    	for(int i=0;i<tagDccInfoList.size();i++) {
+    		if(varValue[i+1] != null && !varValue[i+1].isEmpty()) {
+    			double fValue = Double.parseDouble(varValue[i+1]);
+    			
+    			Map lblData = new HashMap();
+    			lblData.put("fValue", fValue);
+    			
+    			lblDataList.add(lblData);
+    		}else {
+    			lblDataList.add(new HashMap());
+    		}
+    	}
+    	
+		varValue = sqlQueryDccCount(searchMap).split("\\|");
+		
+	   	if(varValue != null && varValue.length != 0) {
+	   		
+	   		for(int i=0;i<tagDccInfoList.size();i++) {
+	   			if(varValue[i+1] != null && !varValue[i+1].isEmpty()) {
+	   				if(Double.parseDouble(varValue[i+1]) < 0) {
+	   					lblCountList.add(Integer.toOctalString(65535 + Integer.parseInt(varValue[i+1]) + 1));
+	   					pCountList.add(""+ 65535 + Integer.parseInt(varValue[i+1]) + 1);
+	   				}else {
+	   					lblCountList.add(Integer.toOctalString(Integer.parseInt(varValue[i+1])));
+	   					pCountList.add(""+ Integer.parseInt(varValue[i+1]));
+	   				}
+	   			}
+	   		}
+	   	}
+    	
+	    rtnMap.put("lblDataList", lblDataList);
+    	rtnMap.put("lblCountList", lblCountList);
+    	rtnMap.put("pCountList", pCountList);
+
+		return rtnMap;
+		
+	}
+	
+	private String sqlQueryDccReal(Map searchMap) {
+		
+		String pSCanTime ="";
+		
+		/*
+		  if strUserID <> "" then
+	    	pSQL = "UPDATE MST_USER SET UserIP = '" & strIp & "', conntime = getdate()"
+	    	pSQL = pSQL & ", Login = 'Y', LoginHogi = '" & strHogi & "'"
+	    	pSQL = pSQL & " WHERE ID = '" & strUserID & "'"
+	    	conn1.execute(pSQL)
+	    End If
+	    */
+						
+		String pStr =  "";
+		List<ComDccGrpTagInfo> dccGrpTagList = basDccOsmsMapper.selectDccGrpTagList(searchMap);
+		
+		for(ComDccGrpTagInfo dccGrpTag:dccGrpTagList) {
+			Map trendSchMap = new HashMap();
+			trendSchMap.put("hogi", dccGrpTag.getHogi());
+			trendSchMap.put("tlbNo", dccGrpTag.getTBLNO());
+			trendSchMap.put("fldNo", dccGrpTag.getFLDNO());
+			trendSchMap.put("xyGubun", dccGrpTag.getXYGubun());
+			
+			Map logTrend = basDccOsmsMapper.selectLogDccTrendReal(trendSchMap);
+			
+			if(logTrend == null || logTrend.get("scantime") == null ) {
+				pStr = pStr + "|";
+			}else {
+				if(pStr.isEmpty()) {
+					 pStr = logTrend.get("scantime").toString() + "|";
+				}
+				pStr = logTrend.get("tValue").toString() + "|";
+			}			
+		}
+		
+		return pStr;			
+	}	
+
+	private String sqlQueryDccReal4Hogi(Map searchMap) {
+		
+		String pSCanTime ="";
+		
+		/*
+		  if strUserID <> "" then
+	    	pSQL = "UPDATE MST_USER SET UserIP = '" & strIp & "', conntime = getdate()"
+	    	pSQL = pSQL & ", Login = 'Y', LoginHogi = '" & strHogi & "'"
+	    	pSQL = pSQL & " WHERE ID = '" & strUserID & "'"
+	    	conn1.execute(pSQL)
+	    End If
+	    */
+						
+		String pStr =  "";
+		List<ComDccGrpTagInfo> dccGrpTagList = basDccOsmsMapper.selectDccGrpTagList(searchMap);
+		
+		for(ComDccGrpTagInfo dccGrpTag:dccGrpTagList) {
+			Map trendSchMap = new HashMap();
+			trendSchMap.put("hogi", dccGrpTag.getHogi());
+			trendSchMap.put("tlbNo", dccGrpTag.getTBLNO());
+			trendSchMap.put("fldNo", dccGrpTag.getFLDNO());
+			trendSchMap.put("xyGubun", dccGrpTag.getXYGubun());
+			
+			Map logTrend = basDccOsmsMapper.selectLogDccTrend4HogiReal(trendSchMap);
+			
+			if(logTrend == null || logTrend.get("scantime") == null ) {
+				pStr = pStr + "|";
+			}else {
+				if(pStr.isEmpty()) {
+					 pStr = logTrend.get("scantime").toString() + "|";
+				}
+				pStr = logTrend.get("tValue").toString() + "|";
+			}			
+		}
+		
+		return pStr;			
+	}
+	
+
+	private String sqlQueryDccCount(Map searchMap) {
+		
+		String pSCanTime ="";
+		
+		/*
+		  if strUserID <> "" then
+	    	pSQL = "UPDATE MST_USER SET UserIP = '" & strIp & "', conntime = getdate()"
+	    	pSQL = pSQL & ", Login = 'Y', LoginHogi = '" & strHogi & "'"
+	    	pSQL = pSQL & " WHERE ID = '" & strUserID & "'"
+	    	conn1.execute(pSQL)
+	    End If
+	    */
+		
+		Map scantime = basDccOsmsMapper.selectScanTime(searchMap);
+		
+		if(scantime != null && scantime.get("SCANTIME") != null) {
+			pSCanTime = scantime.get("SCANTIME").toString();
+		}
+
+		searchMap.put("pSCanTime", pSCanTime);
+						
+		String pStr =  "";
+		List<ComDccGrpTagInfo> dccGrpTagList = basDccOsmsMapper.selectDccGrpTagList(searchMap);
+		
+		for(ComDccGrpTagInfo dccGrpTag:dccGrpTagList) {
+			Map trendSchMap = new HashMap();
+			trendSchMap.put("hogi", dccGrpTag.getHogi());
+			trendSchMap.put("tlbNo", dccGrpTag.getTBLNO());
+			trendSchMap.put("fldNo", dccGrpTag.getFLDNO());
+			trendSchMap.put("xyGubun", dccGrpTag.getXYGubun());
+			
+			Map logTrend = basDccOsmsMapper.selectLogDccCount(trendSchMap);
+			
+			if(logTrend == null || logTrend.get("scantime") == null ) {
+				pStr = pStr + "|";
+			}else {
+				if(pStr.isEmpty()) {
+					 pStr = logTrend.get("scantime").toString() + "|";
+				}
+				pStr = logTrend.get("tValue").toString() + "|";
+			}			
+		}
+		
+		return pStr;			
+	}	
+	
+	
 	// added by jhlee(23.02.28)
 	public List<Map> selectDccGrpTagListB(Map searchMap) {
 		List<Map> rtnMap = new ArrayList<Map>();

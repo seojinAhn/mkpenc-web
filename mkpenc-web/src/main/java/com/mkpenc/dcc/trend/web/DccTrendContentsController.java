@@ -1356,14 +1356,167 @@ private void getTrendView(DccSearchTrend dccSearchTrend, List<ComTagDccInfo> dcc
 			
 			dccSearchTrend.setMenuName(this.menuName);
 			
+			if(dccSearchTrend.getsMenuNo() == null || dccSearchTrend.getsMenuNo().isEmpty()) {
+            	
+				dccSearchTrend.setsDive("D");
+        		dccSearchTrend.setsMenuNo("25");
+        		dccSearchTrend.setsGrpID("Trend");
+	        	dccSearchTrend.setsUGrpNo("1");
+	        	
+	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+	        	dccSearchTrend.setsHogi(member.getHogi());
+	        	dccSearchTrend.setsXYGubun(member.getXyGubun());	        	
+        	}
+			
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchTrend.getsXYGubun()==null?  "": dccSearchTrend.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchTrend.getsHogi()==null?  "": dccSearchTrend.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchTrend.getsDive()==null?  "": dccSearchTrend.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchTrend.getsGrpID()==null?  "": dccSearchTrend.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchTrend.getsMenuNo()==null?  "": dccSearchTrend.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchTrend.getsUGrpNo()==null?  "": dccSearchTrend.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+    		
+    		Map dccVal = basDccOsmsService.getNumericRealValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		List<Map> lblDataList = (ArrayList)dccVal.get("lblDataList");
+    		List<String> pCount = (ArrayList)dccVal.get("pCountList");
+    		List<String> lblCounts= (ArrayList)dccVal.get("lblCountList");
+    		
+    		int idx = 0;
+    		double fValue = 0.0f;
+    		List<String> lblBinary = new ArrayList();
+    		List<String> lblVolts = new ArrayList();
+    		
+    		for(ComTagDccInfo tagDccInfo:tagDccInfoList) {
+    			if(tagDccInfo.getIOTYPE().equals("DI")) {
+    				
+    				if(lblDataList.get(idx) != null && !lblDataList.get(idx).get("fValue").toString().isEmpty()) {
+    					fValue = Double.parseDouble(lblDataList.get(idx).get("fValue").toString());
+    					String strBin = Convert2Bin(fValue);
+    					lblBinary.add( strBin.substring(0, 1) + "  " + strBin.substring(2, 5) + "  " + strBin.substring(5, 8) + 
+    							"  " + strBin.substring(8, 11) + "  " + strBin.substring(11, 14) + "  " + strBin.substring(14, 17));
+    				}else {
+    					lblBinary.add("");
+    				}    			
+    				
+    			}else 	if(tagDccInfo.getIOTYPE().equals("DO")) {
+    				
+    				if(lblDataList.get(idx) != null && !lblDataList.get(idx).get("fValue").toString().isEmpty()) {
+    					fValue = Double.parseDouble(lblDataList.get(idx).get("fValue").toString());
+    					String strBin = Convert2Bin(fValue);
+    					lblBinary.add( strBin.substring(0, 2) + "  " + strBin.substring(3, 6) + "  " + strBin.substring(6, 9));
+    				}else {
+    					lblBinary.add("");
+    				}    		
+    				
+    			}else 	if(tagDccInfo.getIOTYPE().equals("SC")) {
+    				if(tagDccInfo.getSaveCore()> -1) {
+	    				if(lblDataList.get(idx) != null && !lblDataList.get(idx).get("fValue").toString().isEmpty()) {
+	    					fValue = Double.parseDouble(lblDataList.get(idx).get("fValue").toString());
+	    					String strBin = Convert2Bin(fValue);
+	    					lblBinary.add( strBin.substring(0, 1) + "  " + strBin.substring(2, 5) + "  " + strBin.substring(5, 8) + 
+	    							"  " + strBin.substring(8, 11) + "  " + strBin.substring(11, 14) + "  " + strBin.substring(14, 17));
+	    				}else {
+	    					lblBinary.add("");
+	    				}  
+    				}
+    				
+    			}else {
+    				
+    				if(lblDataList.get(idx) != null && !lblDataList.get(idx).get("fValue").toString().isEmpty()) {
+    					
+    					if(lblDataList.get(idx).get("fValue").toString().equals("***IRR")) {
+    						lblVolts.add("-");
+    						lblCounts.add(idx, "-");
+    					}else {
+		    					fValue = Double.parseDouble(lblDataList.get(idx).get("fValue").toString());
+		    					if(tagDccInfo.getIOTYPE().equals("AI")){
+		    						lblVolts.add(Get_Y(Double.parseDouble(pCount.get(idx).toString()), 0, 32767, 0, 5, 10000));
+		    						lblDataList.get(idx).put("fValue", (fValue > -32768)? fValue:"***IRR");
+		    					}else {
+		    						lblDataList.get(idx).put("fValue", (fValue > -32768)? fValue:"***IRR");
+		    					}
+    					}    					
+    				}else {
+    					lblDataList.get(idx).put("fValue", "");
+    				}  
+    			}    			
+    			idx++;    			
+    		}
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	
+        	mav.addObject("lblDataList", lblDataList);
+        	mav.addObject("lblCountList", lblCounts);
+        	mav.addObject("pCountList", pCount);
+        	mav.addObject("lblBinary", lblBinary);
+        	mav.addObject("lblVolts", lblVolts);
+        	
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+
 			mav.addObject("BaseSearch", dccSearchTrend);
 			mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
-			
 		}
 		
-		
-
 		return mav;
+	}
+	
+	private String Convert2Bin(Double value) {
+	        return (value < 0 ? "1" : "0")
+	                + Long.toBinaryString(Double.doubleToLongBits(Math
+	                        .abs(value)));
+		
+		/*
+		
+		  	Dim i As Integer
+		    Dim nDiv As Double
+		    Dim nRemind As Single
+		    
+		    nDiv = value
+		    For i = 0 To 15
+		        nRemind = nDiv \ 2
+		        Convert2Bin = nDiv Mod 2 & Convert2Bin
+		        nDiv = nRemind
+		    Next
+		*/
+	}
+	
+	private String Get_Y(double aXval, int aXmin, int aXmax, int aYmin, int aYmax, int aOffset) {
+		
+		String rtn ="";
+		
+		long Y = 0L;
+		
+		Y = Math.round(aXval);
+		
+		Y = Math.round((aYmin * aOffset) + (((aYmax - aYmin) * aOffset) * (aXval - aXmin)) / (aXmax - aXmin));
+		
+		Y = Y / aOffset;
+		
+		if (Y < aYmin) {
+			return aYmin + "";
+		}else {
+			return Y + "";
+		}
+		/*
+		 * Dim Y   As Single
+    
+		    Y = CLng(aXval)
+		    
+		    Y = Fix((aYmin * aOffset) + (((aYmax - aYmin) * aOffset) * (aXval - aXmin)) / (aXmax - aXmin))
+		    
+		    Y = Y / aOffset
+		    
+		    If Y < aYmin Then
+		        Get_Y = aYmin
+		    Else
+		        Get_Y = Y
+		    End If
+    
+		 */
 	}
 
 }

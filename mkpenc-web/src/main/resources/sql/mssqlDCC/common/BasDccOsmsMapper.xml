@@ -143,10 +143,43 @@
       	 <if test="@org.apache.commons.lang3.StringUtils@isEmpty(startDate)">
 	      	 WHERE Scantime = #{pSCanTime}
       	 </if>
-    </select>       
+    </select>      
+    
+     <select id="selectLogDccTrendReal" parameterType="java.util.Map" resultType="java.util.Map">
+	       Select Convert(char(19), Scantime,120) as scantime, Tvalue${fldNo} as tValue
+	       	from log_${hogi}dcc_trend
+	        where scantime = (select scantime 
+	        									 from log_timer 
+	        									where gubun ='D'
+	        									    and  Hogi = #{hogi}
+	        									    and DataType = #{xyGubun})
+                  and SEQ = 	#{tblNo}   									    
+	       									       
+     </select> 
+     
+     <select id="selectLogDccTrend4HogiReal" parameterType="java.util.Map" resultType="java.util.Map">
+	       Select Convert(char(19), Scantime,120) as scantime, Tvalue${fldNo} as tValue
+	       	from log_${hogi}dcc_trend${tblNo}
+	        where scantime = (select scantime 
+	        									 from log_timer 
+	        									where gubun ='D'
+	        									    and  Hogi = #{hogi}
+	        									    and DataType = #{xyGubun})
+     </select>      
+     
+     <select id="selectLogDccCount" parameterType="java.util.Map" resultType="java.util.Map">
+	       Select Convert(char(19), Scantime,120) as scantime, Tvalue${fldNo} as tValue
+	       	from log_${hogi}dcc_count
+	        where scantime = (select scantime 
+	        									 from log_timer 
+	        									where gubun ='D'
+	        									    and  Hogi = #{hogi}
+	        									    and DataType = #{xyGubun})
+                  and SEQ = 	#{tblNo}   		
+     </select> 
     
     <select id="selectDccGrpTagListB" parameterType="java.util.Map" resultType="java.util.Map">
-		<if test='@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(dive,"d")'>
+		<if test='@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(dive,"d")'> 
 			SELECT
 				b.Iseq iSeq,
 				b.gubun,
@@ -280,5 +313,6 @@
 		</if>
 		ORDER BY B.TagNo
 	</select> 
+
 
 </mapper>

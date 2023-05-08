@@ -22,6 +22,12 @@ public interface BasDccOsmsMapper {
 	
 	List<Map> selectLogDccTrend4Hogi(Map selectMap);
 	
+	Map selectLogDccTrendReal(Map selectMap);
+	
+	Map selectLogDccTrend4HogiReal(Map selectMap);
+	
+	Map selectLogDccCount(Map selectMap);
+	
 	// added by jhlee(23.02.28)
 	List<Map> selectDccGrpTagListB(Map selectMap);
 	
