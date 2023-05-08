@@ -16,9 +16,8 @@
 <script type="text/javascript" src="<c:url value="/resources/js/modal.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/common.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
-<script type="text/javascript" src="<c:url value="/resources/js/status.js
+<script type="text/javascript" src="<c:url value="/resources/js/status.js" />" charset="utf-8"></script>
 
-" />" charset="utf-8"></script>
 <script type="text/javascript">
 var timerOn = true; //true로 변경
 var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
