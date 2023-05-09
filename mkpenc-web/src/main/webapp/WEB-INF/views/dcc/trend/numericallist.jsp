@@ -74,124 +74,36 @@
                             <th>DESCRIPTION</th>
                             <th>TYPE</th>
                             <th>ADDR</th>
-                            <th>MIN</th>
-                            <th>경보 LOW</th>
-                            <th>경보 HIGH</th>
-                            <th>MAX</th>
-                            <th>VALUE</th>
+                            <th>VOLTS</th>
+                            <th>COUNT</th>
+                            <th>END VALUE</th>
+                            <th>UNIT</th>
                         </tr>
                     </thead>
                     <tbody>
+                     <tbody id="numericalList" name = "numericalList">
+                     <c:forEach var="lblData" items="${lblDataList}"   varStatus="status"  >
                         <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
+                            <td class="tc">${status.count}</td>
+                            <td class="tc">${lblData.type}</td>
+                            <td class="tc">${lblData.dccId}</td>
+                            <td class="tc">${lblData.addr}</td>
+                            
+                              <c:choose>
+                            	   <c:when test="${lblData.type eq 'DT' or  lblData.type eq 'DO' or  lblData.type eq 'SC' }">
+                            			<td class="tc" colspan="4">${lblBinary[status.index]}</td>
+                            	</c:when>
+                            	<c:otherwise>
+                            			<td class="tc">${lblVolts[status.index]}</td>
+										<td class="tc">${lblCountList[status.index]}</td>
+			                            <td class="tc">{lblData.fValue}</td>
+			                            <td class="tc">{lblData.unit}</td>
+                            	</c:otherwise>
+                            </c:choose>
+                            
+                            
                         </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
-                        <tr>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                            <td class="tc"><span class="st_label st_low"></span></td>
-                            <td class="tc"><span class="st_label st_high"></span></td>
-                            <td class="tc"></td>
-                            <td class="tc"></td>
-                        </tr>
+                        </c:forEach>
                     </tbody>
                 </table>
                 <!-- //list_table -->
