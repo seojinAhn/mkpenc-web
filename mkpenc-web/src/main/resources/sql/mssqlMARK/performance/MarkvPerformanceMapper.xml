@@ -50,7 +50,7 @@
                       AND SEQ = #{tblno}
     </select>
     
-	<select id="selectTagSearch" parameterType="MarkSearchPerformance" resultType="java.util.Map">
+	<select id="selectTagSearch" parameterType="MarkvSearchPerformance" resultType="java.util.Map">
         	SELECT * 
         	 FROM MST_TAG_MARK 
            <trim prefix="WHERE" prefixOverrides="AND | OR">
@@ -75,7 +75,7 @@
                 ORDER BY ISEQ
     </select>    
     
-	<select id="selectFastIOSearch" parameterType="MarkSearchPerformance" resultType="java.util.Map">
+	<select id="selectFastIOSearch" parameterType="MarkvSearchPerformance" resultType="java.util.Map">
         	SELECT * 
         	 FROM MST_TAG_MARK 
            <trim prefix="WHERE" prefixOverrides="AND | OR">
@@ -114,7 +114,7 @@
     	  VALUES ( #{gubun},  #{id}, #{grpHogi}, #{menuNo}, #{grpNo}, #{hogi}, #{tagNo}, #{iSeq}, #{maxVal}, #{minVal}, #{ySeq}, #{yMaxVal}, #{yMinVal}, #{saveCoreChk}, #{descr} )        
     </insert>
     
-   <select id="selectScanTime" parameterType="MarkSearchPerformance" resultType="java.util.Map">
+   <select id="selectScanTime" parameterType="MarkvSearchPerformance" resultType="java.util.Map">
         	SELECT Convert(varchar,ScanTime,120) as SCANTIME
         	 FROM LOG_Timer
             WHERE GUBUN = 'D'
