@@ -82,7 +82,7 @@ public class BasMarkOsmsServiceImpl implements BasMarkOsmsService{
 		return sqlQueryMark(searchMap).split("\\|");
 	}
 	
-	public Map getMarkValue(Map searchMap, List<ComTagMarkInfo> tagMarkInfoList,  ModelAndView mav){
+	public Map getMarkValue(Map searchMap, List<ComTagMarkInfo> tagMarkInfoList){
 		
 		Map rtnMap = new HashMap();
 		

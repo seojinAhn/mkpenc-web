@@ -1330,44 +1330,7 @@ private void getTrendView(DccSearchTrend dccSearchTrend, List<ComTagDccInfo> dcc
 	        	dccSearchTrend.setsXYGubun(member.getXyGubun());	        	
         	}
 			
-			Map grpSearchMap = new HashMap();
-			grpSearchMap.put("dive",dccSearchTrend.getsDive()==null?  "": dccSearchTrend.getsDive());
-			grpSearchMap.put("grpID", dccSearchTrend.getsGrpID()==null?  "": dccSearchTrend.getsGrpID());
-			grpSearchMap.put("menuNo", dccSearchTrend.getsMenuNo()==null?  "": dccSearchTrend.getsMenuNo());
-					
-			List<Map> grpNameList = basCommonService.selectGrpNameList(grpSearchMap);
-	    	mav.addObject("GroupNameList", grpNameList);
-	    	
-        	Map dccGrpTagSearchMap = new HashMap();
-        	dccGrpTagSearchMap.put("xyGubun",dccSearchTrend.getsXYGubun()==null?  "": dccSearchTrend.getsXYGubun());
-        	dccGrpTagSearchMap.put("hogi",dccSearchTrend.getsHogi()==null?  "": dccSearchTrend.getsHogi());
-    		dccGrpTagSearchMap.put("dive",dccSearchTrend.getsDive()==null?  "": dccSearchTrend.getsDive());
-    		dccGrpTagSearchMap.put("grpID", dccSearchTrend.getsGrpID()==null?  "": dccSearchTrend.getsGrpID());
-    		dccGrpTagSearchMap.put("menuNo", dccSearchTrend.getsMenuNo()==null?  "": dccSearchTrend.getsMenuNo());
-    		dccGrpTagSearchMap.put("uGrpNo", dccSearchTrend.getsUGrpNo()==null?  "": dccSearchTrend.getsUGrpNo());
-    		
-    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
-    		
-    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
-    		
-    		List<Map> lblDataList = (ArrayList)dccVal.get("lblDataList");
-    		
-    		for(int i=0;i<lblDataList.size();i++) {
-    			lblDataList.get(i).put("type", tagDccInfoList.get(i).getIOTYPE());
-    			lblDataList.get(i).put("desc", tagDccInfoList.get(i).getLOOPNAME());
-    			
-    			if(tagDccInfoList.get(i).getIOBIT()> -1) {
-    				lblDataList.get(i).put("address", tagDccInfoList.get(i).getADDRESS() + " : " + tagDccInfoList.get(i).getIOBIT());
-    			}else {
-    				lblDataList.get(i).put("address", tagDccInfoList.get(i).getADDRESS());
-    			}    		
-    			
-    			lblDataList.get(i).put("unit", tagDccInfoList.get(i).getUnit());
-    		}
-    		
-    		
-    		mav.addObject("TagDccInfoList", tagDccInfoList);    		
-    		mav.addObject("lblDataList", lblDataList);
+			getMainTrendLog(dccSearchTrend, mav);      
     		
 			mav.addObject("BaseSearch", dccSearchTrend);
 			mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
@@ -1402,25 +1365,7 @@ private void getTrendView(DccSearchTrend dccSearchTrend, List<ComTagDccInfo> dcc
 	        	dccSearchTrend.setsGrpID(member.getId());
         	}
 			
-			Map grpSearchMap = new HashMap();
-			grpSearchMap.put("dive",dccSearchTrend.getsDive()==null?  "": dccSearchTrend.getsDive());
-			grpSearchMap.put("grpID", dccSearchTrend.getsGrpID()==null?  "": dccSearchTrend.getsGrpID());
-			grpSearchMap.put("menuNo", dccSearchTrend.getsMenuNo()==null?  "": dccSearchTrend.getsMenuNo());
-					
-			List<Map> grpNameList = basCommonService.selectGrpNameList(grpSearchMap);
-	    	mav.addObject("GroupNameList", grpNameList);
-	    	
-        	Map dccGrpTagSearchMap = new HashMap();
-        	dccGrpTagSearchMap.put("xyGubun",dccSearchTrend.getsXYGubun()==null?  "": dccSearchTrend.getsXYGubun());
-        	dccGrpTagSearchMap.put("hogi",dccSearchTrend.getsHogi()==null?  "": dccSearchTrend.getsHogi());
-    		dccGrpTagSearchMap.put("dive",dccSearchTrend.getsDive()==null?  "": dccSearchTrend.getsDive());
-    		dccGrpTagSearchMap.put("grpID", dccSearchTrend.getsGrpID()==null?  "": dccSearchTrend.getsGrpID());
-    		dccGrpTagSearchMap.put("menuNo", dccSearchTrend.getsMenuNo()==null?  "": dccSearchTrend.getsMenuNo());
-    		dccGrpTagSearchMap.put("uGrpNo", dccSearchTrend.getsUGrpNo()==null?  "": dccSearchTrend.getsUGrpNo());
-    		
-    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
-    		
-    		mav.addObject("TagDccInfoList", tagDccInfoList);
+			getMainTrendLog(dccSearchTrend, mav);      
 			
 			mav.addObject("BaseSearch", dccSearchTrend);
 			mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
@@ -1428,6 +1373,48 @@ private void getTrendView(DccSearchTrend dccSearchTrend, List<ComTagDccInfo> dcc
 		}
 
 		return mav;
+	}
+	
+	private void getMainTrendLog(DccSearchTrend dccSearchTrend, ModelAndView mav ) {
+		
+		Map grpSearchMap = new HashMap();
+		grpSearchMap.put("dive",dccSearchTrend.getsDive()==null?  "": dccSearchTrend.getsDive());
+		grpSearchMap.put("grpID", dccSearchTrend.getsGrpID()==null?  "": dccSearchTrend.getsGrpID());
+		grpSearchMap.put("menuNo", dccSearchTrend.getsMenuNo()==null?  "": dccSearchTrend.getsMenuNo());
+				
+		List<Map> grpNameList = basCommonService.selectGrpNameList(grpSearchMap);
+    	mav.addObject("GroupNameList", grpNameList);
+    	
+    	Map dccGrpTagSearchMap = new HashMap();
+    	dccGrpTagSearchMap.put("xyGubun",dccSearchTrend.getsXYGubun()==null?  "": dccSearchTrend.getsXYGubun());
+    	dccGrpTagSearchMap.put("hogi",dccSearchTrend.getsHogi()==null?  "": dccSearchTrend.getsHogi());
+		dccGrpTagSearchMap.put("dive",dccSearchTrend.getsDive()==null?  "": dccSearchTrend.getsDive());
+		dccGrpTagSearchMap.put("grpID", dccSearchTrend.getsGrpID()==null?  "": dccSearchTrend.getsGrpID());
+		dccGrpTagSearchMap.put("menuNo", dccSearchTrend.getsMenuNo()==null?  "": dccSearchTrend.getsMenuNo());
+		dccGrpTagSearchMap.put("uGrpNo", dccSearchTrend.getsUGrpNo()==null?  "": dccSearchTrend.getsUGrpNo());
+		
+		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+		
+		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+		
+		List<Map> lblDataList = (ArrayList)dccVal.get("lblDataList");
+		
+		for(int i=0;i<lblDataList.size();i++) {
+			lblDataList.get(i).put("type", tagDccInfoList.get(i).getIOTYPE());
+			lblDataList.get(i).put("desc", tagDccInfoList.get(i).getLOOPNAME());
+			
+			if(tagDccInfoList.get(i).getIOBIT()> -1) {
+				lblDataList.get(i).put("address", tagDccInfoList.get(i).getADDRESS() + " : " + tagDccInfoList.get(i).getIOBIT());
+			}else {
+				lblDataList.get(i).put("address", tagDccInfoList.get(i).getADDRESS());
+			}    		
+			
+			lblDataList.get(i).put("unit", tagDccInfoList.get(i).getUnit());
+		}		
+		
+		mav.addObject("TagDccInfoList", tagDccInfoList);    		
+		mav.addObject("lblDataList", lblDataList);
+		
 	}
 	
 	@RequestMapping("numericallist")

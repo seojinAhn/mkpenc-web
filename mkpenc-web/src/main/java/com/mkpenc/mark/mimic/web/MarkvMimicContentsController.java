@@ -75,7 +75,7 @@ public class MarkvMimicContentsController {
     		
     		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
     		
-    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList);
     		
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -131,7 +131,7 @@ public class MarkvMimicContentsController {
     		
     		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
     		
-    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList);
     		
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -187,7 +187,7 @@ public class MarkvMimicContentsController {
 
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
-        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList);        	
         	
         	List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -243,7 +243,7 @@ public class MarkvMimicContentsController {
 
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
-        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList);        	
         	
         	List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -299,7 +299,7 @@ public class MarkvMimicContentsController {
     		
     		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
     		
-    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList);
     		
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -355,7 +355,7 @@ public class MarkvMimicContentsController {
     		
     		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
     		
-    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList);
     		
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -411,7 +411,8 @@ public class MarkvMimicContentsController {
     		
     		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
     		
-    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList);
+    		
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
         	markvSearchMimic.setComboCnt(tagComboCodeList.size());
@@ -466,7 +467,7 @@ public class MarkvMimicContentsController {
     		
     		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
     		
-    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList);
     		
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -523,7 +524,7 @@ public class MarkvMimicContentsController {
 
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
-        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList);        	
         	
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -636,7 +637,7 @@ public class MarkvMimicContentsController {
     		
     		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
     		
-    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList);
     		
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -693,7 +694,7 @@ public class MarkvMimicContentsController {
 
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
-        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList);        	
         	
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -749,7 +750,7 @@ public class MarkvMimicContentsController {
     		
     		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
     		
-    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList);
     		
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -806,7 +807,7 @@ public class MarkvMimicContentsController {
 
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
-        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList);        	
         	
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -863,7 +864,7 @@ public class MarkvMimicContentsController {
 
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
-        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList);        	
         	
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -920,7 +921,7 @@ public class MarkvMimicContentsController {
 
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
-        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList);        	
         	
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -978,7 +979,7 @@ public class MarkvMimicContentsController {
 
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
-        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList);        	
         	
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -1035,7 +1036,7 @@ public class MarkvMimicContentsController {
 
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
-        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList);        	
         	
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -1092,7 +1093,7 @@ public class MarkvMimicContentsController {
 
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
-        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList);        	
         	
         	List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -1150,7 +1151,7 @@ public class MarkvMimicContentsController {
 
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
-        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList);        	
         	
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -1207,7 +1208,7 @@ public class MarkvMimicContentsController {
 
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
-        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList);        	
         	
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -1264,7 +1265,7 @@ public class MarkvMimicContentsController {
 
         	List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markvGrpTagSearchMap);
         	
-        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList, mav);        	
+        	Map markVal = basMarkOsmsService.getMarkValue(markvGrpTagSearchMap, tagMarkInfoList);        	
         	
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -1321,7 +1322,7 @@ public class MarkvMimicContentsController {
     		
     		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
     		
-    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList);
     		
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -1377,7 +1378,7 @@ public class MarkvMimicContentsController {
     		
     		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
     		
-    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList);
     		
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -1433,7 +1434,7 @@ public class MarkvMimicContentsController {
     		
     		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
     		
-    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList);
     		
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	
@@ -1489,7 +1490,7 @@ public class MarkvMimicContentsController {
     		
     		List<ComTagMarkInfo> tagMarkInfoList = basMarkOsmsService.getMarkGrpTagList(markGrpTagSearchMap);
     		
-    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList, mav);
+    		Map markVal = basMarkOsmsService.getMarkValue(markGrpTagSearchMap, tagMarkInfoList);
     		
     		List<ComTagMarkInfo> tagComboCodeList = basMarkMimicService.getComboCodeList();
         	

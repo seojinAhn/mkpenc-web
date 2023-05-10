@@ -15,6 +15,6 @@ public  interface BasMarkOsmsService {
 	
 	public String[] getMarkValueReturn(Map searchMap);
 	
-	public Map getMarkValue(Map searchMap, List<ComTagMarkInfo> tagMarkInfoList,  ModelAndView mav);
+	public Map getMarkValue(Map searchMap, List<ComTagMarkInfo> tagMarkInfoList);
 
 }
