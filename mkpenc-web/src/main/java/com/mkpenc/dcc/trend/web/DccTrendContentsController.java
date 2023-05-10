@@ -1318,6 +1318,57 @@ private void getTrendView(DccSearchTrend dccSearchTrend, List<ComTagDccInfo> dcc
 			
 			dccSearchTrend.setMenuName(this.menuName);
 			
+			if(dccSearchTrend.getsMenuNo() == null || dccSearchTrend.getsMenuNo().isEmpty()) {
+            	
+				dccSearchTrend.setsDive("D");
+        		dccSearchTrend.setsMenuNo("23");
+        		dccSearchTrend.setsGrpID("Trend");
+	        	dccSearchTrend.setsUGrpNo("1");
+	        	
+	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+	        	dccSearchTrend.setsHogi(member.getHogi());
+	        	dccSearchTrend.setsXYGubun(member.getXyGubun());	        	
+        	}
+			
+			Map grpSearchMap = new HashMap();
+			grpSearchMap.put("dive",dccSearchTrend.getsDive()==null?  "": dccSearchTrend.getsDive());
+			grpSearchMap.put("grpID", dccSearchTrend.getsGrpID()==null?  "": dccSearchTrend.getsGrpID());
+			grpSearchMap.put("menuNo", dccSearchTrend.getsMenuNo()==null?  "": dccSearchTrend.getsMenuNo());
+					
+			List<Map> grpNameList = basCommonService.selectGrpNameList(grpSearchMap);
+	    	mav.addObject("GroupNameList", grpNameList);
+	    	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchTrend.getsXYGubun()==null?  "": dccSearchTrend.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchTrend.getsHogi()==null?  "": dccSearchTrend.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchTrend.getsDive()==null?  "": dccSearchTrend.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchTrend.getsGrpID()==null?  "": dccSearchTrend.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchTrend.getsMenuNo()==null?  "": dccSearchTrend.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchTrend.getsUGrpNo()==null?  "": dccSearchTrend.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+    		
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		List<Map> lblDataList = (ArrayList)dccVal.get("lblDataList");
+    		
+    		for(int i=0;i<lblDataList.size();i++) {
+    			lblDataList.get(i).put("type", tagDccInfoList.get(i).getIOTYPE());
+    			lblDataList.get(i).put("desc", tagDccInfoList.get(i).getLOOPNAME());
+    			
+    			if(tagDccInfoList.get(i).getIOBIT()> -1) {
+    				lblDataList.get(i).put("address", tagDccInfoList.get(i).getADDRESS() + " : " + tagDccInfoList.get(i).getIOBIT());
+    			}else {
+    				lblDataList.get(i).put("address", tagDccInfoList.get(i).getADDRESS());
+    			}    		
+    			
+    			lblDataList.get(i).put("unit", tagDccInfoList.get(i).getUnit());
+    		}
+    		
+    		
+    		mav.addObject("TagDccInfoList", tagDccInfoList);    		
+    		mav.addObject("lblDataList", lblDataList);
+    		
 			mav.addObject("BaseSearch", dccSearchTrend);
 			mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
 			
@@ -1336,6 +1387,40 @@ private void getTrendView(DccSearchTrend dccSearchTrend, List<ComTagDccInfo> dcc
 		if(request.getSession().getAttribute("USER_INFO") != null) {
 			
 			dccSearchTrend.setMenuName(this.menuName);
+			
+			if(dccSearchTrend.getsMenuNo() == null || dccSearchTrend.getsMenuNo().isEmpty()) {
+            	
+				dccSearchTrend.setsDive("D");
+        		dccSearchTrend.setsMenuNo("24");
+        		dccSearchTrend.setsGrpID("Trend");
+	        	dccSearchTrend.setsUGrpNo("1");
+	        	
+	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+	        	dccSearchTrend.setsHogi(member.getHogi());
+	        	dccSearchTrend.setsXYGubun(member.getXyGubun());	        
+	        	
+	        	dccSearchTrend.setsGrpID(member.getId());
+        	}
+			
+			Map grpSearchMap = new HashMap();
+			grpSearchMap.put("dive",dccSearchTrend.getsDive()==null?  "": dccSearchTrend.getsDive());
+			grpSearchMap.put("grpID", dccSearchTrend.getsGrpID()==null?  "": dccSearchTrend.getsGrpID());
+			grpSearchMap.put("menuNo", dccSearchTrend.getsMenuNo()==null?  "": dccSearchTrend.getsMenuNo());
+					
+			List<Map> grpNameList = basCommonService.selectGrpNameList(grpSearchMap);
+	    	mav.addObject("GroupNameList", grpNameList);
+	    	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchTrend.getsXYGubun()==null?  "": dccSearchTrend.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchTrend.getsHogi()==null?  "": dccSearchTrend.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchTrend.getsDive()==null?  "": dccSearchTrend.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchTrend.getsGrpID()==null?  "": dccSearchTrend.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchTrend.getsMenuNo()==null?  "": dccSearchTrend.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchTrend.getsUGrpNo()==null?  "": dccSearchTrend.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+    		
+    		mav.addObject("TagDccInfoList", tagDccInfoList);
 			
 			mav.addObject("BaseSearch", dccSearchTrend);
 			mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
@@ -1442,7 +1527,13 @@ private void getTrendView(DccSearchTrend dccSearchTrend, List<ComTagDccInfo> dcc
     				}else {
     					lblDataList.get(idx).put("fValue", "");
     				}  
-    			}    			
+    			} 
+    			
+    			lblDataList.get(idx).put("type", tagDccInfo.getIOTYPE());
+    			lblDataList.get(idx).put("dccId", tagDccInfo.getHogi() + " : " + tagDccInfo.getXYGubun());
+    			lblDataList.get(idx).put("addr", tagDccInfo.getADDRESS());
+    			lblDataList.get(idx).put("unit", tagDccInfo.getUnit());
+    			
     			idx++;    			
     		}
     		
@@ -1451,7 +1542,6 @@ private void getTrendView(DccSearchTrend dccSearchTrend, List<ComTagDccInfo> dcc
         	
         	mav.addObject("lblDataList", lblDataList);
         	mav.addObject("lblCountList", lblCounts);
-        	mav.addObject("pCountList", pCount);
         	mav.addObject("lblBinary", lblBinary);
         	mav.addObject("lblVolts", lblVolts);
         	
