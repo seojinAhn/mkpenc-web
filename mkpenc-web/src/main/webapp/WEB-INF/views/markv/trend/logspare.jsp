@@ -26,7 +26,7 @@ $(function () {
 
   			// 화면초기화
   			var	comSubmit	=	new ComSubmit("trendLogFrm");
-			comSubmit.setUrl("/dcc/trend/logsharelist");
+			comSubmit.setUrl("/markv/trend/logspare");
 			comSubmit.submit();
   		}
   	});
@@ -39,7 +39,7 @@ $(function () {
 <body>
 <div class="wrap">
 	<!-- header_wrap -->
-	<%@ include file="/WEB-INF/views/include/include-dcc-header.jspf" %>
+	<%@ include file="/WEB-INF/views/include/include-markv-header.jspf" %>
 		<!-- header_wrap -->
 	<!-- container -->
 	<div class="container">
@@ -48,7 +48,7 @@ $(function () {
 			<!-- page_title -->
 			<div class="page_title">
 				<h3>Trend Log(Share)</h3>
-				<div class="bc"><span>DCC</span><span>Trend</span><strong>Trend Log(Share)</strong></div>
+				<div class="bc"><span>MARK_V</span><span>Trend</span><strong>Trend Log(Share)</strong></div>
 			</div>
 			<!-- //page_title -->
 			<!-- list_wrap -->
@@ -72,7 +72,7 @@ $(function () {
                         </select>
 					</div>
 				</div>
-				</form>
+				<form id="trendLogFrm" name="trendLogFrm">
 				<!-- //list_head -->
             </div>
             <!-- //list_wrap -->

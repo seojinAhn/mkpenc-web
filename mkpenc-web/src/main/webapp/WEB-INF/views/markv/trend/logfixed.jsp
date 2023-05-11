@@ -17,6 +17,23 @@
 <script type="text/javascript" src="<c:url value="/resources/js/common.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/trend.js" />" charset="utf-8"></script>
+<script type="text/javascript">
+$(function () {
+	
+  	$("#sUGrpNo").change(function(){
+  		
+  		if($("#sUGrpNo option:selected").val() != ""){
+
+  			// 화면초기화
+  			var	comSubmit	=	new ComSubmit("trendLogFrm");
+			comSubmit.setUrl("/markv/trend/logfixed");
+			comSubmit.submit();
+  		}
+  	});
+	
+});
+
+</script>
 
 </head>
 <body>
@@ -37,6 +54,7 @@
 			<!-- list_wrap -->
 			<div class="list_wrap">
 				<!-- list_head -->
+				<form id="trendLogFrm" name="trendLogFrm">
 				<div class="list_head">
 					<div class="list_info">
                         <select style="width:400px;" id="sUGrpNo" name="sUGrpNo">
@@ -54,6 +72,7 @@
                         </select>
 					</div>
 				</div>
+				</form>
 				<!-- //list_head -->
             </div>
             <!-- //list_wrap -->

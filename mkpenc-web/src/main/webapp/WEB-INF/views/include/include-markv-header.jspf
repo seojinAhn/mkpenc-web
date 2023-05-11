@@ -132,7 +132,7 @@
                                       <a href="#none">LOG</a>          
                                       <ul>          
                                           <li><a href="/markv/trend/logfixed">FIXED</a></li>            
-                                          <li><a href="/markv/trend/logshare">SPARE</a></li>            
+                                          <li><a href="/markv/trend/logspare">SPARE</a></li>            
                                       </ul>         
                                   </li>         
                               </ul>         
