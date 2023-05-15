@@ -109,8 +109,8 @@ public class MarkvTrendContentsController {
         return mav;
     }
 	
-	@RequestMapping("logshare")
-	public ModelAndView logshare(MarkvSearchTrend markvSearchTrend, HttpServletRequest request) {
+	@RequestMapping("logspare")
+	public ModelAndView logspare(MarkvSearchTrend markvSearchTrend, HttpServletRequest request) {
         
 		ModelAndView mav = new ModelAndView();
 
