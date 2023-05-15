@@ -284,6 +284,8 @@
 	}
 
 	function showTag(tagNo,iSeq) {
+		$("#setIOForm")[0].reset();
+		
 		if(${UserInfo.grade} == '1' || ${UserInfo.grade} == '2') { // 나중에 grade 1 은 삭제할 것
 			timerOn = false;
 			$("#txtTagNo").val(tagNo);
@@ -292,8 +294,8 @@
 			$("#txtSignalDesc").val(${MarkTagInfoList[tagNo].txtSignalDesc});
 			$("#txtD0").val(${MarkTagInfoList[tagNo].txtD0});
 			$("#txtD1").val(${MarkTagInfoList[tagNo].txtD1});
-			
 			$("#tagNo").val(tagNo);
+			
 			var infos = tToolTipText[tagNo];
 			$("#txtHogi").val(infos.substring(infos.indexOf('[')+1,infos.indexOf(':')));
 	        $("#txtDescr").val(infos.substring(0,infos.indexOf('[')));

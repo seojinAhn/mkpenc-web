@@ -296,6 +296,8 @@ function saveTag() {
 }
 
 function showTag(tagNo,iSeq) {
+	$("#setIOForm")[0].reset();
+	
 	if(${UserInfo.grade} == '1' || ${UserInfo.grade} == '2') { // 나중에 grade 1 은 삭제할 것
 		timerOn = false;
 		$("#txtTagNo").val(tagNo);
