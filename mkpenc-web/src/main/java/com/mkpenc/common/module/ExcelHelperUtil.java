@@ -2311,4 +2311,52 @@ public class ExcelHelperUtil {
 		
 	}
 
+	public void alarmTFExcelDownload(HttpServletRequest request, HttpServletResponse response, String prefix,
+			List<Map> LblInfoList, List<Map> arrTrendData) throws Exception{
+
+		Workbook wb = new XSSFWorkbook();
+		Sheet sheet = wb.createSheet("Trend_Fixed");
+		Row row = null;
+		Cell cell = null;
+		int rowNum = 0;
+		String fileName = prefix;
+		String suffix = new SimpleDateFormat("MM_dd").format(new Date())+".xlsx";
+		
+		// Set Title
+		row = sheet.createRow(rowNum++);
+		cell = row.createCell(0);
+		cell.setCellValue("시 간");
+		cell = row.createCell(0);
+		for( int l=1;l<LblInfoList.size()+1;l++ ) {
+			cell.setCellValue(LblInfoList.get(l).toString());
+		}
+		
+		if( arrTrendData.size() > 0 ) {
+			for( int idx=0;idx<arrTrendData.size();idx++ ) {
+				row = sheet.createRow(rowNum++);
+				cell = row.createCell(0);
+				cell.setCellValue(arrTrendData.get(idx).get("m_time").toString());
+				for( int li=1;li<LblInfoList.size()+1;li++ ) {
+					cell = row.createCell(li);
+					cell.setCellValue(((Map) arrTrendData.get(li).get("m_data")).get(idx).toString());
+				}
+			}
+		}
+		fileName = fileName+suffix;
+		
+		String browser = WebUtil.getBrowser(request);
+		String encodedFilename = WebUtil.webEncoding(browser, fileName);
+		
+		response.setContentType("application/vnd.ms-excel");
+		response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
+		
+		//Excel File Output
+		ServletOutputStream output = response.getOutputStream();
+		output.flush();
+		wb.write(output);
+		output.flush();
+		output.close();
+		wb.close();
+		
+		}
 }

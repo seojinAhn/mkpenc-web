@@ -31,6 +31,8 @@
 	var grpNos = [];
 	var selGrpNm = "";
 	var colorList = ['#801517','#B9529F','#1EBCBE','#282A73','#ED1E24','#7A57A4','#70CBD1','#364CA0'];
+	var bGroupFlag = false;
+	var swSort;
 	
 	var chart;
 
@@ -115,11 +117,20 @@
 		});
 		
 		$(document.body).delegate('#R', 'click', function() {
-			cmdReal_click();
+			$("#cmdHistorical").css("display","");
+			$("#cmdReal").css("display","none");
+			$("#divUseGap").css("display","none");
+			$("#searchDate").css("display","none");
+			$("#txtTimeGap").attr("disabled",false);
 		});
 		
 		$(document.body).delegate('#H', 'click', function() {
-			cmdHistorical_click();
+			//cmdHistorical_click();
+			$("#cmdHistorical").css("display","none");
+			$("#cmdReal").css("display","");
+			$("#divUseGap").css("display","");
+			$("#searchDate").css("display","");
+			$("#txtTimeGap").attr("disabled",true);
 		});
 		
 		$(document.body).delegate('#3', 'click', function() {
@@ -150,6 +161,56 @@
 			//callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
 		});
 		
+		$(document.body).delegate('#cmdReal', 'click', function() {
+			var selGrpName = $("#cboUGrpName option:selected").val();
+			
+			if( typeof selGrpName == 'undefined' ) selGrpName = $("#cboUGrpName option:eq(0)").val();
+			
+			var startDate = "";
+			var endDate = "";
+			if( $("#selectSDate").val() != null && typeof $("#selectSDate").val() != 'undefined' ) {
+				startDate = $("#selectSDate").val()+':00.000';
+				endDate = $("#selectEDate").val()+':00.000';
+			}
+			
+			var comAjax = new ComAjax("selGrpFrm");
+			comAjax.setUrl("/dcc/trend/changeGrpName");
+			comAjax.addParam("hogiHeader", hogiHeader);
+			comAjax.addParam("xyHeader", xyHeader);
+			comAjax.addParam("startDate", startDate);
+			comAjax.addParam("endDate", endDate);
+			comAjax.addParam('sUGrpNo',selGrpName);
+			comAjax.setCallback("mbr_RuntimerEventCallback");
+			comAjax.ajax();
+			
+			createChart($("#testArea").text());
+		});
+		
+		$(document.body).delegate('#cmdHistorical', 'click', function() {
+			var selGrpName = $("#cboUGrpName option:selected").val();
+			
+			if( typeof selGrpName == 'undefined' ) selGrpName = $("#cboUGrpName option:eq(0)").val();
+			
+			var startDate = "";
+			var endDate = "";
+			if( $("#selectSDate").val() != null && typeof $("#selectSDate").val() != 'undefined' ) {
+				startDate = $("#selectSDate").val()+':00.000';
+				endDate = $("#selectEDate").val()+':00.000';
+			}
+			
+			var comAjax = new ComAjax("selGrpFrm");
+			comAjax.setUrl("/dcc/trend/changeGrpName");
+			comAjax.addParam("hogiHeader", hogiHeader);
+			comAjax.addParam("xyHeader", xyHeader);
+			comAjax.addParam("startDate", startDate);
+			comAjax.addParam("endDate", endDate);
+			comAjax.addParam('sUGrpNo',selGrpName);
+			comAjax.setCallback("mbr_RuntimerEventCallback");
+			comAjax.ajax();
+			
+			createChart($("#testArea").text());
+		});
+		
 		$(document.body).on("change", "#cboUGrpName", function() {
 			var selGrpName = $("#cboUGrpName option:selected").val();
 			
@@ -171,6 +232,30 @@
 			comAjax.ajax();
 			
 			createChart($("#testArea").text());
+		});
+
+		$(document.body).delegate('#cmdUp', 'click', function() {
+			cmdUp_click();
+		});
+		
+		$(document.body).delegate('#cmdDown', 'click', function() {
+			cmdDown_click();
+		});
+		
+		$(document.body).delegate('#cmdInsert', 'click', function() {
+			cmdInsert_click(1);
+		});
+		
+		$(document.body).delegate('#cmdDelete', 'click', function() {
+			cmdDelete_click(1);
+		});
+		
+		$(document.body).delegate('#cmdUpdate', 'click', function() {
+			cmdUpdate_click();
+		});
+		
+		$(document.body).delegate('#cmdOk', 'click', function() {
+			cmdOK_click();
 		});
 	});
 	
@@ -198,6 +283,58 @@
 				}
 			}
 		}
+	}
+	
+	function ssql(swSort) {
+		$("#txtADDRESS").css("color","black");
+		$("#txtMax").css("background","#FFFFFF");
+		$("#txtMin").css("background","#FFFFFF");
+		
+		var ioType = gIOType;
+		if( typeof ioType == 'undefined' ) ioType = 'AI';
+		if( ioType == 'AO' ) ioType = 'DT';
+		
+		if( swSort ) {
+			if($("input:checkbox[id='chkSaveCore']").is(":checked") ) {
+				$("#txtADDRESS").css("color","#FF00FF");
+			} else {
+				$("#txtADDRESS").css("color","#800000");
+			}
+		} else {
+			var page = typeof $("#pageNo2").val() == 'undefined' ? 1 : 2;
+			var comAjax = new ComAjax("ioListForm");
+			comAjax.setUrl("/dcc/trend/ssql");
+			comAjax.addParam("hogiHeader", hogiHeader);
+			comAjax.addParam("xyHeader", xyHeader);
+			comAjax.addParam("ioType", ioType);
+			comAjax.addParam("ioBit", typeof $("#txtIOBIT").val() == 'undefined' ? '' : $("#txtIOBIT").val() );
+			comAjax.addParam("SaveCore", $("input:checkbox[id='chkSaveCore']").is(":checked") ? "1" : "0");
+			comAjax.addParam("address", typeof $("#txtADDRESS").val() == 'undefined' ? "" : $("#txtADDRESS").val());
+			comAjax.setCallback("mbr_ssqlCallback");
+			comAjax.ajax();
+			
+			setIOAjax();
+		}
+	}
+	
+	function setIOAjax() {
+		if( $("#ajaxHogi").val() != null ) $("#cboHogi").val($("#ajaxHogi").val()).prop("selected",true);
+		if( $("#ajaxXYGubun").val() != null ) $("#cboXYGubun").val($("#ajaxXYGubun").val()).prop("selected",true);
+		if( $("#ajaxLoopName").val() != null ) $("#txtLOOPNAME").val($("#ajaxLoopName").val());
+		if( $("#ajaxIOType").val() != null || typeof $("#ajaxIOType").val() == 'undefined' ) $("#cboIOType").val($("#ajaxIOType").val()).prop("selected",true);
+		if( $("#ajaxAddress").val() != null ) $("#txtADDRESS").val($("#ajaxAddress").val());
+		if( $("#ajaxIOBit").val() != null ) $("#txtIOBIT").val($("#ajaxIOBit").val());
+		if( $("#ajaxMin").val() != null ) $("#txtMin").val($("#ajaxMin").val());
+		if( $("#ajaxMax").val() != null ) $("#txtMax").val($("#ajaxMax").val());
+		if( $("#ajaxSaveCore").val() == '1' ) $("input:checkbox[id='chkSaveCore']").prop("checked",true);
+		
+		if( $("#ajaxFastIoChk").val() == '1' ) {
+			$("#txtADDRESS").css("color","#FF00FF");
+		} else {
+			$("#txtADDRESS").css("color","#800000");
+		}
+		$("#txtMin").css("background","#FFFFFF");
+		$("#txtMax").css("background","#FFFFFF");
 	}
 	
 	function DatetimepickerDefaults(opts) {
@@ -338,6 +475,469 @@
 	
 	function cmdOK_click() {
 		
+	}
+	
+	function getLvIOList() {
+		var tmpArray = '${LvIOList}'.replace('[{','').replace('}]','').split('}, {');
+		var ioListArray = [];
+		var ioListArraySub = [];
+		for( var i=0;i<tmpArray.length;i++ ) {
+			var tmpSub = tmpArray[i].split(', ');
+			for( var j=0;j<tmpSub.length;j++ ) {
+				var k = tmpSub[j].split('=')[0];
+				var v = tmpSub[j].split('=')[1];
+				ioListArraySub.push({key:k,value:v});
+			}
+			ioListArray.push(ioListArraySub);
+			ioListArraySub = [];
+		}
+		
+		return ioListArray;
+	}
+		
+	function removeModData(array,str) {
+		if( str != '' ) {
+			var set = new Set(array);
+			var newArr = [...set];
+	
+			for( var i=0;i<newArr.length;i++ ) {
+				if( newArr[i] == str ) {
+					return true;
+				}
+			}
+			return false;
+		} else {
+			return false;
+		}
+	}
+	
+	function textClear(str) {
+		swSort = true;
+		
+		if( str != 'modal_3' ) {
+			$("#ajaxHogi").val('3');
+			$("#ajaxXYGubun").val('X');
+			$("#ajaxLoopName").val('');
+			$("#ajaxIOType").val('AI');
+			$("#ajaxAddress").val('');
+			$("#ajaxIOBit").val('');
+			$("#ajaxMin").val('');
+			$("#ajaxMax").val('');
+			$("#ajaxSaveCore").val('');
+			$("#ajaxFastIoChk").val('');
+			$("#ajaxISeq").val('');
+
+			$("#iSeqMod").val('|==SEP==|');
+			$("#xyGubunMod").val('|==SEP==|');
+			$("#DescrMod").val('|==SEP==|');
+			$("#ioTypeod").val('|==SEP==|');
+			$("#addressMod").val('|==SEP==|');
+			$("#ioBitMod").val('|==SEP==|');
+			$("#minValMod").val('|==SEP==|');
+			$("#maxValMod").val('|==SEP==|');
+			$("#saveCoreMod").val('|==SEP==|');
+			$("#gubunMod").val('|==SEP==|');
+			$("#iSeqMod").val('|==SEP==|');
+		} else {
+			$("#cboTagHogi").val('3');
+			$("#cboTagIOType").val('AI');
+			$("#chkOpt1").prop('chkeced',false);
+			$("#chkOpt2").prop('chkeced',false);
+			$("#findData").val('');
+		}
+		
+		$("#txtISeq").val('');
+		$("#cboHogi").val('3');
+		$("#cboXYGubun").val('X');
+		$("#txtLOOPNAME").val('');
+		$("#cboIOType").val('AI');
+		$("#txtADDRESS").val('');
+		$("#txtIOBIT").val('');
+		$("#txtMin").val('');
+		$("#txtMax").val('');
+		$("input:checkbox[id='chkSaveCore']").prop("checked",false);
+		
+		swSort = false;
+	}
+	
+	function cmdInsert_click(type) {
+		var ioListArray = getLvIOList();
+		
+		var data = '';
+		var gubun = $("#txtGUBUN").val() == '' ? 'D' : $("#txtGUBUN").val();
+		
+		var iSeqAdd = $("#txtISeq").val();
+		//var gubunAdd = $("#txtGUBUN").val();
+		var gubunAdd = 'D';
+		var hogiAdd = $("#cboHogi option:selected").val();
+		var xyGubunAdd = $("#cboXYGubun option:selected").val();
+		var DescrAdd = $("#txtLOOPNAME").val();
+		var ioTypeAdd = $("#cboIOType option:selected").val();
+		var addressAdd = $("#txtADDRESS").val();
+		var ioBitAdd = $("#txtIOBIT").val();
+		var minValAdd = $("#txtMin").val();
+		var maxValAdd = $("#txtMax").val();
+		var saveCoreAdd = $("input:checkbox[id='chkSaveCore']").is(":checked") ? "1" : "0";
+		
+		if( iSeqAdd == '' || hogiAdd == '' ) {
+			alert('태그를 선택하십시요.');
+			return;
+		}
+		if( minValAdd != 'undefined' && minValAdd != null && typeof minValAdd != 'undefined' ) {
+			if( isNaN(minValAdd) ) {
+				alert('MIN, MAX 값이 잘못되었습니다.');
+				return;
+			}
+		}
+		if( maxValAdd != 'undefined' && maxValAdd != null && typeof maxValAdd != 'undefined' ) {
+			if( isNaN(maxValAdd) ) {
+				alert('MIN, MAX 값이 잘못되었습니다.');
+				return;
+			}
+		}
+		if( $.trim(minValAdd) == '' ) minValAdd = '0';
+		if( $.trim(maxValAdd) == '' ) {
+			if( ioTypeAdd == 'DI' || ioTypeAdd == 'DO' || (ioTypeAdd == 'SC' && saveCoreAdd == '1') ) {
+				maxValAdd = '1';
+			} else if( (ioTypeAdd == 'SC' && saveCoreAdd == '0') ) {
+				maxValAdd = '65535';
+			} else if( ioTypeAdd == 'DT' ) {
+				maxValAdd = '1.5';
+			} else {
+				maxValAdd = '100';
+			}
+		}
+		if( (ioTypeAdd == 'SC' && saveCoreAdd == '1') ) {
+			if( $.trim(ioBitAdd) == '' ) {
+				alert('IOBIT을 입력하십시요.');
+				return;
+			}
+		} else if( (ioTypeAdd == 'SC' && saveCoreAdd == '0') ) {
+			ioBitAdd = '';
+		}
+		if( $.trim(DescrAdd) == '' ) {
+			if( ioBitAdd != '' ) {
+				DescrAdd = ioTypeAdd+' '+addressAdd+':'+ioBitAdd;
+			} else {
+				DescrAdd = ioTypeAdd+' '+addressAdd;
+			}
+		}
+		
+		var iSeqMod = $("#iSeqMod").val().split('==SEP==');
+		var gubunMod = $("#gubunMod").val().split('==SEP==');
+		var hogiMod = $("#hogiMod").val().split('==SEP==');
+		var xyGubunMod = $("#xyGubunMod").val().split('==SEP==');
+		var DescrMod = $("#DescrMod").val().split('==SEP==');
+		var ioTypeMod = $("#ioTypeMod").val().split('==SEP==');
+		var addressMod = $("#addressMod").val().split('==SEP==');
+		var ioBitMod = $("#ioBitMod").val().split('==SEP==');
+		var minValMod = $("#minValMod").val().split('==SEP==');
+		var maxValMod = $("#maxValMod").val().split('==SEP==');
+		var saveCoreMod = $("#saveCoreMod").val().split('==SEP==');
+		
+		var dupChk = 0;
+		if( !removeModData(iSeqMod[0].split('|'),iSeqAdd) ) {
+			for( var l=0;l<ioListArray.length;l++ ) {
+				for( var sl=0;sl<ioListArray[l].length;sl++ ) {
+					if( ioListArray[l][sl].key == 'iSeq' ) {
+						if( ioListArray[l][sl].value == iSeqAdd ) {
+							dupChk++;
+						}
+					} else if( ioListArray[l][sl].key == 'hogi' ) {
+						if( ioListArray[l][sl].value == hogiAdd ) {
+							if( dupChk < 1 ) dupChk++;
+						}
+					}
+				}
+			}
+			
+			if( dupChk > 1 ) {
+				alert('이미 설정되어 있습니다.');
+				dupChk = 0;
+				return;
+			}
+			
+			if( iSeqMod[0] != '|' ) {
+				iSeqAdd += '|'+ iSeqMod[0];
+				gubunAdd += '|'+ gubunMod[0];
+				hogiAdd += '|'+ hogiMod[0];
+				xyGubunAdd += '|'+ xyGubunMod[0];
+				DescrAdd += '|'+ DescrMod[0];
+				ioTypeAdd += '|'+ ioTypeMod[0];
+				addressAdd += '|'+ addressMod[0];
+				ioBitAdd += '|'+ ioBitMod[0];
+				minValAdd += '|'+ minValMod[0];
+				maxValAdd += '|'+ maxValMod[0];
+				saveCoreAdd += '|'+ saveCoreMod[0];
+			} else {
+				iSeqAdd += '|';
+				gubunAdd += '|';
+				hogiAdd += '|';
+				xyGubunAdd += '|';
+				DescrAdd += '|';
+				ioTypeAdd += '|';
+				addressAdd += '|';
+				ioBitAdd += '|';
+				minValAdd += '|';
+				maxValAdd += '|';
+				saveCoreAdd += '|';
+			}
+		}
+		
+		var listCnt = iSeqMod[0].split('|').length + ioListArray.length;
+		if( typeof iSeqMod[1] != 'undefined' ) listCnt -= iSeqMod[1].split('|').length;
+		
+		if( type != 0 ) {
+			if( listCnt > 7 ) {
+				alert('8개 까지만 지정할수 있습니다.');
+				return;
+			}
+		}
+		
+		$("#iSeqMod").val(iSeqMod[1] == '' ? iSeqAdd + '==SEP==|' : iSeqAdd + '==SEP==' + iSeqMod[1]);
+		$("#gubunMod").val(gubunMod[1] == '' ? gubunAdd + '==SEP==|' : gubunAdd + '==SEP==' + gubunMod[1]);
+		$("#hogiMod").val(hogiMod[1] == '' ? hogiAdd + '==SEP==|' : hogiAdd + '==SEP==' + hogiMod[1]);
+		$("#xyGubunMod").val(xyGubunMod[1] == '' ? xyGubunAdd + '==SEP==|' : xyGubunAdd + '==SEP==' + xyGubunMod[1]);
+		$("#DescrMod").val(DescrMod[1] == '' ? DescrAdd + '==SEP==|' : DescrAdd + '==SEP==' + DescrMod[1]);
+		$("#ioTypeMod").val(ioTypeMod[1] == '' ? ioTypeAdd + '==SEP==|' : ioTypeAdd + '==SEP==' + ioTypeMod[1]);
+		$("#addressMod").val(addressMod[1] == '' ? addressAdd + '==SEP==|' : addressAdd + '==SEP==' + addressMod[1]);
+		$("#ioBitMod").val(ioBitMod[1] == '' ? ioBitAdd + '==SEP==|' : ioBitAdd + '==SEP==' + ioBitMod[1]);
+		$("#minValMod").val(minValMod[1] == '' ? minValAdd + '==SEP==|' : minValAdd + '==SEP==' + minValMod[1]);
+		$("#maxValMod").val(maxValMod[1] == '' ? maxValAdd + '==SEP==|' : maxValAdd + '==SEP==' + maxValMod[1]);
+		$("#saveCoreMod").val(saveCoreMod[1] == '' ? saveCoreAdd + '==SEP==|' : saveCoreAdd + '==SEP==' + saveCoreMod[1]);
+
+		if( type == 1 ) {
+			var comAjax = new ComAjax("ioListModForm");
+			comAjax.setUrl("/dcc/trend/cmdInsert");
+			comAjax.addParam("hogiHeader", hogiHeader);
+			comAjax.addParam("xyHeader", xyHeader);
+			comAjax.addParam("iSeqMod", $("#iSeqMod").val());
+			comAjax.addParam("gubunMod", $("#gubunMod").val());
+			comAjax.addParam("hogiMod", $("#hogiMod").val());
+			comAjax.addParam("xyGubunMod", $("#xyGubunMod").val());
+			comAjax.addParam("descrMod", $("#DescrMod").val());
+			comAjax.addParam("ioTypeMod", $("#ioTypeMod").val());
+			comAjax.addParam("addressMod", $("#addressMod").val());
+			comAjax.addParam("ioBitMod", $("#ioBitMod").val());
+			comAjax.addParam("minValMod", $("#minValMod").val());
+			comAjax.addParam("maxValMod", $("#maxValMod").val());
+			comAjax.addParam("saveCoreMod", $("#saveCoreMod").val());
+			comAjax.setCallback("mbr_cmdEventCallback");
+			comAjax.ajax();
+			
+			textClear();
+		}
+	}
+		
+	function cmdDelete_click(type) {
+		var ioListArray = getLvIOList();
+		
+		if( ioListArray.length > 0 ) {
+			var data = '';
+			var gubun = $("#txtGUBUN").val() == '' ? 'D' : $("#txtGUBUN").val();
+			
+			var iSeqAdd = $("#txtISeq").val();
+			var gubunAdd = $("#txtGUBUN").val();
+			var hogiAdd = $("#cboHogi option:selected").val();
+			var xyGubunAdd = $("#cboXYGubun option:selected").val();
+			var DescrAdd = $("#txtLOOPNAME").val();
+			var ioTypeAdd = $("#cboIOType option:selected").val();
+			var addressAdd = $("#txtADDRESS").val();
+			var ioBitAdd = $("#txtIOBIT").val();
+			var minValAdd = $("#txtMin").val();
+			var maxValAdd = $("#txtMax").val();
+			var saveCoreAdd = $("input:checkbox[id='chkSaveCore']").is(":checked") ? "1" : "0";
+			
+			var iSeqMod = $("#iSeqMod").val().split('==SEP==');
+			var gubunMod = $("#gubunMod").val().split('==SEP==');
+			var hogiMod = $("#hogiMod").val().split('==SEP==');
+			var xyGubunMod = $("#xyGubunMod").val().split('==SEP==');
+			var DescrMod = $("#DescrMod").val().split('==SEP==');
+			var ioTypeMod = $("#ioTypeMod").val().split('==SEP==');
+			var addressMod = $("#addressMod").val().split('==SEP==');
+			var ioBitMod = $("#ioBitMod").val().split('==SEP==');
+			var minValMod = $("#minValMod").val().split('==SEP==');
+			var maxValMod = $("#maxValMod").val().split('==SEP==');
+			var saveCoreMod = $("#saveCoreMod").val().split('==SEP==');
+			
+			if( typeof iSeqMod[1] != 'undefined' ) {
+				if( !removeModData(iSeqMod[1].split('|'),iSeqAdd) ) {
+					iSeqAdd += '|'+iSeqMod[1];
+					gubunAdd += '|'+gubunMod[1];
+					hogiAdd += '|'+hogiMod[1];
+					xyGubunAdd += '|'+xyGubunMod[1];
+					DescrAdd += '|'+DescrMod[1];
+					ioTypeAdd += '|'+ioTypeMod[1];
+					addressAdd += '|'+addressMod[1];
+					ioBitAdd += '|'+ioBitMod[1];
+					minValAdd += '|'+minValMod[1];
+					maxValAdd += '|'+maxValMod[1];
+					saveCoreAdd += '|'+saveCoreMod[1];
+				}
+			} else {
+				iSeqAdd += '|';
+				gubunAdd += '|';
+				hogiAdd += '|';
+				xyGubunAdd += '|';
+				DescrAdd += '|';
+				ioTypeAdd += '|';
+				addressAdd += '|';
+				ioBitAdd += '|';
+				minValAdd += '|';
+				maxValAdd += '|';
+				saveCoreAdd += '|';
+			}
+			
+			$("#iSeqMod").val(iSeqMod[0] == '' ? '|==SEP=='+iSeqAdd : iSeqMod[0]+'==SEP=='+iSeqAdd);
+			$("#gubunMod").val(gubunMod[0] == '' ? '|==SEP=='+gubunAdd : gubunMod[0]+'==SEP=='+gubunAdd);
+			$("#hogiMod").val(hogiMod[0] == '' ? '|==SEP=='+hogiAdd : hogiMod[0]+'==SEP=='+hogiAdd);
+			$("#xyGubunMod").val(xyGubunMod[0] == '' ? '|==SEP=='+xyGubunAdd : xyGubunMod[0]+'==SEP=='+xyGubunAdd);
+			$("#DescrMod").val(DescrMod[0] == '' ? '|==SEP=='+DescrAdd : DescrMod[0]+'==SEP=='+DescrAdd);
+			$("#ioTypeMod").val(ioTypeMod[0] == '' ? '|==SEP=='+ioTypeAdd : ioTypeMod[0]+'==SEP=='+ioTypeAdd);
+			$("#addressMod").val(addressMod[0] == '' ? '|==SEP=='+addressAdd : addressMod[0]+'==SEP=='+addressAdd);
+			$("#ioBitMod").val(ioBitMod[0] == '' ? '|==SEP=='+ioBitAdd : ioBitMod[0]+'==SEP=='+ioBitAdd);
+			$("#minValMod").val(minValMod[0] == '' ? '|==SEP=='+minValAdd : minValMod[0]+'==SEP=='+minValAdd);
+			$("#maxValMod").val(maxValMod[0] == '' ? '|==SEP=='+maxValAdd : maxValMod[0]+'==SEP=='+maxValAdd);
+			$("#saveCoreMod").val(saveCoreMod[0] == '' ? '|==SEP=='+saveCoreAdd : saveCoreMod[0]+'==SEP=='+saveCoreAdd);
+	
+			if( type == 1 ) {
+				var comAjax = new ComAjax("ioListModForm");
+				comAjax.setUrl("/dcc/trend/cmdInsert");
+				comAjax.addParam("hogiHeader", hogiHeader);
+				comAjax.addParam("xyHeader", xyHeader);
+				comAjax.addParam("iSeqMod", $("#iSeqMod").val());
+				comAjax.addParam("gubunMod", $("#gubunMod").val());
+				comAjax.addParam("hogiMod", $("#hogiMod").val());
+				comAjax.addParam("xyGubunMod", $("#xyGubunMod").val());
+				comAjax.addParam("descrMod", $("#DescrMod").val());
+				comAjax.addParam("ioTypeMod", $("#ioTypeMod").val());
+				comAjax.addParam("addressMod", $("#addressMod").val());
+				comAjax.addParam("ioBitMod", $("#ioBitMod").val());
+				comAjax.addParam("minValMod", $("#minValMod").val());
+				comAjax.addParam("maxValMod", $("#maxValMod").val());
+				comAjax.addParam("saveCoreMod", $("#saveCoreMod").val());
+				comAjax.setCallback("mbr_cmdEventCallback");
+				comAjax.ajax();
+				
+				textClear();
+			}
+		}
+	}
+	
+	function cmdUpdate_click() {
+		var ioListArray = getLvIOList();
+		if( ioListArray.length > 0 ) {
+		
+			var seletedIseq = '';
+			var seletedHogi = '';
+			if( selectedID != '' ) {
+				seletedIseq = selectedID.split('_')[0];
+				seletedHogi = selectedID.split('_')[1];
+			}
+			
+			var valIOType = $("#cboIOType option:selected").val();
+			var bSaveCore = $("input:checkbox[id='chkSaveCore']").is(":checked");
+			
+			if( $.trim($("#txtMin").val()) == '' ) $("#txtMin").val('0');
+			if( valIOType == 'DI' || valIOType == 'DO' ) {
+				$("#txtMax").val('1');
+			} else if( valIOType == 'SC' && !bSaveCore ) {
+				$("#txtMax").val('65535');
+				$("#txtIOBIT").val('');
+			} else if( valIOType == 'DT' ) {
+				$("#txtMax").val('1.5');
+			} else {
+				$("#txtMax").val('100');
+			}
+			if( valIOType == 'SC' && !bSaveCore ) {
+				$("#txtMax").val('1');
+				if( $.trim($("#txtIOBIT").val()) == '' ) {
+					alert('IOBIT을 입력하십시요');
+					return;
+				}
+			}
+			if( $.trim($("#txtLOOPNAME").val()) == '' ) {
+				if( $.trim($("#txtIOBIT").val()) != '' ) {
+					$("#txtLOOPNAME").val(valIOType+' '+$("#txtADDRESS").val()+':'+$("#txtIOBIT").val());
+				} else {
+					$("#txtLOOPNAME").val(valIOType+' '+$("#txtADDRESS").val());
+				}
+			} 
+			
+			cmdDelete_click(0);
+			cmdInsert_click(0);
+			
+			$("#"+seletedIseq+"iSeq"+seletedHogi).text($("#txtISeq").val());
+			$("#"+seletedIseq+"gubun"+seletedHogi).text($("#txtGUBUN").val());
+			$("#"+seletedIseq+"hogi"+seletedHogi).text($("#cboHogi option:selected").val());
+			$("#"+seletedIseq+"xyGubun"+seletedHogi).text($("#cboXYGubun option:selected").val());
+			$("#"+seletedIseq+"descr"+seletedHogi).text($("#txtLOOPNAME").val());
+			$("#"+seletedIseq+"ioType"+seletedHogi).text($("#cboIOType option:selected").val());
+			$("#"+seletedIseq+"address"+seletedHogi).text($("#txtADDRESS").val());
+			$("#"+seletedIseq+"ioBit"+seletedHogi).text($("#txtIOBIT").val());
+			$("#"+seletedIseq+"minVal"+seletedHogi).text($("#txtMin").val());
+			$("#"+seletedIseq+"maxVal"+seletedHogi).text($("#txtMax").val());
+			$("#"+seletedIseq+"saveCoreChk"+seletedHogi).text($("input:checkbox[id='chkSaveCore']").is(":checked") ? "1" : "0");
+			
+			textClear();
+		}
+	}
+	
+	function cmdOK_click() {
+		if( bGroupFlag ) {
+			//group
+		} else {
+			if( $("#txtTitle").val() == '' ) {
+				alert('제목을 입력하십시요 (IO Setting)');
+				return;
+			}
+			
+			/*
+			var ioListArray = getLvIOList();
+			for( var i=0;i<ioListArray.length;i++ ) {
+				if( ioListArray[i].key == 'gubun' ) {
+					if( ioListArray[i].value == 'M' ) {
+						bFlagM = true;
+					}
+				}
+				if( ioListArray[i].key == 'gubun' ) {
+					if( ioListArray[i].value == 'D' ) {
+						bFlagD = true;
+					}
+				}
+			}
+			
+			if( !bFlagM ) {
+				alert('DCC, MARK-V 비교트랜드 입니다. MARK-V 태그가 설정되지 않았습니다. (태그설정)');
+				return;
+			}
+			if( !bFlagD ) {
+				alert('DCC, MARK-V 비교트랜드 입니다. DCC 태그가 설정되지 않았습니다. (태그설정)');
+				return;
+			}
+			*/
+			
+			var comAjax = new ComAjax("ioListModForm");
+			comAjax.setUrl("/dcc/trend/cmdOK");
+			comAjax.addParam("hogiHeader", hogiHeader);
+			comAjax.addParam("xyHeader", xyHeader);
+			comAjax.addParam("iSeqMod", $("#iSeqMod").val() == '' ? "|==SEP==|" : $("#iSeqMod").val());
+			comAjax.addParam("gubunMod", $("#gubunMod").val() == '' ? "|==SEP==|" : $("#gubunMod").val());
+			comAjax.addParam("hogiMod", $("#hogiMod").val() == '' ? "|==SEP==|" : $("#hogiMod").val());
+			comAjax.addParam("xyGubunMod", $("#xyGubunMod").val() == '' ? "|==SEP==|" : $("#xyGubunMod").val());
+			comAjax.addParam("descrMod", $("#DescrMod").val() == '' ? "|==SEP==|" : $("#DescrMod").val());
+			comAjax.addParam("ioTypeMod", $("#ioTypeMod").val() == '' ? "|==SEP==|" : $("#ioTypeMod").val());
+			comAjax.addParam("addressMod", $("#addressMod").val() == '' ? "|==SEP==|" : $("#addressMod").val());
+			comAjax.addParam("ioBitMod", $("#ioBitMod").val() == '' ? "|==SEP==|" : $("#ioBitMod").val());
+			comAjax.addParam("minValMod", $("#minValMod").val() == '' ? "|==SEP==|" : $("#minValMod").val());
+			comAjax.addParam("maxValMod", $("#maxValMod").val() == '' ? "|==SEP==|" : $("#maxValMod").val());
+			comAjax.addParam("saveCoreMod", $("#saveCoreMod").val() == '' ? "|==SEP==|" : $("#saveCoreMod").val());
+			if( $("input:checkbox[id=chkHogi]").is(":checked") ) {
+				comAjax.addParam("chkHogi", "1");
+			}
+			comAjax.setCallback("mbr_cmdEventCallback");
+			comAjax.ajax();
+		}
 	}
 	
 	function openModal(str) {

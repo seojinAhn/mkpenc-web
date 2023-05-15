@@ -740,4 +740,9 @@ public class DccTrendServiceImpl implements DccTrendService{
 	public int insertGrpTag(Map trendSearchMap) {
 		return dccTrendMapper.insertGrpTag(trendSearchMap);
 	}
+	
+	@Override
+	public List<Map> selectSetIOList(DccSearchTrend dccSearchTrend) {
+		return dccTrendMapper.selectSetIOList(dccSearchTrend);
+	}
 }

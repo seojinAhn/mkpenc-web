@@ -179,4 +179,24 @@
     	  INSERT INTO MST_GRPTAG (Gubun, ID, GrpHogi, MenuNo, GrpNo, Hogi	, TagNo, ISeq, MaxVal, MinVal, YSeq, YMaxVal, YMinVal, SaveCoreChk, Descr)
     	  VALUES ( #{gubun},  #{id}, #{grpHogi}, #{menuNo}, #{grpNo}, #{hogi}, #{tagNo}, #{iSeq}, #{maxVal}, #{minVal}, #{ySeq}, #{yMaxVal}, #{yMinVal}, #{saveCoreChk}, #{descr} )        
     </insert>
+    
+    <select id="selectSetIOList" parameterType="DccSearchTrend" resultType="java.util.Map">
+		select
+			address,
+			loopName,
+			eHigh,
+			eLow,
+			iSeq,
+			FASTIOCHK
+		from MST_TAG_DCC
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			AND ihogi= #{sHogi}
+			AND xygubun= #{sXYGubun}
+			AND iotype = #{ioType}
+			AND address = #{address}
+			<if test='@org.apache.commons.lang3.StringUtils@equals(ioType,"DI") or @org.apache.commons.lang3.StringUtils@equals(ioType,"DO") or (@org.apache.commons.lang3.StringUtils@equals(ioType,"SC") and @org.apache.commons.lang3.StringUtils@equals(saveCore,"1"))'>
+				AND IOBIT = #{ioBit}
+			</if>
+		</trim>
+	</select>
 </mapper>

@@ -28,6 +28,23 @@ public class DccSearchTrend  extends BaseSearch {
 	private String hogi;
 	private String xyGubun;
 	
+	private String ioType;
+	private String ioBit;
+	private String SaveCore;
+	
+	private String iSeqMod;
+	private String gubunMod;
+	private String hogiMod;
+	private String xyGubunMod;
+	private String descrMod;
+	private String ioTypeMod;
+	private String addressMod;
+	private String ioBitMod;
+	private String minValMod;
+	private String maxValMod;
+	private String saveCoreMod;
+	private String chkHogi;
+	
 	/**
 	 * @return the startDate
 	 */
@@ -219,5 +236,185 @@ public class DccSearchTrend  extends BaseSearch {
 	 */
 	public void setXyGubun(String xyGubun) {
 		this.xyGubun = xyGubun;
+	}
+	/**
+	 * @return the ioType
+	 */
+	public String getIoType() {
+		return ioType;
+	}
+	/**
+	 * @param ioType the ioType to set
+	 */
+	public void setIoType(String ioType) {
+		this.ioType = ioType;
+	}
+	/**
+	 * @return the ioBit
+	 */
+	public String getIoBit() {
+		return ioBit;
+	}
+	/**
+	 * @param ioBit the ioBit to set
+	 */
+	public void setIoBit(String ioBit) {
+		this.ioBit = ioBit;
+	}
+	/**
+	 * @return the saveCore
+	 */
+	public String getSaveCore() {
+		return SaveCore;
+	}
+	/**
+	 * @param saveCore the saveCore to set
+	 */
+	public void setSaveCore(String saveCore) {
+		SaveCore = saveCore;
+	}
+	/**
+	 * @return the iSeqMod
+	 */
+	public String getiSeqMod() {
+		return iSeqMod;
+	}
+	/**
+	 * @param iSeqMod the iSeqMod to set
+	 */
+	public void setiSeqMod(String iSeqMod) {
+		this.iSeqMod = iSeqMod;
+	}
+	/**
+	 * @return the gubunMod
+	 */
+	public String getGubunMod() {
+		return gubunMod;
+	}
+	/**
+	 * @param gubunMod the gubunMod to set
+	 */
+	public void setGubunMod(String gubunMod) {
+		this.gubunMod = gubunMod;
+	}
+	/**
+	 * @return the hogiMod
+	 */
+	public String getHogiMod() {
+		return hogiMod;
+	}
+	/**
+	 * @param hogiMod the hogiMod to set
+	 */
+	public void setHogiMod(String hogiMod) {
+		this.hogiMod = hogiMod;
+	}
+	/**
+	 * @return the xyGubunMod
+	 */
+	public String getXyGubunMod() {
+		return xyGubunMod;
+	}
+	/**
+	 * @param xyGubunMod the xyGubunMod to set
+	 */
+	public void setXyGubunMod(String xyGubunMod) {
+		this.xyGubunMod = xyGubunMod;
+	}
+	/**
+	 * @return the descrMod
+	 */
+	public String getDescrMod() {
+		return descrMod;
+	}
+	/**
+	 * @param descrMod the descrMod to set
+	 */
+	public void setDescrMod(String descrMod) {
+		this.descrMod = descrMod;
+	}
+	/**
+	 * @return the ioTypeMod
+	 */
+	public String getIoTypeMod() {
+		return ioTypeMod;
+	}
+	/**
+	 * @param ioTypeMod the ioTypeMod to set
+	 */
+	public void setIoTypeMod(String ioTypeMod) {
+		this.ioTypeMod = ioTypeMod;
+	}
+	/**
+	 * @return the addressMod
+	 */
+	public String getAddressMod() {
+		return addressMod;
+	}
+	/**
+	 * @param addressMod the addressMod to set
+	 */
+	public void setAddressMod(String addressMod) {
+		this.addressMod = addressMod;
+	}
+	/**
+	 * @return the ioBitMod
+	 */
+	public String getIoBitMod() {
+		return ioBitMod;
+	}
+	/**
+	 * @param ioBitMod the ioBitMod to set
+	 */
+	public void setIoBitMod(String ioBitMod) {
+		this.ioBitMod = ioBitMod;
+	}
+	/**
+	 * @return the minValMod
+	 */
+	public String getMinValMod() {
+		return minValMod;
+	}
+	/**
+	 * @param minValMod the minValMod to set
+	 */
+	public void setMinValMod(String minValMod) {
+		this.minValMod = minValMod;
+	}
+	/**
+	 * @return the maxValMod
+	 */
+	public String getMaxValMod() {
+		return maxValMod;
+	}
+	/**
+	 * @param maxValMod the maxValMod to set
+	 */
+	public void setMaxValMod(String maxValMod) {
+		this.maxValMod = maxValMod;
+	}
+	/**
+	 * @return the saveCoreMod
+	 */
+	public String getSaveCoreMod() {
+		return saveCoreMod;
+	}
+	/**
+	 * @param saveCoreMod the saveCoreMod to set
+	 */
+	public void setSaveCoreMod(String saveCoreMod) {
+		this.saveCoreMod = saveCoreMod;
+	}
+	/**
+	 * @return the chkHogi
+	 */
+	public String getChkHogi() {
+		return chkHogi;
+	}
+	/**
+	 * @param chkHogi the chkHogi to set
+	 */
+	public void setChkHogi(String chkHogi) {
+		this.chkHogi = chkHogi;
 	}
 }

@@ -34,4 +34,6 @@ public interface DccTrendService {
 	String selectISeqTagDccSearch(Map trendSearchMap);
 	
 	int insertGrpTag(Map trendSearchMap);
+	
+	List<Map> selectSetIOList(DccSearchTrend dccSearchTrend);
 }

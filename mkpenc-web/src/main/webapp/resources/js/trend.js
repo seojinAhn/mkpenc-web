@@ -220,3 +220,71 @@ function mbr_RuntimerEventCallback(data){
 		}
 	}
 }
+
+function mbr_cmdEventCallback(data){
+	console.log(data);
+	
+	var tagDccInfoListBody = $("#lvIolistTable");
+	var tagDccInfoListBodyStr = "";
+	
+	if( data.LvIOList.length > 0 ) {
+	
+		var idx=0;
+		$.each(data.LvIOList, function(key, value){
+			//if( idx == 0 ) {
+				if( value.gubun == 'D' || value.gubun == 'd') {
+					tagDccInfoListBodyStr += '<tr>'
+										   + '	<td id="'+value.iSeq+'hogi'+value.hogi+'" class="tc">'+value.hogi+'</td>'
+										   + '	<td id="'+value.iSeq+'xyGubun'+value.hogi+'" class="tc">'+value.xyGubun+'</td>'
+										   + '	<td id="'+value.iSeq+'descr'+value.hogi+'">'+value.Descr+'</td>'
+										   + '	<td id="'+value.iSeq+'ioType'+value.hogi+'" class="tc">'+value.ioType+'</td>'
+										   + '	<td id="'+value.iSeq+'address'+value.hogi+'" class="tc">'+value.address+'</td>'
+										   + '	<td id="'+value.iSeq+'ioBit'+value.hogi+'" class="tc">'+value.ioBit+'</td>'
+										   + '	<td id="'+value.iSeq+'minVal'+value.hogi+'" class="tc">'+value.minVal+'</td>'
+										   + '	<td id="'+value.iSeq+'maxVal'+value.hogi+'" class="tc">'+value.maxVal+'</td>'
+										   + '	<td id="'+value.iSeq+'saveCoreChk'+value.hogi+'" class="tc">'+value.saveCoreChk+'</td>'
+										   + '	<td id="'+value.iSeq+'iSeq'+value.hogi+'" style="display:none">'+value.iSeq+'</td>'
+										   + '</tr>';
+				} else {
+					tagDccInfoListBodyStr += '<tr>'
+										   + '	<td id="'+value.iSeq+'hogi'+value.hogi+'" class="tc">'+value.hogi_M+'</td>'
+										   + '	<td id="'+value.iSeq+'xyGubun'+value.hogi+'" class="tc"></td>'
+										   + '	<td id="'+value.iSeq+'descr'+value.hogi+'">'+value.Descr_M+'"</td>'
+										   + '	<td id="'+value.iSeq+'ioType'+value.hogi+'" class="tc">'+value.ioType_M+'</td>'
+										   + '	<td id="'+value.iSeq+'address'+value.hogi+'" class="tc">'+value.address_M+'</td>'
+										   + '	<td id="'+value.iSeq+'ioBit'+value.hogi+'" class="tc">'+value.ioBit_M+'</td>'
+										   + '	<td id="'+value.iSeq+'minVal'+value.hogi+'" class="tc">'+value.minVal_M+'</td>'
+										   + '	<td id="'+value.iSeq+'maxVal'+value.hogi+'" class="tc">'+value.maxVal_M+'</td>'
+										   + '	<td id="'+value.iSeq+'saveCoreChk'+value.hogi+'" class="tc"></td>'
+										   + '	<td id="'+value.iSeq+'iSeq'+value.hogi+'" style="display:none">'+value.iSeq+'"</td>'
+										   + '</tr>';
+				}
+									   
+	    	//}
+	        idx++;
+		});
+		
+	
+		tagDccInfoListBody.empty();
+		tagDccInfoListBody.append(tagDccInfoListBodyStr);
+	} else {
+		tagDccInfoListBodyStr += '<tr>'
+							   + '	<td class="tc"></td>'
+							   + '	<td class="tc"></td>'
+							   + '	<td></td>'
+							   + '	<td class="tc"></td>';
+							   + '	<td class="tc"></td>'
+							   + '	<td class="tc"></td>'
+							   + '	<td class="tc"></td>'
+							   + '	<td class="tc"></td>'
+							   + '	<td class="tc"></td>'
+							   + '	<td style="display:none"></td>'
+							   + '</tr>';
+	
+		tagDccInfoListBody.empty();
+		tagDccInfoListBody.append(tagDccInfoListBodyStr);
+									   
+		alert('해당하는 어드레스가 없습니다. 월성3,4호기 원격감시시스템');
+	}
+	
+}
