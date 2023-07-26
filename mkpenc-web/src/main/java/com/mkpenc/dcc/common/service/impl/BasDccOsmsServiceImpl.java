@@ -15,6 +15,7 @@ import com.mkpenc.dcc.common.mapper.BasDccOsmsMapper;
 import com.mkpenc.dcc.common.model.ComDccGrpTagInfo;
 import com.mkpenc.dcc.common.model.ComTagDccInfo;
 import com.mkpenc.dcc.common.service.BasDccOsmsService;
+import com.mkpenc.dcc.trend.model.TrendTagDccInfo;
 
 
 @Service("basDccOsmsService")
@@ -113,6 +114,8 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 				// '-* AI2010, AI2140
 				if( tagDccInfo.getIOTYPE().equals("AI") &&  (tagDccInfo.getADDRESS().equals("2010") ||  tagDccInfo.getADDRESS().equals("2140"))){
 					tagDccInfo.setUnit("DAC");
+					tagDccInfo.setMinVal(tagDccInfo.getMinVal() / 0.0081);
+					tagDccInfo.setMaxVal(tagDccInfo.getMaxVal() / 0.0081);
 
 			    //   '-* AI2753, AI2754 (MPAG > KPAG)
 				}else if( tagDccInfo.getIOTYPE().equals("AI") &&  (tagDccInfo.getADDRESS().equals("2753") ||  tagDccInfo.getADDRESS().equals("2754"))){
@@ -120,7 +123,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 					tagDccInfo.setMinVal(tagDccInfo.getMinVal() * 1000);
 					tagDccInfo.setMaxVal(tagDccInfo.getMaxVal() * 1000);
 				}else {
-					tagDccInfo.setUnit(dccGrpTagInfo.getUNIT());
+					tagDccInfo.setUnit(ConvertUnit(dccGrpTagInfo.getUNIT()));
 				}
 				
 				if(tagDccInfo.getIOBIT() != 0) {
@@ -222,11 +225,11 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		return sqlQueryDcc(searchMap).split("\\|");
 	}
 	
-	public Map getDccValue(Map searchMap, List<ComTagDccInfo> tagDccInfoList){
-	
+	public Map getDccValue2(Map searchMap, List<TrendTagDccInfo> tagDccInfoList){
+		
 		Map rtnMap = new HashMap();
 		
-		String[] varValue = null;
+		String[] varValue = null;	
 		
 		if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {
 			varValue = sqlQueryDcc4hogi(searchMap).split("\\|");
@@ -254,11 +257,12 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	        			long secondsDifference = (currentTime -searchTime)  / 1000;   
 	        			
 	        			searchMap.put("TimeGap", secondsDifference);
+	        			//System.out.println("1"+searchMap.get("TimeGap"));
 	        			
 	        			 if (secondsDifference > 1800) {
-	        				 rtnMap.put("ForeColor", "#FF");
+	        				 rtnMap.put("ForeColor", "#e85516");
 	        			 }else {
-	        				 rtnMap.put("ForeColor", "#808000");
+	        				 rtnMap.put("ForeColor", "#05c8be");
 	        			 }
 	        			
     			}catch (Exception e) {
@@ -267,15 +271,92 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
     		} // end if varVal[0] len 19
     	} // end if varValue is not null
     	
+    	if( searchMap.get("TimeGap") == null ) {
+    		String tmpTimeGap = searchMap.get("strFast") == null ? "5" : searchMap.get("strFast").toString();
+    		searchMap.put("TimeGap",("F".equalsIgnoreCase(tmpTimeGap) || "0.5".equals(tmpTimeGap) ? "500" : Integer.parseInt(tmpTimeGap)*1000+""));
+    	}
     	
     	List<Map> lblDataList = new ArrayList<Map>();
     	for(int i=0;i<tagDccInfoList.size();i++) {
+    		//varValue[0]에는 날짜 데이터가 포함되어 있어 배열 idx + 1
     		if(varValue[i+1] != null && !varValue[i+1].isEmpty()) {
     			double fValue = Double.parseDouble(varValue[i+1]);
     			if(i == 365) { 
     				i = i; 
     			}
+    			Map lblData = setDataConv2(fValue, tagDccInfoList.get(i), searchMap);
+    			checkAlarm2(lblData, tagDccInfoList.get(i));
     			
+    			lblDataList.add(lblData);
+    		}else {
+    			lblDataList.add(new HashMap());
+    		}
+    	}
+    	
+    	 rtnMap.put("lblDataList", lblDataList);
+   	
+    	return rtnMap; 
+	}
+	
+	public Map getDccValue(Map searchMap, List<ComTagDccInfo> tagDccInfoList){
+	
+		Map rtnMap = new HashMap();
+		
+		String[] varValue = null;	
+		
+		if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {
+			varValue = sqlQueryDcc4hogi(searchMap).split("\\|");
+		}else {		
+			varValue = sqlQueryDcc(searchMap).split("\\|");
+		}
+
+		//*** Start getDccValue 에 포함 된 로직
+    	if(varValue != null && varValue.length != 0) {
+    		if(varValue[0].length() == 19) {
+    			
+    			rtnMap.put("SearchTime", searchMap.get("hogi").toString() + " " +  searchMap.get("xyGubun").toString() + " " + varValue[0]);
+    			
+    			try {
+	        			java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	       			    java.util.Date date = format.parse(varValue[0]);
+	        			
+	        			Calendar c = Calendar.getInstance();
+	        			c.setTime(date); 
+	        			c.add(Calendar.MILLISECOND, 1);
+	        			
+	        			long searchTime = date.getTime();
+	        			long currentTime = System.currentTimeMillis();
+	        			
+	        			long secondsDifference = (currentTime -searchTime)  / 1000;   
+	        			
+	        			searchMap.put("TimeGap", secondsDifference);
+	        			//System.out.println("1"+searchMap.get("TimeGap"));
+	        			
+	        			 if (secondsDifference > 1800) {
+	        				 rtnMap.put("ForeColor", "#e85516");
+	        			 }else {
+	        				 rtnMap.put("ForeColor", "#05c8be");
+	        			 }
+	        			
+    			}catch (Exception e) {
+    				e.printStackTrace();
+    			}        			
+    		} // end if varVal[0] len 19
+    	} // end if varValue is not null
+    	
+    	if( searchMap.get("TimeGap") == null ) {
+    		String tmpTimeGap = searchMap.get("strFast") == null ? "5" : searchMap.get("strFast").toString();
+    		searchMap.put("TimeGap",("F".equalsIgnoreCase(tmpTimeGap) || "0.5".equals(tmpTimeGap) ? "500" : Integer.parseInt(tmpTimeGap)*1000+""));
+    	}
+    	
+    	List<Map> lblDataList = new ArrayList<Map>();
+    	for(int i=0;i<tagDccInfoList.size();i++) {
+    		//varValue[0]에는 날짜 데이터가 포함되어 있어 배열 idx + 1
+    		if(varValue[i+1] != null && !varValue[i+1].isEmpty()) {
+    			double fValue = Double.parseDouble(varValue[i+1]);
+    			if(i == 365) { 
+    				i = i; 
+    			}
     			Map lblData = setDataConv(fValue, tagDccInfoList.get(i), searchMap);
     			checkAlarm(lblData, tagDccInfoList.get(i));
     			
@@ -289,24 +370,61 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
    	
     	return rtnMap; 
 	}
+
+	public Map getDccValueSearch(Map searchMap, List<ComTagDccInfo> tagDccInfoList){
 		
+		Map rtnMap = new HashMap();
+		
+		String[] varValue = null;	
+		
+		if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {
+			varValue = sqlQueryDcc4hogi(searchMap).split("\\|");
+		}else {		
+			varValue = sqlQueryDccSearch(searchMap).split("\\|");
+		}
+    	
+    	List<Map> lblDataList = new ArrayList<Map>();
+    	for(int i=0;i<tagDccInfoList.size();i++) {
+    		//varValue[0]에는 날짜 데이터가 포함되어 있어 배열 idx + 1
+    		if(varValue[i+1] != null && !varValue[i+1].isEmpty()) {
+    			double fValue = Double.parseDouble(varValue[i+1]);
+    			if(i == 365) { 
+    				i = i; 
+    			}
+    			//System.out.println("idx=" + i + ":::: fValue = " + fValue);
+    			Map lblData = setDataConv(fValue, tagDccInfoList.get(i), searchMap);
+    			checkAlarm(lblData, tagDccInfoList.get(i));
+    			
+    			lblDataList.add(lblData);
+    		}else {
+    			lblDataList.add(new HashMap());
+    		}
+    	}
+    	
+    	 rtnMap.put("lblDataList", lblDataList);
+   	
+    	return rtnMap; 
+	}
 	
-	private Map setDataConv(double fValue, ComTagDccInfo tagDccInfo, Map searchMap) {
+	private Map setDataConv2(double fValue, TrendTagDccInfo tagDccInfo, Map searchMap) {
 		
 		Map dataConv = new HashMap();
 		//System.out.println("setDataConv setDataConv ::: IOTYPE = " + fValue + "::::" +  tagDccInfo.getIOTYPE());
 		if(fValue == 0) {
-			dataConv.put("fValue", "-");
+			dataConv.put("fValue", "0");
 			return dataConv;
 		}
 		
+		//System.out.println("iotype = " + tagDccInfo.getIOTYPE() + ":::: iobit = " + tagDccInfo.getIOBIT() + "::::: address = " + tagDccInfo.getADDRESS() );
 		// '- IOTYPE에 대한 설정
 	    if( tagDccInfo.getIOTYPE().equals("DI") ||  tagDccInfo.getIOTYPE().equals("DO")){
 	        if(tagDccInfo.getIOBIT() != 0) {
 	            fValue = Double.parseDouble(GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
+	        }else {
+	        	fValue = 0;
 	        }
 	    }else if(tagDccInfo.getIOTYPE().equals("SC")) {
-	    	 if( tagDccInfo.getSaveCore() == 1 &&  tagDccInfo.getIOBIT() != 0) {
+	    	 if( tagDccInfo.getSaveCore() == 1 && tagDccInfo.getIOBIT() != -1) {
 	    		 //System.out.println("setDataConv setDataConv ::: IOTYPE = " + fValue + "::::" +  tagDccInfo.getIOTYPE() + ";;;;" + tagDccInfo.getIOBIT());
 	 	         fValue = Double.parseDouble(GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
 	 	         //System.out.println("setDataConv setDataConv ::: IOTYPE getbitval= " + fValue + "::::" +  tagDccInfo.getIOTYPE() + ";;;;" + tagDccInfo.getIOBIT());
@@ -327,13 +445,64 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	    		  fValue = fValue / Math.pow(2, (15 - tagDccInfo.getBScale() ));
 	    	}
 	    }
-	    
+	    //System.out.println("fvalue = " + fValue);
 	    if( tagDccInfo.getIOTYPE().equals("DI") ||  tagDccInfo.getIOTYPE().equals("DO") || tagDccInfo.getIOTYPE().equals("SC") && tagDccInfo.getSaveCore() == 1){
-	    	dataConv.put("fValue", fValue > -32768? String.format("%f", fValue) : "***IRR");
+	    	dataConv.put("fValue", fValue > -32768? String.format("%.5f", fValue) : "***IRR");
 	    }else if(tagDccInfo.getBScale() != 0) {
 	    	dataConv.put("fValue",  fValue > -32768? String.format(gFormat[tagDccInfo.getBScale()], fValue) : "***IRR");
 	    }else {
-	    	dataConv.put("fValue", fValue > -32768? fValue+"": "***IRR");
+	    	dataConv.put("fValue", fValue > -32768? String.format("%.5f", fValue) +"": "***IRR");
+	    }		
+	    
+	    return dataConv;
+	}
+	
+	private Map setDataConv(double fValue, ComTagDccInfo tagDccInfo, Map searchMap) {
+		
+		Map dataConv = new HashMap();
+		//System.out.println("setDataConv setDataConv ::: IOTYPE = " + fValue + "::::" +  tagDccInfo.getIOTYPE());
+		if(fValue == 0) {
+			dataConv.put("fValue", "0");
+			return dataConv;
+		}
+		
+		//System.out.println("iotype = " + tagDccInfo.getIOTYPE() + ":::: iobit = " + tagDccInfo.getIOBIT() + "::::: address = " + tagDccInfo.getADDRESS() );
+		// '- IOTYPE에 대한 설정
+	    if( tagDccInfo.getIOTYPE().equals("DI") ||  tagDccInfo.getIOTYPE().equals("DO")){
+	        if(tagDccInfo.getIOBIT() != 0) {
+	            fValue = Double.parseDouble(GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
+	        }else {
+	        	fValue = 0;
+	        }
+	    }else if(tagDccInfo.getIOTYPE().equals("SC")) {
+	    	 if( tagDccInfo.getSaveCore() == 1 && tagDccInfo.getIOBIT() != -1) {
+	    		 //System.out.println("setDataConv setDataConv ::: IOTYPE = " + fValue + "::::" +  tagDccInfo.getIOTYPE() + ";;;;" + tagDccInfo.getIOBIT());
+	 	         fValue = Double.parseDouble(GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
+	 	         //System.out.println("setDataConv setDataConv ::: IOTYPE getbitval= " + fValue + "::::" +  tagDccInfo.getIOTYPE() + ";;;;" + tagDccInfo.getIOBIT());
+	    	 }else if( tagDccInfo.getBScale() != 0 && tagDccInfo.getSaveCore() != 1) {
+	    		 //System.out.println(Math.pow(2, (15 - tagDccInfo.getBScale())));   
+	    		 fValue = fValue / Math.pow(2, (15 - tagDccInfo.getBScale()));
+	 	         //System.out.println("setDataConv setDataConv ::: IOTYPE not getbitval= " + fValue + "::::" +  tagDccInfo.getIOTYPE() + ";;;;" + tagDccInfo.getIOBIT());
+	 	     }
+	    	
+	    }else {
+	    	  if( tagDccInfo.getIOTYPE().equals("AI") && (tagDccInfo.getADDRESS().equals("2010") ||  tagDccInfo.getADDRESS().equals("2140"))){
+	  	            fValue = fValue / 0.0081;
+	    	  }
+	    }
+	    
+	    if(searchMap.get("menuNo").equals("21") || searchMap.get("menuNo").equals("22")) {
+	    	if(Double.parseDouble(searchMap.get("TimeGap").toString())  < 5000 && tagDccInfo.getFASTIOCHK() == 1 && tagDccInfo.getBScale() != 0 ) {
+	    		  fValue = fValue / Math.pow(2, (15 - tagDccInfo.getBScale() ));
+	    	}
+	    }
+	    //System.out.println("fvalue = " + fValue);
+	    if( tagDccInfo.getIOTYPE().equals("DI") ||  tagDccInfo.getIOTYPE().equals("DO") || tagDccInfo.getIOTYPE().equals("SC") && tagDccInfo.getSaveCore() == 1){
+	    	dataConv.put("fValue", fValue > -32768? String.format("%.5f", fValue) : "***IRR");
+	    }else if(tagDccInfo.getBScale() != 0) {
+	    	dataConv.put("fValue",  fValue > -32768? String.format(gFormat[tagDccInfo.getBScale()], fValue) : "***IRR");
+	    }else {
+	    	dataConv.put("fValue", fValue > -32768? String.format("%.5f", fValue) +"": "***IRR");
 	    }		
 	    
 	    return dataConv;
@@ -345,7 +514,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 			case "1" : 
 			case "7" :
 			case "4" :
-						if(!"***IRR".equals(lblData.get("fValue"))) {
+						if(!"***IRR".equals(lblData.get("fValue")) && !"0".equals(lblData.get("fValue"))) {
 							if(Double.parseDouble(lblData.get("fValue").toString()) >=  tagDccInfo.getDataLimit1()) {
 								lblData.put("ForeColor", "#FF&");
 							}else {
@@ -356,7 +525,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 			case "2" : 
 			case "8" :
 			case "5" :
-						if(!"***IRR".equals(lblData.get("fValue"))) {
+						if(!"***IRR".equals(lblData.get("fValue")) && !"0".equals(lblData.get("fValue"))) {
 							if(Double.parseDouble(lblData.get("fValue").toString()) <=  tagDccInfo.getDataLimit1()) {
 								lblData.put("ForeColor", "#FF&");
 							}else {
@@ -367,7 +536,46 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 			case "3" : 
 			//case "7" :
 			case "6" :
-						if(!"***IRR".equals(lblData.get("fValue"))) {
+						if(!"***IRR".equals(lblData.get("fValue")) && !"0".equals(lblData.get("fValue"))) {
+							if(Double.parseDouble(lblData.get("fValue").toString()) >  tagDccInfo.getDataLimit1() || Double.parseDouble(lblData.get("fValue").toString()) <  tagDccInfo.getDataLimit2()) {
+								lblData.put("ForeColor", "#FF&");
+							}else {
+								lblData.put("ForeColor", "#FF0000");
+							}					
+						}				
+				  		break;
+		}		
+	}
+	
+	private void checkAlarm2(Map lblData, TrendTagDccInfo tagDccInfo) {
+		
+		switch(tagDccInfo.getAlarmType()) {
+			case "1" : 
+			case "7" :
+			case "4" :
+						if(!"***IRR".equals(lblData.get("fValue")) && !"0".equals(lblData.get("fValue"))) {
+							if(Double.parseDouble(lblData.get("fValue").toString()) >=  tagDccInfo.getDataLimit1()) {
+								lblData.put("ForeColor", "#FF&");
+							}else {
+								lblData.put("ForeColor", "#FF0000");
+							}					
+						}
+				  		break;
+			case "2" : 
+			case "8" :
+			case "5" :
+						if(!"***IRR".equals(lblData.get("fValue")) && !"0".equals(lblData.get("fValue"))) {
+							if(Double.parseDouble(lblData.get("fValue").toString()) <=  tagDccInfo.getDataLimit1()) {
+								lblData.put("ForeColor", "#FF&");
+							}else {
+								lblData.put("ForeColor", "#FF0000");
+							}					
+						}
+				  		break;
+			case "3" : 
+			//case "7" :
+			case "6" :
+						if(!"***IRR".equals(lblData.get("fValue")) && !"0".equals(lblData.get("fValue"))) {
 							if(Double.parseDouble(lblData.get("fValue").toString()) >  tagDccInfo.getDataLimit1() || Double.parseDouble(lblData.get("fValue").toString()) <  tagDccInfo.getDataLimit2()) {
 								lblData.put("ForeColor", "#FF&");
 							}else {
@@ -384,7 +592,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	    
 	    long Rest = 0;
 	    
-	    long di_val;
+	    double di_val;
 	    int bit_no;	    
 	    
 	    if(digitalBit.isEmpty()) {
@@ -395,13 +603,13 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	       }
 	    }
 	    
-	    di_val = Math.round(Double.parseDouble(digitalValue));	    
+	    di_val = Double.parseDouble(digitalValue);	    
 	    bit_no = Integer.parseInt(digitalBit);
 
-	    for(int i = 0;i < bit_no;i++) {
-	        Rest = (di_val % 2);
-	        //di_val = di_val / 2;
-	    	di_val = di_val >> 2;
+	    for(int i = 0;i <= bit_no;i++) {
+	    	
+	        Rest = Math.round(di_val % 2);
+	        di_val = Math.floor(di_val / 2);
 		}
 	    
 	    return Rest +"";
@@ -447,6 +655,82 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		*/
 		
 		List<Map> vValue = basDccOsmsMapper.selectLogDccTrend(searchMap);
+		
+	    String pStr = pSCanTime + "|";
+	    for(int i=0;i<tblNoFldNoList.size();i++) {
+	    	
+	    	String iTBLNO = tblNoFldNoList.get(i).get("TBLNO") != null? tblNoFldNoList.get(i).get("TBLNO").toString():"";
+	    	String iFLDNO = tblNoFldNoList.get(i).get("FLDNO") != null? tblNoFldNoList.get(i).get("FLDNO").toString():"";
+	    	
+	    	int j=0;
+	    	for(j=0;j<vValue.size();j++) {
+
+	    		String seq = vValue.get(j).get("SEQ") != null? vValue.get(j).get("SEQ").toString():"";
+	    	
+	    		if(iTBLNO.equals(seq)) {
+	    			break;
+	    		}
+	    	}
+	    	
+	    	//System.out.println(j +  "::::" +iTBLNO  + "::::" + iFLDNO);
+	    	
+	    	 if(j >= vValue.size()) {
+	    		 pStr = pStr + "|";
+	    	 }else {
+	    		 // *** field 명 확인 필요 ***
+	    		 pStr = pStr + vValue.get(j).get("TVALUE"+ Integer.parseInt(iFLDNO)) +  "|";
+	    	 }
+	    	
+	    }
+	    	   
+	    pStr = pStr + "}";    
+
+		return pStr;
+		
+	}
+	
+	private String sqlQueryDccSearch(Map searchMap) {
+		
+		String pSCanTime = searchMap.get("startDate") == null ? "" : searchMap.get("startDate").toString();
+		searchMap.put("pSCanTime", pSCanTime);
+		/*
+		  if strUserID <> "" then
+	    	pSQL = "UPDATE MST_USER SET UserIP = '" & strIp & "', conntime = getdate()"
+	    	pSQL = pSQL & ", Login = 'Y', LoginHogi = '" & strHogi & "'"
+	    	pSQL = pSQL & " WHERE ID = '" & strUserID & "'"
+	    	conn1.execute(pSQL)
+	    End If
+	    */
+		
+		if( "".equals(pSCanTime) ) {
+			Map scantime = basDccOsmsMapper.selectScanTime(searchMap);
+			
+			if(scantime != null && scantime.get("SCANTIME") != null) {
+				pSCanTime = scantime.get("SCANTIME") .toString();
+			}
+			
+			searchMap.put("pSCanTime", pSCanTime);
+		}
+	
+		List<Map> tblNoFldNoList = basDccOsmsMapper.selectTblNoFldNo(searchMap);
+		
+		/*
+		String[] iTBLNO = new String[400];
+		String[] iFLDNO = new String[400];
+	
+		
+		int iTagCnt = 0;
+		int iTblCnt = 0;
+				
+		for(Map tblNoFldNo:tblNoFldNoList) {
+			iTBLNO[iTagCnt] = tblNoFldNo.get("TBLNO").toString();
+			iFLDNO[iTagCnt] = tblNoFldNo.get("FLDNO").toString();		
+			
+			iTagCnt = iTagCnt + 1;			
+		}
+		*/
+		
+		List<Map> vValue = basDccOsmsMapper.selectLogDccTrendSearch(searchMap);
 		
 	    String pStr = pSCanTime + "|";
 	    for(int i=0;i<tblNoFldNoList.size();i++) {
@@ -569,8 +853,10 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		
 		if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {
 			varValue = sqlQueryDccReal4Hogi(searchMap).split("\\|");
+			//varValue = sqlQueryDccReal4Hogi(searchMap,tagDccInfoList).split("\\|");
 		}else {		
 			varValue = sqlQueryDccReal(searchMap).split("\\|");
+			//varValue = sqlQueryDccReal(searchMap,tagDccInfoList).split("\\|");
 		}
 		
 		//*** Start getDccValue 에 포함 된 로직
@@ -595,9 +881,9 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 	        			searchMap.put("TimeGap", secondsDifference);
 	        			
 	        			 if (secondsDifference > 1800) {
-	        				 rtnMap.put("ForeColor", "#FF");
+	        				 rtnMap.put("ForeColor", "#e85516");
 	        			 }else {
-	        				 rtnMap.put("ForeColor", "#808000");
+	        				 rtnMap.put("ForeColor", "#05c8be");
 	        			 }
 	        			
     			}catch (Exception e) {
@@ -627,14 +913,127 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		
 	   	if(varValue != null && varValue.length != 0) {
 	   		
+	   		//System.out.println(tagDccInfoList.size());
+	   		//System.out.println(varValue.length);
 	   		for(int i=0;i<tagDccInfoList.size();i++) {
 	   			if(varValue[i+1] != null && !varValue[i+1].isEmpty()) {
 	   				if(Double.parseDouble(varValue[i+1]) < 0) {
-	   					lblCountList.add(Integer.toOctalString(65535 + Integer.parseInt(varValue[i+1]) + 1));
-	   					pCountList.add(""+ 65535 + Integer.parseInt(varValue[i+1]) + 1);
+	   					Long tmpL = 65535 + Math.round(Double.parseDouble(varValue[i+1]) + 1);
+	   					lblCountList.add(Integer.toOctalString(tmpL.intValue()));
+	   					pCountList.add(""+ 65535 + Math.round(Double.parseDouble(varValue[i+1]) + 1));
 	   				}else {
-	   					lblCountList.add(Integer.toOctalString(Integer.parseInt(varValue[i+1])));
-	   					pCountList.add(""+ Integer.parseInt(varValue[i+1]));
+	   					Long tmpL = Math.round(Double.parseDouble(varValue[i+1]));
+	   					lblCountList.add(Integer.toOctalString(tmpL.intValue()));
+	   					pCountList.add(""+ Math.round(Double.parseDouble(varValue[i+1])));
+	   				}
+	   			}
+	   		}
+	   	}
+    	
+	    rtnMap.put("lblDataList", lblDataList);
+    	rtnMap.put("lblCountList", lblCountList);
+    	rtnMap.put("pCountList", pCountList);
+
+		return rtnMap;
+		
+	}
+	
+	public Map getNumericRealValue2(Map searchMap, List<ComTagDccInfo> tagDccInfoList){
+		
+		Map rtnMap = new HashMap();
+		
+		String[] varValue = null;
+		
+		if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {
+			//varValue = sqlQueryDccReal4Hogi(searchMap).split("\\|");
+			varValue = sqlQueryDccReal4Hogi(searchMap,tagDccInfoList).split("\\|");
+		}else {		
+			//varValue = sqlQueryDccReal(searchMap).split("\\|");
+			varValue = sqlQueryDccReal(searchMap,tagDccInfoList).split("\\|");
+		}
+		
+		//*** Start getDccValue 에 포함 된 로직
+    	if(varValue != null && varValue.length != 0) {
+    		if(varValue[0].length() == 19) {
+    			
+    			rtnMap.put("SearchTime", searchMap.get("hogi").toString() + " " +  searchMap.get("xyGubun").toString() + " " + varValue[0]);
+    			
+    			try {
+	        			java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	       			    java.util.Date date = format.parse(varValue[0]);
+	        			
+	        			Calendar c = Calendar.getInstance();
+	        			c.setTime(date); 
+	        			c.add(Calendar.MILLISECOND, 1);
+	        			
+	        			long searchTime = date.getTime();
+	        			long currentTime = System.currentTimeMillis();
+	        			
+	        			long secondsDifference = (currentTime -searchTime)  / 1000;   
+	        			
+	        			searchMap.put("TimeGap", secondsDifference);
+	        			
+	        			 if (secondsDifference > 1800) {
+	        				 rtnMap.put("ForeColor", "#e85516");
+	        			 }else {
+	        				 rtnMap.put("ForeColor", "#05c8be");
+	        			 }
+	        			
+    			}catch (Exception e) {
+    				e.printStackTrace();
+    			}        			
+    		} // end if varVal[0] len 19
+    	} // end if varValue is not null
+		
+    	List<Map> lblDataList = new ArrayList<Map>();
+    	List<String> lblCountList = new ArrayList<String>();
+    	List<String> pCountList = new ArrayList<String>();
+    	
+    	for(int i=0;i<tagDccInfoList.size();i++) {
+    		//varValue[0]에는 날짜 데이터가 포함되어 있어 배열 idx + 1
+    		if(varValue[i+1] != null && !varValue[i+1].isEmpty()) {
+    			double fValue = Double.parseDouble(varValue[i+1]);
+    			if(i == 365) { 
+    				i = i; 
+    			}
+    			Map lblData = setDataConv(fValue, tagDccInfoList.get(i), searchMap);
+    			checkAlarm(lblData, tagDccInfoList.get(i));
+    			
+    			lblDataList.add(lblData);
+    		}else {
+    			lblDataList.add(new HashMap());
+    		}
+    	}
+    	
+    	/*for(int i=0;i<tagDccInfoList.size();i++) {
+    		if(varValue[i+1] != null && !varValue[i+1].isEmpty()) {
+    			double fValue = Double.parseDouble(varValue[i+1]);
+    			
+    			Map lblData = new HashMap();
+    			lblData.put("fValue", fValue);
+    			
+    			lblDataList.add(lblData);
+    		}else {
+    			lblDataList.add(new HashMap());
+    		}
+    	}*/
+    	
+		varValue = sqlQueryDccCount(searchMap).split("\\|");
+		
+	   	if(varValue != null && varValue.length != 0) {
+	   		
+	   		//System.out.println(tagDccInfoList.size());
+	   		//System.out.println(varValue.length);
+	   		for(int i=0;i<tagDccInfoList.size();i++) {
+	   			if(varValue[i+1] != null && !varValue[i+1].isEmpty()) {
+	   				if(Double.parseDouble(varValue[i+1]) < 0) {
+	   					Long tmpL = 65535 + Math.round(Double.parseDouble(varValue[i+1]) + 1);
+	   					lblCountList.add(Integer.toOctalString(tmpL.intValue()));
+	   					pCountList.add(""+ 65535 + Math.round(Double.parseDouble(varValue[i+1]) + 1));
+	   				}else {
+	   					Long tmpL = Math.round(Double.parseDouble(varValue[i+1]));
+	   					lblCountList.add(Integer.toOctalString(tmpL.intValue()));
+	   					pCountList.add(""+ Math.round(Double.parseDouble(varValue[i+1])));
 	   				}
 	   			}
 	   		}
@@ -666,8 +1065,10 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		
 		for(ComDccGrpTagInfo dccGrpTag:dccGrpTagList) {
 			Map trendSchMap = new HashMap();
+			//System.out.println(dccGrpTag.getTBLNO());
+			//System.out.println(dccGrpTag.getFLDNO());
 			trendSchMap.put("hogi", dccGrpTag.getHogi());
-			trendSchMap.put("tlbNo", dccGrpTag.getTBLNO());
+			trendSchMap.put("tblNo", dccGrpTag.getTBLNO());
 			trendSchMap.put("fldNo", dccGrpTag.getFLDNO());
 			trendSchMap.put("xyGubun", dccGrpTag.getXYGubun());
 			
@@ -679,10 +1080,50 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 				if(pStr.isEmpty()) {
 					 pStr = logTrend.get("scantime").toString() + "|";
 				}
-				pStr = logTrend.get("tValue").toString() + "|";
+				pStr += logTrend.get("tValue").toString() + "|";
 			}			
 		}
+		//System.out.println(pStr);
+		return pStr;			
+	}	
+	
+	private String sqlQueryDccReal(Map searchMap, List<ComTagDccInfo> dccGrpTagList) {
 		
+		String pSCanTime ="";
+		
+		/*
+		  if strUserID <> "" then
+	    	pSQL = "UPDATE MST_USER SET UserIP = '" & strIp & "', conntime = getdate()"
+	    	pSQL = pSQL & ", Login = 'Y', LoginHogi = '" & strHogi & "'"
+	    	pSQL = pSQL & " WHERE ID = '" & strUserID & "'"
+	    	conn1.execute(pSQL)
+	    End If
+	    */
+						
+		String pStr =  "";
+		//List<ComDccGrpTagInfo> dccGrpTagList = basDccOsmsMapper.selectDccGrpTagList(searchMap);
+		
+		for(ComTagDccInfo dccGrpTag:dccGrpTagList) {
+			Map trendSchMap = new HashMap();
+			//System.out.println(dccGrpTag.getTBLNO());
+			//System.out.println(dccGrpTag.getFLDNO());
+			trendSchMap.put("hogi", dccGrpTag.getHogi());
+			trendSchMap.put("tblNo", dccGrpTag.getTBLNO());
+			trendSchMap.put("fldNo", dccGrpTag.getFLDNO());
+			trendSchMap.put("xyGubun", dccGrpTag.getXYGubun());
+			
+			Map logTrend = basDccOsmsMapper.selectLogDccTrendReal(trendSchMap);
+			
+			if(logTrend == null || logTrend.get("scantime") == null ) {
+				pStr = pStr + "|";
+			}else {
+				if(pStr.isEmpty()) {
+					 pStr = logTrend.get("scantime").toString() + "|";
+				}
+				pStr += logTrend.get("tValue").toString() + "|";
+			}			
+		}
+		//System.out.println(pStr);
 		return pStr;			
 	}	
 
@@ -705,7 +1146,7 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		for(ComDccGrpTagInfo dccGrpTag:dccGrpTagList) {
 			Map trendSchMap = new HashMap();
 			trendSchMap.put("hogi", dccGrpTag.getHogi());
-			trendSchMap.put("tlbNo", dccGrpTag.getTBLNO());
+			trendSchMap.put("tblNo", dccGrpTag.getTBLNO());
 			trendSchMap.put("fldNo", dccGrpTag.getFLDNO());
 			trendSchMap.put("xyGubun", dccGrpTag.getXYGubun());
 			
@@ -717,13 +1158,50 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 				if(pStr.isEmpty()) {
 					 pStr = logTrend.get("scantime").toString() + "|";
 				}
-				pStr = logTrend.get("tValue").toString() + "|";
+				pStr += logTrend.get("tValue").toString() + "|";
 			}			
 		}
 		
 		return pStr;			
 	}
 	
+	private String sqlQueryDccReal4Hogi(Map searchMap, List<ComTagDccInfo> dccGrpTagList) {
+		
+		String pSCanTime ="";
+		
+		/*
+		  if strUserID <> "" then
+	    	pSQL = "UPDATE MST_USER SET UserIP = '" & strIp & "', conntime = getdate()"
+	    	pSQL = pSQL & ", Login = 'Y', LoginHogi = '" & strHogi & "'"
+	    	pSQL = pSQL & " WHERE ID = '" & strUserID & "'"
+	    	conn1.execute(pSQL)
+	    End If
+	    */
+						
+		String pStr =  "";
+		//List<ComDccGrpTagInfo> dccGrpTagList = basDccOsmsMapper.selectDccGrpTagList(searchMap);
+		
+		for(ComTagDccInfo dccGrpTag:dccGrpTagList) {
+			Map trendSchMap = new HashMap();
+			trendSchMap.put("hogi", dccGrpTag.getHogi());
+			trendSchMap.put("tblNo", dccGrpTag.getTBLNO());
+			trendSchMap.put("fldNo", dccGrpTag.getFLDNO());
+			trendSchMap.put("xyGubun", dccGrpTag.getXYGubun());
+			
+			Map logTrend = basDccOsmsMapper.selectLogDccTrend4HogiReal(trendSchMap);
+			
+			if(logTrend == null || logTrend.get("scantime") == null ) {
+				pStr = pStr + "|";
+			}else {
+				if(pStr.isEmpty()) {
+					 pStr = logTrend.get("scantime").toString() + "|";
+				}
+				pStr += logTrend.get("tValue").toString() + "|";
+			}			
+		}
+		
+		return pStr;			
+	}
 
 	private String sqlQueryDccCount(Map searchMap) {
 		
@@ -752,25 +1230,24 @@ public class BasDccOsmsServiceImpl implements BasDccOsmsService{
 		for(ComDccGrpTagInfo dccGrpTag:dccGrpTagList) {
 			Map trendSchMap = new HashMap();
 			trendSchMap.put("hogi", dccGrpTag.getHogi());
-			trendSchMap.put("tlbNo", dccGrpTag.getTBLNO());
+			trendSchMap.put("tblNo", dccGrpTag.getTBLNO());
 			trendSchMap.put("fldNo", dccGrpTag.getFLDNO());
 			trendSchMap.put("xyGubun", dccGrpTag.getXYGubun());
 			
 			Map logTrend = basDccOsmsMapper.selectLogDccCount(trendSchMap);
 			
 			if(logTrend == null || logTrend.get("scantime") == null ) {
-				pStr = pStr + "|";
+				pStr = pStr + "0|";
 			}else {
 				if(pStr.isEmpty()) {
 					 pStr = logTrend.get("scantime").toString() + "|";
 				}
-				pStr = logTrend.get("tValue").toString() + "|";
+				pStr += logTrend.get("tValue").toString() + "|";
 			}			
 		}
-		
+		//System.out.println(pStr);
 		return pStr;			
-	}	
-	
+	}
 	
 	// added by jhlee(23.02.28)
 	public List<Map> selectDccGrpTagListB(Map searchMap) {

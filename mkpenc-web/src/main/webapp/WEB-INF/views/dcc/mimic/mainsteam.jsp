@@ -16,11 +16,11 @@
 <script type="text/javascript" src="<c:url value="/resources/js/modal.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/common.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
-<script type="text/javascript" src="<c:url value="/resources/js/status.js" />" charset="utf-8"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/mimic.js" />" charset="utf-8"></script>
 <script type="text/javascript">
-var timerOn = false; //true로 변경
-var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
-var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
+var timerOn = true //true로 변경
+var hogiHeader = '${UserInfo.hogi}' != "undefined" && '${UserInfo.hogi}' != ''  ? '${UserInfo.hogi}' : "3";
+var xyHeader = '${UserInfo.xyGubun}' != "undefined" && '${UserInfo.xyGubun}' != '' ? '${UserInfo.xyGubun}' : "X";
 
 var tDccTagSeq = [
 	${DccTagInfoList[0].iSeq},${DccTagInfoList[1].iSeq},${DccTagInfoList[2].iSeq},${DccTagInfoList[3].iSeq},${DccTagInfoList[4].iSeq},
@@ -41,41 +41,62 @@ var tToolTipText = [
 	,"${DccTagInfoList[15].toolTip}"	,"${DccTagInfoList[16].toolTip}"	,"${DccTagInfoList[17].toolTip}"	,"${DccTagInfoList[18].toolTip}"	,"${DccTagInfoList[19].toolTip}"
 ];
 
-
+var DccTagInfoListAjax = {};
+var lblDataListAjax = {};
 
 $(function () {
-
-
-	if( $("input:radio[id='4']").is(":checked") ) {
-		hogiHeader = "4";
-	} else {
-		hogiHeader = "3";
-	}
-	if( $("input:radio[id='Y']").is(":checked") ) {
-		xyHeader = "Y";
-	} else {
-		xyHeader = "X";
-	}
-	
-	var lblDateVal = '${SearchTime}';
-	$("#lblDate").text(lblDateVal);
-	
 	$(document.body).delegate('#3', 'click', function() {
-		setTimer('3',xyHeader,0);
+		hogiHeader = '3';
+		
+		var comAjax = new ComAjax("mainsteamFrm");
+		comAjax.setUrl('/dcc/mimic/reloadMainsteam');
+		comAjax.addParam("sHogi",hogiHeader);
+		comAjax.addParam("sXYGubun",xyHeader);
+		comAjax.setCallback('mimicCallback');
+		comAjax.ajax();
 	});
+	
 	$(document.body).delegate('#4', 'click', function() {
-		setTimer('4',xyHeader,0);
+		hogiHeader = '4';
+		
+		var comAjax = new ComAjax("mainsteamFrm");
+		comAjax.setUrl('/dcc/mimic/reloadMainsteam');
+		comAjax.addParam("sHogi",hogiHeader);
+		comAjax.addParam("sXYGubun",xyHeader);
+		comAjax.setCallback('mimicCallback');
+		comAjax.ajax();
 	});
+	
 	$(document.body).delegate('#X', 'click', function() {
-		setTimer(hogiHeader,'X',0);
+		xyHeader = 'X';
+		
+		var comAjax = new ComAjax("mainsteamFrm");
+		comAjax.setUrl('/dcc/mimic/reloadMainsteam');
+		comAjax.addParam("sHogi",hogiHeader);
+		comAjax.addParam("sXYGubun",xyHeader);
+		comAjax.setCallback('mimicCallback');
+		comAjax.ajax();
 	});
+	
 	$(document.body).delegate('#Y', 'click', function() {
-		setTimer(hogiHeader,'Y',0);
+		xyHeader = 'Y';
+		
+		var comAjax = new ComAjax("mainsteamFrm");
+		comAjax.setUrl('/dcc/mimic/reloadMainsteam');
+		comAjax.addParam("sHogi",hogiHeader);
+		comAjax.addParam("sXYGubun",xyHeader);
+		comAjax.setCallback('mimicCallback');
+		comAjax.ajax();
 	});
+	
+		var lblDateVal = '${SearchTime}';
+		$("#lblDate").text(lblDateVal);
+		$("#lblDate").css('color','${ForeColor}');
+
 		$(document.body).delegate('#mainsteamdiv label', 'dblclick', function() {
 			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
 			if( cId != null && cId != '' && cId != 'undefined' ) {
-				showTag(cId,tDccTagSeq[cId]);
+				//showTag(cId,tDccTagSeq[cId]);
 			}
 		});
 		
@@ -141,29 +162,58 @@ $(function () {
 			tagSelect();
 		});
 		
-		setTimer(hogiHeader,xyHeader,5000);
+		setTimer(5000);
 
 });	
 
 
-function setTimer(hogiHeader,xyHeader,interval) {
+function setTimer(interval) {
 	if( interval > 0 ) {
-		setTimeout(function() {
+		setTimeout(function run() {
 			if( timerOn ) {
-				var	comSubmit	=	new ComSubmit("mainsteamFrm");
-				comSubmit.setUrl("/dcc/mimic/mainsteam");
-				comSubmit.addParam("hogiHeader",hogiHeader);
-				comSubmit.addParam("xyHeader",xyHeader);
-				comSubmit.submit();
+				//var	comSubmit	=	new ComSubmit("mainsteamFrm");
+				//comSubmit.setUrl("/dcc/mimic/mainsteam");
+				//comSubmit.submit();
+				var comAjax = new ComAjax("mainsteamFrm");
+				comAjax.setUrl('/dcc/mimic/reloadMainsteam');
+				comAjax.addParam("sHogi",hogiHeader);
+				comAjax.addParam("sXYGubun",xyHeader);
+				comAjax.setCallback('mimicCallback');
+				comAjax.ajax();
 			}
+			
+			setTimeout(run, interval);
 		},interval);
 	} else {
-		var	comSubmit	=	new ComSubmit("mainsteamFrm");
-		comSubmit.setUrl("/dcc/mimic/mainsteam");
-		comSubmit.addParam("hogiHeader",hogiHeader);
-		comSubmit.addParam("xyHeader",xyHeader);
-		comSubmit.submit();
+		setTimeout(function run() {
+			if( timerOn ) {
+				//var	comSubmit	=	new ComSubmit("mainsteamFrm");
+				//comSubmit.setUrl("/dcc/mimic/mainsteam");
+				//comSubmit.submit();
+				var comAjax = new ComAjax("mainsteamFrm");
+				comAjax.setUrl('/dcc/mimic/reloadMainsteam');
+				comAjax.addParam("sHogi",hogiHeader);
+				comAjax.addParam("sXYGubun",xyHeader);
+				comAjax.setCallback('mimicCallback');
+				comAjax.ajax();
+			}
+			
+			setTimeout(run, 5000);
+		},5000);
 	}
+}
+
+function setData() {
+	for( var i=0;i<lblDataListAjax.length;i++ ) {
+		$("#lblData"+i).text(lblDataListAjax[i].fValue);
+		$("#lblUnit"+i).text(DccTagInfoListAjax[i].unit);
+		$("#lblData"+i).prop('title',DccTagInfoListAjax[i].toolTip);
+	}
+}
+
+function setDate(time,color) {
+	$("#lblDate").text(time);
+	$("#lblDate").css('color',color);
 }
 
 function saveTag() {
@@ -193,8 +243,6 @@ function saveTag() {
 	}
 	
 	comSubmit.setUrl("/dcc/mimic/mainsteamSaveTag");
-	comSubmit.addParam("hogiHeader",hogiHeader);
-	comSubmit.addParam("xyHeader",xyHeader);
 	comSubmit.submit();
 }
 
@@ -318,7 +366,19 @@ function toCSV() {
 			</div>
 			<!-- //page_title -->
 			<div class="img_wrap main_steam" id="mainsteamdiv">
-			<form id="mainsteamFrm" style="display:none"></form>
+                <!-- 마우스 우클릭 메뉴 -->
+                <div class="context_menu" id="mouse_area">
+                    <ul>
+                        <li><a href="#none" onclick="javascript:toCSV();">엑셀로 저장</a></li>
+                    </ul>
+                </div>
+                <!-- //마우스 우클릭 메뉴 -->
+			<form id="mainsteamFrm" style="display:none">
+			<input type="hidden" id="sDive" name="sDive" value="${BaseSearch.sDive}">
+			<input type="hidden" id="sMenuNo" name="sMenuNo" value="${BaseSearch.sMenuNo}">
+			<input type="hidden" id="sGrpID" name="sGrpID" value="${BaseSearch.sGrpID}">
+			<input type="hidden" id="sUGrpNo" name="sUGrpNo" value="${BaseSearch.sUGrpNo}">	
+			</form>
                 <!-- range_slider -->
                 <div class="range_slider">
                     <input type="range" id="opacity-change" value="100" min="20" max="100">
@@ -333,8 +393,8 @@ function toCSV() {
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                            	<label id="0">${lblDataList[0].fValue}</label>
-                                <span class="per">${DccTagInfoList[0].unit}</span>
+                            	<label id="lblData0" title="${DccTagInfoList[0].toolTip}">${lblDataList[0].fValue}</label>
+                                <span class="per"><label id="lblUnit0">${DccTagInfoList[0].unit}</label></span>
                             </p>
                         </div>
                     </div>
@@ -344,8 +404,8 @@ function toCSV() {
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <label id="1">${lblDataList[1].fValue}</label>
-                                <span class="per">${DccTagInfoList[1].unit}</span>
+                                <label id="lblData1" title="${DccTagInfoList[1].toolTip}">${lblDataList[1].fValue}</label>
+                                <span class="per"><label id="lblUnit1">${DccTagInfoList[1].unit}</label></span>
                             </p>
                         </div>
                     </div>
@@ -355,8 +415,8 @@ function toCSV() {
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <label id="2">${lblDataList[2].fValue}</label>
-                                <span class="per">${DccTagInfoList[2].unit}</span>
+                                <label id="lblData2" title="${DccTagInfoList[2].toolTip}">${lblDataList[2].fValue}</label>
+                                <span class="per"><label id="lblUnit2">${DccTagInfoList[2].unit}</label></span>
                             </p>
                         </div>
                     </div>
@@ -366,8 +426,8 @@ function toCSV() {
                     <div class="chart_block_contents">
                         <div class="summary">
                             <p>
-                                <label id="3">${lblDataList[3].fValue}</label>
-                                <span class="per">${DccTagInfoList[3].unit}</span>
+                                <label id="lblData3" title="${DccTagInfoList[3].toolTip}">${lblDataList[3].fValue}</label>
+                                <span class="per"><label id="lblUnit3">${DccTagInfoList[3].unit}</label></span>
                             </p>
                         </div>
                     </div>
@@ -378,15 +438,15 @@ function toCSV() {
                         <div class="summary">
                             <p>
                                 <span>PWR</span>
-								<label id="16">${lblDataList[16].fValue}</label>
-                                <span>${DccTagInfoList[16].unit}</span>
+								<label id="lblData16" title="${DccTagInfoList[16].toolTip}">${lblDataList[16].fValue}</label>
+                                <span><label id="lblUnit16">${DccTagInfoList[16].unit}</label></span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
                                 <span>First P</span>
-                                <label id="17">${lblDataList[17].fValue}</label>
-                                <span>${DccTagInfoList[17].unit}</span>
+                                <label id="lblData17" title="${DccTagInfoList[17].toolTip}">${lblDataList[17].fValue}</label>
+                                <span><label id="lblUnit17">${DccTagInfoList[17].unit}</label></span>
                             </p>
                         </div>
                     </div>
@@ -397,8 +457,8 @@ function toCSV() {
                         <div class="summary">
                             <p>
                                 <span>PWR</span>
-                                <label id="18">${lblDataList[18].fValue}</label>
-                                <span>${DccTagInfoList[18].unit}</span>
+                                <label id="lblData18" title="${DccTagInfoList[18].toolTip}">${lblDataList[18].fValue}</label>
+                                <span><label id="lblUnit18">${DccTagInfoList[18].unit}</label></span>
                             </p>
                         </div>
                     </div>
@@ -409,8 +469,8 @@ function toCSV() {
                         <div class="summary">
                             <p>
                                 <span>VAC</span>
-                                <label id="19">${lblDataList[19].fValue}</label>
-                                <span>${DccTagInfoList[19].unit}</span>
+                                <label id="lblData19" title="${DccTagInfoList[19].toolTip}">${lblDataList[19].fValue}</label>
+                                <span><label id="lblUnit19">${DccTagInfoList[19].unit}</label></span>
                             </p>
                         </div>
                     </div>
@@ -421,29 +481,29 @@ function toCSV() {
                         <div class="summary">
                             <p>
                                 <span>1</span>
-                                <label id="4">${lblDataList[4].fValue}</label>
-                                <span>${DccTagInfoList[4].unit}</span>
+                                <label id="lblData4" title="${DccTagInfoList[4].toolTip}">${lblDataList[4].fValue}</label>
+                                <span><label id="lblUnit4">${DccTagInfoList[4].unit}</label></span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
                                 <span>2</span>
-                                <label id="5">${lblDataList[5].fValue}</label>
-                                <span>${DccTagInfoList[5].unit}</span>
+                                <label id="lblData5" title="${DccTagInfoList[5].toolTip}">${lblDataList[5].fValue}</label>
+                                <span><label id="lblUnit5">${DccTagInfoList[5].unit}</label></span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
                                 <span>3</span>
-                                <label id="6">${lblDataList[6].fValue}</label>
-                                <span>${DccTagInfoList[6].unit}</span>
+                                <label id="lblData6" title="${DccTagInfoList[6].toolTip}">${lblDataList[6].fValue}</label>
+                                <span><label id="lblUnit6">${DccTagInfoList[6].unit}</label></span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
                                 <span>4</span>
-                                <label id="7">${lblDataList[7].fValue}</label>
-                                <span>${DccTagInfoList[7].unit}</span>
+                                <label id="lblData7" title="${DccTagInfoList[7].toolTip}">${lblDataList[7].fValue}</label>
+                                <span><label id="lblUnit7">${DccTagInfoList[7].unit}</label></span>
                             </p>
                         </div>
                     </div>
@@ -453,29 +513,29 @@ function toCSV() {
                         <div class="summary">
                             <p>
                                 <span>S/G Pr</span>
-                                <label id="8">${lblDataList[8].fValue}</label>
-                                <span>${DccTagInfoList[8].unit}</span>
+                                <label id="lblData8" title="${DccTagInfoList[8].toolTip}">${lblDataList[8].fValue}</label>
+                                <span><label id="lblUnit8">${DccTagInfoList[8].unit}</label></span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
                                 <span>ASDVs Opening</span>
-                                <label id="9">${lblDataList[9].fValue}</label>
-                                <span>${DccTagInfoList[9].unit}</span>
+                                <label id="lblData9" title="${DccTagInfoList[9].toolTip}">${lblDataList[9].fValue}</label>
+                                <span><label id="lblUnit9">${DccTagInfoList[9].unit}</label></span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
                                 <span>CSDVs Opening</span>
-                                <label id="10">${lblDataList[10].fValue}</label>
-                                <span>${DccTagInfoList[10].unit}</span>
+                                <label id="lblData10" title="${DccTagInfoList[10].toolTip}">${lblDataList[10].fValue}</label>
+                                <span><label id="lblUnit10">${DccTagInfoList[10].unit}</label></span>
                             </p>
                         </div>
                         <div class="summary">
                             <p>
                                 <span>Total SDVs Opening</span>
-                                <label id="11">${lblDataList[11].fValue}</label>
-                                <span>${DccTagInfoList[11].unit}</span>
+                                <label id="lblData11" title="${DccTagInfoList[11].toolTip}">${lblDataList[11].fValue}</label>
+                                <span><label id="lblUnit11">${DccTagInfoList[11].unit}</label></span>
                             </p>
                         </div>
                     </div>
@@ -485,8 +545,8 @@ function toCSV() {
                         <div class="summary">
                             <p>
                                 <span>CSDV-PVC1</span>
-                                <label id="12">${lblDataList[12].fValue}</label>
-                                <span class="per">${DccTagInfoList[12].unit}</span>
+                                <label id="lblData12" title="${DccTagInfoList[12].toolTip}">${lblDataList[12].fValue}</label>
+                                <span class="per"><label id="lblUnit12">${DccTagInfoList[12].unit}</label></span>
                             </p>
                         </div>
                     </div>
@@ -496,8 +556,8 @@ function toCSV() {
                         <div class="summary">
                             <p>
                                 <span>CSDV-PVC2</span>
-                                <label id="13">${lblDataList[13].fValue}</label>
-                                <span class="per">${DccTagInfoList[13].unit}</span>
+                                <label id="lblData13" title="${DccTagInfoList[13].toolTip}">${lblDataList[13].fValue}</label>
+                                <span class="per"><label id="lblUnit13">${DccTagInfoList[13].unit}</label></span>
                             </p>
                         </div>
                     </div>
@@ -507,8 +567,8 @@ function toCSV() {
                         <div class="summary">
                             <p>
                                 <span>CSDV-PVC3</span>
-                                <label id="14">${lblDataList[14].fValue}</label>
-                                <span class="per">${DccTagInfoList[14].unit}</span>
+                                <label id="lblData14" title="${DccTagInfoList[14].toolTip}">${lblDataList[14].fValue}</label>
+                                <span class="per"><label id="lblUnit14">${DccTagInfoList[14].unit}</label></span>
                             </p>
                         </div>
                     </div>
@@ -518,8 +578,8 @@ function toCSV() {
                         <div class="summary">
                             <p>
                                 <span>CSDV-PVC4</span>
-                                <label id="15">${lblDataList[15].fValue}</label>
-                                <span class="per">${DccTagInfoList[15].unit}</span>
+                                <label id="lblData15" title="${DccTagInfoList[15].toolTip}">${lblDataList[15].fValue}</label>
+                                <span class="per"><label id="lblUnit15">${DccTagInfoList[15].unit}</label></span>
                             </p>
                         </div>
                     </div>
@@ -707,7 +767,7 @@ function toCSV() {
 <!-- pop_contents -->
 </div>
 <!-- //layer_pop_wrap -->
-<script type="text/javascript" src="<c:url value="/resources/js/range_control.js" />" charset="utf-8"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/context_menu.js" />" charset="utf-8"></script>
 </body>
 </html>
 

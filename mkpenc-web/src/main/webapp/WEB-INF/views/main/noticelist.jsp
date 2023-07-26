@@ -21,6 +21,7 @@
 <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/jquery-ui-base-1.13.2.css" />">
 <script type="text/javascript" src="<c:url value="/resources/jquery/jquery-ui-1.13.2.js" />" charset="utf-8"></script>
 <script type="text/javascript">
+var timerOn = false;
 
 $(function () {
 	

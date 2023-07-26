@@ -20,8 +20,7 @@
 
 <script type="text/javascript">
 	var timerOn = true;
-	var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
-	var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
+	var type = 1;
 	
 	var tDccTagSeq = [
 		${DccTagInfoList[0].iSeq},${DccTagInfoList[1].iSeq},${DccTagInfoList[2].iSeq},${DccTagInfoList[3].iSeq},${DccTagInfoList[4].iSeq},
@@ -83,6 +82,10 @@
 		,"${DccTagInfoList[55].toolTip}"
 	];
 	
+	var dccGrpTagListAjax = {};
+	var lblDataListAjax = {};
+	var lblConvListAjax = {};
+	
 	var selectTag = [{name:"hogi",value:""},{name:"xyGubun",value:""},{name:"loopName",value:""},{name:"ioType",value:""}
 					,{name:"address",value:""},{name:"ioBit",value:""},{name:"descr",value:""}];
 	
@@ -97,12 +100,12 @@
 		
 			$("#tagNo").val(tagNo);
 			
-			var toolTip = tToolTipText[tagNo];
+			var toolTip = type == 1 ? tToolTipText[tagNo] : dccGrpTagListAjax[tagNo].toolTip;
 			var strDescr = toolTip.substring(0, toolTip.lastIndexOf('['));
 			var infos =  toolTip.substring(toolTip.lastIndexOf('[')+1, toolTip.lastIndexOf(']')).split(":");
 
 			$("#txtHogi").val(infos[0]);
-	        $("#txtXyGubun").val(tDccTagXy[tagNo]);
+	        $("#txtXyGubun").val(type == 1 ? tDccTagXy[tagNo] : dccGrpTagListAjax[tagNo].xyGubun);
 	        $("#txtDescr").val(strDescr);
 	        $("#txtIoType").val(infos[1].substring(0,infos[1].indexOf('-')));
 	        $("#txtAddress").val(infos[1].substring(infos[1].indexOf('-')+1));
@@ -123,21 +126,40 @@
 		var tooltipText = '';
 		var mod = '';
 		
-		if( id*1 > 2 && id*1 < 5 ) {
-			tooltipText = '3||'+tToolTipText[0];//+','+tToolTipText[1];
-		} else if( id*1 > 24 && id*1 < 28 ) {
-			tooltipText = '25||'+tToolTipText[25];//+','+tToolTipText[26]+','+tToolTipText[27];
-		} else if( id*1 < 2 || (id*1 > 17 && id*1 < 21) ) {
-			mod = id*1 - (id*1)%3;
-			tooltipText = (mod+1)+'||'+tToolTipText[tDccTrendValue[mod+1]];
-		} else if( id*1 > 4 && id*1 < 14 ) {
-			mod = id*1 - (id*1+1)%3;
-			tooltipText = (mod+1)+'||'+tToolTipText[tDccTrendValue[mod+1]];
-		} else if( id*1 > 13 && id*1 < 18 ) {
-			mod = id*1 - (id*1+2)%4;
-			tooltipText = (mod+1)+'||'+tToolTipText[tDccTrendValue[mod+1]];
+		if( type == 1 ) {
+			if( id*1 > 2 && id*1 < 5 ) {
+				tooltipText = '3||'+tToolTipText[0];//+','+tToolTipText[1];
+			} else if( id*1 > 24 && id*1 < 28 ) {
+				tooltipText = '25||'+tToolTipText[25];//+','+tToolTipText[26]+','+tToolTipText[27];
+			} else if( id*1 < 2 || (id*1 > 17 && id*1 < 21) ) {
+				mod = id*1 - (id*1)%3;
+				tooltipText = (mod+1)+'||'+tToolTipText[tDccTrendValue[mod+1]];
+			} else if( id*1 > 4 && id*1 < 14 ) {
+				mod = id*1 - (id*1+1)%3;
+				tooltipText = (mod+1)+'||'+tToolTipText[tDccTrendValue[mod+1]];
+			} else if( id*1 > 13 && id*1 < 18 ) {
+				mod = id*1 - (id*1+2)%4;
+				tooltipText = (mod+1)+'||'+tToolTipText[tDccTrendValue[mod+1]];
+			} else {
+				tooltipText = id+'||'+tToolTipText[id*1];
+			}
 		} else {
-			tooltipText = id+'||'+tToolTipText[id*1];
+			if( id*1 > 2 && id*1 < 5 ) {
+				tooltipText = '3||'+dccGrpTagList[0].toolTip;//+','+tToolTipText[1];
+			} else if( id*1 > 24 && id*1 < 28 ) {
+				tooltipText = '25||'+dccGrpTagList[25].toolTip;//+','+tToolTipText[26]+','+tToolTipText[27];
+			} else if( id*1 < 2 || (id*1 > 17 && id*1 < 21) ) {
+				mod = id*1 - (id*1)%3;
+				tooltipText = (mod+1)+'||'+dccGrpTagList[lblDatListAjax[mod+1].fValue*1].toolTip;
+			} else if( id*1 > 4 && id*1 < 14 ) {
+				mod = id*1 - (id*1+1)%3;
+				tooltipText = (mod+1)+'||'+dccGrpTagList[lblDatListAjax[mod+1].fValue*1].toolTip;
+			} else if( id*1 > 13 && id*1 < 18 ) {
+				mod = id*1 - (id*1+2)%4;
+				tooltipText = (mod+1)+'||'+dccGrpTagList[lblDatListAjax[mod+1].fValue*1].toolTip;
+			} else {
+				tooltipText = id+'||'+dccGrpTagList[id*1].toolTip;
+			}
 		}
 
 		return tooltipText;
@@ -146,27 +168,53 @@
 	function showTooltip(id) {
 		var tooltipText;
 
-		if( id != 'undefined' && id != null && id != '' ) {
-			if( id == '3' ) {
-				tooltipText = tToolTipText[id*1]+', '+tToolTipText[id*1+1];
-			} else if( id == '25') {
-				tooltipText = tToolTipText[id*1]+', '+tToolTipText[id*1+1]+', '+tToolTipText[id*1+2];
-			} else if ( id == '1' || id == '2' || id == '4' || id == '6' || id == '7' ) {
-				tooltipText = "";
-			} else if( id == '0' || id == '5' || id == '8' || id == '11' || id == '14' || id == '18') {
-				tooltipText = tToolTipText[tDccTrendValue[id*1+1]];
-			} else if( id.indexOf('lbl') > -1 || id.indexOf('shp') > -1 ){
-				tooltipText = "";
-			} else {
-				tooltipText = tToolTipText[id*1];
-			}
-			
-			if( tooltipText.indexOf(":]") > -1 ) {
-				tooltipText = tooltipText.replace(":]","]");
-			}
-			
+		if( type == 1 ) {
 			if( id != 'undefined' && id != null && id != '' ) {
-				$("#"+id).attr("title",tooltipText);
+				if( id == '3' ) {
+					tooltipText = tToolTipText[id*1]+', '+tToolTipText[id*1+1];
+				} else if( id == '25') {
+					tooltipText = tToolTipText[id*1]+', '+tToolTipText[id*1+1]+', '+tToolTipText[id*1+2];
+				} else if ( id == '1' || id == '2' || id == '4' || id == '6' || id == '7' ) {
+					tooltipText = "";
+				} else if( id == '0' || id == '5' || id == '8' || id == '11' || id == '14' || id == '18') {
+					tooltipText = tToolTipText[tDccTrendValue[id*1+1]];
+				} else if( id.indexOf('lbl') > -1 || id.indexOf('shp') > -1 ){
+					tooltipText = "";
+				} else {
+					tooltipText = tToolTipText[id*1];
+				}
+				
+				if( tooltipText.indexOf(":]") > -1 ) {
+					tooltipText = tooltipText.replace(":]","]");
+				}
+				
+				if( id != 'undefined' && id != null && id != '' ) {
+					$("#lbl"+id).attr("title",tooltipText);
+				}
+			}
+		} else {
+			if( id != 'undefined' && id != null && id != '' ) {
+				if( id == '3' ) {
+					tooltipText = dccGrpTagList[id*1].toolTip+', '+dccGrpTagList[id*1+1].toolTip;
+				} else if( id == '25') {
+					tooltipText = dccGrpTagList[id*1].toolTip+', '+dccGrpTagList[id*1+1].toolTip+', '+dccGrpTagList[id*1+2].toolTip;
+				} else if ( id == '1' || id == '2' || id == '4' || id == '6' || id == '7' ) {
+					tooltipText = "";
+				} else if( id == '0' || id == '5' || id == '8' || id == '11' || id == '14' || id == '18') {
+					tooltipText = dccGrpTagList[lblDataListAjax[id*1+1].fValue*1].toolTip;
+				} else if( id.indexOf('lbl') > -1 || id.indexOf('shp') > -1 ){
+					tooltipText = "";
+				} else {
+					tooltipText = dccGrpTagList[id*1].toolTip;
+				}
+				
+				if( tooltipText.indexOf(":]") > -1 ) {
+					tooltipText = tooltipText.replace(":]","]");
+				}
+				
+				if( id != 'undefined' && id != null && id != '' ) {
+					$("#lbl"+id).attr("title",tooltipText);
+				}
 			}
 		}
 	}
@@ -226,107 +274,143 @@
 		$("#imgTooltip9").attr("title",tToolTipText[53]);
 		$("#imgTooltip10").attr("title",tToolTipText[54]);
 
-		if( tDccTrendValue[44]*1 == 0 ) {
-			$("#shpIND0").attr("class","st_label st_no");
+		/*if( type == 1 ) {
+			if( tDccTrendValue[44]*1 == 0 ) {
+				$("#shpIND0").attr("class","st_label st_no");
+			} else {
+				$("#shpIND0").attr("class","st_label st_yes");
+			}
+			if( tDccTrendValue[45]*1 == 0 ) {
+				$("#shpIND1").attr("class","st_label st_no");
+			} else {
+				$("#shpIND1").attr("class","st_label st_yes");
+			}
+			if( tDccTrendValue[46]*1 == 0 ) {
+				$("#shpIND2").attr("class","st_label st_no");
+			} else {
+				$("#shpIND2").attr("class","st_label st_yes");
+			}
+			if( tDccTrendValue[47]*1 == 0 ) {
+				$("#shpIND3").attr("class","st_label st_no");
+			} else {
+				$("#shpIND3").attr("class","st_label st_yes");
+			}
+			if( tDccTrendValue[48]*1 == 0 ) {
+				$("#shpIND4").attr("class","st_label st_no");
+			} else {
+				$("#shpIND4").attr("class","st_label st_yes");
+			}
+			if( tDccTrendValue[49]*1 == 0 ) {
+				$("#shpIND5").attr("class","st_label st_no");
+			} else {
+				$("#shpIND5").attr("class","st_label st_yes");
+			}
+			if( tDccTrendValue[50]*1 == 0 ) {
+				$("#shpIND6").attr("class","st_label st_no");
+			} else {
+				$("#shpIND6").attr("class","st_label st_yes");
+			}
+			if( tDccTrendValue[51]*1 == 0 ) {
+				$("#shpIND7").attr("class","st_label st_no");
+			} else {
+				$("#shpIND7").attr("class","st_label st_yes");
+			}
+			if( tDccTrendValue[52]*1 == 0 ) {
+				$("#shpIND8").attr("class","st_label st_no");
+			} else {
+				$("#shpIND8").attr("class","st_label st_yes");
+			}
+			if( tDccTrendValue[53]*1 == 0 ) {
+				$("#shpIND9").attr("class","st_label st_no");
+			} else {
+				$("#shpIND9").attr("class","st_label st_yes");
+			}
+			if( tDccTrendValue[54]*1 == 0 ) {
+				$("#shpIND10").attr("class","st_label st_no");
+			} else {
+				$("#shpIND10").attr("class","st_label st_yes");
+			}
 		} else {
-			$("#shpIND0").attr("class","st_label st_yes");
-		}
-		if( tDccTrendValue[45]*1 == 0 ) {
-			$("#shpIND1").attr("class","st_label st_no");
-		} else {
-			$("#shpIND1").attr("class","st_label st_yes");
-		}
-		if( tDccTrendValue[46]*1 == 0 ) {
-			$("#shpIND2").attr("class","st_label st_no");
-		} else {
-			$("#shpIND2").attr("class","st_label st_yes");
-		}
-		if( tDccTrendValue[47]*1 == 0 ) {
-			$("#shpIND3").attr("class","st_label st_no");
-		} else {
-			$("#shpIND3").attr("class","st_label st_yes");
-		}
-		if( tDccTrendValue[48]*1 == 0 ) {
-			$("#shpIND4").attr("class","st_label st_no");
-		} else {
-			$("#shpIND4").attr("class","st_label st_yes");
-		}
-		if( tDccTrendValue[49]*1 == 0 ) {
-			$("#shpIND5").attr("class","st_label st_no");
-		} else {
-			$("#shpIND5").attr("class","st_label st_yes");
-		}
-		if( tDccTrendValue[50]*1 == 0 ) {
-			$("#shpIND6").attr("class","st_label st_no");
-		} else {
-			$("#shpIND6").attr("class","st_label st_yes");
-		}
-		if( tDccTrendValue[51]*1 == 0 ) {
-			$("#shpIND7").attr("class","st_label st_no");
-		} else {
-			$("#shpIND7").attr("class","st_label st_yes");
-		}
-		if( tDccTrendValue[52]*1 == 0 ) {
-			$("#shpIND8").attr("class","st_label st_no");
-		} else {
-			$("#shpIND8").attr("class","st_label st_yes");
-		}
-		if( tDccTrendValue[53]*1 == 0 ) {
-			$("#shpIND9").attr("class","st_label st_no");
-		} else {
-			$("#shpIND9").attr("class","st_label st_yes");
-		}
-		if( tDccTrendValue[54]*1 == 0 ) {
-			$("#shpIND10").attr("class","st_label st_no");
-		} else {
-			$("#shpIND10").attr("class","st_label st_yes");
-		}
+			if( lblDataListAjax[44].fValue*1 == 0 ) {
+				$("#shpIND0").attr("class","st_label st_no");
+			} else {
+				$("#shpIND0").attr("class","st_label st_yes");
+			}
+			if( lblDataListAjax[45].fValue*1 == 0 ) {
+				$("#shpIND1").attr("class","st_label st_no");
+			} else {
+				$("#shpIND1").attr("class","st_label st_yes");
+			}
+			if( lblDataListAjax[46].fValue == 0 ) {
+				$("#shpIND2").attr("class","st_label st_no");
+			} else {
+				$("#shpIND2").attr("class","st_label st_yes");
+			}
+			if( lblDataListAjax[47].fValue == 0 ) {
+				$("#shpIND3").attr("class","st_label st_no");
+			} else {
+				$("#shpIND3").attr("class","st_label st_yes");
+			}
+			if( lblDataListAjax[48].fValue == 0 ) {
+				$("#shpIND4").attr("class","st_label st_no");
+			} else {
+				$("#shpIND4").attr("class","st_label st_yes");
+			}
+			if( lblDataListAjax[49].fValue == 0 ) {
+				$("#shpIND5").attr("class","st_label st_no");
+			} else {
+				$("#shpIND5").attr("class","st_label st_yes");
+			}
+			if( lblDataListAjax[50].fValue == 0 ) {
+				$("#shpIND6").attr("class","st_label st_no");
+			} else {
+				$("#shpIND6").attr("class","st_label st_yes");
+			}
+			if( lblDataListAjax[51].fValue == 0 ) {
+				$("#shpIND7").attr("class","st_label st_no");
+			} else {
+				$("#shpIND7").attr("class","st_label st_yes");
+			}
+			if( lblDataListAjax[52].fValue == 0 ) {
+				$("#shpIND8").attr("class","st_label st_no");
+			} else {
+				$("#shpIND8").attr("class","st_label st_yes");
+			}
+			if( lblDataListAjax[53].fValue == 0 ) {
+				$("#shpIND9").attr("class","st_label st_no");
+			} else {
+				$("#shpIND9").attr("class","st_label st_yes");
+			}
+			if( lblDataListAjax[54].fValue == 0 ) {
+				$("#shpIND10").attr("class","st_label st_no");
+			} else {
+				$("#shpIND10").attr("class","st_label st_yes");
+			}
+		}*/
 	}
 	
 	$(function(){
 		
-		if( $("#hogiHeader4").attr("class") == 'current' && $("#hogiHeader4").attr("class") != 'undefined' && $("#hogiHeader4").attr("class") != '') {
-			hogiHeader = "4";
-		} else {
-			hogiHeader = "3";
-		}
-		
-		if( $("input:checkbox[id='xy']").is(":checked") ) {
-			xyHeader = "Y";
-		} else {
-			xyHeader = "X";
-		}
-		
-		var lblDateVal = '${BaseSearch.hogi}'+'${BaseSearch.xyGubun}'+' '+'${DccLogTrendInfoList[0].SCANTIME}';
-		$("#lblDate").text(lblDateVal);
+		$("#lblDate").text('${SearchTime}');
+		$("#lblDate").css('color','${ForeColor}');	
 
 		setConst();
 
-		$(document.body).delegate('#hogiHeader3', 'click', function() {
-			setTimer('3',xyHeader,0);
-		});
-		$(document.body).delegate('#hogiHeader4', 'click', function() {
-			setTimer('4',xyHeader,0);
-		});
-		$(document.body).delegate('#xy', 'click', function() {
-			if( $("input:checkbox[id='xy']").is(":checked") ) {
-				xyHeader = "Y";
-			} else {
-				xyHeader = "X";
-			}
-			setTimer(hogiHeader,xyHeader,0);
-		});
 		$(document.body).delegate('#dccStatusSBForm label', 'dblclick', function() {
 
 			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
 			cId = getToolTipText(cId).split("||")[0];
 			if( cId != null && cId != '' && cId != 'undefined' && cId.indexOf('lbl') == -1 && cId.indexOf('shp') == -1 ) {
-				showTag(cId,tDccTagSeq[cId]);
+				if( type == 1 ) {
+					//showTag(cId,tDccTagSeq[cId]);
+				} else {
+					//showTag(cId,dccGrpTagListAjax[cId].iSeq*1);
+				}
 			}
 		});
 		$(document.body).delegate('#dccStatusSBForm label', 'mouseover focus', function() {
 			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
-			showTooltip(cId);
+			//showTooltip(cId);
 		});
 		$(document.body).delegate('#tagSearchTable tr', 'click', function() {
 			for( var t=0;t<selectTag.length;t++ ) {
@@ -390,27 +474,48 @@
 			tagSelect();
 		});
 		
-		setTimer(hogiHeader,xyHeader,5000);
+		setTimer(5000);
 	});
 		
-	function setTimer(hogiHeader,xyHeader,interval) {
+	function setTimer(interval) {
 		if( interval > 0 ) {
-			setTimeout(function() {
+			setInterval(function() {
 				if( timerOn ) {
-					var	comSubmit	=	new ComSubmit("reloadFrm");
-					comSubmit.setUrl("/dcc/status/setbackstatus");
-					comSubmit.addParam("hogiHeader",hogiHeader);
-					comSubmit.addParam("xyHeader",xyHeader);
-					comSubmit.submit();
+					//var	comSubmit	=	new ComSubmit("reloadFrm");
+					//comSubmit.setUrl("/dcc/status/setbackstatus");
+					//comSubmit.submit();
+					
+					var	comAjax	=	new ComAjax("reloadFrm");
+					comAjax.setUrl("/dcc/status/reloadSetback");
+					comAjax.addParam("hogi",$("input:radio[id='4']").is(":checked") ? '4' : '3');
+					comAjax.addParam("xyGubun",$("input:radio[id='Y']").is(":checked") ? 'Y' : 'X');
+					comAjax.addParam("menuNo",'11');
+					comAjax.addParam("grpNo",'13');
+					comAjax.addParam("grpId",'mimic');
+					comAjax.setCallback("mbr_statusCallback");
+					comAjax.ajax();
 				}
 			},interval);
 		} else {
-			var	comSubmit	=	new ComSubmit("reloadFrm");
-			comSubmit.setUrl("/dcc/status/setbackstatus");
-			comSubmit.addParam("hogiHeader",hogiHeader);
-			comSubmit.addParam("xyHeader",xyHeader);
-			comSubmit.submit();
+			//var	comSubmit	=	new ComSubmit("reloadFrm");
+			//comSubmit.setUrl("/dcc/status/setbackstatus");
+			//comSubmit.submit();
+			
+			var	comAjax	=	new ComAjax("reloadFrm");
+			comAjax.setUrl("/dcc/status/reloadSetback");
+			comAjax.addParam("hogi",$("input:radio[id='4']").is(":checked") ? '4' : '3');
+			comAjax.addParam("xyGubun",$("input:radio[id='Y']").is(":checked") ? 'Y' : 'X');
+			comAjax.addParam("menuNo",'11');
+			comAjax.addParam("grpNo",'13');
+			comAjax.addParam("grpId",'mimic');
+			comAjax.setCallback("mbr_statusCallback");
+			comAjax.ajax();
 		}
+	}
+	
+	function setDate(time,color) {
+		$("#lblDate").text(time);
+		$("#lblDate").css("color",color);
 	}
 
 	function saveTag() {
@@ -439,8 +544,8 @@
 			comSubmit.addParam("chkXy","1");
 		}
 		
-		comSubmit.setUrl("/dcc/status/stbSaveTag");
-		comSubmit.ajax();
+		comSubmit.setUrl("/dcc/status/sbSaveTag");
+		comSubmit.submit();
 	}
 
 	function tagSearchEvent(){
@@ -502,10 +607,97 @@
 		closeLayer('modal_3');
 	}
 	
-	function closeModal() {
-		var	comSubmit	=	new ComSubmit("reloadFrm");
-		comSubmit.setUrl("/dcc/status/setbackstatus");
-		comSubmit.submit();
+	function closeModal(str) {
+		//var	comSubmit	=	new ComSubmit("reloadFrm");
+		//comSubmit.setUrl("/dcc/status/setbackstatus");
+		//comSubmit.submit();
+		closeLayer(str);
+	}
+	
+	function convFormat(num,len) {
+		var rtv = num;
+		
+		for( var i=0;i<len*2+1;i++ ) {
+			if( i < len ) {
+				rtv = rtv*10;
+			} else if( i == len ) {
+				rtv = Math.round(rtv);
+			} else {
+				rtv = rtv/10;
+			}
+		}
+		
+		return rtv.toFixed(4);
+	}
+	
+	function setLblDataAjax(type) {
+		if( type == 0 ) {
+			for( var i=0;i<43;i++ ) {
+				if( i != 3 ) {
+					if( typeof $("#lbl"+i) != 'undefined' ) {
+						$("#lbl"+i).text(lblDataListAjax[i].fValue);
+						$("#lbl"+i).attr("title",dccGrpTagListAjax[i].toolTip);
+					}
+				} else {
+					if( typeof $("#lbl"+i) != 'undefined' ) {
+						$("#lbl3").text(convFormat(lblConvListAjax[0].fValue*1,4));
+					}
+				}
+				
+				if( i >= 0 && i < 3 ) {
+					if( lblDataListAjax[i].visible ) {
+						$("#lbl"+i).css("display","");
+					} else {
+						$("#lbl"+i).css("display","none");
+					}
+				}
+				
+				if( i >= 5 && i < 8 ) {
+					if( lblDataListAjax[i].visible ) {
+						$("#lbl"+i).css("display","");
+					} else {
+						$("#lbl"+i).css("display","none");
+					}
+				}
+				
+				if( i >= 8 && i < 11 ) {
+					if( lblDataListAjax[i].visible ) {
+						$("#lbl"+i).css("display","");
+					} else {
+						$("#lbl"+i).css("display","none");
+					}
+				}
+				
+				if( i >= 11 && i < 14 ) {
+					if( lblDataListAjax[i].visible ) {
+						$("#lbl"+i).css("display","");
+					} else {
+						$("#lbl"+i).css("display","none");
+					}
+				}
+				
+				if( i >= 14 && i < 18 ) {
+					if( lblDataListAjax[i].visible ) {
+						$("#lbl"+i).css("display","");
+					} else {
+						$("#lbl"+i).css("display","none");
+					}
+				}
+				
+				if( i >= 18 && i < 21 ) {
+					if( lblDataListAjax[i].visible ) {
+						$("#lbl"+i).css("display","");
+					} else {
+						$("#lbl"+i).css("display","none");
+					}
+				}
+			}
+			
+			for( var j=1;j<lblConvListAjax.length;j++ ) {
+				$("#conv"+j).text(lblConvListAjax[j].fValue);
+				$("#conv"+j).attr("title",lblConvListAjax[j].Tooltip);
+			}
+		}
 	}
 </script>
 
@@ -521,7 +713,7 @@
 		<div class="contents">
 			<!-- page_title -->
 			<div class="page_title">
-				<h3><a href="javascript:openLayer('modal_4')">SETBACK STATUS</a></h3>
+				<h3>SETBACK STATUS</h3>
 				<div class="bc"><span>DCC</span><span>Status</span><strong>SETBACK STATUS</strong></div>
 			</div>
 			<!-- //page_title -->
@@ -545,9 +737,17 @@
                             </ul>
                         </div>
 					</div>
+					<div class="fx_srch_button" style="display:flex;flex:1;justify-content:flex-end">
+						<a class="btn_list" id="openInfo" name="openInfo" href="#" onclick="javascript:openLayer('modal_4')">SETBACK 정보보기</a>
+					</div>
 				</div>
 				<!-- //form_head -->   
-                <form id="reloadFrm" style="display:none"></form>
+                <form id="reloadFrm" style="display:none">
+                <input type="hidden" id="gubun" name="gubun" value="${BaseSearch.gubun}">
+				<input type="hidden" id="menuNo" name="menuNo" value="${BaseSearch.menuNo}">
+				<input type="hidden" id="grpId" name="grpId" value="${BaseSearch.grpId}">
+				<input type="hidden" id="grpNo" name="grpNo" value="${BaseSearch.grpNo}">
+				</form>
                 <form id="dccStatusSBForm">
                 <!-- form_table -->
                 <table class="form_table">
@@ -573,10 +773,10 @@
                             <th>
                                 <div id="imgTooltip0" class="fx_form">
                                 	<c:if test="${shpIND[0] eq true}">
-	                                    <span id="shpIND0"  class="st_label st_yes"></span>
+	                                    <span id="shpIND0" class="st_label st_yes"></span>
 	                                </c:if>
 	                                <c:if test="${shpIND[0] eq false}">
-	                                    <span id="shpIND0"  class="st_label st_no"></span>
+	                                    <span id="shpIND0" class="st_label st_no"></span>
 	                                </c:if>
                                     <label>MOD DP LO</label>
                                 </div>
@@ -590,13 +790,19 @@
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
                                 	<c:if test="${lblDataList[0].visible eq true}">
-                                    	<label id="0" class="double flex_end">${lblDataList[0].fValue}</label>
+                                    	<label id="lbl0" class="double flex_end" title="${DccTagInfoList[0].toolTip}">${lblDataList[0].fValue}</label>
+                                    	<label id="lbl1" class="double flex_end" title="${DccTagInfoList[1].toolTip}" style="display:none">${lblDataList[1].fValue}</label>
+                                    	<label id="lbl2" class="double flex_end" title="${DccTagInfoList[2].toolTip}" style="display:none">${lblDataList[2].fValue}</label>
                                     </c:if>
                                     <c:if test="${lblDataList[1].visible eq true}">
-                                    	<label id="1" class="double flex_end">${lblDataList[1].fValue}</label>
+                                    	<label id="lbl0" class="double flex_end" title="${DccTagInfoList[0].toolTip}" style="display:none">${lblDataList[0].fValue}</label>
+                                    	<label id="lbl1" class="double flex_end" title="${DccTagInfoList[1].toolTip}">${lblDataList[1].fValue}</label>
+                                    	<label id="lbl2" class="double flex_end" title="${DccTagInfoList[2].toolTip}" style="display:none">${lblDataList[2].fValue}</label>
                                     </c:if>
                                     <c:if test="${lblDataList[2].visible eq true}">
-                                    	<label id="2" class="double flex_end">${lblDataList[2].fValue}</label>
+                                    	<label id="lbl0" class="double flex_end" title="${DccTagInfoList[0].toolTip}" style="display:none">${lblDataList[0].fValue}</label>
+                                    	<label id="lbl1" class="double flex_end" title="${DccTagInfoList[1].toolTip}" style="display:none">${lblDataList[1].fValue}</label>
+                                    	<label id="lbl2" class="double flex_end" title="${DccTagInfoList[2].toolTip}">${lblDataList[2].fValue}</label>
                                     </c:if>
                                     <label class="full"></label>
                                 </div>
@@ -628,7 +834,7 @@
                             </td>
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
-                                    <label id="3" class="double flex_end">${lblConvList[0].fValue}</label>
+                                    <label id="lbl3" class="double flex_end" title="${lblConvList[0].Tooltip}"><fmt:formatNumber value="${lblConvList[0].fValue}" pattern="##.####"></fmt:formatNumber></label>
                                     <label class="full"></label>
                                 </div>                                
                             </td>
@@ -660,13 +866,19 @@
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
                                 	<c:if test="${lblDataList[5].visible eq true}">
-                                    	<label id="5" class="double flex_end">${lblDataList[5].fValue}</label>
+                                    	<label id="lbl5" class="double flex_end" title="${DccTagInfoList[5].toolTip}">${lblDataList[5].fValue}</label>
+                                    	<label id="lbl6" class="double flex_end" title="${DccTagInfoList[6].toolTip}" style="display:none">${lblDataList[6].fValue}</label>
+                                    	<label id="lbl7" class="double flex_end" title="${DccTagInfoList[7].toolTip}" style="display:none">${lblDataList[7].fValue}</label>
                                     </c:if>
                                     <c:if test="${lblDataList[6].visible eq true}">
-                                    	<label id="6" class="double flex_end">${lblDataList[6].fValue}</label>
+                                    	<label id="lbl5" class="double flex_end" title="${DccTagInfoList[5].toolTip}" style="display:none">${lblDataList[5].fValue}</label>
+                                    	<label id="lbl6" class="double flex_end" title="${DccTagInfoList[6].toolTip}">${lblDataList[6].fValue}</label>
+                                    	<label id="lbl7" class="double flex_end" title="${DccTagInfoList[7].toolTip}" style="display:none">${lblDataList[7].fValue}</label>
                                     </c:if>
                                     <c:if test="${lblDataList[7].visible eq true}">
-                                    	<label id="7" class="double flex_end">${lblDataList[7].fValue}</label>
+                                    	<label id="lbl5" class="double flex_end" title="${DccTagInfoList[5].toolTip}" style="display:none">${lblDataList[5].fValue}</label>
+                                    	<label id="lbl6" class="double flex_end" title="${DccTagInfoList[6].toolTip}" style="display:none">${lblDataList[6].fValue}</label>
+                                    	<label id="lbl7" class="double flex_end" title="${DccTagInfoList[7].toolTip}">${lblDataList[7].fValue}</label>
                                     </c:if>
                                     <label class="full"></label>
                                 </div>
@@ -699,13 +911,19 @@
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
                                 	<c:if test="${lblDataList[8].visible eq true}">
-                                    	<label id="8" class="double flex_end">${lblDataList[8].fValue}</label>
+                                    	<label id="lbl8" class="double flex_end" title="${DccTagInfoList[8].toolTip}">${lblDataList[8].fValue}</label>
+                                    	<label id="lbl9" class="double flex_end" title="${DccTagInfoList[9].toolTip}" style="display:none">${lblDataList[9].fValue}</label>
+                                    	<label id="lbl10" class="double flex_end" title="${DccTagInfoList[10].toolTip}" style="display:none">${lblDataList[10].fValue}</label>
                                     </c:if>
                                     <c:if test="${lblDataList[9].visible eq true}">
-                                    	<label id="9" class="double flex_end">${lblDataList[9].fValue}</label>
+                                    	<label id="lbl8" class="double flex_end" title="${DccTagInfoList[8].toolTip}" style="display:none">${lblDataList[8].fValue}</label>
+                                    	<label id="lbl9" class="double flex_end" title="${DccTagInfoList[9].toolTip}">${lblDataList[9].fValue}</label>
+                                    	<label id="lbl10" class="double flex_end" title="${DccTagInfoList[10].toolTip}" style="display:none">${lblDataList[10].fValue}</label>
                                     </c:if>
                                     <c:if test="${lblDataList[10].visible eq true}">
-                                    	<label id="10" class="double flex_end">${lblDataList[10].fValue}</label>
+                                    	<label id="lbl8" class="double flex_end" title="${DccTagInfoList[8].toolTip}" style="display:none">${lblDataList[8].fValue}</label>
+                                    	<label id="lbl9" class="double flex_end" title="${DccTagInfoList[9].toolTip}" style="display:none">${lblDataList[9].fValue}</label>
+                                    	<label id="lbl10" class="double flex_end" title="${DccTagInfoList[10].toolTip}">${lblDataList[10].fValue}</label>
                                     </c:if>
                                     <label class="full"></label>
                                 </div>
@@ -726,7 +944,6 @@
 	                                <c:if test="${shpIND[4] eq false}">
 	                                    <span id="shpIND4"  class="st_label st_no"></span>
 	                                </c:if>
-                                    <span id="shpIND4" class="st_label st_no"></span>
                                     <label>MOD TEMP HI</label>
                                 </div>
                             </th>
@@ -739,13 +956,19 @@
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
                                 	<c:if test="${lblDataList[11].visible eq true}">
-                                    	<label id="11" class="double flex_end">${lblDataList[11].fValue}</label>
+                                    	<label id="lbl11" class="double flex_end" title="${DccTagInfoList[11].toolTip}">${lblDataList[11].fValue}</label>
+                                    	<label id="lbl12" class="double flex_end" title="${DccTagInfoList[12].toolTip}" style="display:none">${lblDataList[12].fValue}</label>
+                                    	<label id="lbl13" class="double flex_end" title="${DccTagInfoList[13].toolTip}" style="display:none">${lblDataList[13].fValue}</label>
                                     </c:if>
                                     <c:if test="${lblDataList[12].visible eq true}">
-                                    	<label id="12" class="double flex_end">${lblDataList[12].fValue}</label>
+                                    	<label id="lbl11" class="double flex_end" title="${DccTagInfoList[11].toolTip}" style="display:none">${lblDataList[11].fValue}</label>
+                                    	<label id="lbl12" class="double flex_end" title="${DccTagInfoList[12].toolTip}">${lblDataList[12].fValue}</label>
+                                    	<label id="lbl13" class="double flex_end" title="${DccTagInfoList[13].toolTip}" style="display:none">${lblDataList[13].fValue}</label>
                                     </c:if>
                                     <c:if test="${lblDataList[13].visible eq true}">
-                                    	<label id="13" class="double flex_end">${lblDataList[13].fValue}</label>
+                                    	<label id="lbl11" class="double flex_end" title="${DccTagInfoList[11].toolTip}" style="display:none">${lblDataList[11].fValue}</label>
+                                    	<label id="lbl12" class="double flex_end" title="${DccTagInfoList[12].toolTip}" style="display:none">${lblDataList[12].fValue}</label>
+                                    	<label id="lbl13" class="double flex_end" title="${DccTagInfoList[13].toolTip}">${lblDataList[13].fValue}</label>
                                     </c:if>
                                     <label class="full"></label>
                                 </div>
@@ -778,16 +1001,28 @@
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
                                 	<c:if test="${lblDataList[14].visible eq true}">
-                                    	<label id="14" class="double flex_end">${lblDataList[14].fValue}</label>
+                                    	<label id="lbl14" class="double flex_end" title="${DccTagInfoList[14].toolTip}">${lblDataList[14].fValue}</label>
+                                    	<label id="lbl15" class="double flex_end" title="${DccTagInfoList[15].toolTip}" style="display:none">${lblDataList[15].fValue}</label>
+                                    	<label id="lbl16" class="double flex_end" title="${DccTagInfoList[16].toolTip}" style="display:none">${lblDataList[16].fValue}</label>
+                                    	<label id="lbl17" class="double flex_end" title="${DccTagInfoList[17].toolTip}" style="display:none">${lblDataList[17].fValue}</label>
                                     </c:if>
                                     <c:if test="${lblDataList[15].visible eq true}">
-                                    	<label id="15" class="double flex_end">${lblDataList[15].fValue}</label>
+                                    	<label id="lbl14" class="double flex_end" title="${DccTagInfoList[14].toolTip}" style="display:none">${lblDataList[14].fValue}</label>
+                                    	<label id="lbl15" class="double flex_end" title="${DccTagInfoList[15].toolTip}">${lblDataList[15].fValue}</label>
+                                    	<label id="lbl16" class="double flex_end" title="${DccTagInfoList[16].toolTip}" style="display:none">${lblDataList[16].fValue}</label>
+                                    	<label id="lbl17" class="double flex_end" title="${DccTagInfoList[17].toolTip}" style="display:none">${lblDataList[17].fValue}</label>
                                     </c:if>
                                     <c:if test="${lblDataList[16].visible eq true}">
-                                    	<label id="16" class="double flex_end">${lblDataList[16].fValue}</label>
+                                    	<label id="lbl14" class="double flex_end" title="${DccTagInfoList[14].toolTip}" style="display:none">${lblDataList[14].fValue}</label>
+                                    	<label id="lbl15" class="double flex_end" title="${DccTagInfoList[15].toolTip}" style="display:none">${lblDataList[15].fValue}</label>
+                                    	<label id="lbl16" class="double flex_end" title="${DccTagInfoList[16].toolTip}">${lblDataList[16].fValue}</label>
+                                    	<label id="lbl17" class="double flex_end" title="${DccTagInfoList[17].toolTip}" style="display:none">${lblDataList[17].fValue}</label>
                                     </c:if>
                                     <c:if test="${lblDataList[17].visible eq true}">
-                                    	<label id="17" class="double flex_end">${lblDataList[17].fValue}</label>
+                                    	<label id="lbl14" class="double flex_end" title="${DccTagInfoList[14].toolTip}" style="display:none">${lblDataList[14].fValue}</label>
+                                    	<label id="lbl15" class="double flex_end" title="${DccTagInfoList[15].toolTip}" style="display:none">${lblDataList[15].fValue}</label>
+                                    	<label id="lbl16" class="double flex_end" title="${DccTagInfoList[16].toolTip}" style="display:none">${lblDataList[16].fValue}</label>
+                                    	<label id="lbl17" class="double flex_end" title="${DccTagInfoList[17].toolTip}">${lblDataList[17].fValue}</label>
                                     </c:if>
                                     <label class="full"></label>
                                 </div>
@@ -820,13 +1055,19 @@
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
                                 	<c:if test="${lblDataList[18].visible eq true}">
-                                    	<label id="18" class="double flex_end">${lblDataList[18].fValue}</label>
+                                    	<label id="lbl18" class="double flex_end" title="${DccTagInfoList[18].toolTip}">${lblDataList[18].fValue}</label>
+                                    	<label id="lbl19" class="double flex_end" title="${DccTagInfoList[19].toolTip}" style="display:none">${lblDataList[19].fValue}</label>
+                                    	<label id="lbl20" class="double flex_end" title="${DccTagInfoList[20].toolTip}" style="display:none">${lblDataList[20].fValue}</label>
                                     </c:if>
                                     <c:if test="${lblDataList[19].visible eq true}">
-                                    	<label id="19" class="double flex_end">${lblDataList[19].fValue}</label>
+                                    	<label id="lbl18" class="double flex_end" title="${DccTagInfoList[18].toolTip}" style="display:none">${lblDataList[18].fValue}</label>
+                                    	<label id="lbl19" class="double flex_end" title="${DccTagInfoList[19].toolTip}">${lblDataList[19].fValue}</label>
+                                    	<label id="lbl20" class="double flex_end" title="${DccTagInfoList[20].toolTip}" style="display:none">${lblDataList[20].fValue}</label>
                                     </c:if>
                                     <c:if test="${lblDataList[20].visible eq true}">
-                                    	<label id="20" class="double flex_end">${lblDataList[20].fValue}</label>
+                                    	<label id="lbl18" class="double flex_end" title="${DccTagInfoList[18].toolTip}" style="display:none">${lblDataList[18].fValue}</label>
+                                    	<label id="lbl19" class="double flex_end" title="${DccTagInfoList[19].toolTip}" style="display:none">${lblDataList[19].fValue}</label>
+                                    	<label id="lbl20" class="double flex_end" title="${DccTagInfoList[20].toolTip}">${lblDataList[20].fValue}</label>
                                     </c:if>
 
                                     <label class="full"></label>
@@ -860,14 +1101,14 @@
                             <th class="tc">SG #1</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="21" class="double flex_end">${lblDataList[21].fValue}</label>
+                                    <label id="lbl21" class="double flex_end" title="${DccTagInfoList[21].toolTip}">${lblDataList[21].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">SG #2</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="22" class="double flex_end">${lblDataList[22].fValue}</label>
+                                    <label id="lbl22" class="double flex_end" title="${DccTagInfoList[22].toolTip}">${lblDataList[22].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -882,14 +1123,14 @@
                             <th class="tc bd_l_line">SG #3</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="23" class="double flex_end">${lblDataList[23].fValue}</label>
+                                    <label id="lbl23" class="double flex_end" title="${DccTagInfoList[23].toolTip}">${lblDataList[23].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">SG #4</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="24" class="double flex_end">${lblDataList[24].fValue}</label>
+                                    <label id="lbl24" class="double flex_end" title="${DccTagInfoList[24].toolTip}">${lblDataList[24].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -908,7 +1149,7 @@
                             </th>
                             <td class="tc" rowspan="2">---------------</td>
                             <th colspan="2">TBN TRIP</th>
-                            <td class="tc" colspan="2"><label>${lblConvList[1].fValue}</label></td>
+                            <td class="tc" colspan="2"><label id="conv1" title="${lblConvList[1].Tooltip}">${lblConvList[1].fValue}</label></td>
                             <td rowspan="2">
                                 <div class="fx_form">
                                     <label class="full"></label>
@@ -918,7 +1159,7 @@
                         </tr>
                         <tr>
                             <th class="bd_l_line" colspan="2">PWE LOAD UNBALANCE</th>
-                            <td class="tc" colspan="2"><label>${lblConvList[2].fValue}</label></td>
+                            <td class="tc" colspan="2"><label id="conv2" title="${lblConvList[2].Tooltip}">${lblConvList[2].fValue}</label></td>
                         </tr>
                         <tr>
                             <th rowspan="7">
@@ -950,14 +1191,14 @@
                             <th class="tc">PIC01</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="29" class="double flex_end">${lblDataList[29].fValue}</label>
+                                    <label id="lbl29" class="double flex_end" title="${DccTagInfoList[29].toolTip}">${lblDataList[29].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">PIC08</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="36" class="double flex_end">${lblDataList[36].fValue}</label>
+                                    <label id="lbl36" class="double flex_end" title="${DccTagInfoList[36].toolTip}">${lblDataList[36].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -972,14 +1213,14 @@
                             <th class="tc bd_l_line">PIC02</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="30" class="double flex_end">${lblDataList[30].fValue}</label>
+                                    <label id="lbl30" class="double flex_end" title="${DccTagInfoList[30].toolTip}">${lblDataList[30].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">PIC09</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="37" class="double flex_end">${lblDataList[37].fValue}</label>
+                                    <label id="lbl37" class="double flex_end" title="${DccTagInfoList[37].toolTip}">${lblDataList[37].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -988,14 +1229,14 @@
                             <th class="tc bd_l_line">PIC03</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="31" class="double flex_end">${lblDataList[31].fValue}</label>
+                                    <label id="lbl31" class="double flex_end" title="${DccTagInfoList[31].toolTip}">${lblDataList[31].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">PIC10</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="38" class="double flex_end">${lblDataList[38].fValue}</label>
+                                    <label id="lbl38" class="double flex_end" title="${DccTagInfoList[38].toolTip}">${lblDataList[38].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -1004,14 +1245,14 @@
                             <th class="tc bd_l_line">PIC04</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="32" class="double flex_end">${lblDataList[32].fValue}</label>
+                                    <label id="lbl32" class="double flex_end" title="${DccTagInfoList[32].toolTip}">${lblDataList[32].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">PIC11</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="39" class="double flex_end">${lblDataList[39].fValue}</label>
+                                    <label id="lbl39" class="double flex_end" title="${DccTagInfoList[39].toolTip}">${lblDataList[39].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -1020,14 +1261,14 @@
                             <th class="tc bd_l_line">PIC05</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="33" class="double flex_end">${lblDataList[33].fValue}</label>
+                                    <label id="lbl33" class="double flex_end" title="${DccTagInfoList[33].toolTip}">${lblDataList[33].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">PIC12</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="40" class="double flex_end">${lblDataList[40].fValue}</label>
+                                    <label id="lbl40" class="double flex_end" title="${DccTagInfoList[40].toolTip}">${lblDataList[40].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -1036,14 +1277,14 @@
                             <th class="tc bd_l_line">PIC06</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="34" class="double flex_end">${lblDataList[34].fValue}</label>
+                                    <label id="lbl34" class="double flex_end" title="${DccTagInfoList[34].toolTip}">${lblDataList[34].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">PIC13</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="41" class="double flex_end">${lblDataList[41].fValue}</label>
+                                    <label id="lbl41" class="double flex_end" title="${DccTagInfoList[41].toolTip}">${lblDataList[41].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -1052,14 +1293,14 @@
                             <th class="tc bd_l_line">PIC07</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="35" class="double flex_end">${lblDataList[35].fValue}</label>
+                                    <label id="lbl35" class="double flex_end" title="${DccTagInfoList[35].toolTip}">${lblDataList[35].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">PIC14</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="42" class="double flex_end">${lblDataList[42].fValue}</label> 
+                                    <label id="lbl42" class="double flex_end" title="${DccTagInfoList[42].toolTip}">${lblDataList[42].fValue}</label> 
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -1077,7 +1318,7 @@
                                 </div>
                             </th>
                             <td class="tc">----------------</td>
-                            <td class="tc" colspan="4"><label>${lblConvList[3].fValue}</label></td>
+                            <td class="tc" colspan="4"><label id="conv3" title="${lblConvList[3].Tooltip}">${lblConvList[3].fValue}</label></td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
@@ -1218,7 +1459,7 @@
     <!-- header_wrap -->
 <div class="pop_header">
    <h3>태그정보</h3>
-        <a onclick="javascript:closeModal();" title="Close"></a>
+        <a onclick="javascript:closeModal('modal_2');" title="Close"></a>
     </div>
 <!-- //header_wrap -->
 <!-- pop_contents -->
@@ -1276,7 +1517,7 @@
 				</div>
   				<div class="button">                    
                     <a href="#none" class="btn_page" id="saveVarTable" name="saveVarTable">저장</a>
-        			<a href="#none" class="btn_page" onclick="javascript:closeModal();">닫기</a>
+        			<a href="#none" class="btn_page" onclick="javascript:closeModal('modal_3');">닫기</a>
                 </div>
             </div>
             <!-- //list_bottom -->

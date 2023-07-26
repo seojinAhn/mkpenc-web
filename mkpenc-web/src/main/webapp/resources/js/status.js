@@ -46,25 +46,78 @@ function tagFindCallback(data){
 	tagSearhcListBody.append(tagSearhcListBodyStr);
 }
 
-function tagFindMarkCallback(data){
-	var tagSearhcListBody = $("#tagSearchList");
-	var tagSearhcListBodyStr = "";
+function mbr_chartCallback(data){
 	var i=0;
 	
-	$.each(data.TagFindList, function(key, value){
-		tagSearhcListBodyStr += "<tr id='tag"+i+"'>"
-		  		  + "	<td class='tc' id='tagISeq' name='tagISeq' value='"+value.iSeq+"'>"+value.iSeq+"</td>"
-	              + "	<td class='tc' id='tagRegister' name='tagRegister' value='"+value.register+"'>"+value.register+"</td>"
-	              + "	<td class='tc' id='tagIOBit' name='tagIOBit' value='"+value.iOBit+"'>"+value.iOBit+"</td>"
-	              + "	<td class='tc' id='tagSignalName' name='tagSignalName' value='"+value.signalName+"'>"+value.signalName+"</td>"
-	              + "	<td class='tc' id='tagSignalDesc' name='tagSignalDesc' value='"+value.signalDesc+"'>"+value.signalDesc+"</td>"
-	              + "	<td class='tc' id='tagD0' name='tagD0' value='"+value.d0+"'>"+value.d0+"</td>"
-	              + "	<td class='tc' id='tagD1' name='tagD1' value='"+value.d1+"'>"+value.d1+"</td>"
-	              + "	<td class='tc' id='tagBSCal' name='tagBSCal' value='"+value.bSCal+"'>"+value.bSCal+"</td>"
-	              + "</tr>";
-          i++;
+	searchTime = data.SearchTime;
+	lblDataListAjax = data.lblDataList;
+	
+	$.each(data.DccTagInfoList, function(key, value){
+		bScales.splice(i,1,value.bscale+'');
+		toolTipText.splice(i,1,value.toolTip);
+		
+		i++;
   	});
+  	
+  	reloadAjax(data.BaseSearch.searchStr);
+}
 
-	tagSearhcListBody.empty();
-	tagSearhcListBody.append(tagSearhcListBodyStr);
+function mbr_statusCallback(data) {
+	if( data.BaseSearch.grpNo == '13' || data.BaseSearch.grpNo == 13 ) {
+		type == 0;
+		
+		lblDataListAjax = data.lblDataList;
+		lblConvListAjax = data.lblConvList;
+		dccGrpTagListAjax = data.DccTagInfoList;
+		
+		setConst();
+		setDate(data.SearchTime,data.ForeColor);
+		setLblDataAjax(0);
+	} else if( data.BaseSearch.grpNo == '14' ) {
+		lblDataListAjax = data.lblDataList;
+		dccGrpTagListAjax = data.DccTagInfoList;
+		
+		setLblDate(data.SearchTime,data.ForeColor);
+		setLblDataAjax(0);
+		
+		if( bView ) {
+			setDataAddress(0);
+		} else {
+			setChannelNo();
+		}
+		
+		var avgCnt = 0;
+		var avgVal = 0;
+		for( var i=0;i<data.lblDataList.length;i++ ) {
+			var tmp = data.lblDataList[i].fValue*1;
+			if( tmp != -32768 && !isNaN(tmp) ) {
+				avgCnt++;
+				avgVal += tmp;
+			}
+		}
+		calAvg(avgVal/avgCnt);
+	}
+}
+
+function statusCallback(data) {
+	var type = data.resultType;
+	var searchTime = data.SearchTime;
+	var color = data.ForeColor;
+	setDate(searchTime,color);
+	
+	if( type == 'reactivity' ) {
+		lblXYListAjax = data.lblXYList;
+	} else if( type == 'stepback' ) {
+		lblDataListAjax = data.lblDataList;
+		DccTagInfoListAjax = data.DccTagInfoList;
+		lblConvListAjax = data.lblConvList;
+		vINDValListAjax = data.vINDValList;
+		shpINDAjax = data.shpIND;
+		shpIND2Ajax = data.shpIND2;
+	} else {
+		lblDataListAjax = data.lblDataList;
+		DccTagInfoListAjax = data.DccTagInfoList;
+	}
+		
+	setData();
 }

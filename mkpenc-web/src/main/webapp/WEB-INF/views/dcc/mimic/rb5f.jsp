@@ -16,11 +16,11 @@
 <script type="text/javascript" src="<c:url value="/resources/js/modal.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/common.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
-<script type="text/javascript" src="<c:url value="/resources/js/status.js" />" charset="utf-8"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/mimic.js" />" charset="utf-8"></script>
 <script type="text/javascript">
-var timerOn = false; //true로 변경
-var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
-var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
+var timerOn = true //true로 변경
+var hogiHeader = '${UserInfo.hogi}' != "undefined" && '${UserInfo.hogi}' != ''  ? '${UserInfo.hogi}' : "3";
+var xyHeader = '${UserInfo.xyGubun}' != "undefined" && '${UserInfo.xyGubun}' != '' ? '${UserInfo.xyGubun}' : "X";
 
 var tDccTagSeq = [
 	${DccTagInfoList[0].iSeq},${DccTagInfoList[1].iSeq}
@@ -32,40 +32,62 @@ var tToolTipText = [
 	"${DccTagInfoList[0].toolTip}"	,"${DccTagInfoList[1].toolTip}"	
 ];
 
+var DccTagInfoListAjax = {};
+var lblDataListAjax = {};
 
 $(function () {
-
-
-	if( $("input:radio[id='4']").is(":checked") ) {
-		hogiHeader = "4";
-	} else {
-		hogiHeader = "3";
-	}
-	if( $("input:radio[id='Y']").is(":checked") ) {
-		xyHeader = "Y";
-	} else {
-		xyHeader = "X";
-	}
-	
-	var lblDateVal = '${SearchTime}';
-	$("#lblDate").text(lblDateVal);
-	
 	$(document.body).delegate('#3', 'click', function() {
-		setTimer('3',xyHeader,0);
+		hogiHeader = '3';
+		
+		var comAjax = new ComAjax("rb5fFrm");
+		comAjax.setUrl('/dcc/mimic/reloadRb5f');
+		comAjax.addParam("sHogi",hogiHeader);
+		comAjax.addParam("sXYGubun",xyHeader);
+		comAjax.setCallback('mimicCallback');
+		comAjax.ajax();
 	});
+	
 	$(document.body).delegate('#4', 'click', function() {
-		setTimer('4',xyHeader,0);
+		hogiHeader = '4';
+		
+		var comAjax = new ComAjax("rb5fFrm");
+		comAjax.setUrl('/dcc/mimic/reloadRb5f');
+		comAjax.addParam("sHogi",hogiHeader);
+		comAjax.addParam("sXYGubun",xyHeader);
+		comAjax.setCallback('mimicCallback');
+		comAjax.ajax();
 	});
+	
 	$(document.body).delegate('#X', 'click', function() {
-		setTimer(hogiHeader,'X',0);
+		xyHeader = 'X';
+		
+		var comAjax = new ComAjax("rb5fFrm");
+		comAjax.setUrl('/dcc/mimic/reloadRb5f');
+		comAjax.addParam("sHogi",hogiHeader);
+		comAjax.addParam("sXYGubun",xyHeader);
+		comAjax.setCallback('mimicCallback');
+		comAjax.ajax();
 	});
+	
 	$(document.body).delegate('#Y', 'click', function() {
-		setTimer(hogiHeader,'Y',0);
+		xyHeader = 'Y';
+		
+		var comAjax = new ComAjax("rb5fFrm");
+		comAjax.setUrl('/dcc/mimic/reloadRb5f');
+		comAjax.addParam("sHogi",hogiHeader);
+		comAjax.addParam("sXYGubun",xyHeader);
+		comAjax.setCallback('mimicCallback');
+		comAjax.ajax();
 	});
+	
+		var lblDateVal = '${SearchTime}';
+		$("#lblDate").text(lblDateVal);
+		$("#lblDate").css('color','${ForeColor}');
+
 		$(document.body).delegate('#rb5fdiv span', 'dblclick', function() {
 			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
 			if( cId != null && cId != '' && cId != 'undefined' ) {
-				showTag(cId,tDccTagSeq[cId]);
+				//showTag(cId,tDccTagSeq[cId]);
 			}
 		});
 		
@@ -131,29 +153,58 @@ $(function () {
 			tagSelect();
 		});
 		
-		setTimer(hogiHeader,xyHeader,5000);
+		setTimer(5000);
 
 });	
 
 
-function setTimer(hogiHeader,xyHeader,interval) {
+function setTimer(interval) {
 	if( interval > 0 ) {
-		setTimeout(function() {
+		setTimeout(function run() {
 			if( timerOn ) {
-				var	comSubmit	=	new ComSubmit("rb5fFrm");
-				comSubmit.setUrl("/dcc/mimic/rb5f");
-				comSubmit.addParam("hogiHeader",hogiHeader);
-				comSubmit.addParam("xyHeader",xyHeader);
-				comSubmit.submit();
+				//var	comSubmit	=	new ComSubmit("rb5fFrm");
+				//comSubmit.setUrl("/dcc/mimic/rb5f");
+				//comSubmit.submit();
+				var comAjax = new ComAjax("rb5fFrm");
+				comAjax.setUrl('/dcc/mimic/reloadRb5f');
+				comAjax.addParam("sHogi",hogiHeader);
+				comAjax.addParam("sXYGubun",xyHeader);
+				comAjax.setCallback('mimicCallback');
+				comAjax.ajax();
 			}
+			
+			setTimeout(run, interval);
 		},interval);
 	} else {
-		var	comSubmit	=	new ComSubmit("rb5fFrm");
-		comSubmit.setUrl("/dcc/mimic/rb5f");
-		comSubmit.addParam("hogiHeader",hogiHeader);
-		comSubmit.addParam("xyHeader",xyHeader);
-		comSubmit.submit();
+		setTimeout(function run() {
+			if( timerOn ) {
+				//var	comSubmit	=	new ComSubmit("rb5fFrm");
+				//comSubmit.setUrl("/dcc/mimic/rb5f");
+				//comSubmit.submit();
+				var comAjax = new ComAjax("rb5fFrm");
+				comAjax.setUrl('/dcc/mimic/reloadRb5f');
+				comAjax.addParam("sHogi",hogiHeader);
+				comAjax.addParam("sXYGubun",xyHeader);
+				comAjax.setCallback('mimicCallback');
+				comAjax.ajax();
+			}
+			
+			setTimeout(run, 5000);
+		},5000);
 	}
+}
+
+function setData() {
+	for( var i=0;i<lblDataListAjax.length;i++ ) {
+		$("#lblData"+i).text(lblDataListAjax[i].fValue);
+		$("#lblUnit"+i).text(DccTagInfoListAjax[i].unit);
+		$("#lblData"+i).prop('title',DccTagInfoListAjax[i].toolTip);
+	}
+}
+
+function setDate(time,color) {
+	$("#lblDate").text(time);
+	$("#lblDate").css('color',color);
 }
 
 function saveTag() {
@@ -183,8 +234,6 @@ function saveTag() {
 	}
 	
 	comSubmit.setUrl("/dcc/mimic/rb5fSaveTag");
-	comSubmit.addParam("hogiHeader",hogiHeader);
-	comSubmit.addParam("xyHeader",xyHeader);
 	comSubmit.submit();
 }
 
@@ -307,7 +356,19 @@ function toCSV() {
 			</div>
 			<!-- //page_title -->
 			<div class="img_wrap rb_5f" id="rb5fdiv">
-			<form id="rb5fFrm" style="display:none"></form> 
+                <!-- 마우스 우클릭 메뉴 -->
+                <div class="context_menu" id="mouse_area">
+                    <ul>
+                        <li><a href="#none" onclick="javascript:toCSV();">엑셀로 저장</a></li>
+                    </ul>
+                </div>
+                <!-- //마우스 우클릭 메뉴 -->
+			<form id="rb5fFrm" style="display:none">
+			<input type="hidden" id="sDive" name="sDive" value="${BaseSearch.sDive}">
+			<input type="hidden" id="sMenuNo" name="sMenuNo" value="${BaseSearch.sMenuNo}">
+			<input type="hidden" id="sGrpID" name="sGrpID" value="${BaseSearch.sGrpID}">
+			<input type="hidden" id="sUGrpNo" name="sUGrpNo" value="${BaseSearch.sUGrpNo}">	
+			</form> 
                 <!-- range_slider -->
                 <div class="range_slider">
                     <input type="range" id="opacity-change" value="100" min="20" max="100">
@@ -321,8 +382,8 @@ function toCSV() {
                         <div class="summary">
                             <p>
                                 <span>Actual Value</span>
-                                <span id="0">${lblDataList[0].fValue}</span>
-                                <span>${DccTagInfoList[0].unit}</span>
+                                <span id="lblData0" title="${DccTagInfoList[0].toolTip}">${lblDataList[0].fValue}</span>
+                                <span id="lblUnit0">${DccTagInfoList[0].unit}</span>
                             </p>
                         </div>
                         <ul>
@@ -349,8 +410,8 @@ function toCSV() {
                         <div class="summary">
                             <p>
                                 <span>Actual Value</span>
-                                <span id="1">${lblDataList[1].fValue}</span>
-                                <span>${DccTagInfoList[1].unit}</span>
+                                <span id="lblData1" title="${DccTagInfoList[1].toolTip}">${lblDataList[1].fValue}</span>
+                                <span id="lblUnit1">${DccTagInfoList[1].unit}</span>
                             </p>
                         </div>
                         <ul>
@@ -554,7 +615,7 @@ function toCSV() {
 <!-- pop_contents -->
 </div>
 <!-- //layer_pop_wrap -->
-<script type="text/javascript" src="<c:url value="/resources/js/range_control.js" />" charset="utf-8"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/context_menu.js" />" charset="utf-8"></script>
 </body>
 </html>
 

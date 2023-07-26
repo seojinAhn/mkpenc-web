@@ -8,9 +8,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.mkpenc.dcc.common.model.ComTagDccInfo;
 import com.mkpenc.dcc.trend.model.DccSearchTrend;
+import com.mkpenc.dcc.trend.model.TrendTagDccInfo;
 
 @Service
 public interface DccTrendService {
+	List<TrendTagDccInfo> getDccGrpTagList(Map trendSearchMap);
+	
 	List<Map> selectGroupName(Map trendSearchMap);
 	
 	//List<Map> selectTrendFldNo(DccSearchTrend dccSearchTrend);
@@ -36,4 +39,30 @@ public interface DccTrendService {
 	int insertGrpTag(Map trendSearchMap);
 	
 	List<Map> selectSetIOList(DccSearchTrend dccSearchTrend);
+	
+	int updateTrendRange(Map trendSearchMap);
+	
+	int addGroupTrendFixed(Map trendSearchMap);
+	
+	int updateGroupTrendFixed(Map trendSearchMap);
+	
+	List<Map> selectMoveTagTrend(Map trendSearchMap);
+	
+	List<Map> selectTrendTagSearch(Map trendSearchMap);
+	
+	String selectMaxUGrpNo(Map trendSearchMap);
+	
+	int addGroupTrendSpare(Map trendSearchMap);
+	
+	int addGrpTagTrendSpare(Map trendSearchMap);
+	
+	int delGroupTrendSpare(Map trendSearchMap);
+	
+	int delGrpTagTrendSpare(Map trendSearchMap);
+	
+	List<Map> selectGroupGetTrendSpare(Map trendSearchMap);
+	
+	List<Map> selectGrpTagTrendSpare(Map trendSearchMap);
+	
+	int insertGrpTagTrendSpare(Map trendSearchMap);
 }

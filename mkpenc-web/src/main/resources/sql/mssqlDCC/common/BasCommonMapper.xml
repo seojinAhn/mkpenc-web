@@ -72,5 +72,9 @@
 			</if>
 		</trim>
 	</select>
+	
+	<select id="selectLogTimer" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT CONVERT(varchar,Gubun) Gubun, CONVERT(varchar,Hogi) Hogi, CONVERT(varchar,Datatype) Datatype, Scantime FROM LOG_TIMER
+	</select>
 
 </mapper>

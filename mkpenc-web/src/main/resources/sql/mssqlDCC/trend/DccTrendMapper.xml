@@ -3,6 +3,60 @@
 
 <mapper namespace="com.mkpenc.dcc.trend.mapper.DccTrendMapper">
 
+	<select id="selectDccGrpTagList" parameterType="java.util.Map" resultType="ComDccGrpTagInfo">
+        
+			      SELECT 
+			         		 C.iSeq
+			         		, BSCAL
+			         		, LOOPNAME
+			         		, UNIT
+			         		, LIMIT1
+			         		, LIMIT2
+			         		, TYPE
+			         		, IOTYPE
+			         		, ADDRESS
+			         		, IOBIT
+			         		, C.TBLNO
+			         		, FLDNO
+			         		, SaveCoreChk
+			         		, C.Descr as Descr
+			         		, B.Descr as DataLoop
+			         		, GrpHogi
+		        			, B.MinVal
+		        			, B.MaxVal
+		        			, Hogi
+		        			, XYGubun
+		        			, ELOW
+		        			, EHIGH
+		        			, VLOW
+		        			, VHIGH
+		        			, FASTIOCHK
+		         FROM MST_GrpTag B, MST_TAG_DCC C
+		         WHERE B.HOGI = C.IHOGI 
+		            <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(xyGubun) and "X".equals(xyGubun)'>
+		           			AND B.ISEQ = C.ISEQ
+		           	</if>
+		            <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(xyGubun) and "Y".equals(xyGubun)'>
+		           			AND B.YSEQ = C.ISEQ
+		           	</if>  
+		            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(hogi)">
+		            		AND B.GrpHOGI = #{hogi}
+		            </if>
+		         	<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(dive)">
+	            			AND B.Gubun = #{dive}
+	        		</if>
+	        		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpID)">
+	            			AND B.ID = #{grpID}
+	        		</if>
+	        		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(menuNo)">
+	            			AND B.MenuNo = #{menuNo}
+	        		</if>      
+	        		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(uGrpNo)">
+	            			AND B.GrpNo = #{uGrpNo}
+	        		</if>	
+	        		ORDER BY B.TagNo	                  
+    </select> 
+
 	<select id="selectGroupName" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT * FROM 
 		<if test='@org.apache.commons.lang3.StringUtils@equals(sDive,"B")'>
@@ -190,13 +244,187 @@
 			FASTIOCHK
 		from MST_TAG_DCC
 		<trim prefix="WHERE" prefixOverrides="AND | OR">
-			AND ihogi= #{sHogi}
-			AND xygubun= #{sXYGubun}
-			AND iotype = #{ioType}
+			AND ihogi= #{cboHogi}
+			AND xygubun= #{cboXY}
+			<if test='@org.apache.commons.lang3.StringUtils@equals(sMenuNo,"65") and @org.apache.commons.lang3.StringUtils@equals(ioType,"AO")'>
+				AND iotype = 'DT'
+			</if>
+			<if test='!@org.apache.commons.lang3.StringUtils@equals(sMenuNo,"65") or !@org.apache.commons.lang3.StringUtils@equals(ioType,"AO")'>
+				AND iotype = #{ioType}
+			</if>
 			AND address = #{address}
 			<if test='@org.apache.commons.lang3.StringUtils@equals(ioType,"DI") or @org.apache.commons.lang3.StringUtils@equals(ioType,"DO") or (@org.apache.commons.lang3.StringUtils@equals(ioType,"SC") and @org.apache.commons.lang3.StringUtils@equals(saveCore,"1"))'>
-				AND IOBIT = #{ioBit}
+				<if test='!@org.apache.commons.lang3.StringUtils@equals(sMenuNo,"25")'>
+					AND IOBIT = #{ioBit}
+				</if>
+				<if test='@org.apache.commons.lang3.StringUtils@equals(sMenuNo,"25")'>
+					<if test='@org.apache.commons.lang3.StringUtils@equals(ioType,"DO")'>
+						AND IOBIT = '8'
+					</if>
+					<if test='@org.apache.commons.lang3.StringUtils@equals(ioType,"DI") or @org.apache.commons.lang3.StringUtils@equals(ioType,"SC")'>
+						AND IOBIT = '0'
+					</if>
+				</if>
 			</if>
 		</trim>
 	</select>
+	
+	<update id="updateTrendRange" parameterType="java.util.Map">
+		UPDATE MST_GrpTag
+		SET MINVAL = ${minVal},
+			MAXVAL = ${maxVal},
+			YMINVAL = ${minVal},
+			YMAXVAL = ${maxVal}
+		WHERE Gubun = 'D'
+		AND ID = #{gID}
+        AND GrpHogi = #{grpHogi}
+        AND MenuNo = #{gMenuNo}
+        AND GrpNo = #{gGrpNo}
+        AND Hogi = #{hogi}
+        AND TagNo = #{tagNo}
+	</update>
+	
+	<insert id="addGroupTrendFixed" parameterType="java.util.Map">
+		INSERT INTO MST_GRPNAME (Gubun, ID, MenuNo, UGrpNo, UGrpName)
+		values ('D', #{grpID}, #{menuNo}, #{gGrpNo}, #{uGrpName})
+	</insert>
+	
+	<update id="updateGroupTrendFixed" parameterType="java.util.Map">
+		UPDATE MST_GrpName SET UGrpName = #{uGrpName}
+		WHERE Gubun = 'D'
+		AND ID = #{grpID}
+		AND MenuNo = #{menuNo}
+		AND UGrpNo = #{gGrpNo}
+	</update>
+	
+	<select id="selectMoveTagTrend" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT C.* FROM MST_GrpTag B, MST_TAG_DCC C
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			AND B.HOGI = C.IHOGI
+			AND B.Gubun = 'D'
+			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(xyGubun) and "X".equals(xyGubun)'>
+				AND B.ISEQ = C.ISEQ
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(xyGubun) and "Y".equals(xyGubun)'>
+				AND B.YSEQ = C.ISEQ
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(hogi)">
+				AND B.GrpHOGI = #{hogi}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpID)">
+				AND B.ID = #{grpID}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(menuNo)">
+				AND B.MenuNo = #{menuNo}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(uGrpNo)">
+				AND B.GrpNo = #{uGrpNo}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(loopName)">
+				AND B.Descr = #{loopName}
+			</if>
+		</trim>
+	</select>
+	
+	<select id="selectTrendTagSearch" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			iSeq,
+			iHogi,
+			xyGubun,
+			loopName,
+			descr,
+			ioType,
+			address,
+			ioBit,
+			eLow,
+			eHigh,
+			'0' as saveCore
+		FROM MST_TAG_DCC
+		WHERE IHOGI = #{tagHogi}
+		<if test='@org.apache.commons.lang3.StringUtils@equals(type,"0")'>
+			<if test='!@org.apache.commons.lang3.StringUtils@equals(tagIOType,"All")'>
+				AND IOTYPE = #{tagIOType}
+			</if>
+			AND IOTYPE <![CDATA[<>]]> 'CI'
+			AND (ADDRESS like '%${findData}%'
+			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(findData) and !@org.apache.commons.lang3.StringUtils@equals(bAll,"1")'>
+				<if test='@org.apache.commons.lang3.StringUtils@equals(chkOpt1,"1")'>
+					OR LOOPNAME like '%${findData}%'
+				</if>
+				<if test='@org.apache.commons.lang3.StringUtils@equals(chkOpt2,"1")'>
+					OR DESCR like '%${findData}%'
+				</if>
+			</if>
+			)
+			ORDER BY ISEQ
+		</if>
+		<if test='!@org.apache.commons.lang3.StringUtils@equals(type,"0")'>
+			AND FASTIOCHK = 1
+			ORDER BY IOTYPE
+		</if>
+	</select>
+	
+	<select id="selectMaxUGrpNo" parameterType="java.util.Map" resultType="String">
+		SELECT ISNULL(MAX(UGrpNo),0)+1 UGrpNo FROM MST_GRPNAME
+        WHERE GUBUN = 'D'
+        AND MENUNO = #{gMenuNo}
+        AND ID = #{gID}
+	</select>
+	
+	<insert id="addGroupTrendSpare" parameterType="java.util.Map">
+		INSERT INTO MST_GRPNAME
+        SELECT Gubun, #{gID} ID, MenuNo, #{uGrpNo} UGrpNo, UGrpName FROM MST_GRPNAME
+        WHERE Gubun = 'D'
+        AND MenuNo = #{gMenuNo}
+        AND UGrpNo = #{gGrpNo}
+        AND ID = #{refID}
+	</insert>
+	
+	<insert id="addGrpTagTrendSpare" parameterType="java.util.Map">
+		INSERT INTO MST_GRPTAG
+        SELECT
+        	Gubun, #{gID} ID, GrpHogi, MenuNo, #{uGrpNo} GrpNo, Hogi, TagNo,
+        	ISeq , MaxVal, MinVal, YSeq, YMaxVal, YMinVal, SaveCoreChk, Descr
+        FROM MST_GRPTAG
+        WHERE Gubun = 'D'
+        AND MenuNo = #{gMenuNo}
+        AND GrpNo = #{gGrpNo}
+        AND ID = #{refID}
+        ORDER BY GrpHogi, TagNo ASC
+	</insert>
+	
+	<delete id="delGroupTrendSpare" parameterType="java.util.Map">
+		DELETE FROM MST_GRPNAME
+        WHERE GUBUN = 'D'
+        AND MENUNO = #{gMenuNo}
+        AND ID = #{gID}
+        AND UGRPNO = #{uGrpNo}
+	</delete>
+	
+	<delete id="delGrpTagTrendSpare" parameterType="java.util.Map">
+		DELETE FROM MST_GRPTAG
+        WHERE GUBUN = 'D'
+        AND MENUNO = #{gMenuNo}
+        AND ID = #{gID}
+        AND GRPNO = #{uGrpNo}
+	</delete>
+	
+	<select id="selectGroupGetTrendSpare" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT UGrpNo, ISNULL(UGrpName,'') UGrpName FROM MST_GRPNAME
+        WHERE GUBUN = 'D'
+        AND MENUNO = #{gMenuNo}
+        AND ID = #{gID}
+	</select>
+	
+	<select id="selectGrpTagTrendSpare" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT * FROM MST_GRPTAG
+        WHERE GUBUN = 'D'
+        AND MENUNO = #{menuNo}
+        AND ID = #{grpID}
+        AND GRPNO = #{gGrpNo}
+	</select>
+	
+	<insert id="insertGrpTagTrendSpare" parameterType="java.util.Map">
+		INSERT INTO MST_GRPTAG VALUES ( '${data}' );
+	</insert>
 </mapper>

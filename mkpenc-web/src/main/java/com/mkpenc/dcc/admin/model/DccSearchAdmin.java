@@ -60,13 +60,14 @@ public class DccSearchAdmin extends BaseSearch {
 	protected String uPwd;
 	protected String uLogin;
 	protected String uUserIp;
+	protected String uEmail;
 	
 	//IOLIST 
 	protected String sIhogi;
 	protected String sXYGubun;
 	protected String sIOType;
 	protected String sAddress;
-	
+	private String addrRange;
 	
 	//개선사항
 	protected String pTitle;
@@ -691,6 +692,12 @@ public class DccSearchAdmin extends BaseSearch {
 		this.uUserIp = clientIp;
 	}
 	
+	public String getuEmail() {
+		return uEmail;
+	}
+	public void setuEmail(String uEmail) {
+		this.uEmail = uEmail;
+	}
 	/**
 	 * @return the sIhogi
 	 */
@@ -738,6 +745,18 @@ public class DccSearchAdmin extends BaseSearch {
 	 */
 	public void setsAddress(String sAddress) {
 		this.sAddress = sAddress;
+	}
+	/**
+	 * @return the addrRange
+	 */
+	public String getAddrRange() {
+		return addrRange;
+	}
+	/**
+	 * @param addrRange the addrRange to set
+	 */
+	public void setAddrRange(String addrRange) {
+		this.addrRange = addrRange;
 	}
 	/**
 	 * @return the pTitle

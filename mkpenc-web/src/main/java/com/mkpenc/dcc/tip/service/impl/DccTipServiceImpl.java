@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mkpenc.dcc.admin.model.IOListInfo;
 import com.mkpenc.dcc.tip.mapper.DccTipMapper;
 import com.mkpenc.dcc.tip.model.DccIoColumnInfo;
 import com.mkpenc.dcc.tip.model.DccIolistInfo;
@@ -41,4 +42,14 @@ public class DccTipServiceImpl  implements DccTipService {
 		public List<DccIolistInfo> selectIoListExcelDownload(DccSearchTip dccSearchTip) {
 			return dccTipMapper.selectIoListExcelDownload(dccSearchTip);
 		}
+		
+	    @Override
+	    public int selectIOListInfoTotalCnt(IOListInfo ioListImfo) {
+	    	return dccTipMapper.selectIOListInfoTotalCnt(ioListImfo);
+	    }
+		
+	    @Override
+	    public List<IOListInfo> selectIOListInfoList(IOListInfo ioListImfo) {
+	    	return dccTipMapper.selectIOListInfoList(ioListImfo);
+	    }
 }

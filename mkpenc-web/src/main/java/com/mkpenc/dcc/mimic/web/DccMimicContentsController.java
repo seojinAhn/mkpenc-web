@@ -60,17 +60,72 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO")); 
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("1");
         		dccSearchMimic.setsGrpID("mimic");
-	        	dccSearchMimic.setsUGrpNo("1");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
+	        	dccSearchMimic.setsUGrpNo("1"); 	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+	        	       	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());        	
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadLzc1", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadLzc1(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadLzc1");
+
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO")); 
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("1");
+        		dccSearchMimic.setsGrpID("mimic");
+	        	dccSearchMimic.setsUGrpNo("1"); 	
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+	        	       	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());        	
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -106,17 +161,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO")); 
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("1");
         		dccSearchMimic.setsGrpID("mimic");
-	        	dccSearchMimic.setsUGrpNo("1");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
+	        	dccSearchMimic.setsUGrpNo("1");  	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());        	
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -129,7 +188,7 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -187,6 +246,60 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO")); 
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("1");
+        		dccSearchMimic.setsGrpID("mimic");
+	        	dccSearchMimic.setsUGrpNo("2");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+    	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadLzc2",method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadLzc2(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadLzc2");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO")); 
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
@@ -194,10 +307,13 @@ public class DccMimicContentsController {
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("2");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+    	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -234,17 +350,22 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO")); 
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("1");
         		dccSearchMimic.setsGrpID("mimic");
-        		dccSearchMimic.setsUGrpNo("2");
+        		dccSearchMimic.setsUGrpNo("2");   
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+    	       	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());        	
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -257,15 +378,14 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
 				excelHelperUtil.mimicExcelDownload(request, response, lblDataList, tagDccInfoList, searchTime, "lzc_2");
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
-        	
+			}        	
         }
     }
 	
@@ -315,17 +435,22 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO")); 
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("1");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("3");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+    	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -349,30 +474,36 @@ public class DccMimicContentsController {
         }
       
         return mav;
-    }	
+    }
 	
-	@RequestMapping("phtExcelExport")
-	public void phtExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value="reloadPht", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadPht(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
         
-		ModelAndView mav = new ModelAndView();
+		ModelAndView mav = new ModelAndView("jsonView");
 
-        logger.info("############ excel");
-
+        logger.info("############ reloadPht");
+        
         if(request.getSession().getAttribute("USER_INFO") != null) {
 
         	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO")); 
         	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("1");
         		dccSearchMimic.setsGrpID("mimic");
-        		dccSearchMimic.setsUGrpNo("3");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
+	        	dccSearchMimic.setsUGrpNo("3");
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+    	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -385,7 +516,58 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping("phtExcelExport")
+	public void phtExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ excel");
+
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));  
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("1");
+        		dccSearchMimic.setsGrpID("mimic");
+        		dccSearchMimic.setsUGrpNo("3");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+    	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());        	
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -443,17 +625,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO")); 
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("1");
         		dccSearchMimic.setsGrpID("mimic");
-	        	dccSearchMimic.setsUGrpNo("4");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
+	        	dccSearchMimic.setsUGrpNo("4");        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+    	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());        	
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -477,30 +663,35 @@ public class DccMimicContentsController {
         }
       
         return mav;
-    }	
+    }
 	
-	@RequestMapping("phtctrlExcelExport")
-	public void phtctrlExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value="reloadPhtctrl", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadPhtctrl(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
         
-		ModelAndView mav = new ModelAndView();
+		ModelAndView mav = new ModelAndView("jsonView");
 
-        logger.info("############ excel");
-
+        logger.info("############ reloadPhtctrl");
+        
         if(request.getSession().getAttribute("USER_INFO") != null) {
 
         	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO")); 
         	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("1");
         		dccSearchMimic.setsGrpID("mimic");
-        		dccSearchMimic.setsUGrpNo("4");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
+	        	dccSearchMimic.setsUGrpNo("4");        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+    	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());        	
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -513,7 +704,58 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping("phtctrlExcelExport")
+	public void phtctrlExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ excel");
+
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("1");
+        		dccSearchMimic.setsGrpID("mimic");
+        		dccSearchMimic.setsUGrpNo("4");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+    		        	        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -571,17 +813,73 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("1");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("5");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadModerator", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadModerator(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadModerator");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("1");
+        		dccSearchMimic.setsGrpID("mimic");
+	        	dccSearchMimic.setsUGrpNo("5");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -618,17 +916,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("1");
         		dccSearchMimic.setsGrpID("mimic");
         		dccSearchMimic.setsUGrpNo("5");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());       	
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -641,7 +943,7 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -700,17 +1002,73 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("1");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("6");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadPhtpuri", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadPhtpuri(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadPhtpuri");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("1");
+        		dccSearchMimic.setsGrpID("mimic");
+	        	dccSearchMimic.setsUGrpNo("6");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -747,17 +1105,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("1");
         		dccSearchMimic.setsGrpID("mimic");
         		dccSearchMimic.setsUGrpNo("6");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());       	
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -770,7 +1132,7 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -828,17 +1190,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("1");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("7");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -862,30 +1228,35 @@ public class DccMimicContentsController {
         }
       
         return mav;
-    }		
-	
-	@RequestMapping("eccExcelExport")
-	public void eccExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    }
+
+	@RequestMapping(value="reloadEcc", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadEcc(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
         
-		ModelAndView mav = new ModelAndView();
+		ModelAndView mav = new ModelAndView("jsonView");
 
-        logger.info("############ excel");
-
+        logger.info("############ reloadEcc");
+        
         if(request.getSession().getAttribute("USER_INFO") != null) {
 
         	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
         	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("1");
         		dccSearchMimic.setsGrpID("mimic");
-        		dccSearchMimic.setsUGrpNo("7");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
+	        	dccSearchMimic.setsUGrpNo("7");
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -898,7 +1269,58 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping("eccExcelExport")
+	public void eccExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ excel");
+
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("1");
+        		dccSearchMimic.setsGrpID("mimic");
+        		dccSearchMimic.setsUGrpNo("7");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -956,17 +1378,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("2");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("1");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -990,30 +1416,35 @@ public class DccMimicContentsController {
         }
       
         return mav;
-    }	
+    }
 	
-	@RequestMapping("mainsteamExcelExport")
-	public void mainsteamExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value="reloadMainsteam", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadMainsteam(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
         
-		ModelAndView mav = new ModelAndView();
+		ModelAndView mav = new ModelAndView("jsonView");
 
-        logger.info("############ excel");
-
+        logger.info("############ reloadMainsteam");
+        
         if(request.getSession().getAttribute("USER_INFO") != null) {
 
         	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
         	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("2");
         		dccSearchMimic.setsGrpID("mimic");
-        		dccSearchMimic.setsUGrpNo("1");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
+	        	dccSearchMimic.setsUGrpNo("1");
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -1026,7 +1457,58 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping("mainsteamExcelExport")
+	public void mainsteamExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ excel");
+
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("2");
+        		dccSearchMimic.setsGrpID("mimic");
+        		dccSearchMimic.setsUGrpNo("1");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -1084,17 +1566,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("2");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("2");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -1118,30 +1604,35 @@ public class DccMimicContentsController {
         }
       
         return mav;
-    }	
+    }
 	
-	@RequestMapping("feedwaterExcelExport")
-	public void feedwaterExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value="reloadFeedwater", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadFeedwater(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
         
-		ModelAndView mav = new ModelAndView();
+		ModelAndView mav = new ModelAndView("jsonView");
 
-        logger.info("############ excel");
-
+        logger.info("############ reloadFeedwater");
+        
         if(request.getSession().getAttribute("USER_INFO") != null) {
 
         	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
         	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("2");
         		dccSearchMimic.setsGrpID("mimic");
-        		dccSearchMimic.setsUGrpNo("2");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
+	        	dccSearchMimic.setsUGrpNo("2");
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -1154,7 +1645,58 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping("feedwaterExcelExport")
+	public void feedwaterExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ excel");
+
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("2");
+        		dccSearchMimic.setsGrpID("mimic");
+        		dccSearchMimic.setsUGrpNo("2");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -1212,17 +1754,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("2");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("3");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -1246,30 +1792,35 @@ public class DccMimicContentsController {
         }
       
         return mav;
-    }	
+    }
 	
-	@RequestMapping("condensateExcelExport")
-	public void condensateExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value="reloadCondensate", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadCondensate(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
         
-		ModelAndView mav = new ModelAndView();
+		ModelAndView mav = new ModelAndView("jsonView");
 
-        logger.info("############ excel");
-
+        logger.info("############ reloadCondensate");
+        
         if(request.getSession().getAttribute("USER_INFO") != null) {
 
         	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
         	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("2");
         		dccSearchMimic.setsGrpID("mimic");
-        		dccSearchMimic.setsUGrpNo("3");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
+	        	dccSearchMimic.setsUGrpNo("3");
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -1282,7 +1833,58 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping("condensateExcelExport")
+	public void condensateExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ excel");
+
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("2");
+        		dccSearchMimic.setsGrpID("mimic");
+        		dccSearchMimic.setsUGrpNo("3");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -1329,7 +1931,6 @@ public class DccMimicContentsController {
         return mav;
 	}
 	
-	
 	@RequestMapping("fuelhandlingmenu")
 	public ModelAndView fuelhandlingmenu(DccSearchMimic dccSearchMimic, HttpServletRequest request) {
         
@@ -1341,17 +1942,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("3");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("1");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	//member.setXyGubun("Y");
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun("Y");
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -1361,7 +1966,9 @@ public class DccMimicContentsController {
     		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
     		
     		//단위변환 사용하지 않음
-    		List<ComTagDccInfo> tagDccInfoList = basDccMimicService.getDccGrpTagNoUnitConvList(dccGrpTagSearchMap);
+    		//List<ComTagDccInfo> tagDccInfoList = basDccMimicService.getDccGrpTagNoUnitConvList(dccGrpTagSearchMap);
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
@@ -1376,7 +1983,62 @@ public class DccMimicContentsController {
         }
       
         return mav;
-    }		
+    }
+	
+	@RequestMapping(value="reloadFuelhandlingmenu", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadFuelhandlingmenu(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse reponse) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadFuelhandlingmenu");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("3");
+        		dccSearchMimic.setsGrpID("mimic");
+	        	dccSearchMimic.setsUGrpNo("1");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	//member.setXyGubun("Y");
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun("Y");
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		//단위변환 사용하지 않음
+    		//List<ComTagDccInfo> tagDccInfoList = basDccMimicService.getDccGrpTagNoUnitConvList(dccGrpTagSearchMap);
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
 	
 	@RequestMapping("fuelhandlingmenuExcelExport")
 	public void fuelhandlingmenuExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -1389,17 +2051,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("3");
         		dccSearchMimic.setsGrpID("mimic");
         		dccSearchMimic.setsUGrpNo("1");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	//member.setXyGubun("Y");
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun("Y");
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -1412,7 +2078,7 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -1444,7 +2110,7 @@ public class DccMimicContentsController {
         	if( dccSearchMimic.getGrpNo() == null ) dccSearchMimic.setGrpNo("1");
         	if( dccSearchMimic.getGrpId() == null ) dccSearchMimic.setGrpId("mimic");
         	if( dccSearchMimic.getHogi() == null ) dccSearchMimic.setHogi("3");
-        	if( dccSearchMimic.getXyGubun() == null ) dccSearchMimic.setXyGubun("X");
+        	if( dccSearchMimic.getXyGubun() == null ) dccSearchMimic.setXyGubun("Y");
         	if( dccSearchMimic.getGubun() == null ) dccSearchMimic.setGubun("D");
         	
         	res = basDccMimicService.updateTagInfo(dccSearchMimic);
@@ -1470,17 +2136,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("3");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("2");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	//member.setXyGubun("Y");
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun("Y");
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -1504,30 +2174,35 @@ public class DccMimicContentsController {
         }
       
         return mav;
-    }	
+    }
 	
-	@RequestMapping("d2octrlaExcelExport")
-	public void d2octrlaExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value="reloadD2octrla", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadD2octrla(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
         
-		ModelAndView mav = new ModelAndView();
+		ModelAndView mav = new ModelAndView("jsonView");
 
-        logger.info("############ excel");
-
+        logger.info("############ reloadD2octrla");
+        
         if(request.getSession().getAttribute("USER_INFO") != null) {
 
         	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
         	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("3");
         		dccSearchMimic.setsGrpID("mimic");
-        		dccSearchMimic.setsUGrpNo("2");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
+	        	dccSearchMimic.setsUGrpNo("2");
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	//member.setXyGubun("Y");
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun("Y");
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -1540,7 +2215,58 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping("d2octrlaExcelExport")
+	public void d2octrlaExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ excel");
+
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("3");
+        		dccSearchMimic.setsGrpID("mimic");
+        		dccSearchMimic.setsUGrpNo("2");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	//member.setXyGubun("Y");
+        	        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun("Y");
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -1572,7 +2298,7 @@ public class DccMimicContentsController {
         	if( dccSearchMimic.getGrpNo() == null ) dccSearchMimic.setGrpNo("2");
         	if( dccSearchMimic.getGrpId() == null ) dccSearchMimic.setGrpId("mimic");
         	if( dccSearchMimic.getHogi() == null ) dccSearchMimic.setHogi("3");
-        	if( dccSearchMimic.getXyGubun() == null ) dccSearchMimic.setXyGubun("X");
+        	if( dccSearchMimic.getXyGubun() == null ) dccSearchMimic.setXyGubun("Y");
         	if( dccSearchMimic.getGubun() == null ) dccSearchMimic.setGubun("D");
         	
         	res = basDccMimicService.updateTagInfo(dccSearchMimic);
@@ -1598,17 +2324,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("3");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("3");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	//member.setXyGubun("Y");
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun("Y");
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -1632,30 +2362,35 @@ public class DccMimicContentsController {
         }
       
         return mav;
-    }	
+    }
 	
-	@RequestMapping("d2octrlcExcelExport")
-	public void d2octrlcExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value="reloadD2octrlc", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadD2octrlc(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
         
-		ModelAndView mav = new ModelAndView();
+		ModelAndView mav = new ModelAndView("jsonView");
 
-        logger.info("############ excel");
-
+        logger.info("############ reloadD2octrlc");
+        
         if(request.getSession().getAttribute("USER_INFO") != null) {
 
         	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
         	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("3");
         		dccSearchMimic.setsGrpID("mimic");
-        		dccSearchMimic.setsUGrpNo("3");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
+	        	dccSearchMimic.setsUGrpNo("3");
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	//member.setXyGubun("Y");
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun("Y");
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -1668,7 +2403,58 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping("d2octrlcExcelExport")
+	public void d2octrlcExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ excel");
+
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("3");
+        		dccSearchMimic.setsGrpID("mimic");
+        		dccSearchMimic.setsUGrpNo("3");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	//member.setXyGubun("Y");
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun("Y");
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -1700,7 +2486,7 @@ public class DccMimicContentsController {
         	if( dccSearchMimic.getGrpNo() == null ) dccSearchMimic.setGrpNo("3");
         	if( dccSearchMimic.getGrpId() == null ) dccSearchMimic.setGrpId("mimic");
         	if( dccSearchMimic.getHogi() == null ) dccSearchMimic.setHogi("3");
-        	if( dccSearchMimic.getXyGubun() == null ) dccSearchMimic.setXyGubun("X");
+        	if( dccSearchMimic.getXyGubun() == null ) dccSearchMimic.setXyGubun("Y");
         	if( dccSearchMimic.getGubun() == null ) dccSearchMimic.setGubun("D");
         	
         	res = basDccMimicService.updateTagInfo(dccSearchMimic);
@@ -1725,6 +2511,8 @@ public class DccMimicContentsController {
         if(request.getSession().getAttribute("USER_INFO") != null) {
 
         	dccSearchMimic.setMenuName(this.menuName);
+
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
         	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
@@ -1732,11 +2520,13 @@ public class DccMimicContentsController {
         		dccSearchMimic.setsMenuNo("4");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("8");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -1760,7 +2550,59 @@ public class DccMimicContentsController {
         }
       
         return mav;
-    }	
+    }
+	
+	@RequestMapping(value="reloadRadmain", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadRadmain(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadRadmain");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("4");
+        		dccSearchMimic.setsGrpID("mimic");
+	        	dccSearchMimic.setsUGrpNo("8");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccMimicService.getDccGrpTagNoUnitConvList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
 	
 	@RequestMapping("radmainExcelExport")
 	public void radmainExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -1773,17 +2615,22 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("4");
         		dccSearchMimic.setsGrpID("mimic");
         		dccSearchMimic.setsUGrpNo("8");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -1796,7 +2643,7 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -1854,17 +2701,73 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("4");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("1");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadRbbase", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadRbbase(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadRbbase");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("4");
+        		dccSearchMimic.setsGrpID("mimic");
+	        	dccSearchMimic.setsUGrpNo("1");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -1901,17 +2804,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("4");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("1");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -1924,7 +2831,7 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -1982,17 +2889,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("4");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("2");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -2016,18 +2927,21 @@ public class DccMimicContentsController {
         }
       
         return mav;
-    }		
-	
-	@RequestMapping("rb1fExcelExport")
-	public void rb1fExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    }
+
+	@RequestMapping(value="reloadRb1f", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadRb1f(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
         
-		ModelAndView mav = new ModelAndView();
+		ModelAndView mav = new ModelAndView("jsonView");
 
-        logger.info("############ excel");
-
+        logger.info("############ reloadRb1f");
+        
         if(request.getSession().getAttribute("USER_INFO") != null) {
 
         	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
         	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
@@ -2035,11 +2949,13 @@ public class DccMimicContentsController {
         		dccSearchMimic.setsMenuNo("4");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("2");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -2052,7 +2968,58 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping("rb1fExcelExport")
+	public void rb1fExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ excel");
+
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("4");
+        		dccSearchMimic.setsGrpID("mimic");
+	        	dccSearchMimic.setsUGrpNo("2");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -2110,17 +3077,73 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));   
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("4");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("3");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadRb2f", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadRb2f(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadRb2f");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));   
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("4");
+        		dccSearchMimic.setsGrpID("mimic");
+	        	dccSearchMimic.setsUGrpNo("3");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -2157,17 +3180,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("4");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("3");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -2180,7 +3207,7 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -2238,17 +3265,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("4");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("4");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -2272,18 +3303,21 @@ public class DccMimicContentsController {
         }
       
         return mav;
-    }	
+    }
 	
-	@RequestMapping("rb3fExcelExport")
-	public void rb3fExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value="reloadRb3f", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadRb3f(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
         
-		ModelAndView mav = new ModelAndView();
+		ModelAndView mav = new ModelAndView("jsonView");
 
-        logger.info("############ excel");
-
+        logger.info("############ reloadRb3f");
+        
         if(request.getSession().getAttribute("USER_INFO") != null) {
 
         	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
         	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
@@ -2291,11 +3325,13 @@ public class DccMimicContentsController {
         		dccSearchMimic.setsMenuNo("4");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("4");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -2308,7 +3344,58 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping("rb3fExcelExport")
+	public void rb3fExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ excel");
+
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("4");
+        		dccSearchMimic.setsGrpID("mimic");
+	        	dccSearchMimic.setsUGrpNo("4");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -2366,17 +3453,73 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("4");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("5");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadRb4f", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadRb4f(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadRb4f");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("4");
+        		dccSearchMimic.setsGrpID("mimic");
+	        	dccSearchMimic.setsUGrpNo("5");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -2413,17 +3556,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("4");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("5");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -2436,7 +3583,7 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -2494,17 +3641,21 @@ public class DccMimicContentsController {
 
         	dccSearchMimic.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
         		dccSearchMimic.setsDive("D");
         		dccSearchMimic.setsMenuNo("4");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("6");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());	
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -2528,18 +3679,21 @@ public class DccMimicContentsController {
         }
       
         return mav;
-    }	
+    }
 	
-	@RequestMapping("rb5fExcelExport")
-	public void rb5fExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value="reloadRb5f", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadRb5f(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
         
-		ModelAndView mav = new ModelAndView();
+		ModelAndView mav = new ModelAndView("jsonView");
 
-        logger.info("############ excel");
-
+        logger.info("############ reloadRb5f");
+        
         if(request.getSession().getAttribute("USER_INFO") != null) {
 
         	dccSearchMimic.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
         	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
@@ -2547,11 +3701,13 @@ public class DccMimicContentsController {
         		dccSearchMimic.setsMenuNo("4");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("6");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());	
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -2564,7 +3720,58 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping("rb5fExcelExport")
+	public void rb5fExcelExport(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        
+		ModelAndView mav = new ModelAndView();
+
+        logger.info("############ excel");
+
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);
+
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("4");
+        		dccSearchMimic.setsGrpID("mimic");
+	        	dccSearchMimic.setsUGrpNo("6");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());	
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -2620,7 +3827,9 @@ public class DccMimicContentsController {
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
 
-        	dccSearchMimic.setMenuName(this.menuName);
+        	dccSearchMimic.setMenuName(this.menuName);        	
+
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
         	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
@@ -2628,11 +3837,65 @@ public class DccMimicContentsController {
         		dccSearchMimic.setsMenuNo("4");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("7");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());	
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchMimic.getsDive()==null?  "": dccSearchMimic.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchMimic.getsGrpID()==null?  "": dccSearchMimic.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchMimic.getsMenuNo()==null?  "": dccSearchMimic.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchMimic.getsUGrpNo()==null?  "": dccSearchMimic.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchMimic);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadSbbase", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadSbbase(DccSearchMimic dccSearchMimic, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadSbbase");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+
+        	dccSearchMimic.setMenuName(this.menuName);        	
+
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
+            	
+        		dccSearchMimic.setsDive("D");
+        		dccSearchMimic.setsMenuNo("4");
+        		dccSearchMimic.setsGrpID("mimic");
+	        	dccSearchMimic.setsUGrpNo("7");
+        	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());	
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -2668,6 +3931,8 @@ public class DccMimicContentsController {
         if(request.getSession().getAttribute("USER_INFO") != null) {
 
         	dccSearchMimic.setMenuName(this.menuName);
+
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));    
         	
         	if(dccSearchMimic.getsMenuNo() == null || dccSearchMimic.getsMenuNo().isEmpty()) {
             	
@@ -2675,11 +3940,13 @@ public class DccMimicContentsController {
         		dccSearchMimic.setsMenuNo("4");
         		dccSearchMimic.setsGrpID("mimic");
 	        	dccSearchMimic.setsUGrpNo("7");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchMimic.setsHogi(member.getHogi());
-	        	dccSearchMimic.setsXYGubun(member.getXyGubun());	        	
         	}
+	    	if( member.getHogi() == null ) member.setHogi(dccSearchMimic.getsHogi() == null ? "3" : dccSearchMimic.getsHogi());
+	    	if( member.getXyGubun() == null ) member.setXyGubun(dccSearchMimic.getsXYGubun() == null ? "X" : dccSearchMimic.getsXYGubun());
+        	
+        	dccSearchMimic.setsHogi(member.getHogi());
+        	dccSearchMimic.setsXYGubun(member.getXyGubun());	
+        	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchMimic.getsXYGubun()==null?  "": dccSearchMimic.getsXYGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchMimic.getsHogi()==null?  "": dccSearchMimic.getsHogi());
@@ -2692,7 +3959,7 @@ public class DccMimicContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		List<String> lblDataList = (List<String>) dccVal.get("lblDataList");    		
+    		List<Map> lblDataList = (List<Map>) dccVal.get("lblDataList");    		
     		String searchTime = (String) dccVal.get("SearchTime");
 
         	try {
@@ -2738,7 +4005,6 @@ public class DccMimicContentsController {
         
         return mav;
 	}
-	
 	
 	
 	@RequestMapping(value="tagSearch", method = { RequestMethod.POST })

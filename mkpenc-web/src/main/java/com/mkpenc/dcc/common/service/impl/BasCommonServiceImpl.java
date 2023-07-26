@@ -20,6 +20,11 @@ public class BasCommonServiceImpl implements BasCommonService{
 		return basCommonMapper.selectGrpNameList(searchMap);
 	}
 	
+	@Override
+	public List<Map> selectMaxGrpName(Map searchMap) {
+		return basCommonMapper.selectMaxGrpName(searchMap);
+	}
+	
 	// added by jhlee(23.02.28)
 	public List<String> selectGrpNameListB(Map searchMap){
 		return basCommonMapper.selectGrpNameListB(searchMap);
@@ -29,31 +34,35 @@ public class BasCommonServiceImpl implements BasCommonService{
 	//private int GetBitVal(ByVal DigitalValue As String, ByVal DigitalBit As String) As String
 	public String GetBitVal(String digitalValue, String digitalBit) {
 		    
-		    long Rest = 0;
-		    
-		    long di_val;
-		    int bit_no;	    
-		    
-		    if(digitalBit.isEmpty()) {
-		       if(digitalValue == null) {
-		    	   return "";
-		       }else {
-		    	   return digitalValue;
-		       }
-		    }
-		   // System.out.println("digitalValue=" + digitalValue);
-		    di_val = Math.round(Double.parseDouble(digitalValue));	    
-		    bit_no = Integer.parseInt(digitalBit);
+		long Rest = 0;
+	    
+	    double di_val;
+	    int bit_no;	    
+	    
+	    if(digitalBit.isEmpty()) {
+	       if(digitalValue == null) {
+	    	   return "";
+	       }else {
+	    	   return digitalValue;
+	       }
+	    }
+	    
+	    di_val = Double.parseDouble(digitalValue);	    
+	    bit_no = Integer.parseInt(digitalBit);
 
-		    for(int i = 0;i < bit_no;i++) {
-		        Rest = (di_val % 2);
-		        //System.out.println("rest=" + Rest);
-		        //di_val = di_val \ 2;
-		    	di_val = di_val >> 2;
-			}
-		    
-		    return Rest +"";
+	    for(int i = 0;i <= bit_no;i++) {
+	    	
+	        Rest = Math.round(di_val % 2);
+	        di_val = Math.floor(di_val / 2);
 		}
+	    
+	    return Rest +"";
+	}
+	
+	@Override
+	public List<Map> selectLogTimer(Map searchMapper) {
+		return basCommonMapper.selectLogTimer(searchMapper);
+	}
 
 }
 

@@ -21,8 +21,8 @@
 <link rel="stylesheet" type="text/css" href="<c:url value="/resources/datetimepicker/jquery.datetimepicker.css" />">
 <script type="text/javascript" src="<c:url value="/resources/datetimepicker/jquery.datetimepicker.full.min.js" />" charset="utf-8"></script>
 
-
 <script type="text/javascript">
+var timerOn = false;
 
 $(function () {
 	
@@ -191,9 +191,13 @@ $(function () {
 		  			$('#bTime').text($('#mskFixedS').val() + "~" + $('#mskSpareE').val()+"(B)");
 		  	  }
 			  
-			  var	comSubmit	=	new ComSubmit("compareVarSearch");
-			  comSubmit.setUrl("/dcc/performance/fixed");
-			  comSubmit.submit();			
+			  //var	comSubmit	=	new ComSubmit("compareVarSearch");
+			  //comSubmit.setUrl("/dcc/performance/fixed");
+			  //comSubmit.submit();
+			  var	comAjax	=	new ComAjax("compareVarSearch");
+			  comAjax.setUrl("/dcc/performance/reloadFixed");
+			  comAjax.setCallback("performanceCallback");
+			  comAjax.ajax();
 		 });	  		
 		
 });	
@@ -234,7 +238,7 @@ function DatetimepickerDefaults(opts) {
 			<!-- page_title -->
 			<div class="page_title">
 				<h3>주요기기 성능감시</h3>
-				<div class="bc"><span>DCC</span><span>Performance</span><strong>주요기기 성능감시</strong></div>
+				<div class="bc"><span>DCC</span><span>Performance</span><strong>주요기기 성능감시(FIXED)</strong></div>
 			</div>
 			<!-- //page_title -->
 			<!-- fx_srch_wrap -->
@@ -251,7 +255,7 @@ function DatetimepickerDefaults(opts) {
 					<div class="fx_srch_row">
 						<div class="fx_srch_item">
 							<label>그룹</label>
-                              <select class="fx_none" style="width:90px;" id="sUGrpNo" name="sUGrpNo">
+                              <select class="fx_none" style="width:190px;" id="sUGrpNo" name="sUGrpNo">
                             	<option  value="">그룹을 선택하세요</option>
                            		<c:forEach var="GroupName" items="${GroupNameList}">
                            			<c:choose>
@@ -266,7 +270,7 @@ function DatetimepickerDefaults(opts) {
                             </select>
 						</div>
 						<div class="fx_srch_item">
-							<label>호가비교</label>
+							<label>호기비교</label>
                             <input type="checkbox" id="sChkHogi" name="sChkHogi" value="T">
 						</div>
 						<div class="fx_srch_item double">
@@ -351,7 +355,7 @@ function DatetimepickerDefaults(opts) {
                             <th>최대값</th>
                             <th>최소값</th>
                             <th>B-A</th>
-                            <th>변환율(%)</th>
+                            <th>변화율(%)</th>
                         </tr>
                     </thead>
                     <tbody id="compareVarList" name = "compareVarList">
@@ -368,19 +372,19 @@ function DatetimepickerDefaults(opts) {
                             </c:choose>
              				<c:choose>
                             	<c:when test="${tagDccInfo.minVal eq 0}">
-                            			<td class="tc">${tagDccInfo.maxVal}</td>
+                            			<td class="tc"><fmt:formatNumber type="number" pattern="###,###.###" value ="${tagDccInfo.maxVal}"></fmt:formatNumber></td>
                             	</c:when>
                             	<c:when test="${tagDccInfo.minVal eq -1}">
-                            			<td class="tc">> ${tagDccInfo.maxVal}</td>
+                            			<td class="tc">> <fmt:formatNumber type="number" pattern="###,###.###" value ="${tagDccInfo.maxVal}"></fmt:formatNumber></td>
                             	</c:when>
                             	<c:when test="${tagDccInfo.minVal eq -2}">
-                            			<td class="tc">< ${tagDccInfo.maxVal}</td>
+                            			<td class="tc">< <fmt:formatNumber type="number" pattern="###,###.###" value ="${tagDccInfo.maxVal}"></fmt:formatNumber></td>
                             	</c:when>
                             	<c:when test="${tagDccInfo.minVal eq -3}">
                             			<td class="tc"></td>
                             	</c:when>
                             	<c:otherwise>
-                            			<td class="tc">${tagDccInfo.minVal} ~ ${tagDccInfo.maxVal}</td>
+                            			<td class="tc"><fmt:formatNumber type="number" pattern="###,###.###" value ="${tagDccInfo.minVal}"></fmt:formatNumber> ~ <fmt:formatNumber type="number" pattern="###,###.###" value ="${tagDccInfo.maxVal}"></fmt:formatNumber></td>
                             	</c:otherwise>
                             </c:choose>
                             <td class="tc">${tagDccInfo.spareAvgFldNo}</td>

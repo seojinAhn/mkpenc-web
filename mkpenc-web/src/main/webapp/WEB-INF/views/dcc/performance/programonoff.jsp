@@ -19,21 +19,94 @@
 <script type="text/javascript" src="<c:url value="/resources/js/performance.js" />" charset="utf-8"></script>
 <script type="text/javascript">
 
+var XSearchTimeAjax = '';
+var XForeColorAjax = '';
+var lblDataXListAjax = {};
+var shpDataXListAjax = {};
+
+var YSearchTimeAjax = '';
+var YForeColorAjax = '';
+var lblDataYListAjax = {};
+var shpDataYListAjax = {};
+
+var timerOn = true;
+
 $(function () {
 	
-	var timer =0;
+	//$("#lblDate").text('${XSearchTime}');
+	//$("#lblDate").css('color','${XForeColor}');
 	
+	setTimer(5000);
+
+});
+
+function setTimer(interval) {
+	if( interval > 0 ) {
+		setTimeout(function run() {
+			if( timerOn ) {
+				// 화면초기화
+					//var	comSubmit	=	new ComSubmit("programonoffFrm");
+				//comSubmit.setUrl("/dcc/performance/programonoff");
+				//comSubmit.submit();
+				var comAjax = new ComAjax("programonoffFrm");
+				comAjax.setUrl('/dcc/performance/reloadProgramonoff');
+				//comAjax.addParam("sHogi",hogiHeader);
+				//comAjax.addParam("sXYGubun",xyHeader);
+				comAjax.setCallback('performanceCallback');
+				//comAjax.ajax();
 			
-		timer = setInterval(function () {
+				setTimeout(run,interval);
+			}
+		}, interval);
+	} else {
+		setTimeout(function run() {
 			
 			// 화면초기화
-  			var	comSubmit	=	new ComSubmit("programonoffFrm");
-			comSubmit.setUrl("/dcc/performance/programonoff");
+				//var	comSubmit	=	new ComSubmit("programonoffFrm");
+			//comSubmit.setUrl("/dcc/performance/programonoff");
 			//comSubmit.submit();
+			var comAjax = new ComAjax("programonoffFrm");
+			comAjax.setUrl('/dcc/performance/reloadProgramonoff');
+			//comAjax.addParam("sHogi",hogiHeader);
+			//comAjax.addParam("sXYGubun",xyHeader);
+			comAjax.setCallback('performanceCallback');
+			//comAjax.ajax();
 			
-			 }, 5000); 	  
+			setTimeout(run,interval);
+		
+		}, 5000);
+	}
+}
 
-});	
+function setLblDate() {
+	$("#lblDateX").text(XSearchTimeAjax);
+	$("#lblDateX").css("color",XForeColorAjax);
+	$("#lblDateY").text(YSearchTimeAjax);
+	$("#lblDateY").css("color",YForeColorAjax);
+}
+
+function setData() {
+	for( var i=0;i<lblDataXListAjax.length;i++ ) {
+		$("#lblDataX"+i).text(convFormat(lblDataXListAjax[i].fValue));
+	}
+	
+	for( var j=0;j<lblDataYListAjax.length;j++ ) {
+		$("#lblDataY"+j).text(convFormat(lblDataYListAjax[j].fValue));
+	}
+	
+	for( var k=0;k<shpDataXListAjax.length;k++ ) {
+		$("#shpDataX"+k).css('background',shpDataXListAjax[k]);
+	}
+	
+	for( var l=0;l<shpDataXListAjax.length;l++ ) {
+		$("#shpDataY"+l).css('background',shpDataYListAjax[l]);
+	}
+}
+
+function convFormat(data) {
+	var tmp = (data*1).toLocaleString()+'';
+	return tmp;
+}
 
 </script>
 </head>
@@ -70,18 +143,18 @@ $(function () {
                             </div>
 							<div class="button">
                                 <div class="fx_legend">
-                                   <label style="color:${XForeColor}">${XSearchTime}</label>
+                                   <label id="lblDateX" style="color:${XForeColor}">${XSearchTime}</label>
                                 </div>
                             </div>
 							<div class="button">
                                 <div class="fx_legend">
-                                    <label style="color:${YForeColor}">${YSearchTime}</label>
+                                    <label id="lblDateY" style="color:${YForeColor}">${YSearchTime}</label>
                                 </div>
                             </div>
                         </div>
                         <!-- //form_head -->                        
                         <!-- form_table -->
-                        <table class="form_table">
+						<table class="form_table">
                             <colgroup>
                                 <col />
                                 <col />
@@ -102,8 +175,8 @@ $(function () {
                                                 <label>HS-1 / DI 56B00</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[0].fValue}</label>
-                                                <label>${lblDataYList[0].fValue}</label>
+                                                <label id="lblDataX0"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[0].fValue}"/></label>
+                                                <label id="lblDataY0"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[0].fValue}"/></label>
                                             </div>
                                         </div>                                        
                                     </th>
@@ -113,25 +186,25 @@ $(function () {
                                                 <label>01 STP</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[1].fValue}</label>
-                                                <label>${lblDataYList[1].fValue}</label>
+                                                <label id="lblDataX1"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[1].fValue}"/></label>
+                                                <label id="lblDataY1"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[1].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[2].fValue}</label>
-                                                <label>${lblDataYList[2].fValue}</label>
+                                                <label id="lblDataX2"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[2].fValue}"/></label>
+                                                <label id="lblDataY2"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[2].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[3].fValue}</label>
-                                                <label>${lblDataYList[3].fValue}</label>
+                                                <label id="lblDataX3"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[3].fValue}"/></label>
+                                                <label id="lblDataY3"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[3].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[4].fValue}</label>
-                                                <label>${lblDataYList[4].fValue}</label>
+                                                <label id="lblDataX4"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[4].fValue}"/></label>
+                                                <label id="lblDataY4"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[4].fValue}"/></label>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc">DO 200B15, 232B09, 201B10, 233B08</td>
-                                    <td class="tc">DO 200B15, 232B09, 201B10, 233B08</td>
+                                    <td id="shpDataX0" style="background:${shpDataXList[0].BackColor}" class="tc">DO 200B15, 232B09, 201B10, 233B08</td>
+                                    <td id="shpDataY0" style="background:${shpDataYList[0].BackColor}" class="tc">DO 200B15, 232B09, 201B10, 233B08</td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -140,8 +213,8 @@ $(function () {
                                                 <label>HS-4 / DI 56B03</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[5].fValue}</label>
-                                                <label>${lblDataYList[5].fValue}</label>
+                                                <label id="lblDataX5"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[5].fValue}"/></label>
+                                                <label id="lblDataY5"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[5].fValue}"/></label>
                                             </div>
                                         </div>                                        
                                     </th>
@@ -152,8 +225,8 @@ $(function () {
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc"></td>
-                                    <td class="tc"></td>
+                                    <td id="shpDataX1" style="background:${shpDataXList[1].BackColor}" class="tc"></td>
+                                    <td id="shpDataY1" style="background:${shpDataYList[1].BackColor}" class="tc"></td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -162,8 +235,8 @@ $(function () {
                                                 <label>HS-5 / DI 56B04</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[6].fValue}</label>
-                                                <label>${lblDataYList[6].fValue}</label>
+                                                <label id="lblDataX6"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[6].fValue}"/></label>
+                                                <label id="lblDataY6"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[6].fValue}"/></label>
                                             </div>
                                         </div>                                        
                                     </th>
@@ -173,25 +246,25 @@ $(function () {
                                                 <label>11 RRS</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[7].fValue}</label>
-                                                <label>${lblDataYList[7].fValue}</label>
+                                                <label id="lblDataX7"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[7].fValue}"/></label>
+                                                <label id="lblDataY7"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[7].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[8].fValue}</label>
-                                                <label>${lblDataYList[8].fValue}</label>
+                                                <label id="lblDataX8"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[8].fValue}"/></label>
+                                                <label id="lblDataY8"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[8].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[9].fValue}</label>
-                                                <label>${lblDataYList[9].fValue}</label>
+                                                <label id="lblDataX9"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[9].fValue}"/></label>
+                                                <label id="lblDataY9"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[9].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[10].fValue}</label>
-                                                <label>${lblDataYList[10].fValue}</label>
+                                                <label id="lblDataX10"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[10].fValue}"/></label>
+                                                <label id="lblDataY10"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[10].fValue}"/></label>
                                             </div>
                                         </div>
                                     </td>
-                                      <td class="tc">DO 200B13, 232B14, 201B08, 233B09</td>
-                                      <td class="tc">DO 200B13, 232B14, 201B08, 233B09</td>
+                                      <td id="shpDataX2" style="background:${shpDataXList[2].BackColor}" class="tc">DO 200B13, 232B14, 201B08, 233B09</td>
+                                      <td id="shpDataY2" style="background:${shpDataYList[2].BackColor}" class="tc">DO 200B13, 232B14, 201B08, 233B09</td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -200,8 +273,8 @@ $(function () {
                                                 <label>HS-6 / DI 56B05</label>
                                             </div>
                                             <div class="fx_form column">
-                                               	<label>${lblDataXList[11].fValue}</label>
-                                                <label>${lblDataYList[11].fValue}</label>
+                                               	<label id="lblDataX11"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[11].fValue}"/></label>
+                                                <label id="lblDataY11"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[11].fValue}"/></label>
                                             </div>
                                         </div>                                        
                                     </th>
@@ -211,25 +284,25 @@ $(function () {
                                                 <label>12 SGL</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[12].fValue}</label>
-                                                <label>${lblDataYList[12].fValue}</label>
+                                                <label id="lblDataX12"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[12].fValue}"/></label>
+                                                <label id="lblDataY12"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[12].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[13].fValue}</label>
-                                                <label>${lblDataYList[13].fValue}</label>
+                                                <label id="lblDataX13"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[13].fValue}"/></label>
+                                                <label id="lblDataY13"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[13].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[14].fValue}</label>
-                                                <label>${lblDataYList[15].fValue}</label>
+                                                <label id="lblDataX14"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[14].fValue}"/></label>
+                                                <label id="lblDataY14"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[14].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[15].fValue}</label>
-                                                <label>${lblDataYList[15].fValue}</label>
+                                                <label id="lblDataX15"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[15].fValue}"/></label>
+                                                <label id="lblDataY15"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[15].fValue}"/></label>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc">DO 201B11, 232B10, 202B08, 233B12</td>
-                                    <td class="tc">DO 201B11, 232B10, 202B08, 233B12</td>
+                                    <td id="shpDataX3" style="background:${shpDataXList[3].BackColor}" class="tc">DO 201B11, 232B10, 202B08, 233B12</td>
+                                    <td id="shpDataY3" style="background:${shpDataYList[3].BackColor}" class="tc">DO 201B11, 232B10, 202B08, 233B12</td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -238,8 +311,8 @@ $(function () {
                                                 <label>HS-7 / DI 56B06</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[16].fValue}</label>
-                                                <label>${lblDataYList[16].fValue}</label>
+                                                <label id="lblDataX16"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[16].fValue}"/></label>
+                                                <label id="lblDataY16"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[16].fValue}"/></label>
                                             </div>
                                         </div>                                        
                                     </th>
@@ -249,25 +322,25 @@ $(function () {
                                                 <label>13 HTC</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[17].fValue}</label>
-                                                <label>${lblDataYList[17].fValue}</label>
+                                                <label id="lblDataX17"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[17].fValue}"/></label>
+                                                <label id="lblDataY17"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[17].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[18].fValue}</label>
-                                                <label>${lblDataYList[18].fValue}</label>
+                                                <label id="lblDataX18"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[18].fValue}"/></label>
+                                                <label id="lblDataY18"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[18].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[19].fValue}</label>
-                                                <label>${lblDataYList[19].fValue}</label>
+                                                <label id="lblDataX19"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[19].fValue}"/></label>
+                                                <label id="lblDataY19"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[19].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[20].fValue}</label>
-                                                <label>${lblDataYList[20].fValue}</label>
+                                                <label id="lblDataX20"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[20].fValue}"/></label>
+                                                <label id="lblDataY20"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[20].fValue}"/></label>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc">DO 201B13, 232B12, 202B10, 233B11</td>
-                                    <td class="tc">DO 201B13, 232B12, 202B10, 233B11</td>
+                                    <td id="shpDataX4" style="background:${shpDataXList[4].BackColor}" class="tc">DO 201B13, 232B12, 202B10, 233B11</td>
+                                    <td id="shpDataY4" style="background:${shpDataYList[4].BackColor}" class="tc">DO 201B13, 232B12, 202B10, 233B11</td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -276,8 +349,8 @@ $(function () {
                                                 <label>HS-8 / DI 56B07</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[21].fValue}</label>
-                                                <label>${lblDataYList[21].fValue}</label>
+                                                <label id="lblDataX21"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[21].fValue}"/></label>
+                                                <label id="lblDataY21"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[21].fValue}"/></label>
                                             </div>
                                         </div>                                        
                                     </th>
@@ -287,25 +360,25 @@ $(function () {
                                                 <label>14 SGP</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[22].fValue}</label>
-                                                <label>${lblDataYList[22].fValue}</label>
+                                                <label id="lblDataX22"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[22].fValue}"/></label>
+                                                <label id="lblDataY22"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[22].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[23].fValue}</label>
-                                                <label>${lblDataYList[23].fValue}</label>
+                                                <label id="lblDataX23"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[23].fValue}"/></label>
+                                                <label id="lblDataY23"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[23].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[24].fValue}</label>
-                                                <label>${lblDataYList[24].fValue}</label>
+                                                <label id="lblDataX24"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[24].fValue}"/></label>
+                                                <label id="lblDataY24"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[24].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[25].fValue}</label>
-                                                <label>${lblDataYList[25].fValue}</label>
+                                                <label id="lblDataX25"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[25].fValue}"/></label>
+                                                <label id="lblDataY25"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[25].fValue}"/></label>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc">DO 201B12, 232B11, 202B09, 233B13</td>
-                                    <td class="tc">DO 201B12, 232B11, 202B09, 233B13</td>
+                                    <td id="shpDataX5" style="background:${shpDataXList[5].BackColor}" class="tc">DO 201B12, 232B11, 202B09, 233B13</td>
+                                    <td id="shpDataY5" style="background:${shpDataYList[5].BackColor}" class="tc">DO 201B12, 232B11, 202B09, 233B13</td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -314,8 +387,8 @@ $(function () {
                                                 <label>HS-9 / DI 56B08</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[26].fValue}</label>
-                                                <label>${lblDataYList[26].fValue}</label>
+                                                <label id="lblDataX26"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[26].fValue}"/></label>
+                                                <label id="lblDataY26"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[26].fValue}"/></label>
                                             </div>
                                         </div>                                        
                                     </th>
@@ -326,8 +399,8 @@ $(function () {
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc"></td>
-                                    <td class="tc"></td>
+                                    <td id="shpDataX6" style="background:${shpDataXList[6].BackColor}" class=ytumn "tc"></td>
+                                    <td id="shpDataY6" style="background:${shpDataYList[6].BackColor}" class="tc"></td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -336,8 +409,8 @@ $(function () {
                                                 <label>HS-13 / DI 56B12</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[27].fValue}</label>
-                                                <label>${lblDataYList[27].fValue}</label>
+                                                <label id="lblDataX27"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[27].fValue}"/></label>
+                                                <label id="lblDataY27"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[27].fValue}"/></label>
                                             </div>
                                         </div>                                        
                                     </th>
@@ -348,8 +421,8 @@ $(function () {
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc"></td>
-                                    <td class="tc"></td>
+                                    <td id="shpDataX7" style="background:${shpDataXList[7].BackColor}" class="tc"></td>
+                                    <td id="shpDataY7" style="background:${shpDataYList[7].BackColor}" class="tc"></td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -358,8 +431,8 @@ $(function () {
                                                 <label>HS-14 / DI 56B13</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[28].fValue}</label>
-                                                <label>${lblDataYList[28].fValue}</label>
+                                                <label id="lblDataX28"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[28].fValue}"/></label>
+                                                <label id="lblDataY28"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[28].fValue}"/></label>
                                             </div>
                                         </div>                                        
                                     </th>
@@ -370,8 +443,8 @@ $(function () {
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc"></td>
-                                    <td class="tc"></td>
+                                    <td id="shpDataX8" style="background:${shpDataXList[8].BackColor}" class="tc"></td>
+                                    <td id="shpDataY8" style="background:${shpDataYList[8].BackColor}" class="tc"></td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -380,8 +453,8 @@ $(function () {
                                                 <label>HS-15 / DI 56B14</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[29].fValue}</label>
-                                                <label>${lblDataYList[29].fValue}</label>
+                                                <label id="lblDataX29"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[29].fValue}"/></label>
+                                                <label id="lblDataY29"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[29].fValue}"/></label>
                                             </div>
                                         </div>                                        
                                     </th>
@@ -392,8 +465,8 @@ $(function () {
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc"></td>
-                                    <td class="tc"></td>
+                                    <td id="shpDataX9" style="background:${shpDataXList[9].BackColor}" id="shpDataX9" class="tc"></td>
+                                    <td id="shpDataY9" style="background:${shpDataYList[9].BackColor}" id="shpDataY9" class="tc"></td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -402,8 +475,8 @@ $(function () {
                                                 <label>HS-16 / DI 56B15</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[30].fValue}</label>
-                                                <label>${lblDataYList[30].fValue}</label>
+                                                <label id="lblDataX30"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[30].fValue}"/></label>
+                                                <label id="lblDataY30"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[30].fValue}"/></label>
                                             </div>
                                         </div>                                        
                                     </th>
@@ -414,8 +487,8 @@ $(function () {
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc"></td>
-                                    <td class="tc"></td>
+                                    <td id="shpDataX10" style="background:${shpDataXList[8].BackColor}" class="tc"></td>
+                                    <td id="shpDataY10" style="background:${shpDataXList[8].BackColor}" class="tc"></td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -424,8 +497,8 @@ $(function () {
                                                 <label>HS-17 / DI 57B00</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[31].fValue}</label>
-                                                <label>${lblDataYList[31].fValue}</label>
+                                                <label id="lblDataX31"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[31].fValue}"/></label>
+                                                <label id="lblDataY31"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[31].fValue}"/></label>
                                             </div>
                                         </div>                                        
                                     </th>
@@ -436,8 +509,8 @@ $(function () {
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc"></td>
-                                    <td class="tc"></td>
+                                    <td id="shpDataX11" style="background:${shpDataXList[11].BackColor}" class="tc"></td>
+                                    <td id="shpDataY11" style="background:${shpDataYList[11].BackColor}" class="tc"></td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -446,8 +519,8 @@ $(function () {
                                                 <label>HS-19 / DI 57B02</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[32].fValue}</label>
-                                                <label>${lblDataYList[32].fValue}</label>
+                                                <label id="lblDataX32"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[32].fValue}"/></label>
+                                                <label id="lblDataY32"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[32].fValue}"/></label>
                                             </div>
                                         </div>                                        
                                     </th>
@@ -458,8 +531,8 @@ $(function () {
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc"></td>
-                                    <td class="tc"></td>                                    
+                                    <td id="shpDataX12" style="background:${shpDataXList[12].BackColor}" class="tc"></td>
+                                    <td id="shpDataY12" style="background:${shpDataYList[12].BackColor}" class="tc"></td>                                    
                                 </tr>
                                 <tr>
                                     <th>
@@ -468,8 +541,8 @@ $(function () {
                                                 <label>HS-21 / DI 57B04</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[33].fValue}</label>
-                                                <label>${lblDataYList[33].fValue}</label>
+                                                <label id="lblDataX33"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[33].fValue}"/></label>
+                                                <label id="lblDataY33"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[33].fValue}"/></label>
                                             </div>
                                         </div>                                        
                                     </th>
@@ -480,8 +553,8 @@ $(function () {
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc"></td>
-                                    <td class="tc"></td>
+                                    <td id="shpDataX13" style="background:${shpDataXList[13].BackColor}" class="tc"></td>
+                                    <td id="shpDataY13" style="background:${shpDataXList[13].BackColor}" class="tc"></td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -490,8 +563,8 @@ $(function () {
                                                 <label>HS-22 / DI 57B05</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[34].fValue}</label>
-                                                <label>${lblDataYList[34].fValue}</label>
+                                                <label id="lblDataX34"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[34].fValue}"/></label>
+                                                <label id="lblDataY34"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[34].fValue}"/></label>
                                             </div>
                                         </div>
                                     </th>
@@ -501,25 +574,25 @@ $(function () {
                                                 <label>32 MTC</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[35].fValue}</label>
-                                                <label>${lblDataYList[35].fValue}</label>
+                                                <label id="lblDataX35"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[35].fValue}"/></label>
+                                                <label id="lblDataY35"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[35].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[36].fValue}</label>
-                                                <label>${lblDataYList[36].fValue}</label>
+                                                <label id="lblDataX36"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[36].fValue}"/></label>
+                                                <label id="lblDataY36"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[36].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[37].fValue}</label>
-                                                <label>${lblDataYList[37].fValue}</label>
+                                                <label id="lblDataX37"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[37].fValue}"/></label>
+                                                <label id="lblDataY37"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[37].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[38].fValue}</label>
-                                                <label>${lblDataYList[38].fValue}</label>
+                                                <label id="lblDataX38"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[38].fValue}"/></label>
+                                                <label id="lblDataY38"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[38].fValue}"/></label>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc">DO 200B14, 232B08, 201B09, 233B10</td>
-                                    <td class="tc">DO 200B14, 232B08, 201B09, 233B10</td>
+                                    <td id="shpDataX14" style="background:${shpDataXList[14].BackColor}" class="tc">DO 200B14, 232B08, 201B09, 233B10</td>
+                                    <td id="shpDataY14" style="background:${shpDataYList[14].BackColor}" class="tc">DO 200B14, 232B08, 201B09, 233B10</td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -528,8 +601,8 @@ $(function () {
                                                 <label>HS-23 / DI 57B06</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[39].fValue}</label>
-                                                <label>${lblDataYList[39].fValue}</label>
+                                                <label id="lblDataX39"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[39].fValue}"/></label>
+                                                <label id="lblDataY39"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[39].fValue}"/></label>
                                             </div>
                                         </div>
                                     </th>
@@ -540,8 +613,8 @@ $(function () {
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc"></td>
-                                    <td class="tc"></td>
+                                    <td id="shpDataX15" style="background:${shpDataXList[15].BackColor}" class="tc"></td>
+                                    <td id="shpDataY15" style="background:${shpDataYList[15].BackColor}" class="tc"></td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -550,7 +623,7 @@ $(function () {
                                                 <label>HS-24 / DI 57B07</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[40].fValue}</label>
+                                                <label id="lblDataX40"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[40].fValue}"/></label>                                                
                                             </div>
                                         </div>
                                     </th>
@@ -560,12 +633,12 @@ $(function () {
                                                 <label>34 TPM(DCCX)</label>
                                             </div>
                                              <div class="fx_form column">
-                                                 <label>${lblDataYList[40].fValue}</label>
+                                                 <label id="lblDataY40"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[40].fValue}"/></label>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc"></td>
-                                    <td class="tc"></td>
+                                    <td id="shpDataX16" style="background:${shpDataXList[16].BackColor}" class="tc"></td>
+                                    <td id="shpDataY16" style="background:${shpDataYList[16].BackColor}" class="tc"></td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -574,8 +647,8 @@ $(function () {
                                                 <label>HS-25 / DI 57B08</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[41].fValue}</label>
-                                                <label>${lblDataYList[41].fValue}</label>
+                                                <label id="lblDataX41"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[41].fValue}"/></label>
+                                                <label id="lblDataY41"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[41].fValue}"/></label>
                                             </div>
                                         </div>
                                     </th>
@@ -586,8 +659,8 @@ $(function () {
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc"></td>
-                                    <td class="tc"></td>
+                                    <td id="shpDataX17" style="background:${shpDataXList[17].BackColor}" class="tc"></td>
+                                    <td id="shpDataY17" style="background:${shpDataYList[17].BackColor}" class="tc"></td>
                                 </tr>
                                 <tr>
                                     <th>
@@ -596,8 +669,8 @@ $(function () {
                                                 <label>HS-28 / DI 57B11</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[42].fValue}</label>
-                                                <label>${lblDataYList[42].fValue}</label>
+                                                <label id="lblDataX42"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[42].fValue}"/></label>
+                                                <label id="lblDataY42"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[42].fValue}"/></label>
                                             </div>
                                         </div>
                                     </th>
@@ -607,25 +680,25 @@ $(function () {
                                                 <label>40 HTT</label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[43].fValue}</label>
-                                                <label>${lblDataYList[43].fValue}</label>
+                                                <label id="lblDataX43"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[43].fValue}"/></label>
+                                                <label id="lblDataY43"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[43].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[44].fValue}</label>
-                                                <label>${lblDataYList[44].fValue}</label>
+                                                <label id="lblDataX44"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[44].fValue}"/></label>
+                                                <label id="lblDataY44"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[44].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                                <label>${lblDataXList[45].fValue}</label>
-                                                <label>${lblDataYList[45].fValue}</label>
+                                               	<label id="lblDataX45"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[45].fValue}"/></label>
+                                                <label id="lblDataY45"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[45].fValue}"/></label>
                                             </div>
                                             <div class="fx_form column">
-                                               <label>${lblDataXList[46].fValue}</label>
-                                               <label>${lblDataYList[46].fValue}</label>
+                                               <label id="lblDataX46"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataXList[46].fValue}"/></label>
+                                               <label id="lblDataY46"><fmt:formatNumber type="number" pattern="###,###" value ="${lblDataYList[46].fValue}"/></label>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="tc">DO 203B15, 230B13, 205B13, 231B13</td>
-                                    <td class="tc">DO 203B15, 230B13, 205B13, 231B13</td>
+                                    <td id="shpDataX18" style="background:${shpDataXList[18].BackColor}" class="tc">DO 203B15, 230B13, 205B13, 231B13</td>
+                                    <td id="shpDataY18" style="background:${shpDataYList[18].BackColor}" class="tc">DO 203B15, 230B13, 205B13, 231B13</td>
                                 </tr>
                             </tbody>
                         </table>

@@ -32,7 +32,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         			response.setContentType("application/json; charset=UTF-8");        			
 					result =  true;
         		}else {
-        			response.sendRedirect("/main/dashboard"); 
+        			response.sendRedirect("/main/dashboard?noLogin=Y");
         			result = false;
         		}
         		

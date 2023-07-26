@@ -19,65 +19,82 @@
 <script type="text/javascript" src="<c:url value="/resources/js/alarm.js" />" charset="utf-8"></script>
 
 <script type="text/javascript">
-	var hogiHeader = '${UserInfo.hogi}' != "undefined" ? '${UserInfo.hogi}' : "3";
-	var xyHeader = '${UserInfo.xyGubun}' != "undefined" ? '${UserInfo.xyGubun}' : "X";
+
+	var timerOn = true //true로 변경
+	
+	var lblTitleAjax = '';
+	var lblDataListAjax = {};
+	var TagDccInfoListAjax = {};
+	var lblH2Ajax = {};
+	var lblO2Ajax = {};
+	var lblN2Ajax = {};
+	var lblD2Ajax = {};
 	
 	$(function() {
-		var lblDateVal = hogiHeader+xyHeader+' '+'${DccTagList[0].SCANTIME}';
-		$("#lblDate").text(lblDateVal);
+		$("#lblDate").text('${SearchTime}');
+		$("#lblDate").css('color','${ForeColor}');		
 		
-		if( $("input:radio[id='4']").is(":checked") ) {
-			hogiHeader = "4";
-		} else {
-			hogiHeader = "3";
-		}
-		if( $("input:radio[id='Y']").is(":checked") ) {
-			xyHeader = "Y";
-		} else {
-			xyHeader = "X";
-		}
-		
-		$(document.body).delegate('#3', 'click', function() {
-			var uGrpName = $("#cboUGrpName option:selected").val();
-			hogiHeader = '3';
-			reloadAjax(0);
-		});
-		
-		$(document.body).delegate('#4', 'click', function() {
-			var uGrpName = $("#cboUGrpName option:selected").val();
-			hogiHeader = '4';
-			reloadAjax(0);
-		});
-		
-		$(document.body).delegate('#X', 'click', function() {
-			var uGrpName = $("#cboUGrpName option:selected").val();
-			xyHeader = 'X';
-			reloadAjax(0);
-		});
-		
-		$(document.body).delegate('#Y', 'click', function() {
-			var uGrpName = $("#cboUGrpName option:selected").val();
-			xyHeader = 'Y';
-			reloadAjax(0);
-		});
-		
-		var timer =0;
-		
-		timer = setInterval(function () {
-			reloadAjax(1);
-		}, 5000);
+		setTimer(5000);
 	});
+	
+	function setTimer(interval) {
+		if( interval > 0 ) {
+			setTimeout(function run() {
+				if( timerOn ) {
+					//var	comSubmit	=	new ComSubmit("reloadForm");
+					//comSubmit.setUrl("/dcc/alarm//gaschromatography");
+					//comSubmit.submit();
+					var comAjax = new ComAjax("reloadForm");
+					comAjax.setUrl('/dcc/alarm/reloadGaschromatography');
+					//comAjax.addParam("sHogi",hogiHeader);
+					//comAjax.addParam("sXYGubun",xyHeader);
+					comAjax.setCallback('alarmCallback');
+					comAjax.ajax();
+				}
+				
+				setTimeout(run, interval);
+			},interval);
+		} else {
+			//var	comSubmit	=	new ComSubmit("reloadForm");
+			//comSubmit.setUrl("/dcc/alarm//gaschromatography");
+			//comSubmit.submit();
+			var comAjax = new ComAjax("reloadForm");
+			comAjax.setUrl('/dcc/alarm/reloadGaschromatography');
+			//comAjax.addParam("sHogi",hogiHeader);
+			//comAjax.addParam("sXYGubun",xyHeader);
+			comAjax.setCallback('alarmCallback');
+			comAjax.ajax();
+		}
+	}
+	
+	function setData() {
+		$("#lblTitle").text(lblTitleAjax);
+		for( var i=0;i<lblDataListAjax.length;i++ ) {
+			$("#lblData"+i).text(lblDataListAjax[i].fValue);
+			$("#lblData"+i).attr('title',TagDccInfoListAjax[i].toolTip);
+		}
+		for( var j=0;i<lblH2Ajax.length;j++ ) {
+			$("#lblH2"+i).text(lblH2Ajax[i]['idx'+i]);
+			$("#lblO2"+i).text(lblO2Ajax[i]['idx'+i]);
+			$("#lblN2"+i).text(lblN2Ajax[i]['idx'+i]);
+			$("#lblD2"+i).text(lblD2Ajax[i]['idx'+i]);
+		}
+	}
+	/*
+	function setTimer2(num){
+		var uGrpName = $("#cboUGrpName option:selected").val();
+		reloadAjax(0);
+	}
 	
 	function reloadAjax(type) {
 		var comAjax = new ComAjax("reloadForm");
 		comAjax.setUrl("/dcc/alarm/runtimerGC");
-		comAjax.addParam("hogiHeader", hogiHeader);
-		comAjax.addParam("xyHeader", xyHeader);
 		comAjax.setCallback("mbr_RuntimerGCCallback");
 		if( type == 0 ) {
 			comAjax.ajax();
 		}
 	}
+	*/
 </script>
 
 </head>
@@ -92,7 +109,7 @@
 		<div class="contents">
 			<!-- page_title -->
 			<div class="page_title">
-				<h3><a href="#none" onclick="javascript:reloadAjax(0)">가스크로마토그래프</a></h3>
+				<h3>가스크로마토그래프</h3>
 				<div class="bc"><span>DCC</span><span>Alarm</span><strong>가스크로마토그래프</strong></div>
 			</div>
 			<!-- //page_title -->
@@ -103,16 +120,16 @@
 						<div class="fx_srch_item">
 							<label class="dp_title">현재분석계통</label>
                             <div class="fx_form">
-                                <label id="lblTitle"><strong>${LblTitle}</strong></label>
+                                <label id="lblTitle" style="color:blue"><strong>${LblTitle}</strong></label>
                             </div>
 						</div>
 						<div class="fx_srch_item">
 							<label class="dp_title">기체농도</label>
                             <div id="gasSummary" class="fx_form">
-                                <label>[ 수소<strong>${DccTagList[0].Value}</strong>%] ,</label>
-                                <label>[ 수소<strong>${DccTagList[1].Value}</strong>%] ,</label>
-                                <label>[ 수소<strong>${DccTagList[2].Value}</strong>%] ,</label>
-                                <label>[ 수소<strong>${DccTagList[3].Value}</strong>%]</label>
+                                [ 수소<strong><label id="lblData0" title="${TagDccInfoList[0].toolTip}" style="margin-left:6px;color:blue">${lblDataList[0].fValue}</label></strong>%] ,
+                                [ 산소<strong><label id="lblData1" title="${TagDccInfoList[1].toolTip}" style="margin-left:6px;color:blue">${lblDataList[1].fValue}</label></strong>%] ,
+                                [ 질소<strong><label id="lblData2" title="${TagDccInfoList[2].toolTip}" style="margin-left:6px;color:blue">${lblDataList[2].fValue}</label></strong>%] ,
+                                [ 중수소<strong><label id="lblData3" title="${TagDccInfoList[3].toolTip}" style="margin-left:6px;color:blue">${lblDataList[3].fValue}</label></strong>%]
                             </div>
 						</div>
                     </div>
@@ -121,7 +138,13 @@
 			<!-- //fx_srch_wrap -->
             <!-- list_wrap -->
             <div class="list_wrap">
-            <form id="reloadForm"></form>
+            <form id="reloadForm">
+			<input type = "hidden" id="sUGrpNo" name="sUGrpNo" value="1">
+			<input type = "hidden" id="sMenuNo" name="sMenuNo" value = "12">
+			<input type = "hidden" id="sDive" name="sDive" value = "D">
+			<input type = "hidden" id="sHogi" name="sHogi" value="${UserInfo.hogi}">
+			<input type = "hidden" id="sXYGubun" name="sXYGubun" value="${UserInfo.xyGubun}">
+			</form>
 				<!-- list_head -->
 				<div class="list_head">
 					<h4>직전분석값</h4>

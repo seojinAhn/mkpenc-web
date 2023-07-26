@@ -70,6 +70,9 @@
 		,"${DccTagInfoList[60].toolTip}"
 	];
 	
+	var lblDataListAjax = {};
+	var DccTagInfoListAjax = {};
+	
 	var selectTag = [{name:"hogi",value:""},{name:"xyGubun",value:""},{name:"loopName",value:""},{name:"ioType",value:""}
 					,{name:"address",value:""},{name:"ioBit",value:""},{name:"descr",value:""}];
 	
@@ -101,7 +104,7 @@ function showTag(tagNo,iSeq) {
 		}
 	}
 	
-	function showTooltip(id) {
+	/*function showTooltip(id) {
 		var tooltipText;
 
 		tooltipText = tToolTipText[id*1];
@@ -110,7 +113,7 @@ function showTag(tagNo,iSeq) {
 			tooltipText = tooltipText.replace(":]","]");
 		}
 		$("#"+id).attr("title",tooltipText);
-	}
+	}*/
 	
 	function toCSV() {
 		var	comSubmit = new ComSubmit("reloadFrm");
@@ -119,45 +122,19 @@ function showTag(tagNo,iSeq) {
 	}
 
 	$(function(){
-		if( $("#hogiHeader4").attr("class") == 'current' && $("#hogiHeader4").attr("class") != 'undefined' && $("#hogiHeader4").attr("class") != '') {
-			hogiHeader = "4";
-		} else {
-			hogiHeader = "3";
-		}
-		
-		if( $("input:checkbox[id='xy']").is(":checked") ) {
-			xyHeader = "Y";
-		} else {
-			xyHeader = "X";
-		}
-		
-		var lblDateVal = '${BaseSearch.hogi}'+'${BaseSearch.xyGubun}'+' '+'${DccLogTrendInfoList[0].SCANTIME}';
-		$("#lblDate").text(lblDateVal);
-		
-		$(document.body).delegate('#hogiHeader3', 'click', function() {
-			setTimer('3',xyHeader,0);
-		});
-		$(document.body).delegate('#hogiHeader4', 'click', function() {
-			setTimer('4',xyHeader,0);
-		});
-		$(document.body).delegate('#xy', 'click', function() {
-			if( $("input:checkbox[id='xy']").is(":checked") ) {
-				xyHeader = "Y";
-			} else {
-				xyHeader = "X";
-			}
-			setTimer(hogiHeader,xyHeader,0);
-		});
+
+		$("#lblDate").text('${SearchTime}');
+		$("#lblDate").css('color','${ForeColor}');
 		
 		$(document.body).delegate('#dccStatusPHTPUMP label', 'dblclick', function() {
 			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
 			if( cId != null && cId != '' && cId != 'undefined' ) {
-				showTag(cId,tDccTagSeq[cId]);
+				//showTag(cId,tDccTagSeq[cId]);
 			}
 		});
 		$(document.body).delegate('#dccStatusPHTPUMP label', 'mouseover focus', function() {
 			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
-			showTooltip(cId);
+			//showTooltip(cId);
 		});
 		
 		$(document.body).delegate('#tagSearchTable tr', 'click', function() {
@@ -222,26 +199,63 @@ function showTag(tagNo,iSeq) {
 			tagSelect();
 		});
 		
-		setTimer(hogiHeader,xyHeader,5000);
+		setTimer(5000);
 	});
 	
-	function setTimer(hogiHeader,xyHeader,interval) {
+	function setTimer(interval) {
 		if( interval > 0 ) {
-			setTimeout(function() {
+			setTimeout(function run() {
 				if( timerOn ) {
-					var	comSubmit	=	new ComSubmit("reloadFrm");
-					comSubmit.setUrl("/dcc/status/phtpump");
-					comSubmit.addParam("hogiHeader",hogiHeader);
-					comSubmit.addParam("xyHeader",xyHeader);
-					comSubmit.submit();
+					//var	comSubmit	=	new ComSubmit("reloadFrm");
+					//comSubmit.setUrl("/dcc/status/phtpump");
+					//comSubmit.submit();
+					var comAjax = new ComAjax("reloadFrm");
+					comAjax.setUrl('/dcc/status/reloadPhtpump');
+					//comAjax.addParam("sHogi",hogiHeader);
+					//comAjax.addParam("sXYGubun",xyHeader);
+					comAjax.setCallback('statusCallback');
+					comAjax.ajax();
 				}
+				
+				setTimeout(run, interval);
 			},interval);
 		} else {
-			var	comSubmit	=	new ComSubmit("reloadFrm");
-			comSubmit.setUrl("/dcc/status/phtpump");
-			comSubmit.addParam("hogiHeader",hogiHeader);
-			comSubmit.addParam("xyHeader",xyHeader);
-			comSubmit.submit();
+			setTimeout(function run() {
+				if( timerOn ) {
+					//var	comSubmit	=	new ComSubmit("reloadFrm");
+					//comSubmit.setUrl("/dcc/status/phtpump");
+					//comSubmit.submit();
+					var comAjax = new ComAjax("reloadFrm");
+					comAjax.setUrl('/dcc/status/reloadPhtpump');
+					//comAjax.addParam("sHogi",hogiHeader);
+					//comAjax.addParam("sXYGubun",xyHeader);
+					comAjax.setCallback('statusCallback');
+					comAjax.ajax();
+				}
+				
+				setTimeout(run, 5000);
+			},5000);
+		}
+	}
+
+	function setDate(time,color) {
+		$("#lblDate").text(time);
+		$("#lblDate").css('color',color);
+	}
+
+	function setData() {
+		for( var i=0;i<lblDataListAjax.length;i++ ) {
+			if( i > 53 && i < 58 ) {
+				if( lblDataListAjax[i].fValue*1 == 0 ) {
+					$("#lblData"+i).text('OFF');
+				} else {
+					$("#lblData"+i).text('ON');
+				}
+			} else {
+				$("#lblData"+i).text(lblDataListAjax[i].fValue);
+			}
+			$("#lblUnit"+i).text(DccTagInfoListAjax[i].unit);
+			$("#lblData"+i).prop('title',DccTagInfoListAjax[i].toolTip);
 		}
 	}
 	
@@ -272,8 +286,6 @@ function showTag(tagNo,iSeq) {
 		}
 		
 		comSubmit.setUrl("/dcc/status/phtpumpSaveTag");
-		comSubmit.addParam("hogiHeader",hogiHeader);
-		comSubmit.addParam("xyHeader",xyHeader);
 		comSubmit.submit();
 	}
 	
@@ -368,7 +380,12 @@ function showTag(tagNo,iSeq) {
                 </div>
                 <!-- //마우스 우클릭 메뉴 -->
                 <!-- form_table -->
-                <form id="reloadFrm" style="display:none"></form>
+                <form id="reloadFrm" style="display:none">                
+	            <input type="hidden" id="gubun" name="gubun" value="${BaseSearch.gubun}">
+				<input type="hidden" id="menuNo" name="menuNo" value="${BaseSearch.menuNo}">
+				<input type="hidden" id="grpId" name="grpId" value="${BaseSearch.grpId}">
+				<input type="hidden" id="grpNo" name="grpNo" value="${BaseSearch.grpNo}">
+				</form>
                 <table id="dccStatusPHTPUMP" class="form_table">
                     <colgroup>
                         <col width="260px" />
@@ -389,114 +406,114 @@ function showTag(tagNo,iSeq) {
                     <tbody>
                         <tr>
                             <th>BREAKES/POWER</th>
-                            <td class="tr"><label id="54" class="full flex_end">${lblDataList[54].fValue}</label></td>
-                            <td class="tr"><label id="55" class="full flex_end">${lblDataList[55].fValue}</label></td>
-                            <td class="tr"><label id="56" class="full flex_end">${lblDataList[56].fValue}</label></td>
-                            <td class="tr"><label id="57" class="full flex_end">${lblDataList[57].fValue}</label></td>
+                            <td class="tr"><label id="lblData54" title="${DccTagInfoList[54].toolTip}" class="full flex_end"><c:if test="${lblDataList[54].fValue eq 1.00000}">ON</c:if></label></td>
+                            <td class="tr"><label id="lblData55" title="${DccTagInfoList[55].toolTip}" class="full flex_end"><c:if test="${lblDataList[55].fValue eq 1.00000}">ON</c:if></label></td>
+                            <td class="tr"><label id="lblData56" title="${DccTagInfoList[56].toolTip}" class="full flex_end"><c:if test="${lblDataList[56].fValue eq 1.00000}">ON</c:if></label></td>
+                            <td class="tr"><label id="lblData57" title="${DccTagInfoList[57].toolTip}" class="full flex_end"><c:if test="${lblDataList[57].fValue eq 1.00000}">ON</c:if></label></td>
                         </tr>
                         <tr>
                             <th>SPEED (RPM)</th>
-                            <td class="tr"><label id="0" class="full flex_end">${lblDataList[0].fValue}</label></td>
-                            <td class="tr"><label id="14" class="full flex_end">${lblDataList[14].fValue}</label></td>
-                            <td class="tr"><label id="28" class="full flex_end">${lblDataList[28].fValue}</label></td>
-                            <td class="tr"><label id="41" class="full flex_end">${lblDataList[41].fValue}</label></td>
+                            <td class="tr"><label id="lblData0" title="${DccTagInfoList[0].toolTip}" class="full flex_end">${lblDataList[0].fValue}</label></td>
+                            <td class="tr"><label id="lblData14" title="${DccTagInfoList[14].toolTip}" class="full flex_end">${lblDataList[14].fValue}</label></td>
+                            <td class="tr"><label id="lblData28" title="${DccTagInfoList[28].toolTip}" class="full flex_end">${lblDataList[28].fValue}</label></td>
+                            <td class="tr"><label id="lblData41" title="${DccTagInfoList[41].toolTip}" class="full flex_end">${lblDataList[41].fValue}</label></td>
                         </tr>
                         <tr>
                             <th colspan="5">BEARING (℃)</td>
                         </tr>
                         <tr>
                             <th>UP-THRUST</th>
-                            <td class="tr"><label id="2" class="full flex_end">${lblDataList[2].fValue}</label></td>
-                            <td class="tr"><label id="16" class="full flex_end">${lblDataList[16].fValue}</label></td>
-                            <td class="tr"><label id="30" class="full flex_end">${lblDataList[30].fValue}</label></td>
-                            <td class="tr"><label id="43" class="full flex_end">${lblDataList[43].fValue}</label></td>                         
+                            <td class="tr"><label id="lblData2" title="${DccTagInfoList[2].toolTip}" class="full flex_end">${lblDataList[2].fValue}</label></td>
+                            <td class="tr"><label id="lblData16" title="${DccTagInfoList[16].toolTip}" class="full flex_end">${lblDataList[16].fValue}</label></td>
+                            <td class="tr"><label id="lblData30" title="${DccTagInfoList[30].toolTip}" class="full flex_end">${lblDataList[30].fValue}</label></td>
+                            <td class="tr"><label id="lblData43" title="${DccTagInfoList[43].toolTip}" class="full flex_end">${lblDataList[43].fValue}</label></td>                         
                         </tr>
                         <tr>
                             <th>DOWN-THRUST</th>
-                            <td class="tr"><label id="1" class="full flex_end">${lblDataList[1].fValue}</label></td>
-                            <td class="tr"><label id="15" class="full flex_end">${lblDataList[15].fValue}</label></td>
-                            <td class="tr"><label id="29" class="full flex_end">${lblDataList[29].fValue}</label></td>
-                            <td class="tr"><label id="42" class="full flex_end">${DlblDataList[42].fValue}</label></td>                            
+                            <td class="tr"><label id="lblData1" title="${DccTagInfoList[1].toolTip}" class="full flex_end">${lblDataList[1].fValue}</label></td>
+                            <td class="tr"><label id="lblData15" title="${DccTagInfoList[15].toolTip}" class="full flex_end">${lblDataList[15].fValue}</label></td>
+                            <td class="tr"><label id="lblData29" title="${DccTagInfoList[29].toolTip}" class="full flex_end">${lblDataList[29].fValue}</label></td>
+                            <td class="tr"><label id="lblData42" title="${DccTagInfoList[42].toolTip}" class="full flex_end">${lblDataList[42].fValue}</label></td>                            
                         </tr>
                         <tr>
                             <th>UPPER GUIDE</th>
-                            <td class="tr"><label id="4" class="full flex_end">${lblDataList[4].fValue}</label></td>
-                            <td class="tr"><label id="18" class="full flex_end">${lblDataList[18].fValue}</label></td>
-                            <td class="tr"><label id="32" class="full flex_end">${lblDataList[32].fValue}</label></td>
-                            <td class="tr"><label id="45" class="full flex_end">${lblDataList[45].fValue}</label></td>                            
+                            <td class="tr"><label id="lblData4" title="${DccTagInfoList[4].toolTip}" class="full flex_end">${lblDataList[4].fValue}</label></td>
+                            <td class="tr"><label id="lblData18" title="${DccTagInfoList[18].toolTip}" class="full flex_end">${lblDataList[18].fValue}</label></td>
+                            <td class="tr"><label id="lblData32" title="${DccTagInfoList[32].toolTip}" class="full flex_end">${lblDataList[32].fValue}</label></td>
+                            <td class="tr"><label id="lblData45" title="${DccTagInfoList[45].toolTip}" class="full flex_end">${lblDataList[45].fValue}</label></td>                            
                         </tr>
                         <tr>
                             <th>LOWER GUIDE</th>
-                            <td class="tr"><label id="3" class="full flex_end">${lblDataList[3].fValue}</label></td>
-                            <td class="tr"><label id="17" class="full flex_end">${lblDataList[17].fValue}</label></td>
-                            <td class="tr"><label id="31" class="full flex_end">${lblDataList[31].fValue}</label></td>
-                            <td class="tr"><label id="44" class="full flex_end">${lblDataList[44].fValue}</label></td>
+                            <td class="tr"><label id="lblData3" title="${DccTagInfoList[3].toolTip}" class="full flex_end">${lblDataList[3].fValue}</label></td>
+                            <td class="tr"><label id="lblData17" title="${DccTagInfoList[17].toolTip}" class="full flex_end">${lblDataList[17].fValue}</label></td>
+                            <td class="tr"><label id="lblData31" title="${DccTagInfoList[31].toolTip}" class="full flex_end">${lblDataList[31].fValue}</label></td>
+                            <td class="tr"><label id="lblData44" title="${DccTagInfoList[44].toolTip}" class="full flex_end">${lblDataList[44].fValue}</label></td>
                         </tr>
                         <tr>
                             <th colspan="5">SEAL CAVITY</td>
                         </tr>                        
                         <tr>
                             <th>THIRD TEMP (℃)</th>
-                            <td class="tr"><label id="6" class="full flex_end">${lblDataList[6].fValue}</label></td>
-                            <td class="tr"><label id="20" class="full flex_end">${lblDataList[20].fValue}</label></td>
-                            <td class="tr"><label id="34" class="full flex_end">${lblDataList[34].fValue}</label></td>
-                            <td class="tr"><label id="47" class="full flex_end">${lblDataList[47].fValue}</label></td>
+                            <td class="tr"><label id="lblData6" title="${DccTagInfoList[6].toolTip}" class="full flex_end">${lblDataList[6].fValue}</label></td>
+                            <td class="tr"><label id="lblData20" title="${DccTagInfoList[20].toolTip}" class="full flex_end">${lblDataList[20].fValue}</label></td>
+                            <td class="tr"><label id="lblData34" title="${DccTagInfoList[34].toolTip}" class="full flex_end">${lblDataList[34].fValue}</label></td>
+                            <td class="tr"><label id="lblData47" title="${DccTagInfoList[47].toolTip}" class="full flex_end">${lblDataList[47].fValue}</label></td>
                         </tr>
                         <tr>
                             <th>FIRST TEMP (℃)</th>
-                            <td class="tr"><label id="5" class="full flex_end">${lblDataList[5].fValue}</label></td>
-                            <td class="tr"><label id="19" class="full flex_end">${lblDataList[19].fValue}</label></td>
-                            <td class="tr"><label id="33" class="full flex_end">${lblDataList[33].fValue}</label></td>
-                            <td class="tr"><label id="46" class="full flex_end">${lblDataList[46].fValue}</label></td>
+                            <td class="tr"><label id="lblData5" title="${DccTagInfoList[5].toolTip}" class="full flex_end">${lblDataList[5].fValue}</label></td>
+                            <td class="tr"><label id="lblData19" title="${DccTagInfoList[19].toolTip}" class="full flex_end">${lblDataList[19].fValue}</label></td>
+                            <td class="tr"><label id="lblData33" title="${DccTagInfoList[33].toolTip}" class="full flex_end">${lblDataList[33].fValue}</label></td>
+                            <td class="tr"><label id="lblData46" title="${DccTagInfoList[46].toolTip}" class="full flex_end">${lblDataList[46].fValue}</label></td>
                         </tr>
                         <tr>
                             <th>THIRD PRESS (MPEG)</th>
-                            <td class="tr"><label id="7" class="full flex_end">${lblDataList[7].fValue}</label></td>
-                            <td class="tr"><label id="21" class="full flex_end">${lblDataList[21].fValue}</label></td>
-                            <td class="tr"><label id="35" class="full flex_end">${lblDataList[35].fValue}</label></td>
-                            <td class="tr"><label id="48" class="full flex_end">${lblDataList[48].fValue}</label></td>
+                            <td class="tr"><label id="lblData7" title="${DccTagInfoList[7].toolTip}" class="full flex_end">${lblDataList[7].fValue}</label></td>
+                            <td class="tr"><label id="lblData21" title="${DccTagInfoList[21].toolTip}" class="full flex_end">${lblDataList[21].fValue}</label></td>
+                            <td class="tr"><label id="lblData35" title="${DccTagInfoList[35].toolTip}" class="full flex_end">${lblDataList[35].fValue}</label></td>
+                            <td class="tr"><label id="lblData48" title="${DccTagInfoList[48].toolTip}" class="full flex_end">${lblDataList[48].fValue}</label></td>
                         </tr>
                         <tr>
                             <th>SECOND PRESS (MPEG)</th>
-                            <td class="tr"><label id="8" class="full flex_end">${lblDataList[8].fValue}</label></td>
-                            <td class="tr"><label id="22" class="full flex_end">${lblDataList[22].fValue}</label></td>
-                            <td class="tr"><label id="36" class="full flex_end">${lblDataList[36].fValue}</label></td>
-                            <td class="tr"><label id="49" class="full flex_end">${lblDataList[49].fValue}</label></td>
+                            <td class="tr"><label id="lblData8" title="${DccTagInfoList[8].toolTip}" class="full flex_end">${lblDataList[8].fValue}</label></td>
+                            <td class="tr"><label id="lblData22" title="${DccTagInfoList[22].toolTip}" class="full flex_end">${lblDataList[22].fValue}</label></td>
+                            <td class="tr"><label id="lblData36" title="${DccTagInfoList[36].toolTip}" class="full flex_end">${lblDataList[36].fValue}</label></td>
+                            <td class="tr"><label id="lblData49" title="${DccTagInfoList[49].toolTip}" class="full flex_end">${lblDataList[49].fValue}</label></td>
                         </tr>
                         <tr>
                             <th>INJECT PRESS (MPEG)</th>
-                            <td class="tr"><label id="9" class="full flex_end">${lblDataList[9].fValue}</label></td>
-                            <td class="tr"><label id="23" class="full flex_end">${lblDataList[23].fValue}</label></td>
-                            <td class="tr"><label id="37" class="full flex_end">${lblDataList[37].fValue}</label></td>
-                            <td class="tr"><label id="50" class="full flex_end">${lblDataList[50].fValue}</label></td>
+                            <td class="tr"><label id="lblData9" title="${DccTagInfoList[9].toolTip}" class="full flex_end">${lblDataList[9].fValue}</label></td>
+                            <td class="tr"><label id="lblData23" title="${DccTagInfoList[23].toolTip}" class="full flex_end">${lblDataList[23].fValue}</label></td>
+                            <td class="tr"><label id="lblData37" title="${DccTagInfoList[37].toolTip}" class="full flex_end">${lblDataList[37].fValue}</label></td>
+                            <td class="tr"><label id="lblData50 title="${DccTagInfoList[50].toolTip}" class="full flex_end">${lblDataList[50].fValue}</label></td>
                         </tr>
                         <tr>
                             <th>SEAL FLOW (L/S)</th>
-                            <td class="tr"><label id="10" class="full flex_end">${lblDataList[10].fValue}</label></td>
-                            <td class="tr"><label id="24" class="full flex_end">${lblDataList[24].fValue}</label></td>
-                            <td class="tr"><label id="38" class="full flex_end">${lblDataList[38].fValue}</label></td>
-                            <td class="tr"><label id="51" class="full flex_end">${lblDataList[51].fValue}</label></td>
+                            <td class="tr"><label id="lblData10" title="${DccTagInfoList[10].toolTip}" class="full flex_end">${lblDataList[10].fValue}</label></td>
+                            <td class="tr"><label id="lblData24" title="${DccTagInfoList[24].toolTip}" class="full flex_end">${lblDataList[24].fValue}</label></td>
+                            <td class="tr"><label id="lblData38" title="${DccTagInfoList[38].toolTip}" class="full flex_end">${lblDataList[38].fValue}</label></td>
+                            <td class="tr"><label id="lblData51" title="${DccTagInfoList[51].toolTip}" class="full flex_end">${lblDataList[51].fValue}</label></td>
                         </tr>
                         <tr>
                             <th>VIBRATION (MM/SEC)</th>
-                            <td class="tr"><label id="11" class="full flex_end">${lblDataList[11].fValue}</label></td>
-                            <td class="tr"><label id="25" class="full flex_end">${lblDataList[25].fValue}</label></td>
-                            <td class="tr"><label id="39" class="full flex_end">${lblDataList[39].fValue}</label></td>
-                            <td class="tr"><label id="52" class="full flex_end">${lblDataList[52].fValue}</label></td>
+                            <td class="tr"><label id="lblData11" title="${DccTagInfoList[11].toolTip}" class="full flex_end">${lblDataList[11].fValue}</label></td>
+                            <td class="tr"><label id="lblData25" title="${DccTagInfoList[25].toolTip}" class="full flex_end">${lblDataList[25].fValue}</label></td>
+                            <td class="tr"><label id="lblData39" title="${DccTagInfoList[39].toolTip}" class="full flex_end">${lblDataList[39].fValue}</label></td>
+                            <td class="tr"><label id="lblData52" title="${DccTagInfoList[52].toolTip}" class="full flex_end">${lblDataList[52].fValue}</label></td>
                         </tr>
                         <tr>
                             <th>SHAFT RUNOT (MM)</th>
-                            <td class="tr"><label id="12" class="full flex_end">${lblDataList[12].fValue}</label></td>
-                            <td class="tr"><label id="26" class="full flex_end">${lblDataList[26].fValue}</label></td>
-                            <td class="tr"><label id="40" class="full flex_end">${lblDataList[40].fValue}</label></td>
-                            <td class="tr"><label id="53" class="full flex_end">${lblDataList[53].fValue}</label></td>
+                            <td class="tr"><label id="lblData12" title="${DccTagInfoList[12].toolTip}" class="full flex_end">${lblDataList[12].fValue}</label></td>
+                            <td class="tr"><label id="lblData26" title="${DccTagInfoList[26].toolTip}" class="full flex_end">${lblDataList[26].fValue}</label></td>
+                            <td class="tr"><label id="lblData40" title="${DccTagInfoList[40].toolTip}" class="full flex_end">${lblDataList[40].fValue}</label></td>
+                            <td class="tr"><label id="lblData53" title="${DccTagInfoList[53].toolTip}" class="full flex_end">${lblDataList[53].fValue}</label></td>
                         </tr>
                         <tr>
                             <th>MAIN FLOW (KG/S)</th>
-                            <td class="tr"><label id="13" class="full flex_end">${lblDataList[13].fValue}</label></td>
-                            <td class="tr"><label id="27" class="full flex_end">${lblDataList[27].fValue}</label></td>
-                            <td class="tr"><label id="58" class="full flex_end">${lblDataList[58].fValue}</label></td>
-                            <td class="tr"><label id="59" class="full flex_end">${lblDataList[59].fValue}</label></td>
+                            <td class="tr"><label id="lblData13" title="${DccTagInfoList[13].toolTip}" class="full flex_end">${lblDataList[13].fValue}</label></td>
+                            <td class="tr"><label id="lblData27" title="${DccTagInfoList[27].toolTip}" class="full flex_end">${lblDataList[27].fValue}</label></td>
+                            <td class="tr"><label id="lblData58" title="${DccTagInfoList[58].toolTip}" class="full flex_end">${lblDataList[58].fValue}</label></td>
+                            <td class="tr"><label id="lblData59" title="${DccTagInfoList[59].toolTip}" class="full flex_end">${lblDataList[59].fValue}</label></td>
                         </tr>
                     </tbody>
                 </table>

@@ -224,6 +224,7 @@
                    (SELECT LOOPNAME, TBLNO, FLDNO, IOBIT, EHIGH, ELOW, ADDRESS, DESCR, UNIT, BSCAL, WIBA FROM MST_TAG_DCC
                     WHERE IHOGI = #{hogi} AND XYGUBUN = 'Y' AND IOTYPE = 'DI' AND (CONVERT(INT, ADDRESS) <![CDATA[>=]]>40 AND CONVERT(INT, ADDRESS) <![CDATA[<=]]> 77)) b
               WHERE a.ADDRESS = b.ADDRESS AND a.IOBIT = b.IOBIT
+              ORDER BY a.ADDRESS, b.IOBIT
 
     </select>      
     

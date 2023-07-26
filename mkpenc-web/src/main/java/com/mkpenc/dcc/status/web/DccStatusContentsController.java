@@ -41,6 +41,8 @@ public class DccStatusContentsController {
 	
 	private static Logger logger = LoggerFactory.getLogger(DccStatusContentsController.class);
 	
+	public String[] gFormat = new String[]{ "%.5f",     "%.4f",     "%.4f",     "%.4f",     "%.3f",     "%.3f",     "%.3f",     "%.2f",     "%.2f",     "%.2f",     "%.2f",     "%.1f",     "%.1f",     "%.1f",     "%.1f",     "%.0f"};
+		
 	private String menuName = "STATUS";
 	
 	@Autowired
@@ -55,6 +57,7 @@ public class DccStatusContentsController {
 	//reactive coordx, coord&
 	double[] gCoordX = new double[27];
 	double[] gCoordY = new double[27];
+	int nCntVisible = 1;
 	List<Map> glblXYList = new ArrayList<Map>();
 	
 	private ModelAndView tagSearch(ModelAndView mav, DccSearchStatus dccSearchStatus, HttpServletRequest request) {
@@ -90,6 +93,10 @@ public class DccStatusContentsController {
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
         		dccSearchStatus.setMenuNo("11");
@@ -97,16 +104,18 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("1");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");  	        		        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()== null?  "": dccSearchStatus.getXyGubun());
         	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()== null?  "": dccSearchStatus.getHogi());
         	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
-    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGrpId()== null?  "": dccSearchStatus.getGrpId());
     		dccGrpTagSearchMap.put("menuNo", dccSearchStatus.getMenuNo()== null?  "": dccSearchStatus.getMenuNo());
     		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()== null?  "": dccSearchStatus.getGrpNo());
     		
@@ -118,10 +127,65 @@ public class DccStatusContentsController {
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
         	mav.addObject("lblDataList", dccVal.get("lblDataList"));
         	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
         }
 
         return mav;
-    }	
+    }
+	
+	@RequestMapping(value="reloadSchematic", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadSchematic(DccSearchStatus dccSearchStatus, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadSchematic");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
+            	
+        		dccSearchStatus.setMenuNo("11");
+        		dccSearchStatus.setGrpId("mimic");
+	        	dccSearchStatus.setGrpNo("1");
+	        	dccSearchStatus.setGubun("D");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");  	        		        	
+        	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()== null?  "": dccSearchStatus.getXyGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()== null?  "": dccSearchStatus.getHogi());
+        	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGrpId()== null?  "": dccSearchStatus.getGrpId());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchStatus.getMenuNo()== null?  "": dccSearchStatus.getMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()== null?  "": dccSearchStatus.getGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        }
+
+        return mav;
+    }
 	
 	@RequestMapping("schematicExcelExport")
 	public void schematicExcelExport(HttpServletRequest request, HttpServletResponse response, DccSearchStatus dccSearchStatus) throws Exception {
@@ -131,6 +195,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {    
     		
     		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -139,10 +205,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("1");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X"); 
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -178,6 +246,8 @@ public class DccStatusContentsController {
         	
         	dccSearchStatus.setiSeq(seqs[0]);
         	dccSearchStatus.setySeq(seqs[1]);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
 
@@ -186,10 +256,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("1");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X"); 
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	res = dccStatusService.updateTagInfo(dccSearchStatus);
         	
@@ -244,6 +316,8 @@ public class DccStatusContentsController {
     	if(request.getSession().getAttribute("USER_INFO") != null) {    
     		
     		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
 
@@ -252,10 +326,64 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("2");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");   
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()==null?  "": dccSearchStatus.getHogi());
+        	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGrpId()==null?  "": dccSearchStatus.getGrpId());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchStatus.getMenuNo()==null?  "": dccSearchStatus.getMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()==null?  "": dccSearchStatus.getGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));    		
+        }
+    	
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadRrs", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadRrs(DccSearchStatus dccSearchStatus, HttpServletRequest request, HttpServletResponse response) {
+      
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadRrs");
+        
+    	if(request.getSession().getAttribute("USER_INFO") != null) {    
+    		
+    		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+
+        	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
+
+        		dccSearchStatus.setMenuNo("11");
+        		dccSearchStatus.setGrpId("mimic");
+	        	dccSearchStatus.setGrpNo("2");
+	        	dccSearchStatus.setGubun("D");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");   
+        	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -289,6 +417,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {    
     		
     		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -297,10 +427,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("2");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
-        	}
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    	        	
+        	}        	
+
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -336,6 +468,8 @@ public class DccStatusContentsController {
         	
         	dccSearchStatus.setiSeq(seqs[0]);
         	dccSearchStatus.setySeq(seqs[1]);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
 
@@ -344,10 +478,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("2");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");  
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	res = dccStatusService.updateTagInfo(dccSearchStatus);
         	
@@ -401,6 +537,10 @@ public class DccStatusContentsController {
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
         		dccSearchStatus.setMenuNo("11");
@@ -408,10 +548,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("3");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    	        	        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -436,7 +578,60 @@ public class DccStatusContentsController {
         }
 
         return mav;
-    }	
+    }
+	
+	@RequestMapping(value="reloadHtc", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadHtc(DccSearchStatus dccSearchStatus, HttpServletRequest request, HttpServletResponse response) {
+		
+        ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadHtc");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
+            	
+        		dccSearchStatus.setMenuNo("11");
+        		dccSearchStatus.setGrpId("mimic");
+	        	dccSearchStatus.setGrpNo("3");
+	        	dccSearchStatus.setGubun("D");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    	        	        	
+        	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()==null?  "": dccSearchStatus.getHogi());
+        	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGrpId()==null?  "": dccSearchStatus.getGrpId());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchStatus.getMenuNo()==null?  "": dccSearchStatus.getMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()==null?  "": dccSearchStatus.getGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+
+        }
+
+        return mav;
+    }
 	
 	@RequestMapping("htcExcelExport")
 	public void htcExcelExport(HttpServletRequest request, HttpServletResponse response, DccSearchStatus dccSearchStatus) throws Exception {
@@ -446,6 +641,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {    
     		
     		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -454,10 +651,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("3");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");   
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -484,13 +683,17 @@ public class DccStatusContentsController {
         int res = 0;
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
         	dccSearchStatus.setMenuName(this.menuName);
+        	
         	String seqStr = dccStatusService.selectSeqInfo(dccSearchStatus);
-        	System.out.println(seqStr);
+        	
         	String[] seqs = seqStr == null ? "_".split("_") : seqStr.split("_");
         	
         	dccSearchStatus.setiSeq(seqs[0]);
         	dccSearchStatus.setySeq(seqs[1]);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -499,10 +702,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("3");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X"); 
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	res = dccStatusService.updateTagInfo(dccSearchStatus);
         	
@@ -555,7 +760,11 @@ public class DccStatusContentsController {
 
         logger.info("############ mtc");
         
-    	if(request.getSession().getAttribute("USER_INFO") != null) {    		
+    	if(request.getSession().getAttribute("USER_INFO") != null) {   
+    		
+    		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -564,10 +773,64 @@ public class DccStatusContentsController {
         		dccSearchStatus.setGrpId("mimic");
 	        	dccSearchStatus.setGrpNo("4");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    	        		        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()==null?  "": dccSearchStatus.getHogi());
+        	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGrpId()==null?  "": dccSearchStatus.getGrpId());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchStatus.getMenuNo()==null?  "": dccSearchStatus.getMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()==null?  "": dccSearchStatus.getGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+    	}
+
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadMtc", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadMtc(DccSearchStatus dccSearchStatus, HttpServletRequest request, HttpServletResponse response) {
+		
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadMtc");
+        
+    	if(request.getSession().getAttribute("USER_INFO") != null) {   
+    		
+    		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+
+        	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
+            	
+        		dccSearchStatus.setGubun("D");
+        		dccSearchStatus.setMenuNo("11");
+        		dccSearchStatus.setGrpId("mimic");
+	        	dccSearchStatus.setGrpNo("4");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    	        		        	
+        	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -601,6 +864,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {    
     		
     		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -609,10 +874,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("4");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    	        		        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -638,13 +905,17 @@ public class DccStatusContentsController {
         int res = 0;
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
         	dccSearchStatus.setMenuName(this.menuName);
+        	
         	String seqStr = dccStatusService.selectSeqInfo(dccSearchStatus);
-        	System.out.println(seqStr);
+        	
         	String[] seqs = seqStr == null ? "_".split("_") : seqStr.split("_");
         	
         	dccSearchStatus.setiSeq(seqs[0]);
         	dccSearchStatus.setySeq(seqs[1]);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
         	
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -653,10 +924,12 @@ public class DccStatusContentsController {
         		dccSearchStatus.setGrpId("mimic");
 	        	dccSearchStatus.setGrpNo("4");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X"); 	        		        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	res = dccStatusService.updateTagInfo(dccSearchStatus);
         	
@@ -712,6 +985,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {
 			
 			dccSearchStatus.setMenuName(this.menuName);
+			
+			MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -720,10 +995,12 @@ public class DccStatusContentsController {
         		dccSearchStatus.setGrpId("mimic");
 	        	dccSearchStatus.setGrpNo("5");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");  	        		        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -747,7 +1024,59 @@ public class DccStatusContentsController {
         }
 
         return mav;
-    }	
+    }
+	
+	@RequestMapping(value = "reloadSgp", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadSgp(DccSearchStatus dccSearchStatus, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+		logger.info("############ reloadSgp");
+		
+		if(request.getSession().getAttribute("USER_INFO") != null) {
+			
+			dccSearchStatus.setMenuName(this.menuName);
+			
+			MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+
+        	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
+            	
+        		dccSearchStatus.setGubun("D");
+        		dccSearchStatus.setMenuNo("11");
+        		dccSearchStatus.setGrpId("mimic");
+	        	dccSearchStatus.setGrpNo("5");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");  	        		        	
+        	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()==null?  "": dccSearchStatus.getHogi());
+        	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGrpId()==null?  "": dccSearchStatus.getGrpId());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchStatus.getMenuNo()==null?  "": dccSearchStatus.getMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()==null?  "": dccSearchStatus.getGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        }
+
+        return mav;
+    }
 	
 	@RequestMapping("sgpExcelExport")
 	public void sgpExcelExport(HttpServletRequest request, HttpServletResponse response, DccSearchStatus dccSearchStatus) throws Exception {
@@ -757,6 +1086,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {    
     		
     		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -765,10 +1096,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("5");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");  
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -801,6 +1134,8 @@ public class DccStatusContentsController {
         	
         	dccSearchStatus.setiSeq(seqs[0]);
         	dccSearchStatus.setySeq(seqs[1]);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -809,10 +1144,13 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("5");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    
+	        		        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	res = dccStatusService.updateTagInfo(dccSearchStatus);
         	
@@ -868,6 +1206,8 @@ public class DccStatusContentsController {
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -876,10 +1216,66 @@ public class DccStatusContentsController {
         		dccSearchStatus.setGrpId("mimic");
 	        	dccSearchStatus.setGrpNo("6");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    
+	        		        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()==null?  "": dccSearchStatus.getHogi());
+        	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGrpId()==null?  "": dccSearchStatus.getGrpId());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchStatus.getMenuNo()==null?  "": dccSearchStatus.getMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()==null?  "": dccSearchStatus.getGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        }
+
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadSgl", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadSql(DccSearchStatus dccSearchStatus, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadSgl");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+
+        	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
+            	
+        		dccSearchStatus.setGubun("D");
+        		dccSearchStatus.setMenuNo("11");
+        		dccSearchStatus.setGrpId("mimic");
+	        	dccSearchStatus.setGrpNo("6");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");
+	        		        	
+        	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -913,6 +1309,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {    
     		
     		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -921,10 +1319,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("6");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X"); 	        		        	
         	}
+
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -958,6 +1358,8 @@ public class DccStatusContentsController {
         	
         	dccSearchStatus.setiSeq(seqs[0]);
         	dccSearchStatus.setySeq(seqs[1]);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -966,10 +1368,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("6");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    	        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	res = dccStatusService.updateTagInfo(dccSearchStatus);
         	
@@ -1024,6 +1428,8 @@ public class DccStatusContentsController {
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -1032,10 +1438,66 @@ public class DccStatusContentsController {
         		dccSearchStatus.setGrpId("mimic");
 	        	dccSearchStatus.setGrpNo("7");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    
+	        	        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()==null?  "": dccSearchStatus.getHogi());
+        	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGrpId()==null?  "": dccSearchStatus.getGrpId());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchStatus.getMenuNo()==null?  "": dccSearchStatus.getMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()==null?  "": dccSearchStatus.getGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        }
+
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadPhtpump", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadPhtpump(DccSearchStatus dccSearchStatus, HttpServletRequest request, HttpServletResponse response) {
+       
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadPhtpump");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+
+        	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
+            	
+        		dccSearchStatus.setGubun("D");
+        		dccSearchStatus.setMenuNo("11");
+        		dccSearchStatus.setGrpId("mimic");
+	        	dccSearchStatus.setGrpNo("7");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    
+	        	        	
+        	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -1069,6 +1531,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {    
     		
     		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -1077,10 +1541,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("7");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
-        	}
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");         	
+        	}           	
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -1106,13 +1572,17 @@ public class DccStatusContentsController {
         int res = 0;
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
         	dccSearchStatus.setMenuName(this.menuName);
+        	
         	String seqStr = dccStatusService.selectSeqInfo(dccSearchStatus);
-        	System.out.println(seqStr);
+
         	String[] seqs = seqStr == null ? "_".split("_") : seqStr.split("_");
         	
         	dccSearchStatus.setiSeq(seqs[0]);
         	dccSearchStatus.setySeq(seqs[1]);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -1120,11 +1590,14 @@ public class DccStatusContentsController {
         		dccSearchStatus.setGrpId("mimic");
 	        	dccSearchStatus.setGrpNo("7");
 	        	dccSearchStatus.setGubun("D");
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    
+	        	        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	
         	
         	res = dccStatusService.updateTagInfo(dccSearchStatus);
         	
@@ -1179,6 +1652,8 @@ public class DccStatusContentsController {
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -1187,10 +1662,64 @@ public class DccStatusContentsController {
         		dccSearchStatus.setGrpId("mimic");
 	        	dccSearchStatus.setGrpNo("8");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X"); 	        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()==null?  "": dccSearchStatus.getHogi());
+        	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGrpId()==null?  "": dccSearchStatus.getGrpId());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchStatus.getMenuNo()==null?  "": dccSearchStatus.getMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()==null?  "": dccSearchStatus.getGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        }
+
+        return mav;
+    }
+	
+	@RequestMapping(value = "reloadZv", method = {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadZv(DccSearchStatus dccSearchStatus, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadZv");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+
+        	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
+            	
+        		dccSearchStatus.setGubun("D");
+        		dccSearchStatus.setMenuNo("11");
+        		dccSearchStatus.setGrpId("mimic");
+	        	dccSearchStatus.setGrpNo("8");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X"); 	        	
+        	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -1224,6 +1753,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {    
     		
     		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -1232,10 +1763,13 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("8");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    
+	        	        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -1249,7 +1783,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
     		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "zonevalues");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "zv");
 		}
 	}
 	
@@ -1261,13 +1795,17 @@ public class DccStatusContentsController {
         int res = 0;
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
         	dccSearchStatus.setMenuName(this.menuName);
+        	
         	String seqStr = dccStatusService.selectSeqInfo(dccSearchStatus);
-        	System.out.println(seqStr);
+
         	String[] seqs = seqStr == null ? "_".split("_") : seqStr.split("_");
         	
         	dccSearchStatus.setiSeq(seqs[0]);
         	dccSearchStatus.setySeq(seqs[1]);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -1276,10 +1814,13 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("8");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    
+	        		        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	
         	
         	res = dccStatusService.updateTagInfo(dccSearchStatus);
         	
@@ -1334,6 +1875,8 @@ public class DccStatusContentsController {
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -1342,10 +1885,64 @@ public class DccStatusContentsController {
         		dccSearchStatus.setGrpId("mimic");
 	        	dccSearchStatus.setGrpNo("9");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X"); 	        		        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()==null?  "": dccSearchStatus.getHogi());
+        	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGrpId()==null?  "": dccSearchStatus.getGrpId());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchStatus.getMenuNo()==null?  "": dccSearchStatus.getMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()==null?  "": dccSearchStatus.getGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        }
+
+        return mav;
+    }
+	
+	@RequestMapping(value = "reloadZd", method = {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadZd(DccSearchStatus dccSearchStatus, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadZd");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+
+        	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
+            	
+        		dccSearchStatus.setGubun("D");
+        		dccSearchStatus.setMenuNo("11");
+        		dccSearchStatus.setGrpId("mimic");
+	        	dccSearchStatus.setGrpNo("9");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X"); 	        		        	
+        	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -1379,6 +1976,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {    
     		
     		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -1387,10 +1986,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("9");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");  
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -1404,7 +2005,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
     		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "zonediviations");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "zd");
 		}
 	}
 	
@@ -1423,6 +2024,8 @@ public class DccStatusContentsController {
         	
         	dccSearchStatus.setiSeq(seqs[0]);
         	dccSearchStatus.setySeq(seqs[1]);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -1431,10 +2034,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("9");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X"); 	        		        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	res = dccStatusService.updateTagInfo(dccSearchStatus);
         	
@@ -1489,18 +2094,24 @@ public class DccStatusContentsController {
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
         		dccSearchStatus.setGubun("D");
         		dccSearchStatus.setMenuNo("11");
         		dccSearchStatus.setGrpId("mimic");
-	        	dccSearchStatus.setGrpNo("10"); // not find page
+	        	dccSearchStatus.setGrpNo("15"); // not find page
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    
+	        		        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
+    		dccSearchStatus.setStartDate(dccSearchStatus.getStartDate()==null?  "": dccSearchStatus.getStartDate());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -1526,6 +2137,110 @@ public class DccStatusContentsController {
         return mav;
     }
 	
+	@RequestMapping(value="reloadZc", method={ RequestMethod.POST })
+	@ResponseBody
+	public ModelAndView reloadZc(DccSearchStatus dccSearchStatus, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadZc");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+
+        	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
+            	
+        		dccSearchStatus.setGubun("D");
+        		dccSearchStatus.setMenuNo("11");
+        		dccSearchStatus.setGrpId("mimic");
+	        	dccSearchStatus.setGrpNo("15"); // not find page
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    
+	        		        	
+        	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
+        	String startDate = dccSearchStatus.getStartDate() == null ? "": dccSearchStatus.getStartDate();
+        	if( startDate.indexOf(",") > -1 ) startDate = startDate.substring(0,startDate.indexOf(","));
+        	String strType = dccSearchStatus.getSearchStr().indexOf("1") > -1 ? "1" : "0";
+    		dccSearchStatus.setStartDate(startDate);
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()==null?  "": dccSearchStatus.getHogi());
+        	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGrpId()==null?  "": dccSearchStatus.getGrpId());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchStatus.getMenuNo()==null?  "": dccSearchStatus.getMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()==null?  "": dccSearchStatus.getGrpNo());
+    		dccGrpTagSearchMap.put("startDate", dccSearchStatus.getStartDate()==null?  "": dccSearchStatus.getStartDate());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = new HashMap();
+    		if( "0".equals(strType) ) {
+    			dccVal = basDccOsmsService.getDccValueSearch(dccGrpTagSearchMap, tagDccInfoList);
+    		} else {
+    			dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		}
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        }
+
+        return mav;
+    }
+	
+	@RequestMapping("zcExcelExport")
+	public void zcExcelExport(HttpServletRequest request, HttpServletResponse response, DccSearchStatus dccSearchStatus) throws Exception {		
+
+		logger.info("############ zcExcelExport");
+		
+		if(request.getSession().getAttribute("USER_INFO") != null) {    
+    		
+    		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+
+        	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
+            	
+        		dccSearchStatus.setMenuNo("11");
+        		dccSearchStatus.setGrpId("mimic");
+	        	dccSearchStatus.setGrpNo("15");
+	        	dccSearchStatus.setGubun("D");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");  
+        	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()==null?  "": dccSearchStatus.getHogi());
+        	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGrpId()==null?  "": dccSearchStatus.getGrpId());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchStatus.getMenuNo()==null?  "": dccSearchStatus.getMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()==null?  "": dccSearchStatus.getGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
+    		
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "zc");
+		}
+	}
+	
 	@RequestMapping("adjrod")
 	public ModelAndView adjrod(DccSearchStatus dccSearchStatus, HttpServletRequest request) {
         
@@ -1536,6 +2251,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -1544,10 +2261,66 @@ public class DccStatusContentsController {
         		dccSearchStatus.setGrpId("mimic");
 	        	dccSearchStatus.setGrpNo("10");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    
+	        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()==null?  "": dccSearchStatus.getHogi());
+        	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGrpId()==null?  "": dccSearchStatus.getGrpId());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchStatus.getMenuNo()==null?  "": dccSearchStatus.getMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()==null?  "": dccSearchStatus.getGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        }
+
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadAdjrod", method={ RequestMethod.POST })
+	@ResponseBody
+	public ModelAndView reloadAdjrod(DccSearchStatus dccSearchStatus, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+		logger.info("############ reloadAdjrod");
+		
+		if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+
+        	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
+            	
+        		dccSearchStatus.setGubun("D");
+        		dccSearchStatus.setMenuNo("11");
+        		dccSearchStatus.setGrpId("mimic");
+	        	dccSearchStatus.setGrpNo("10");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    
+	        	
+        	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -1581,6 +2354,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {    
     		
     		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -1589,10 +2364,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("10");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");           	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -1606,7 +2383,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
     		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "adjrod");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "ar");
 		}
 	}
 	
@@ -1618,13 +2395,17 @@ public class DccStatusContentsController {
         int res = 0;
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
         	dccSearchStatus.setMenuName(this.menuName);
+       
         	String seqStr = dccStatusService.selectSeqInfo(dccSearchStatus);
-        	System.out.println(seqStr);
+
         	String[] seqs = seqStr == null ? "_".split("_") : seqStr.split("_");
         	
         	dccSearchStatus.setiSeq(seqs[0]);
         	dccSearchStatus.setySeq(seqs[1]);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -1633,10 +2414,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("10");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");  	        		        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	res = dccStatusService.updateTagInfo(dccSearchStatus);
         	
@@ -1691,6 +2474,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -1699,10 +2484,12 @@ public class DccStatusContentsController {
         		dccSearchStatus.setGrpId("mimic");
 	        	dccSearchStatus.setGrpNo("11");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");   	        		        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -1720,15 +2507,19 @@ public class DccStatusContentsController {
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
         	mav.addObject("lblDataList", lblDataList);
-        	mav.addObject("DccTagInfoList", tagDccInfoList);        	
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+    		glblXYList = new ArrayList<Map>();
+    		System.out.println(glblXYList.size());
+    		System.out.println(glblXYList); 
         	
         	//lblxy init
         	if(glblXYList.size() == 0) {
 	        	for(int i=0;i<27;i++) {
 	        		Map lblXY = new HashMap();
-	        		lblXY.put("Visiable", false);
+	        		lblXY.put("Visible", false);
 	        		lblXY.put("Left", 0);
-	        		lblXY.put("Right", 0);        		
+	        		lblXY.put("Top", 0);
 	        		
 	        		glblXYList.add(lblXY);
 	        	}
@@ -1739,24 +2530,53 @@ public class DccStatusContentsController {
         		fValue = Integer.parseInt(lblDataList.get(0).get("fValue").toString());        		
         	}
         	
-        	for(int i=gCoordX.length -1; i >=0;i-- ) {
-        		 gCoordX[i + 1] = gCoordX[i];
-        		 gCoordY[i + 1] = gCoordY[i];
+        	/*int gnTotalData = 26;
+        	for(int i=gnTotalData; i > 0;i-- ) {
+        		 gCoordX[i] = gCoordX[i-1];
+        		 gCoordY[i] = gCoordY[i-1];
+        	}*/
+        	int gnTotalData = 26;
+        	for(int i=gnTotalData-1; i > -1;i-- ) {
+        		 gCoordX[i+1] = gCoordX[i];
+        		 gCoordY[i+1] = gCoordY[i];
         	}
-        	
-        	if(StringUtils.isNumeric(lblDataList.get(0).get("fValue").toString())) {
-        		gCoordX[0]= Double.parseDouble(lblDataList.get(0).get("fValue").toString());        		
+
+        	//System.out.println(lblDataList.get(0).get("fValue").toString()+" >> "+StringUtils.isNumeric(lblDataList.get(0).get("fValue").toString()));
+        	//if(StringUtils.isNumeric(lblDataList.get(0).get("fValue").toString())) {
+        		//gCoordX[0]= Double.parseDouble(lblDataList.get(0).get("fValue").toString());
+        	try {
+        		gCoordX[0] = Double.parseDouble(String.format(gFormat[tagDccInfoList.get(0).getBScale()],(Math.pow(10, Double.parseDouble(lblDataList.get(0).get("fValue").toString()))-1)*100));
+        	} catch( NumberFormatException nfe ) {
+        		//
         	}
+        	//}
         	
-        	if(StringUtils.isNumeric(lblDataList.get(1).get("fValue").toString())) {
-        		gCoordX[1]= Double.parseDouble(lblDataList.get(0).get("fValue").toString());        		
+        	//System.out.println(lblDataList.get(1).get("fValue").toString()+" >> "+StringUtils.isNumeric(lblDataList.get(1).get("fValue").toString()));
+        	//if(StringUtils.isNumeric(lblDataList.get(1).get("fValue").toString())) {
+        	try {
+        		gCoordY[0]= Double.parseDouble(lblDataList.get(1).get("fValue").toString());
+        	} catch( NumberFormatException nfe) {
+        		//
         	}
-        	
-        	int nCntVisible = Integer.parseInt(dccSearchStatus.getnCntVisible().isEmpty()? "0":dccSearchStatus.getnCntVisible());
-        	
+        	//}
+
         	//movelebel
         	for(int i=0;i<nCntVisible;i++) {
+        		//System.out.println(gCoordX[i]+":"+gCoordY[i]);
+        		//long nLeft = (770/2) + Math.round(gCoordX[i]);
+        		long nLeft = Math.round(770 * (gCoordX[i] + 5) / 10);
         		
+        		if(nLeft < 0 ) nLeft = 0;
+        		if(nLeft > 770 ) nLeft = 770;
+    			
+    			//long nTop =  (390/2) +  Math.round(gCoordY[i]);
+        		long nTop =  390 - Math.round(390 * gCoordY[i] / 100);
+    			
+    			if(nTop < 0 ) nTop = 0;
+        		if(nTop > 390 ) nTop = 390;
+        		
+    			glblXYList.get(i).put("Left", nLeft);
+    			glblXYList.get(i).put("Top", nTop);
         		
         		/*
         	 	For i = 0 To nCnt
@@ -1770,20 +2590,173 @@ public class DccStatusContentsController {
 			        lblXY(i).Top = nTop - lblXY(i).Height / 2
 			    Next
         	 * */
-        	}
+        	} // end for
         	
         	if(nCntVisible < 27) {
-        		glblXYList.get(nCntVisible).put("Visible", true);
+        		glblXYList.get(nCntVisible-1).put("Visible", true);
         		nCntVisible = nCntVisible + 1;
+        	}else {
+        		nCntVisible = 1;
+        		
+        		for(int i=nCntVisible;i<27;i++) {
+        			glblXYList.get(nCntVisible-1).put("Visible", false);
+        		}        		
         	}
         	
+        	mav.addObject("lblXYList", glblXYList);   
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        }
+
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadReact", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadReact(DccSearchStatus dccSearchStatus, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+		logger.info("############ reloadReact");
+		
+		if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+
+        	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
+            	
+        		dccSearchStatus.setGubun("D");
+        		dccSearchStatus.setMenuNo("11");
+        		dccSearchStatus.setGrpId("mimic");
+	        	dccSearchStatus.setGrpNo("11");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");   	        		        	
+        	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()==null?  "": dccSearchStatus.getHogi());
+        	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGrpId()==null?  "": dccSearchStatus.getGrpId());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchStatus.getMenuNo()==null?  "": dccSearchStatus.getMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()==null?  "": dccSearchStatus.getGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		List<Map> lblDataList = (ArrayList)dccVal.get("lblDataList");
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", lblDataList);
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+    		glblXYList = new ArrayList<Map>();
+        	
+        	//lblxy init
+        	if(glblXYList.size() == 0) {
+	        	for(int i=0;i<27;i++) {
+	        		Map lblXY = new HashMap();
+	        		lblXY.put("Visible", false);
+	        		lblXY.put("Left", 0);
+	        		lblXY.put("Top", 0);        		
+	        		
+	        		glblXYList.add(lblXY);
+	        	}
+        	}
+        	
+        	int fValue = 0;
+        	if(StringUtils.isNumeric(lblDataList.get(0).get("fValue").toString())) {
+        		fValue = Integer.parseInt(lblDataList.get(0).get("fValue").toString());        		
+        	}
+        	
+        	/*int gnTotalData = 26;
+        	for(int i=gnTotalData; i > 0;i-- ) {
+        		 gCoordX[i] = gCoordX[i-1];
+        		 gCoordY[i] = gCoordY[i-1];
+        	}*/
+        	int gnTotalData = 26; 
+        	for(int i=gnTotalData-1; i > -1;i-- ) {
+        		 gCoordX[i+1] = gCoordX[i];
+        		 gCoordY[i+1] = gCoordY[i];
+        	}
+
+        	//System.out.println(lblDataList.get(0).get("fValue").toString()+" >> "+StringUtils.isNumeric(lblDataList.get(0).get("fValue").toString()));
+        	//if(StringUtils.isNumeric(lblDataList.get(0).get("fValue").toString())) {
+        		//gCoordX[0]= Double.parseDouble(lblDataList.get(0).get("fValue").toString());
+        	try {
+        		gCoordX[0] = Double.parseDouble(String.format(gFormat[tagDccInfoList.get(0).getBScale()],(Math.pow(10, Double.parseDouble(lblDataList.get(0).get("fValue").toString()))-1)*100));
+        	} catch( NumberFormatException nfe ) {
+        		//
+        	}
+        	//}
+        	
+        	//System.out.println(lblDataList.get(1).get("fValue").toString()+" >> "+StringUtils.isNumeric(lblDataList.get(1).get("fValue").toString()));
+        	//if(StringUtils.isNumeric(lblDataList.get(1).get("fValue").toString())) {
+        	try {
+        		gCoordY[0]= Double.parseDouble(lblDataList.get(1).get("fValue").toString());
+        	} catch( NumberFormatException nfe) {
+        		//
+        	}
+        	//}
+
+        	//movelebel
+        	for(int i=0;i<nCntVisible;i++) {
+        		//System.out.println(gCoordX[i]+":"+gCoordY[i]);
+        		//long nLeft = (770/2) + Math.round(gCoordX[i]);
+        		long nLeft = Math.round(770 * (gCoordX[i] + 5) / 10);
+        		
+        		if(nLeft < 0 ) nLeft = 0;
+        		if(nLeft > 770 ) nLeft = 770;
+    			
+    			//long nTop =  (390/2) +  Math.round(gCoordY[i]);
+        		long nTop =  390 - Math.round(390 * gCoordY[i] / 100);
+    			
+    			if(nTop < 0 ) nTop = 0;
+        		if(nTop > 390 ) nTop = 390;
+        		
+    			glblXYList.get(i).put("Left", nLeft);
+    			glblXYList.get(i).put("Top", nTop);
+        		
+        		/*
+        	 	For i = 0 To nCnt
+			        nLeft = nXBase + CInt(nXWidth * (coordX(i) + 5) / 10)
+			        nTop = nYBase - CInt(nYHeight * coordY(i) / 100)
+			        If nLeft < nXBase Then nLeft = nXBase
+			        If nLeft > nXBase + nXWidth Then nLeft = nXBase + nXWidth
+			        If nTop > nYBase Then nTop = nYBase
+			        If nTop < nYBase - nYHeight Then nTop = nYBase + nYHeight
+			        lblXY(i).Left = nLeft - lblXY(i).Width / 2
+			        lblXY(i).Top = nTop - lblXY(i).Height / 2
+			    Next
+        	 * */
+        	} // end for
+        	
+        	if(nCntVisible < 27) {
+        		glblXYList.get(nCntVisible-1).put("Visible", true);
+        		nCntVisible = nCntVisible + 1;
+        	}else {
+        		nCntVisible = 1;
+        		
+        		for(int i=nCntVisible;i<27;i++) {
+        			glblXYList.get(nCntVisible-1).put("Visible", false);
+        		}        		
+        	}
+        	
+        	mav.addObject("resultType", "reactivity");
         	mav.addObject("lblXYList", glblXYList);
         	mav.addObject("BaseSearch", dccSearchStatus);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
         }
 
         return mav;
-    }	
+    }
 	
 	@RequestMapping("reactExcelExport")
 	public void reactExcelExport(HttpServletRequest request, HttpServletResponse response, DccSearchStatus dccSearchStatus) throws Exception {		
@@ -1793,6 +2766,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {    
     		
     		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -1801,10 +2776,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("11");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X"); 
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -1830,13 +2807,17 @@ public class DccStatusContentsController {
         int res = 0;
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
         	dccSearchStatus.setMenuName(this.menuName);
+        	
         	String seqStr = dccStatusService.selectSeqInfo(dccSearchStatus);
-        	System.out.println(seqStr);
+
         	String[] seqs = seqStr == null ? "_".split("_") : seqStr.split("_");
         	
         	dccSearchStatus.setiSeq(seqs[0]);
         	dccSearchStatus.setySeq(seqs[1]);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -1845,10 +2826,13 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("11");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    
+	      	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	
         	
         	res = dccStatusService.updateTagInfo(dccSearchStatus);
         	
@@ -1903,6 +2887,8 @@ public class DccStatusContentsController {
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -1911,10 +2897,12 @@ public class DccStatusContentsController {
         		dccSearchStatus.setGrpId("mimic");
 	        	dccSearchStatus.setGrpNo("12");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
-        	}
+	        	member.setHogi("3");
+	        	member.setXyGubun("X"); 	        		        	
+        	}        	
+
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -1925,10 +2913,10 @@ public class DccStatusContentsController {
     		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()==null?  "": dccSearchStatus.getGrpNo());
     		
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
-    		
+
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
-    		List<Map> lblDataList = (ArrayList)dccVal;
-    		
+    		List<Map> lblDataList = (ArrayList)dccVal.get("lblDataList");
+
     		for(int i=0;i<lblDataList.size();i++) {
     			
     			lblDataList.get(i).put("visible", true);
@@ -1941,23 +2929,23 @@ public class DccStatusContentsController {
     				lblDataList.get(i).put("visible", false);
     			}
     		}
-    	   
+    		
     		String[] vData = basDccOsmsService.getDccValueReturn(dccGrpTagSearchMap);
     		
     		int iError =0;
-    		int fTmpVal = 0;
+    		double fTmpVal = 0;
     		String sTipMsg = "";
     		
     		List<Map> lblConvList = new ArrayList<Map>();
     		List<Map> vINDValList= new ArrayList<Map>();
-    		boolean[] shpIND = new boolean[9];
-    		boolean[] shpIND2 = new boolean[9];
+    		boolean[] shpIND = new boolean[10];
+    		boolean[] shpIND2 = new boolean[10];
     		
     		for(int i=0;i<tagDccInfoList.size();i++) {
     			if(i< 6) {
-    				    iError = iError + ((Integer.parseInt(vData[i+1]) == -32768)? 1:0);
+    				    iError = iError + ((Double.parseDouble(vData[i+1]) == -32768)? 1:0);
     				    
-    				    fTmpVal = fTmpVal + ((Integer.parseInt(vData[i+1]) == -32768)? 0: (Integer.parseInt(lblDataList.get(i).get("fValue").toString())));
+    				    fTmpVal = fTmpVal + ((Double.parseDouble(vData[i+1]) == -32768)? 0: (Double.parseDouble(lblDataList.get(i).get("fValue").toString())));
     				    
     				    sTipMsg = sTipMsg + tagDccInfoList.get(i).getToolTip() + ((i == 2 || i == 5)? "":",");
     				    
@@ -1990,19 +2978,19 @@ public class DccStatusContentsController {
     			
     			if(i>=6 && i<=9) {
     				Map vINDVal = new HashMap();
-    				if(Integer.parseInt(vData[i+1]) != -32768) {
+    				if(Double.parseDouble(vData[i+1]) != -32768) {
     					vINDVal.put("fValue", lblDataList.get(i).get("fValue").toString());
-    					vINDVal.put("fData", (Integer.parseInt(lblDataList.get(i).get("fValue").toString()) > 0)? "ON":"OFF");
+    					vINDVal.put("fData", (Double.parseDouble(lblDataList.get(i).get("fValue").toString()) > 0)? "ON":"OFF");
     				}
     				
     				vINDValList.add(vINDVal);
     				
     				if(i == 9) {
-    					if((Integer.parseInt(vINDValList.get(0).get("fValue").toString()) + Integer.parseInt(vINDValList.get(2).get("fValue").toString()) <  2) ||
-    				         (Integer.parseInt(vINDValList.get(1).get("fValue").toString()) + Integer.parseInt(vINDValList.get(3).get("fValue").toString()) < 2)){
+    					if((Double.parseDouble(vINDValList.get(0).get("fValue").toString()) + Double.parseDouble(vINDValList.get(2).get("fValue").toString()) <  2) ||
+    				         (Double.parseDouble(vINDValList.get(1).get("fValue").toString()) + Double.parseDouble(vINDValList.get(3).get("fValue").toString()) < 2)){
     								shpIND[1] = true;	
-    					}else  if((Integer.parseInt(vINDValList.get(0).get("fValue").toString()) + Integer.parseInt(vINDValList.get(1).get("fValue").toString()) <  1) ||
-       				         (Integer.parseInt(vINDValList.get(1).get("fValue").toString()) + Integer.parseInt(vINDValList.get(3).get("fValue").toString()) < 1)){
+    					}else  if((Double.parseDouble(vINDValList.get(0).get("fValue").toString()) + Double.parseDouble(vINDValList.get(1).get("fValue").toString()) <  1) ||
+       				         (Double.parseDouble(vINDValList.get(1).get("fValue").toString()) + Double.parseDouble(vINDValList.get(3).get("fValue").toString()) < 1)){
     								shpIND[2] = true;	
     					}    							
     				}    				
@@ -2011,76 +2999,75 @@ public class DccStatusContentsController {
     			int fTmpIdx = 0;
     			if(i==14 || i == 17 || i==20 || i == 23) {
     				
-    				 iError = ((Integer.parseInt(vData[i-1]) == -32768)? 1:0) +
-    						 		((Integer.parseInt(vData[i]) == -32768)? 1:0) + 
-    						 		((Integer.parseInt(vData[i+1]) == -32768)? 1:0);
+    				 iError = ((Double.parseDouble(vData[i-1]) == -32768)? 1:0) +
+    						 		((Double.parseDouble(vData[i]) == -32768)? 1:0) + 
+    						 		((Double.parseDouble(vData[i+1]) == -32768)? 1:0);
     				 
     				 if(iError > 1) {
     					 lblDataList.get(i).put("fValue",  "***IRR");
     				 }else {
     					if( iError == 1) {
     						for(int j=(i-2); j<=i;j++) {
-    							if((Integer.parseInt(vData[i+1])) != -32768){
+    							if((Double.parseDouble(vData[i+1])) != -32768){
     								if(fTmpIdx == -1) {
     									fTmpIdx = j;
-    									fTmpVal = (Integer.parseInt(vData[i+1]));
+    									fTmpVal = (Double.parseDouble(vData[i+1]));
     								}else {
-    										if(fTmpVal > (Integer.parseInt(vData[i+1]))) {
+    										if(fTmpVal > (Double.parseDouble(vData[i+1]))) {
     											fTmpIdx = j;
-    	    									fTmpVal = (Integer.parseInt(vData[i+1]));
+    	    									fTmpVal = (Double.parseDouble(vData[i+1]));
     										}
     								}    								
     							}
     						} // end for
     					}else {
-    						fTmpIdx = i - getMidData(Integer.parseInt(vData[i-1]), Integer.parseInt(vData[i]), Integer.parseInt(vData[i+1]));
+    						fTmpIdx = i - getMidData(Double.parseDouble(vData[i-1]), Double.parseDouble(vData[i]), Double.parseDouble(vData[i+1]));
     					}
     					
     					lblDataList.get(fTmpIdx).put("visible", true); 
-    					lblDataList.get(fTmpIdx).put("fValue",  lblDataList.get(fTmpIdx));
+    					lblDataList.get(fTmpIdx).put("fValue",  lblDataList.get(fTmpIdx).get("fValue"));
     					
     				 }    				
     			} // i==14 || i == 17 || i==20 || i == 23
     			
     			if(i >= 28 && i <=55) {
     				if((i % 2) == 1) {
-    					 iError = ((Integer.parseInt(vData[i]) == -32768)?1:0) + ((Integer.parseInt(vData[i+1]) == -32768)?1:0) ;
+    					 iError = ((Double.parseDouble(vData[i]) == -32768)?1:0) + ((Double.parseDouble(vData[i+1]) == -32768)?1:0) ;
     					 
     					 if(iError > 1) {
-    						 iError = ((Integer.parseInt(vData[62]) == -32768)?1:0) + ((Integer.parseInt(vData[63]) == -32768)?1:0) + ((Integer.parseInt(vData[64]) == -32768)?1:0) ;
+    						 iError = ((Double.parseDouble(vData[62]) == -32768)?1:0) + ((Double.parseDouble(vData[63]) == -32768)?1:0) + ((Double.parseDouble(vData[64]) == -32768)?1:0) ;
     						 
     						 if (iError > 0){
     							 lblDataList.get(i).put("fValue",  "1.2");
     						 }else {
-    							 fTmpIdx = 64 - getMidData(Integer.parseInt(vData[i-1]), Integer.parseInt(vData[i]), Integer.parseInt(vData[i+1]));
+    							 fTmpIdx = 64 - getMidData(Double.parseDouble(vData[i-1]), Double.parseDouble(vData[i]), Double.parseDouble(vData[i+1]));
     							 
     							 lblDataList.get(i).put("fValue",  lblDataList.get(fTmpIdx).get("fValue"));
     							 tagDccInfoList.get(i).setToolTip(tagDccInfoList.get(fTmpIdx).getToolTip());    							 
     						 }    						 
     					 }else if(iError == 1) {
-    						 if (Integer.parseInt(vData[i]) != -32768){
+    						 if (Double.parseDouble(vData[i]) != -32768){
     							 lblDataList.get(i-1).put("fValue",  lblDataList.get(i).get("fValue"));
     							 lblDataList.get(i-1).put("visible",  true);
-    						 }else if (Integer.parseInt(vData[i+1]) != -32768){
+    						 }else if (Double.parseDouble(vData[i+1]) != -32768){
     							 lblDataList.get(i).put("fValue",  lblDataList.get(i+1).get("fValue"));
     							 lblDataList.get(i).put("visible",  true);
     						 }
     					 }else {
-    						 if (Integer.parseInt(vData[i]) >  Integer.parseInt(vData[i+1]) ){
+    						 if (Double.parseDouble(vData[i]) >  Double.parseDouble(vData[i+1]) ){
     							 lblDataList.get(i-1).put("fValue",  lblDataList.get(i-1).get("fValue"));
     							 lblDataList.get(i-1).put("visible",  true);
     						 }else {
     							 lblDataList.get(i).put("fValue",  lblDataList.get(i+1).get("fValue"));
     							 lblDataList.get(i).put("visible",  true);
     						 }
-    						 
     					 }
     				}
     			}
     			
     			if(i == 56) {
-    				 if (Integer.parseInt(vData[i+1]) > -32768){
-    					 if(Integer.parseInt(lblDataList.get(i).get("fValue").toString()) > 0) {
+    				 if (Double.parseDouble(vData[i+1]) > -32768){
+    					 if(Double.parseDouble(lblDataList.get(i).get("fValue").toString()) > 0) {
     						lblDataList.get(i).put("fValue", "YES");    
     						shpIND[8] = true;	  
     					 }else {    						 
@@ -2095,7 +3082,7 @@ public class DccStatusContentsController {
     			
     			if(i == 61) {   				
 	   				 if (StringUtils.isNumeric(vData[i+1])){
-	   					 if(Integer.parseInt(vData[13]) < Integer.parseInt(vData[i+1])) {
+	   					 if(Double.parseDouble(vData[13]) < Double.parseDouble(vData[i+1])) {
 	   						shpIND[5] = true;	  
 	   					 }else {    						 
 	   						shpIND[5] = false;
@@ -2108,8 +3095,258 @@ public class DccStatusContentsController {
     				
     				for( int j=0;j<lblFP.length;j++) {
     					 if (StringUtils.isNumeric(vData[i+1])){
-    						 if( Integer.parseInt(vData[i+1]) > -32768) {
-    							 if( Math.pow(10, Integer.parseInt(lblDataList.get(i).get("fValue" ).toString())) <  lblFP[j]) {
+    						 if( Double.parseDouble(vData[i+1]) > -32768) {
+    							 if( Math.pow(10, Double.parseDouble(lblDataList.get(i).get("fValue" ).toString())) <  lblFP[j]) {
+    								 shpIND2[j] = true;
+    							 }else {
+    								 shpIND2[j] = false;
+    							 }
+    						 }
+    					 }
+    				}
+    				
+    			}
+    			
+    		}// end for
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", lblDataList);
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("lblConvList", lblConvList);
+        	mav.addObject("vINDValList", vINDValList);
+        	mav.addObject("shpIND", shpIND);
+        	mav.addObject("shpIND2", shpIND2);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        }        
+
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadStepbackstatus", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadStepbackstatus(DccSearchStatus dccSearchStatus, HttpServletRequest request, HttpServletResponse response) {
+       
+		ModelAndView mav = new ModelAndView("jsonView");
+		
+        logger.info("############ reloadStepbackstatus");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchStatus.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+
+        	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
+            	
+        		dccSearchStatus.setGubun("D");
+        		dccSearchStatus.setMenuNo("11");
+        		dccSearchStatus.setGrpId("mimic");
+	        	dccSearchStatus.setGrpNo("12");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X"); 	        		        	
+        	}        	
+
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()==null?  "": dccSearchStatus.getHogi());
+        	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGrpId()==null?  "": dccSearchStatus.getGrpId());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchStatus.getMenuNo()==null?  "": dccSearchStatus.getMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()==null?  "": dccSearchStatus.getGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		List<Map> lblDataList = (ArrayList)dccVal.get("lblDataList");
+
+    		for(int i=0;i<lblDataList.size();i++) {
+    			
+    			lblDataList.get(i).put("visible", true);
+    			
+    			if(i >= 12 && i<=23) {
+    				lblDataList.get(i).put("visible", false);
+    			}
+    			
+    			if(i >= 28 && i<=55) {
+    				lblDataList.get(i).put("visible", false);
+    			}
+    		}
+    		
+    		String[] vData = basDccOsmsService.getDccValueReturn(dccGrpTagSearchMap);
+    		
+    		int iError =0;
+    		double fTmpVal = 0;
+    		String sTipMsg = "";
+    		
+    		List<Map> lblConvList = new ArrayList<Map>();
+    		List<Map> vINDValList= new ArrayList<Map>();
+    		boolean[] shpIND = new boolean[10];
+    		boolean[] shpIND2 = new boolean[10];
+    		
+    		for(int i=0;i<tagDccInfoList.size();i++) {
+    			if(i< 6) {
+    				    iError = iError + ((Double.parseDouble(vData[i+1]) == -32768)? 1:0);
+    				    
+    				    fTmpVal = fTmpVal + ((Double.parseDouble(vData[i+1]) == -32768)? 0: (Double.parseDouble(lblDataList.get(i).get("fValue").toString())));
+    				    
+    				    sTipMsg = sTipMsg + tagDccInfoList.get(i).getToolTip() + ((i == 2 || i == 5)? "":",");
+    				    
+    				    if(i == 2 || i == 5) {
+    				    	
+    				    	Map lblConv = new HashMap();
+	    				    if(iError > 0) {
+	    				    		lblConv.put("fValue", "***IRR");
+	    				    }else {
+	    				    		lblConv.put("fValue", (fTmpVal < 2)? "YES":"NO");
+	    				    }
+	    				    lblConv.put("TooTipTest", sTipMsg);
+	    				    
+	    				    lblConvList.add(lblConv);
+	    				    
+	    				    if(i ==5) {
+	    				    	if(lblConvList.get(0).get("fValue").toString().equals("YES") || lblConvList.get(1).get("fValue").toString().equals("YES")  ) {
+	    				    		shpIND[0] = true;	    				    		
+	    				    	}else {
+	    				    		shpIND[0] = false;
+	    				    	}
+	    				    }
+	    				    
+	    				    iError =0;
+	    		    		fTmpVal = 0;
+	    		    		sTipMsg = "";
+	    				    
+    				    }
+    			} // i < 6
+    			
+    			if(i>=6 && i<=9) {
+    				Map vINDVal = new HashMap();
+    				if(Double.parseDouble(vData[i+1]) != -32768) {
+    					vINDVal.put("fValue", lblDataList.get(i).get("fValue").toString());
+    					vINDVal.put("fData", (Double.parseDouble(lblDataList.get(i).get("fValue").toString()) > 0)? "ON":"OFF");
+    				}
+    				
+    				vINDValList.add(vINDVal);
+    				
+    				if(i == 9) {
+    					if((Double.parseDouble(vINDValList.get(0).get("fValue").toString()) + Double.parseDouble(vINDValList.get(2).get("fValue").toString()) <  2) ||
+    				         (Double.parseDouble(vINDValList.get(1).get("fValue").toString()) + Double.parseDouble(vINDValList.get(3).get("fValue").toString()) < 2)){
+    								shpIND[1] = true;	
+    					}else  if((Double.parseDouble(vINDValList.get(0).get("fValue").toString()) + Double.parseDouble(vINDValList.get(1).get("fValue").toString()) <  1) ||
+       				         (Double.parseDouble(vINDValList.get(1).get("fValue").toString()) + Double.parseDouble(vINDValList.get(3).get("fValue").toString()) < 1)){
+    								shpIND[2] = true;	
+    					}    							
+    				}    				
+    			}// i >=6 && i <=9
+    			
+    			int fTmpIdx = 0;
+    			if(i==14 || i == 17 || i==20 || i == 23) {
+    				
+    				 iError = ((Double.parseDouble(vData[i-1]) == -32768)? 1:0) +
+    						 		((Double.parseDouble(vData[i]) == -32768)? 1:0) + 
+    						 		((Double.parseDouble(vData[i+1]) == -32768)? 1:0);
+    				 
+    				 if(iError > 1) {
+    					 lblDataList.get(i).put("fValue",  "***IRR");
+    				 }else {
+    					if( iError == 1) {
+    						for(int j=(i-2); j<=i;j++) {
+    							if((Double.parseDouble(vData[i+1])) != -32768){
+    								if(fTmpIdx == -1) {
+    									fTmpIdx = j;
+    									fTmpVal = (Double.parseDouble(vData[i+1]));
+    								}else {
+    										if(fTmpVal > (Double.parseDouble(vData[i+1]))) {
+    											fTmpIdx = j;
+    	    									fTmpVal = (Double.parseDouble(vData[i+1]));
+    										}
+    								}    								
+    							}
+    						} // end for
+    					}else {
+    						fTmpIdx = i - getMidData(Double.parseDouble(vData[i-1]), Double.parseDouble(vData[i]), Double.parseDouble(vData[i+1]));
+    					}
+    					
+    					lblDataList.get(fTmpIdx).put("visible", true); 
+    					lblDataList.get(fTmpIdx).put("fValue",  lblDataList.get(fTmpIdx).get("fValue"));
+    					
+    				 }    				
+    			} // i==14 || i == 17 || i==20 || i == 23
+    			
+    			if(i >= 28 && i <=55) {
+    				if((i % 2) == 1) {
+    					 iError = ((Double.parseDouble(vData[i]) == -32768)?1:0) + ((Double.parseDouble(vData[i+1]) == -32768)?1:0) ;
+    					 
+    					 if(iError > 1) {
+    						 iError = ((Double.parseDouble(vData[62]) == -32768)?1:0) + ((Double.parseDouble(vData[63]) == -32768)?1:0) + ((Double.parseDouble(vData[64]) == -32768)?1:0) ;
+    						 
+    						 if (iError > 0){
+    							 lblDataList.get(i).put("fValue",  "1.2");
+    						 }else {
+    							 fTmpIdx = 64 - getMidData(Double.parseDouble(vData[i-1]), Double.parseDouble(vData[i]), Double.parseDouble(vData[i+1]));
+    							 
+    							 lblDataList.get(i).put("fValue",  lblDataList.get(fTmpIdx).get("fValue"));
+    							 tagDccInfoList.get(i).setToolTip(tagDccInfoList.get(fTmpIdx).getToolTip());    							 
+    						 }    						 
+    					 }else if(iError == 1) {
+    						 if (Double.parseDouble(vData[i]) != -32768){
+    							 lblDataList.get(i-1).put("fValue",  lblDataList.get(i).get("fValue"));
+    							 lblDataList.get(i-1).put("visible",  true);
+    						 }else if (Double.parseDouble(vData[i+1]) != -32768){
+    							 lblDataList.get(i).put("fValue",  lblDataList.get(i+1).get("fValue"));
+    							 lblDataList.get(i).put("visible",  true);
+    						 }
+    					 }else {
+    						 if (Double.parseDouble(vData[i]) >  Double.parseDouble(vData[i+1]) ){
+    							 lblDataList.get(i-1).put("fValue",  lblDataList.get(i-1).get("fValue"));
+    							 lblDataList.get(i-1).put("visible",  true);
+    						 }else {
+    							 lblDataList.get(i).put("fValue",  lblDataList.get(i+1).get("fValue"));
+    							 lblDataList.get(i).put("visible",  true);
+    						 }
+    					 }
+    				}
+    			}
+    			
+    			if(i == 56) {
+    				 if (Double.parseDouble(vData[i+1]) > -32768){
+    					 if(Double.parseDouble(lblDataList.get(i).get("fValue").toString()) > 0) {
+    						lblDataList.get(i).put("fValue", "YES");    
+    						shpIND[8] = true;	  
+    					 }else {    						 
+    						 lblDataList.get(i).put("fValue", "NO");
+    						 shpIND[8] = false;
+    					 }
+    				 }else {
+    					 lblDataList.get(i).put("fValue", -32768);
+    					 shpIND[8] = false;
+    				 }    				
+    			}
+    			
+    			if(i == 61) {   				
+	   				 if (StringUtils.isNumeric(vData[i+1])){
+	   					 if(Double.parseDouble(vData[13]) < Double.parseDouble(vData[i+1])) {
+	   						shpIND[5] = true;	  
+	   					 }else {    						 
+	   						shpIND[5] = false;
+	   					 }
+	   				 }
+	   			}    			
+    			
+    			if(i == 65) {
+    				double[] lblFP = {0.0, 0.01, 0.0, 0.005, 0.0, 0.005, 0.005, 0.0, 0.02};
+    				
+    				for( int j=0;j<lblFP.length;j++) {
+    					 if (StringUtils.isNumeric(vData[i+1])){
+    						 if( Double.parseDouble(vData[i+1]) > -32768) {
+    							 if( Math.pow(10, Double.parseDouble(lblDataList.get(i).get("fValue" ).toString())) <  lblFP[j]) {
     								 shpIND2[j] = true;
     							 }else {
     								 shpIND2[j] = false;
@@ -2147,6 +3384,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {    
     		
     		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -2155,10 +3394,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("12");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");  
         	}
+
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -2184,13 +3425,17 @@ public class DccStatusContentsController {
         int res = 0;
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
         	dccSearchStatus.setMenuName(this.menuName);
+        	
         	String seqStr = dccStatusService.selectSeqInfo(dccSearchStatus);
-        	System.out.println(seqStr);
+
         	String[] seqs = seqStr == null ? "_".split("_") : seqStr.split("_");
         	
         	dccSearchStatus.setiSeq(seqs[0]);
         	dccSearchStatus.setySeq(seqs[1]);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -2199,10 +3444,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("12");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");    
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	res = dccStatusService.updateTagInfo(dccSearchStatus);
         	
@@ -2256,6 +3503,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {
 			
 			dccSearchStatus.setMenuName(this.menuName);
+			
+			MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -2264,10 +3513,12 @@ public class DccStatusContentsController {
         		dccSearchStatus.setGrpId("mimic");
 	        	dccSearchStatus.setGrpNo("13");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
-        	}
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");
+        	}        	
+
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -2280,7 +3531,7 @@ public class DccStatusContentsController {
     		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
-    		List<Map> lblDataList = (ArrayList)dccVal;
+    		List<Map> lblDataList = (ArrayList)dccVal.get("lblDataList");
     		
     		for(int i=0;i<lblDataList.size();i++) {
     			
@@ -2294,158 +3545,391 @@ public class DccStatusContentsController {
     				lblDataList.get(i).put("visible", false);
     			}
     		}
-     	   
-    		String[] vData = basDccOsmsService.getDccValueReturn(dccGrpTagSearchMap);
+      	   
+     		String[] vData = basDccOsmsService.getDccValueReturn(dccGrpTagSearchMap);
+     		
+     		int iError =0;
+     		double fTmpVal = 0;
+     		String sTipMsg = "";
+     		
+     		List<Map> lblConvList = new ArrayList<Map>();
+     		boolean[] shpIND = new boolean[11];
+     		int fTmpIdx = 0;
+     		
+     		for(int i=0;i<tagDccInfoList.size();i++) {
+     			
+     			if(i == 2 || i == 7 || i == 10 || i == 13 || i ==20) {
+     				iError =(( Double.parseDouble(vData[i - 1]) == -32768)? 1: 0) + 
+     						(( Double.parseDouble(vData[i ]) == -32768)? 1: 0) +
+     						(( Double.parseDouble(vData[i + 1]) == -32768)? 1: 0);
+     				
+     				if(iError > 1) {
+     					lblDataList.get(i).put("fValue",  "***IRR");
+     					lblDataList.get(i).put("visible",  true);
+     				}else if(iError == 1) {
+     					fTmpIdx = -1;
+     					
+     					if(i == 2 || i == 7 || i ==20) {
+     						for(int j=(i-2); j<=i;j++) {
+     							if((Double.parseDouble(vData[i+1])) != -32768){
+     								if(fTmpIdx == -1) {
+     									fTmpIdx = j;
+     									fTmpVal = (Double.parseDouble(vData[i+1]));
+     								}else {
+     										if(fTmpVal > (Double.parseDouble(vData[i+1]))) {
+     											fTmpIdx = j;
+     	    									fTmpVal = (Double.parseDouble(vData[i+1]));
+     										}
+     								}    								
+     							}
+     						} // end for    						
+     					}else if( i == 10 || i == 13) {
+     						if((Double.parseDouble(vData[i+1])) != -32768){
+     							for(int j=(i-2); j<=i;j++) {
+         							if((Double.parseDouble(vData[i+1])) != -32768){
+         								if(fTmpIdx == -1) {
+         									fTmpIdx = j;
+         									fTmpVal = (Double.parseDouble(vData[i+1]));
+         								}else {
+         										if(fTmpVal < (Double.parseDouble(vData[i+1]))) {
+         											fTmpIdx = j;
+         	    									fTmpVal = (Double.parseDouble(vData[i+1]));
+         										}
+         								}    								
+         							}
+         						} // end for       								
+ 							}
+     					}// end if sub i = 10, 13    					
+     				}else { 
+     					fTmpIdx = i - getMidData(Double.parseDouble(vData[i-1]), Double.parseDouble(vData[i]), Double.parseDouble(vData[i+1]));
+     				}// end if iError
+     				
+     				lblDataList.get(fTmpIdx).put("visible",  true); 
+     				lblDataList.get(fTmpIdx).put("fValue",  lblDataList.get(fTmpIdx).get("fValue")); 
+     				 
+     				
+     			} // end if =  i 2, 7, 10, 13, 20
+     			
+     			if(i >= 14 && i <= 17) {
+     				if(i == 14) {
+     					fTmpIdx = i;
+ 						fTmpVal = (Double.parseDouble(vData[i+1]));
+     				}else {
+     					if(fTmpVal < (Double.parseDouble(vData[i+1]))) {
+ 							fTmpIdx = i;
+ 							fTmpVal = (Double.parseDouble(vData[i+1]));
+ 						}
+     				} // end if i = 14
+     				
+     				
+     				if(i == 17) {
+     					lblDataList.get(fTmpIdx).put("visible",  true); 
+     					lblDataList.get(fTmpIdx).put("fValue",  lblDataList.get(fTmpIdx).get("fValue"));
+     				}
+     			} // end if i == 14 to 17
+     			
+     			if(i >= 3 && i <= 4) {
+     				
+     				sTipMsg = sTipMsg +  tagDccInfoList.get(i).getToolTip() + ((i == 4)? "": ", ");   
+     				
+     				if(i == 4) {
+     					Map lblConv = new HashMap();
+     					  
+     					if(Double.parseDouble(vData[i+1]) != -32768){
+     						lblConv.put("fValue", (1.1/Double.parseDouble(vData[i])) * Double.parseDouble(vData[i+1]));
+     					}else {
+     						lblConv.put("fValue", -32768);
+     					}
+     					
+     					lblConv.put("Tooltip", sTipMsg);    					
+     					
+     					lblConvList.add(lblConv);
+     				}    				
+     			}// end if i = 3, 4
+     			
+     			if(i >= 25&& i <= 27) {
+     				
+     				if(i == 25) {
+     					iError = 0;
+     					fTmpVal = 0;
+     				}
+     				
+     				iError = iError + ((Double.parseDouble(vData[i+1]) == -32768)? 1:0);
+     				
+     				fTmpVal = fTmpVal + ((Double.parseDouble(vData[i+1]) == -32768)? 0: (Double.parseDouble(lblDataList.get(i).get("fValue").toString())));
+     				
+     				sTipMsg = sTipMsg +  tagDccInfoList.get(i).getToolTip() + ((i == 27)? "": ", ");    				
+     				
+     				if(i == 27) {
+     				
+ 	    				Map lblConv = new HashMap();
+ 	    				
+ 	    				if(iError > 0) {
+ 	    						lblConv.put("fValue", -32768);
+ 	    				}else {
+     					
+ 	    					lblConv.put("fValue", (fTmpVal >=2)? "YES": "NO");
+ 	   					
+ 	    					lblConv.put("Tooltip", sTipMsg);
+ 	    				}    	
+ 	    				
+     					lblConvList.add(lblConv);
+     					
+     				} // i = 27
+     			}// end if i = 25 to 27
+     			
+     			if(i == 28 || i == 43) {
+     				
+     				Map lblConv = new HashMap();
+     				
+ 					if((Double.parseDouble(vData[i+1]) == -32768)) {
+ 						lblConv.put("fValue", -32768);
+ 					}else {
+ 						lblConv.put("fValue", ((Double.parseDouble(lblDataList.get(i).get("fValue").toString()) == 1)? "YES": "NO"));
+ 					}
+ 	    				
+     				lblConvList.add(lblConv);
+     				
+     			}// end if i = 28,43    			
+     			
+     			if(i >=44 && i<=54) {
+     				shpIND[i-44] = ((Double.parseDouble(lblDataList.get(i).get("fValue").toString()) == 0)? false: true);
+     			}
+     			
+     		}// end for
     		
-    		int iError =0;
-    		int fTmpVal = 0;
-    		String sTipMsg = "";
     		
-    		List<Map> lblConvList = new ArrayList<Map>();
-    		boolean[] shpIND = new boolean[10];
-    		int fTmpIdx = 0;
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", lblDataList);
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("lblConvList", lblConvList);
+        	mav.addObject("shpIND", shpIND);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));        	
+        }
+		
+        return mav;
+    }
+	
+	@RequestMapping( value = "reloadSetback", method = { RequestMethod.POST} )
+	@ResponseBody
+	public ModelAndView reloadSetback(DccSearchStatus dccSearchStatus, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+		logger.info("############ reloadSetback");
+		
+		if(request.getSession().getAttribute("USER_INFO") != null) {
+			
+			dccSearchStatus.setMenuName(this.menuName);
+			
+			MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+			
+			String strMenuNo = dccSearchStatus.getMenuNo() == null ? "11" : dccSearchStatus.getMenuNo();
+			if( strMenuNo.indexOf(",") > -1 ) strMenuNo = strMenuNo.substring(0,strMenuNo.indexOf(","));
+			String strGrpNo = dccSearchStatus.getGrpNo() == null ? "13" : dccSearchStatus.getGrpNo();
+			if( strGrpNo.indexOf(",") > -1 ) strGrpNo = strGrpNo.substring(0,strGrpNo.indexOf(","));
+			String strGrpId = dccSearchStatus.getGrpId() == null ? "mimic" : dccSearchStatus.getGrpId();
+			if( strGrpId.indexOf(",") > -1 ) strGrpId = strGrpId.substring(0,strGrpId.indexOf(","));
+			
+			dccSearchStatus.setMenuNo(strMenuNo);
+			dccSearchStatus.setGrpNo(strGrpNo);
+			dccSearchStatus.setGrpId(strGrpId);
+
+        	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
+            	
+        		dccSearchStatus.setGubun("D");
+        		dccSearchStatus.setMenuNo("11");
+        		dccSearchStatus.setGrpId("mimic");
+	        	dccSearchStatus.setGrpNo("13");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");
+        	}        	
+
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()==null?  "": dccSearchStatus.getHogi());
+        	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", strGrpId);
+    		dccGrpTagSearchMap.put("menuNo", strMenuNo);
+    		dccGrpTagSearchMap.put("uGrpNo", strGrpNo);
     		
-    		for(int i=0;i<tagDccInfoList.size();i++) {
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		List<Map> lblDataList = (ArrayList)dccVal.get("lblDataList");
+    		
+    		for(int i=0;i<lblDataList.size();i++) {
     			
-    			if(i == 2 || i == 7 || i == 10 || i == 13 || i ==20) {
-    				iError =(( Integer.parseInt(vData[i - 1]) == -32768)? 1: 0) + 
-    						(( Integer.parseInt(vData[i ]) == -32768)? 1: 0) +
-    						(( Integer.parseInt(vData[i + 1]) == -32768)? 1: 0);
-    				
-    				if(iError > 1) {
-    					lblDataList.get(i).put("fValue",  "***IRR");
-    					lblDataList.get(i).put("visible",  true);
-    				}else if(iError == 1) {
-    					fTmpIdx = -1;
-    					
-    					if(i == 2 || i == 7 || i ==20) {
-    						for(int j=(i-2); j<=i;j++) {
-    							if((Integer.parseInt(vData[i+1])) != -32768){
-    								if(fTmpIdx == -1) {
-    									fTmpIdx = j;
-    									fTmpVal = (Integer.parseInt(vData[i+1]));
-    								}else {
-    										if(fTmpVal > (Integer.parseInt(vData[i+1]))) {
-    											fTmpIdx = j;
-    	    									fTmpVal = (Integer.parseInt(vData[i+1]));
-    										}
-    								}    								
-    							}
-    						} // end for    						
-    					}else if( i == 10 || i == 13) {
-    						if((Integer.parseInt(vData[i+1])) != -32768){
-    							for(int j=(i-2); j<=i;j++) {
-        							if((Integer.parseInt(vData[i+1])) != -32768){
-        								if(fTmpIdx == -1) {
-        									fTmpIdx = j;
-        									fTmpVal = (Integer.parseInt(vData[i+1]));
-        								}else {
-        										if(fTmpVal < (Integer.parseInt(vData[i+1]))) {
-        											fTmpIdx = j;
-        	    									fTmpVal = (Integer.parseInt(vData[i+1]));
-        										}
-        								}    								
-        							}
-        						} // end for       								
-							}
-    					}// end if sub i = 10, 13    					
-    				}else { 
-    					fTmpIdx = i - getMidData(Integer.parseInt(vData[i-1]), Integer.parseInt(vData[i]), Integer.parseInt(vData[i+1]));
-    				}// end if iError
-    				
-    				lblDataList.get(fTmpIdx).put("visible",  true); 
-    				lblDataList.get(fTmpIdx).put("fValue",  lblDataList.get(fTmpIdx)); 
-    				 
-    				
-    			} // end if =  i 2, 7, 10, 13, 20
+    			lblDataList.get(i).put("visible", true);
     			
-    			if(i >= 14 && i <= 17) {
-    				if(i == 14) {
-    					fTmpIdx = i;
-						fTmpVal = (Integer.parseInt(vData[i+1]));
-    				}else {
-    					if(fTmpVal < (Integer.parseInt(vData[i+1]))) {
-							fTmpIdx = i;
-							fTmpVal = (Integer.parseInt(vData[i+1]));
-						}
-    				} // end if i = 14
-    				
-    				
-    				if(i == 17) {
-    					lblDataList.get(fTmpIdx).put("visible",  true); 
-    					lblDataList.get(fTmpIdx).put("fValue",  lblDataList.get(fTmpIdx));
-    				}
-    			} // end if i == 14 to 17
-    			
-    			if(i >= 3&& i <= 4) {
-    				
-    				sTipMsg = sTipMsg +  tagDccInfoList.get(i).getToolTip() + ((i == 4)? "": ", ");   
-    				
-    				if(i == 4) {
-    					Map lblConv = new HashMap();
-    					  
-    					if(Integer.parseInt(vData[i+1]) != -32768){
-    						lblConv.put("fValue", (1.1/Integer.parseInt(vData[i])) * Integer.parseInt(vData[i+1]));
-    					}else {
-    						lblConv.put("fValue", -32768);
-    					}
-    					
-    					lblConv.put("Tooltip", sTipMsg);    					
-    					
-    					lblConvList.add(lblConv);
-    				}    				
-    			}// end if i = 3, 4
-    			
-    			if(i >= 25&& i <= 27) {
-    				
-    				if(i == 25) {
-    					iError = 0;
-    					fTmpVal = 0;
-    				}
-    				
-    				iError = iError + ((Integer.parseInt(vData[i+1]) == -32768)? 1:0);
-    				
-    				fTmpVal = fTmpVal + ((Integer.parseInt(vData[i+1]) == -32768)? 0: (Integer.parseInt(lblDataList.get(i).get("fValue").toString())));
-    				
-    				sTipMsg = sTipMsg +  tagDccInfoList.get(i).getToolTip() + ((i == 27)? "": ", ");    				
-    				
-    				if(i == 27) {
-    				
-	    				Map lblConv = new HashMap();
-	    				
-	    				if(iError > 0) {
-	    						lblConv.put("fValue", -32768);
-	    				}else {
-    					
-	    					lblConv.put("fValue", (fTmpVal >=2)? "YES": "NO");
-	   					
-	    					lblConv.put("Tooltip", sTipMsg);
-	    				}    	
-	    				
-    					lblConvList.add(lblConv);
-    					
-    				} // i = 27
-    			}// end if i = 25 to 27
-    			
-    			if(i == 28 || i == 43) {
-    				
-    				Map lblConv = new HashMap();
-    				
-					if((Integer.parseInt(vData[i+1]) == -32768)) {
-						lblConv.put("fValue", -32768);
-					}else {
-						lblConv.put("fValue", ((Integer.parseInt(lblDataList.get(i).get("fValue").toString()) == 1)? "YES": "NO"));
-					}
-	    				
-    				lblConvList.add(lblConv);
-    				
-    			}// end if i = 28,43    			
-    			
-    			if(i >=44 && i<=54) {
-    				shpIND[i-44] = ((Integer.parseInt(lblDataList.get(i).get("fValue").toString()) == 0)? false: true);
+    			if(i >= 0 && i<=2) {
+    				lblDataList.get(i).put("visible", false);
     			}
     			
-    		}// end for
+    			if(i >= 5 && i<=20) {
+    				lblDataList.get(i).put("visible", false);
+    			}
+    		}
+      	   
+     		String[] vData = basDccOsmsService.getDccValueReturn(dccGrpTagSearchMap);
+     		
+     		int iError =0;
+     		double fTmpVal = 0;
+     		String sTipMsg = "";
+     		
+     		List<Map> lblConvList = new ArrayList<Map>();
+     		boolean[] shpIND = new boolean[11];
+     		int fTmpIdx = 0;
+     		
+     		for(int i=0;i<tagDccInfoList.size();i++) {
+     			
+     			if(i == 2 || i == 7 || i == 10 || i == 13 || i ==20) {
+     				iError =(( Double.parseDouble(vData[i - 1]) == -32768)? 1: 0) + 
+     						(( Double.parseDouble(vData[i ]) == -32768)? 1: 0) +
+     						(( Double.parseDouble(vData[i + 1]) == -32768)? 1: 0);
+     				
+     				if(iError > 1) {
+     					lblDataList.get(i).put("fValue",  "***IRR");
+     					lblDataList.get(i).put("visible",  true);
+     				}else if(iError == 1) {
+     					fTmpIdx = -1;
+     					
+     					if(i == 2 || i == 7 || i ==20) {
+     						for(int j=(i-2); j<=i;j++) {
+     							if((Double.parseDouble(vData[i+1])) != -32768){
+     								if(fTmpIdx == -1) {
+     									fTmpIdx = j;
+     									fTmpVal = (Double.parseDouble(vData[i+1]));
+     								}else {
+     										if(fTmpVal > (Double.parseDouble(vData[i+1]))) {
+     											fTmpIdx = j;
+     	    									fTmpVal = (Double.parseDouble(vData[i+1]));
+     										}
+     								}    								
+     							}
+     						} // end for    						
+     					}else if( i == 10 || i == 13) {
+     						if((Double.parseDouble(vData[i+1])) != -32768){
+     							for(int j=(i-2); j<=i;j++) {
+         							if((Double.parseDouble(vData[i+1])) != -32768){
+         								if(fTmpIdx == -1) {
+         									fTmpIdx = j;
+         									fTmpVal = (Double.parseDouble(vData[i+1]));
+         								}else {
+         										if(fTmpVal < (Double.parseDouble(vData[i+1]))) {
+         											fTmpIdx = j;
+         	    									fTmpVal = (Double.parseDouble(vData[i+1]));
+         										}
+         								}    								
+         							}
+         						} // end for       								
+ 							}
+     					}// end if sub i = 10, 13    					
+     				}else { 
+     					fTmpIdx = i - getMidData(Double.parseDouble(vData[i-1]), Double.parseDouble(vData[i]), Double.parseDouble(vData[i+1]));
+     				}// end if iError
+     				
+     				lblDataList.get(fTmpIdx).put("visible",  true); 
+     				lblDataList.get(fTmpIdx).put("fValue",  lblDataList.get(fTmpIdx).get("fValue")); 
+     				 
+     				
+     			} // end if =  i 2, 7, 10, 13, 20
+     			
+     			if(i >= 14 && i <= 17) {
+     				if(i == 14) {
+     					fTmpIdx = i;
+ 						fTmpVal = (Double.parseDouble(vData[i+1]));
+     				}else {
+     					if(fTmpVal < (Double.parseDouble(vData[i+1]))) {
+ 							fTmpIdx = i;
+ 							fTmpVal = (Double.parseDouble(vData[i+1]));
+ 						}
+     				} // end if i = 14
+     				
+     				
+     				if(i == 17) {
+     					lblDataList.get(fTmpIdx).put("visible",  true); 
+     					lblDataList.get(fTmpIdx).put("fValue",  lblDataList.get(fTmpIdx).get("fValue"));
+     				}
+     			} // end if i == 14 to 17
+     			
+     			if(i >= 3&& i <= 4) {
+     				
+     				sTipMsg = sTipMsg +  tagDccInfoList.get(i).getToolTip() + ((i == 4)? "": ", ");   
+     				
+     				if(i == 4) {
+     					Map lblConv = new HashMap();
+     					  
+     					if(Double.parseDouble(vData[i+1]) != -32768){
+     						lblConv.put("fValue", (1.1/Double.parseDouble(vData[i])) * Double.parseDouble(vData[i+1]));
+     					}else {
+     						lblConv.put("fValue", -32768);
+     					}
+     					
+     					lblConv.put("Tooltip", sTipMsg);    					
+     					
+     					lblConvList.add(lblConv);
+     				}    				
+     			}// end if i = 3, 4
+     			
+     			if(i >= 25&& i <= 27) {
+     				
+     				if(i == 25) {
+     					iError = 0;
+     					fTmpVal = 0;
+     				}
+     				
+     				iError = iError + ((Double.parseDouble(vData[i+1]) == -32768)? 1:0);
+     				
+     				fTmpVal = fTmpVal + ((Double.parseDouble(vData[i+1]) == -32768)? 0: (Double.parseDouble(lblDataList.get(i).get("fValue").toString())));
+     				
+     				sTipMsg = sTipMsg +  tagDccInfoList.get(i).getToolTip() + ((i == 27)? "": ", ");    				
+     				
+     				if(i == 27) {
+     				
+ 	    				Map lblConv = new HashMap();
+ 	    				
+ 	    				if(iError > 0) {
+ 	    						lblConv.put("fValue", -32768);
+ 	    				}else {
+     					
+ 	    					lblConv.put("fValue", (fTmpVal >=2)? "YES": "NO");
+ 	   					
+ 	    					lblConv.put("Tooltip", sTipMsg);
+ 	    				}    	
+ 	    				
+     					lblConvList.add(lblConv);
+     					
+     				} // i = 27
+     			}// end if i = 25 to 27
+     			
+     			if(i == 28 || i == 43) {
+     				
+     				Map lblConv = new HashMap();
+     				
+ 					if((Double.parseDouble(vData[i+1]) == -32768)) {
+ 						lblConv.put("fValue", -32768);
+ 					}else {
+ 						lblConv.put("fValue", ((Double.parseDouble(lblDataList.get(i).get("fValue").toString()) == 1)? "YES": "NO"));
+ 					}
+ 	    				
+     				lblConvList.add(lblConv);
+     				
+     			}// end if i = 28,43    			
+     			
+     			if(i >=44 && i<=54) {
+     				shpIND[i-44] = ((Double.parseDouble(lblDataList.get(i).get("fValue").toString()) == 0)? false: true);
+     			}
+     			
+     		}// end for
     		
     		
     		mav.addObject("SearchTime", dccVal.get("SearchTime"));
@@ -2471,6 +3955,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {    
     		
     		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -2479,10 +3965,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("13");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");  	        	       	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());	 
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -2508,13 +3996,17 @@ public class DccStatusContentsController {
         int res = 0;
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
         	dccSearchStatus.setMenuName(this.menuName);
+        	
         	String seqStr = dccStatusService.selectSeqInfo(dccSearchStatus);
-        	System.out.println(seqStr);
+        	
         	String[] seqs = seqStr == null ? "_".split("_") : seqStr.split("_");
         	
         	dccSearchStatus.setiSeq(seqs[0]);
         	dccSearchStatus.setySeq(seqs[1]);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -2523,10 +4015,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("13");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X"); 
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	res = dccStatusService.updateTagInfo(dccSearchStatus);
         	
@@ -2582,6 +4076,8 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {
 			
 			dccSearchStatus.setMenuName(this.menuName);
+			
+			MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -2590,10 +4086,64 @@ public class DccStatusContentsController {
         		dccSearchStatus.setGrpId("mimic");
 	        	dccSearchStatus.setGrpNo("14");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");  	        		        	
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+        	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
+        	dccGrpTagSearchMap.put("hogi",dccSearchStatus.getHogi()==null?  "": dccSearchStatus.getHogi());
+        	dccGrpTagSearchMap.put("dive",dccSearchStatus.getGubun()== null?  "": dccSearchStatus.getGubun());
+    		dccGrpTagSearchMap.put("grpID", dccSearchStatus.getGrpId()==null?  "": dccSearchStatus.getGrpId());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchStatus.getMenuNo()==null?  "": dccSearchStatus.getMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchStatus.getGrpNo()==null?  "": dccSearchStatus.getGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", dccVal.get("lblDataList"));
+        	mav.addObject("DccTagInfoList", tagDccInfoList);
+        	
+        	mav.addObject("BaseSearch", dccSearchStatus);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));        	
+        }
+
+        return mav;
+    }
+	
+	@RequestMapping( value="reloadTpm", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadTpm(DccSearchStatus dccSearchStatus, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+		logger.info("############ reloadTpm");
+		
+		if(request.getSession().getAttribute("USER_INFO") != null) {
+			
+			dccSearchStatus.setMenuName(this.menuName);
+			
+			MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+
+        	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
+            	
+        		dccSearchStatus.setGubun("D");
+        		dccSearchStatus.setMenuNo("11");
+        		dccSearchStatus.setGrpId("mimic");
+	        	dccSearchStatus.setGrpNo("14");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");  	        		        	
+        	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -2627,18 +4177,22 @@ public class DccStatusContentsController {
 		if(request.getSession().getAttribute("USER_INFO") != null) {    
     		
     		dccSearchStatus.setMenuName(this.menuName);
+    		
+    		MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
         		dccSearchStatus.setMenuNo("11");
         		dccSearchStatus.setGrpId("mimic");
-	        	dccSearchStatus.setGrpNo("13");
+	        	dccSearchStatus.setGrpNo("14");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");  
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	Map dccGrpTagSearchMap = new HashMap();
         	dccGrpTagSearchMap.put("xyGubun",dccSearchStatus.getXyGubun()==null?  "": dccSearchStatus.getXyGubun());
@@ -2652,7 +4206,7 @@ public class DccStatusContentsController {
 
     		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);    		
     		
-    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "chtemp");
+    		excelHelperUtil.statusExcelDownload(request, response, (List)dccVal.get("lblDataList"), tagDccInfoList, dccVal.get("SearchTime").toString(), "tpm");
 		}
 	}
 	
@@ -2664,13 +4218,17 @@ public class DccStatusContentsController {
         int res = 0;
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
         	dccSearchStatus.setMenuName(this.menuName);
+        	
         	String seqStr = dccStatusService.selectSeqInfo(dccSearchStatus);
-        	System.out.println(seqStr);
+        	
         	String[] seqs = seqStr == null ? "_".split("_") : seqStr.split("_");
         	
         	dccSearchStatus.setiSeq(seqs[0]);
         	dccSearchStatus.setySeq(seqs[1]);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	if(dccSearchStatus.getMenuNo() == null || dccSearchStatus.getMenuNo().isEmpty()) {
             	
@@ -2679,10 +4237,12 @@ public class DccStatusContentsController {
 	        	dccSearchStatus.setGrpNo("13");
 	        	dccSearchStatus.setGubun("D");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchStatus.setHogi(member.getHogi());
-	        	dccSearchStatus.setXyGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X"); 
         	}
+        	
+        	dccSearchStatus.setHogi(member.getHogi());
+        	dccSearchStatus.setXyGubun(member.getXyGubun());
         	
         	res = dccStatusService.updateTagInfo(dccSearchStatus);
         	
@@ -2727,7 +4287,7 @@ public class DccStatusContentsController {
         return mav;
     }
 	
-	private int getMidData(int iVal1, int iVal2, int iVal3) {
+	private int getMidData(double iVal1, double iVal2, double iVal3) {
 		
 		int rtn = 0 ;
 		

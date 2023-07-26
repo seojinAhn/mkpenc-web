@@ -23,13 +23,14 @@ import com.mkpenc.dcc.status.model.DccGrpTagInfo;
 import com.mkpenc.dcc.tip.service.DccTipService;
 import com.mkpenc.dcc.trend.mapper.DccTrendMapper;
 import com.mkpenc.dcc.trend.model.DccSearchTrend;
+import com.mkpenc.dcc.trend.model.TrendTagDccInfo;
 import com.mkpenc.dcc.trend.service.DccTrendService;
 
 
 @Service("dccTrendService")
 public class DccTrendServiceImpl implements DccTrendService{
 	
-	private static Logger logger = LoggerFactory.getLogger(DccTipService.class);
+	private static Logger logger = LoggerFactory.getLogger(DccTrendService.class);
 	private static final int cnstNull = -99999;
 	private static final int cnstErr = -32768;
 	private static final String cnstErrStr = "***IRR";
@@ -44,6 +45,118 @@ public class DccTrendServiceImpl implements DccTrendService{
 	
 	@Autowired
 	private BasDccOsmsMapper basDccOsmsMapper;
+	
+	public List<TrendTagDccInfo> getDccGrpTagList(Map searchMap) {
+		
+		List<ComDccGrpTagInfo> dccGrpTagInfoList = dccTrendMapper.selectDccGrpTagList(searchMap);
+		
+		List<TrendTagDccInfo> tagDccInfoList = new ArrayList();
+		
+		for(ComDccGrpTagInfo dccGrpTagInfo:dccGrpTagInfoList) {
+			
+			TrendTagDccInfo tagDccInfo = new TrendTagDccInfo();
+						
+			tagDccInfo.setHogi(dccGrpTagInfo.getHogi());
+			tagDccInfo.setADDRESS(dccGrpTagInfo.getADDRESS() == null? "": dccGrpTagInfo.getADDRESS());
+			tagDccInfo.setFASTIOCHK(dccGrpTagInfo.getFASTIOCHK());
+			
+			if(dccGrpTagInfo.getFASTIOCHK() == 1){
+				
+				String fldNo = basDccOsmsMapper.selectFastIoChk(dccGrpTagInfo) ;
+				
+				if(fldNo == null || fldNo.isEmpty()) {
+					tagDccInfo.setFLDNO_FAST(0);
+				}else {
+					tagDccInfo.setFLDNO_FAST(Integer.parseInt(fldNo));
+				}
+			}
+			
+			if(tagDccInfo.getFASTIOCHK() == 0 || (tagDccInfo.getFASTIOCHK() == 1 &&  tagDccInfo.getFLDNO_FAST() > 0)){
+				
+				tagDccInfo.setiSeq(dccGrpTagInfo.getiSeq());
+				tagDccInfo.setGrpHogi(dccGrpTagInfo.getGrpHogi());
+				tagDccInfo.setXYGubun(dccGrpTagInfo.getXYGubun());
+				tagDccInfo.setBScale(dccGrpTagInfo.getBSCAL());
+				tagDccInfo.setLOOPNAME(dccGrpTagInfo.getLOOPNAME() == null? "": dccGrpTagInfo.getLOOPNAME());
+				tagDccInfo.setUnit(ConvertUnit(dccGrpTagInfo.getUNIT() == null ? "" : dccGrpTagInfo.getUNIT()));
+				tagDccInfo.setAlarmType(dccGrpTagInfo.getTYPE() == null? "0": dccGrpTagInfo.getTYPE());
+								
+				//NULL EXIST
+				dccGrpTagInfo.setTYPE(dccGrpTagInfo.getTYPE() == null? "0": dccGrpTagInfo.getTYPE());
+				
+				switch(dccGrpTagInfo.getTYPE()) {
+						case "1":        			//HI, LO
+						case "2":   
+							tagDccInfo.setDataLimit1((dccGrpTagInfo.getLIMIT1() == null? -32768: dccGrpTagInfo.getLIMIT1()));
+							break;
+						case "3":        			//HI/LO, HI/VH, LO/VL
+						case "7":   
+						case "8":
+							tagDccInfo.setDataLimit1((dccGrpTagInfo.getLIMIT1() == null? -32768: dccGrpTagInfo.getLIMIT1()));
+							tagDccInfo.setDataLimit2((dccGrpTagInfo.getLIMIT2() == null? -32768: dccGrpTagInfo.getLIMIT2()));
+							break;
+						case "4":   				// HI(DTAB), LO(DTAB)
+						case "5":
+							tagDccInfo.setDataLimit1((dccGrpTagInfo.getLIMIT1() == null? -32768:1));
+							break;
+						case "6":					//HI/LO(DTAB)
+							tagDccInfo.setDataLimit1((dccGrpTagInfo.getLIMIT1() == null? -32768:1));
+							if(dccGrpTagInfo.getLIMIT2() == null) {
+								tagDccInfo.setDataLimit1(-32768);
+							} else {
+								tagDccInfo.setDataLimit2(1);
+							}
+							break;
+						 default :
+								tagDccInfo.setDataLimit1((dccGrpTagInfo.getLIMIT1() == null? -32768: dccGrpTagInfo.getLIMIT1()));
+								tagDccInfo.setDataLimit2((dccGrpTagInfo.getLIMIT2() == null?-32768: dccGrpTagInfo.getLIMIT2()));
+							 
+				} // end switch
+				
+				tagDccInfo.setSaveCore(dccGrpTagInfo.getSaveCoreChk());
+	            tagDccInfo.setIOTYPE(dccGrpTagInfo.getIOTYPE() == null? "": dccGrpTagInfo.getIOTYPE());
+	            tagDccInfo.setIOBIT(dccGrpTagInfo.getIOBIT());
+	            tagDccInfo.setTBLNO(dccGrpTagInfo.getTBLNO() == 0? -32768: dccGrpTagInfo.getTBLNO());
+	            tagDccInfo.setFLDNO(dccGrpTagInfo.getFLDNO() == 0? -32768: dccGrpTagInfo.getFLDNO());
+	            tagDccInfo.setDescr(dccGrpTagInfo.getDescr() == null? "": dccGrpTagInfo.getDescr());
+	            tagDccInfo.setMinVal(dccGrpTagInfo.getMinVal()+"");
+	            tagDccInfo.setMaxVal(dccGrpTagInfo.getMaxVal()+"");
+	            tagDccInfo.setDataLoop(dccGrpTagInfo.getTYPE() == null? "": dccGrpTagInfo.getDataLoop());
+	            tagDccInfo.setELOW(dccGrpTagInfo.getELOW());
+	            tagDccInfo.setEHIGH(dccGrpTagInfo.getEHIGH());
+	            tagDccInfo.setVLOW(dccGrpTagInfo.getVLOW());
+	            tagDccInfo.setVHIGH(dccGrpTagInfo.getVHIGH());
+				  
+				
+				// '-* AI2010, AI2140
+				if( tagDccInfo.getIOTYPE().equals("AI") &&  (tagDccInfo.getADDRESS().equals("2010") ||  tagDccInfo.getADDRESS().equals("2140"))){
+					tagDccInfo.setUnit("DAC");
+					tagDccInfo.setMinVal((Double.parseDouble(tagDccInfo.getMinVal()) / 0.0081)+"");
+					tagDccInfo.setMaxVal((Double.parseDouble(tagDccInfo.getMaxVal()) / 0.0081)+"");
+
+			    //   '-* AI2753, AI2754 (MPAG > KPAG)
+				}else if( tagDccInfo.getIOTYPE().equals("AI") &&  (tagDccInfo.getADDRESS().equals("2753") ||  tagDccInfo.getADDRESS().equals("2754"))){
+					tagDccInfo.setUnit("KPAG"); 
+					tagDccInfo.setMinVal((Double.parseDouble(tagDccInfo.getMinVal()) * 1000)+"");
+					tagDccInfo.setMaxVal((Double.parseDouble(tagDccInfo.getMaxVal()) * 1000)+"");
+				}else {
+					tagDccInfo.setUnit(ConvertUnit(dccGrpTagInfo.getUNIT() == null ? "" : dccGrpTagInfo.getUNIT()));
+				}
+				
+				if(tagDccInfo.getIOBIT() != 0) {
+					tagDccInfo.setToolTip(tagDccInfo.getDescr() + "[" +tagDccInfo.getHogi() +":" + tagDccInfo.getIOTYPE() +"-" + tagDccInfo.getADDRESS() + ":" + tagDccInfo.getIOBIT() + "]" );
+				}else {
+					tagDccInfo.setToolTip(tagDccInfo.getDescr() + "[" +tagDccInfo.getHogi() +":" + tagDccInfo.getIOTYPE() +"-" + tagDccInfo.getADDRESS() + "]" );
+				}
+												
+			}// end if
+			
+			tagDccInfoList.add(tagDccInfo);		
+		}
+		
+		return tagDccInfoList;
+		
+	}
 	
 	@Override
 	public List<Map> selectGroupName(Map trendSearchMap) {
@@ -103,9 +216,9 @@ public class DccTrendServiceImpl implements DccTrendService{
         			long secondsDifference = (currentTime -searchTime)  / 1000;
         			
         			if (secondsDifference > 1800) {
-        				rtnMap.put("ForeColor", "#FF");
+        				rtnMap.put("ForeColor", "#e85516");
         			}else {
-        				rtnMap.put("ForeColor", "#808000");
+        				rtnMap.put("ForeColor", "#05c8be");
         			}
 	        			
     			}catch (Exception e) {
@@ -491,7 +604,7 @@ public class DccTrendServiceImpl implements DccTrendService{
 		String millis = "";
 		String tmpMillis = dtm.indexOf(".") > -1 ? dtm.substring(dtm.indexOf(".")+1,dtm.length()) : "0";
 		
-		System.out.println("diff and isMinus ::: "+diff+", "+isMinus);
+		//System.out.println("diff and isMinus ::: "+diff+", "+isMinus);
 		
 		switch( type ) {
 		case "y":
@@ -538,7 +651,7 @@ public class DccTrendServiceImpl implements DccTrendService{
 			break;
 		case "mi":
 			int newMillis = Integer.parseInt(tmpMillis)*1000 + diff*1000;
-			System.out.println("tmpMillis : "+tmpMillis+", newMillis : "+newMillis);
+			//System.out.println("tmpMillis : "+tmpMillis+", newMillis : "+newMillis);
 			
 			if( newMillis < 0 ) {
 				if( newMillis < -1000 ) {
@@ -582,7 +695,7 @@ public class DccTrendServiceImpl implements DccTrendService{
 		String thistime = "";
 		String thistime2 = "";
 		
-		System.out.println("chkDate ::: "+curDate+", "+maxDate);
+		//System.out.println("chkDate ::: "+curDate+", "+maxDate);
 		while( convDtm(curDate,true).compareTo(convDtm(maxDate,true)) <= 0 ) {
 			//onlyDate.clear();
 			//onlyDate2.clear();
@@ -611,7 +724,7 @@ public class DccTrendServiceImpl implements DccTrendService{
 			} else {
 				eTime = dtf.format(convDtm(curDate,true).plusNanos(7000*10^6));
 				
-				System.out.println("chk1 :: "+eTime+", "+now_minTime);
+				//System.out.println("chk1 :: "+eTime+", "+now_minTime);
 				
 				if( convDtm(now_minTime,true).compareTo(convDtm(eTime,true)) > 0 ) {
 					for( int ti=1;ti<dccGrpTagList.size()+1;ti++ ) {
@@ -647,7 +760,7 @@ public class DccTrendServiceImpl implements DccTrendService{
 			}
 			
 			curDate = dtf.format(convDtm(curDate,true).plusNanos(lGap*10^6));
-			System.out.println("cur/only :: "+curDate+", "+onlyDate.get(1));
+			//System.out.println("cur/only :: "+curDate+", "+onlyDate.get(1));
 			if( convDtm(curDate,true).compareTo(convDtm(onlyDate.get(1).toString(),true)) == 0 ) {
 				curDate = dtf.format(convDtm(curDate,true).plusNanos(1000*10^6));
 			}
@@ -744,5 +857,70 @@ public class DccTrendServiceImpl implements DccTrendService{
 	@Override
 	public List<Map> selectSetIOList(DccSearchTrend dccSearchTrend) {
 		return dccTrendMapper.selectSetIOList(dccSearchTrend);
+	}
+	
+	@Override
+	public int updateTrendRange(Map trendSearchMap) {
+		return dccTrendMapper.updateTrendRange(trendSearchMap);
+	}
+	
+	@Override
+	public int addGroupTrendFixed(Map trendSearchMap) {
+		return dccTrendMapper.addGroupTrendFixed(trendSearchMap);
+	}
+	
+	@Override
+	public int updateGroupTrendFixed(Map trendSearchMap) {
+		return dccTrendMapper.updateGroupTrendFixed(trendSearchMap);
+	}
+	
+	@Override
+	public List<Map> selectMoveTagTrend(Map trendSearchMap) {
+		return dccTrendMapper.selectMoveTagTrend(trendSearchMap);
+	}
+	
+	@Override
+	public List<Map> selectTrendTagSearch(Map trendSearchMap){
+		return dccTrendMapper.selectTrendTagSearch(trendSearchMap);
+	}
+	
+	@Override
+	public String selectMaxUGrpNo(Map trendSearchMap) {
+		return dccTrendMapper.selectMaxUGrpNo(trendSearchMap);
+	}
+	
+	@Override
+	public int addGroupTrendSpare(Map trendSearchMap) {
+		return dccTrendMapper.addGroupTrendSpare(trendSearchMap);
+	}
+	
+	@Override
+	public int addGrpTagTrendSpare(Map trendSearchMap) {
+		return dccTrendMapper.addGrpTagTrendSpare(trendSearchMap);
+	}
+	
+	@Override
+	public int delGroupTrendSpare(Map trendSearchMap) {
+		return dccTrendMapper.delGroupTrendSpare(trendSearchMap);
+	}
+
+	@Override
+	public int delGrpTagTrendSpare(Map trendSearchMap) {
+		return dccTrendMapper.delGrpTagTrendSpare(trendSearchMap);
+	}
+	
+	@Override
+	public List<Map> selectGroupGetTrendSpare(Map trendSearchMap) {
+		return dccTrendMapper.selectGroupGetTrendSpare(trendSearchMap);
+	}
+	
+	@Override
+	public List<Map> selectGrpTagTrendSpare(Map trendSearchMap) {
+		return dccTrendMapper.selectGrpTagTrendSpare(trendSearchMap);
+	}
+	
+	@Override
+	public int insertGrpTagTrendSpare(Map trendSearchMap) {
+		return dccTrendMapper.insertGrpTagTrendSpare(trendSearchMap);
 	}
 }

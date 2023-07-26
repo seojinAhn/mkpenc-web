@@ -53,19 +53,18 @@ function mbr_DccGrpTagEventCallback(data){
 	compareVarBody.append(compareVarBodyStr);		
 }
 
-
 function mbr_MarkGrpTagEventCallback(data){
 	
 	var compareVarBody = $("#compareVarList");
 	var compareVarBodyStr = "";
 	
-	$.each(data.TagMarkInfoList, function(key, value){
+	$.each(data.TagMarkvInfoList, function(key, value){
 
 	  			compareVarBodyStr += "<tr>"
-                          					+ "  <td>"+  value.dataLoop  +"</td>";
+                          					+ "  <td>"+  value.signal_Name  +"</td>";
 
             	if( value.IOTYPE == "DT" && (value.alarmType == 4 || value.alarmType == 12)){
-                	   compareVarBodyStr	  += " <td class='tc'>%</td>";
+                	   compareVarBodyStr	  += " <td class='tc'>%asdfadf asdf</td>";
                 }else {
                 	   compareVarBodyStr	  += " <td class='tc'>"+  value.unit  +"</td>";
                 }
@@ -586,7 +585,187 @@ $(function () {
 	
 });	
 
+function mbr_performanceCallback(data) {
+	//console.log(data.BaseSearch);
+	setLblDate(data.SearchTime);
+	
+	if( data.BaseSearch.sUGrpNo == '2' ) {
+		lblDataListAjax = data.lblDataList;
+		lblSCMAjax = data.lblSCM;
+		dccGrpTagListAjax = data.DccGrpTagList;
+		
+		UserControl_Paint(0);
+	} else if( data.BaseSearch.sUGrpNo == '3' ) {
+		lblDataListAjax = data.lblDataList;
+		lblSCMAjax = data.lblSCM;
+		dccGrpTagListAjax = data.DccGrpTagList;
+	}
+	
+	setLblDataAjax(0);
+}
 
+function performanceCallback(data) {
+	var type = data.resultType;
+	
+	if( type == 'fixed' ) {
+		var tblBody = $("#compareVarList");
+		var tblBodyStr = '';
+		
+		if( data.TagDccInfoList != null ) {
+			for( var i=0;i<data.TagDccInfoList.length;i++ ) {
+				tblBodyStr += '<tr>'
+                            + '	<td>'+data.TagDccInfoList[i].dataLoop+'</td>';
+				if( data.TagDccInfoList[i].IOTYPE == 'DT' && (data.TagDccInfoList[i].alarmType == 4 || data.TagDccInfoList[i].alarmType == 12) ) {
+                	tblBodyStr += '	<td class="tc">%</td>';
+            	} else {
+					tblBodyStr += '	<td class="tc">'+data.TagDccInfoList[i].unit+'</td>';
+				}
+				
+				if( data.TagDccInfoList[i].minVal == 0 ) {
+                	tblBodyStr += '	<td class="tc">'+data.TagDccInfoList[i].maxVal+'</td>';
+            	} else if( data.TagDccInfoList[i].minVal == -1 ) {
+					tblBodyStr += '	<td class="tc">>'+data.TagDccInfoList[i].maxVal+'</td>';
+				} else if( data.TagDccInfoList[i].minVal == -2 ) {
+					tblBodyStr += '	<td class="tc"><'+data.TagDccInfoList[i].maxVal+'</td>';
+				} else if( data.TagDccInfoList[i].minVal == -3 ) {
+					tblBodyStr += '	<td class="tc"></td>';
+				} else {
+					tblBodyStr += '	<td class="tc">'+data.TagDccInfoList[i].minVal+' ~ '+data.TagDccInfoList[i].maxVal+'</td>';
+				}
+				tblBodyStr += '	<td class="tc">'+data.TagDccInfoList[i].spareAvgFldNo+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].spareStdevFldNo+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].spareMaxFldNo+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].spareMinFldNo+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].fixedAvgFldNo+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].fixedStdevFldNo+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].fixedMaxFldNo+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].fixedMinFldNo+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].gapAB+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].rateAB+'</td>'
+                            + '</tr>';
+			}
+		} else {
+			tblBodyStr += '<tr>'
+                     	+ '	<td></td>'
+                     	+ '	<td class="tc"></td>'
+                     	+ '	<td class="tc"></td>'
+                     	+ '	<td class="tc"></td>'
+                     	+ '	<td class="tc"></td>'
+                     	+ '	<td class="tc"></td>'
+                     	+ '	<td class="tc"></td>'
+                     	+ '	<td class="tc"></td>'
+                     	+ '	<td class="tc"></td>'
+                     	+ '	<td class="tc"></td>'
+                    	+ '	<td class="tc"></td>'
+                    	+ '	<td class="tc"></td>'
+                    	+ '	<td class="tc"></td>'
+                        + '</tr>';
+		}
+		  
+		tblBody.empty();
+		tblBody.append(tblBodyStr);
+	} else if( type == 'spare' ) {
+		var tblBody = $("#compareVarList");
+		var tblBodyStr = '';
+		
+		if( data.TagDccInfoList != null ) {
+			for( var i=0;i<data.TagDccInfoList.length;i++ ) {
+				tblBodyStr += '<tr>'
+                            + '	<td>'+data.TagDccInfoList[i].LOOPNAME- data.TagDccInfoList[i].spareAvgFldNo+'</td>';
+				if( data.TagDccInfoList[i].IOTYPE == 'DT' && (data.TagDccInfoList[i].alarmType == 4 || data.TagDccInfoList[i].alarmType == 12) ) {
+                	tblBodyStr += '	<td class="tc">%</td>';
+            	} else {
+					tblBodyStr += '	<td class="tc">'+data.TagDccInfoList[i].unit+'</td>';
+				}
+				
+				if( data.TagDccInfoList[i].minVal == 0 ) {
+                	tblBodyStr += '	<td class="tc">'+data.TagDccInfoList[i].maxVal+'</td>';
+            	} else if( data.TagDccInfoList[i].minVal == -1 ) {
+					tblBodyStr += '	<td class="tc">>'+data.TagDccInfoList[i].maxVal+'</td>';
+				} else if( data.TagDccInfoList[i].minVal == -2 ) {
+					tblBodyStr += '	<td class="tc"><'+data.TagDccInfoList[i].maxVal+'</td>';
+				} else if( data.TagDccInfoList[i].minVal == -3 ) {
+					tblBodyStr += '	<td class="tc"></td>';
+				} else {
+					tblBodyStr += '	<td class="tc">'+data.TagDccInfoList[i].minVal+' ~ '+data.TagDccInfoList[i].maxVal+'</td>';
+				}
+				tblBodyStr += '	<td class="tc">'+data.TagDccInfoList[i].spareAvgFldNo+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].spareStdevFldNo+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].spareMaxFldNo+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].spareMinFldNo+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].fixedAvgFldNo+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].fixedStdevFldNo+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].fixedMaxFldNo+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].fixedMinFldNo+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].gapAB+'</td>'
+                            + '	<td class="tc">'+data.TagDccInfoList[i].rateAB+'</td>'
+                            + '</tr>';
+			}
+		} else {
+			tblBodyStr += '<tr>'
+                     	+ '	<td></td>'
+                     	+ '	<td class="tc"></td>'
+                     	+ '	<td class="tc"></td>'
+                     	+ '	<td class="tc"></td>'
+                     	+ '	<td class="tc"></td>'
+                     	+ '	<td class="tc"></td>'
+                     	+ '	<td class="tc"></td>'
+                     	+ '	<td class="tc"></td>'
+                     	+ '	<td class="tc"></td>'
+                     	+ '	<td class="tc"></td>'
+                    	+ '	<td class="tc"></td>'
+                    	+ '	<td class="tc"></td>'
+                    	+ '	<td class="tc"></td>'
+                        + '</tr>';
+		}
+		  
+		tblBody.empty();
+		tblBody.append(tblBodyStr);
+	} else if( type == 'aicheck' ) {
+		lblDataListAjax = data.lblDataXList;
+		shpDataListAjax = data.shpDataXList;
+		lblDateAjax = data.XSearchTime;
+		lblDateColorAjax = data.XForeColor;
+		
+		setLblDate();
+		setData();
+	} else if( type == 'dccselfcheck' ) {
+		lblDataListXAjax = data.lblDataXList;
+		lblDataListYAjax = data.lblDataYList;
+		shpDataXAjax = data.shpDataXList;
+		shpDataYAjax = data.shpDataYList;
+		XSearchTimeAjax = data.XSearchTime;
+		YSearchTimeAjax = data.YSearchTime;
+		XForeColorAjax = data.lblDataListX;
+		YForeColorAjax = data.lblDataListX;
+		
+		setLblDate();
+		setData();
+	} else if( type == 'mainsysiostatus' ) {
+		lblDataListXAjax = data.lblDataXList;
+		lblDataListYAjax = data.lblDataYList;
+		XSearchTimeAjax = data.XSearchTime;
+		YSearchTimeAjax = data.YSearchTime;
+		XForeColorAjax = data.lblDataListX;
+		YForeColorAjax = data.lblDataListX;
+		
+		setLblDate();
+		setData();
+	} else if( type == 'programonoff' ) {
+		XSearchTimeAjax = data.XSearchTime;
+		XForeColorAjax = data.XForeColor;
+		lblDataXListAjax = data.lblDataXList;
+		shpDataXListAjax = data.shpDataXList;
+		
+		YSearchTimeAjax = data.YSearchTime;
+		YForeColorAjax = data.YForeColor;
+		lblDataYListAjax = data.lblDataYList;
+		shpDataYList = data.shpDataXList;
+		
+		setLblDate();
+		setData();
+	}
+}
 
 
 

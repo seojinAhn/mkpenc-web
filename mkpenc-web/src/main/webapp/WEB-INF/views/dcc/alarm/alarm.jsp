@@ -21,19 +21,17 @@
 <script type="text/javascript" src="<c:url value="/resources/datetimepicker/jquery.datetimepicker.full.min.js" />" charset="utf-8"></script>
 
 <script type="text/javascript" >
-	var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
-	var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
+	var timerOn = false;
 
 	$(function () {
-		if( $("input:radio[id='4']").is(":checked") ) {
-			hogiHeader = "4";
+		var curSDtm = '${BaseSearch.startDate}';
+		if( curSDtm.indexOf('.') > - 1 ) curSDtm = curSDtm.substring(0,19)
+		$("#lblDate").text('${UserInfo.hogi} ' + ' ${UserInfo.xyGubun} ' + curSDtm);
+		var diff = new Date().getTime() - new Date('${BaseSearch.startDate}').getTime();
+		if( diff / 1800000 > 1 ) {
+			$("#lblDate").css('color','#e85516');
 		} else {
-			hogiHeader = "3";
-		}
-		if( $("input:radio[id='Y']").is(":checked") ) {
-			xyHeader = "Y";
-		} else {
-			xyHeader = "X";
+			$("#lblDate").css('color','#05c8be');
 		}
 		
 		if( '${BaseSearch.startDate}' != null ) {
@@ -46,52 +44,29 @@
 		jQuery.datetimepicker.setLocale('ko');
 		
 		$('#selectDate').datetimepicker(DatetimepickerDefaults({}));
-
-		$(document.body).delegate('#3', 'click', function() {
-			sendPage(0,0,'3',xyHeader);
-		});
-		$(document.body).delegate('#4', 'click', function() {
-			sendPage(0,0,'4',xyHeader);
-		});
-		$(document.body).delegate('#X', 'click', function() {
-			sendPage(0,0,hogiHeader,'X');
-		});
-		$(document.body).delegate('#Y', 'click', function() {
-			sendPage(0,0,hogiHeader,'Y');
-		});
 		
 		$("#alarmSearch").click(function() {
-			sendPage(-9999,0,hogiHeader,xyHeader);
+			sendPage(-9999,0);
 		});
 		
 		$("#alarmDetail").click(function() {
-			sendPage(1,1,hogiHeader,xyHeader);
+			sendPage(1,1);
 		});
 		
-		$("#alarmSave").click(function() {
-			if( $("input:radio[id='4']").is(":checked") ) {
-				hogiHeader = $("#4").val();
-			} else {
-				hogiHeader = $("#3").val();
-			}
-			if( $("input:radio[id='Y']").is(":checked") ) {
-				xyHeader = $("#Y").val();
-			} else {
-				xyHeader = $("#X").val();
-			}
-			toTXT(hogiHeader,xyHeader);
+		$("#alarmSave").click(function() {			
+			toTXT();
 		});
 		
 		$("#btnCurrent").click(function() {
-			sendPage(0,0,hogiHeader,xyHeader);
+			sendPage(0,0);
 		});
 		
 		$("#btnPrev").click(function() {
-			sendPage(-1,0,hogiHeader,xyHeader);
+			sendPage(-1,0);
 		});
 		
 		$("#btnNext").click(function() {
-			sendPage(1,0,hogiHeader,xyHeader);
+			sendPage(1,0);
 		});
 		
 		$("#btnMove").click(function() {
@@ -106,14 +81,18 @@
 					goPage = goPage + (sql_injection('${DccAlarmList[0].pagNo}') == null ? 0 : sql_injection('${DccAlarmList[0].pagNo}')*1);
 				}
 				if( sql_injection($("#goPage").val())*1 > 0 ) {
-					sendPage(goPage,2,hogiHeader,xyHeader);
+					sendPage(goPage,2);
 				} else {
-					sendPage(goPage,0,hogiHeader,xyHeader);
+					sendPage(goPage,0);
 				}
 			}
 		});
 		
 	});
+	
+	function setTimer(num){
+		sendPage(num,num);
+	}
 	
 	function convNum(num,type) {
 		var tmp = num*1;
@@ -141,7 +120,7 @@
 		return num;
 	}
 	
-	function sendPage(pageNum,type,hogiHeader,xyHeader) {
+	function sendPage(pageNum,type) {
 		var sDate,sHour,sMin;
 		var today = new Date();
 		if($("#selectDate").val() != null && $("#selectDate").val() != "") {
@@ -162,14 +141,12 @@
 		}
 		comSubmit.addParam("startDate",sDate+':00.000');
 		comSubmit.addParam("endDate",sDate+':00.000');
-		comSubmit.addParam("hogiHeader", hogiHeader);
-		comSubmit.addParam("xyHeader", xyHeader);
 		comSubmit.addParam("currentPage", pageNum);
 		comSubmit.addParam("pagNo", '${DccAlarmList[0].seq}');
 		comSubmit.submit();
 	}
 	
-	function toTXT(hogiHeader,xyHeader) {
+	function toTXT() {
 		var goPage = sql_injection($("#goPage").val()) == null ? 0 : sql_injection($("#goPage").val())*1;
 		if( sql_injection($("#goPage").val()) != null ) {
 			goPage = goPage + (sql_injection('${DccAlarmList[0].pagNo}') == null ? 0 : sql_injection('${DccAlarmList[0].pagNo}')*1);
@@ -177,8 +154,6 @@
 		var	comSubmit = new ComSubmit("searchForm");
 		comSubmit.setUrl("/dcc/alarm/alarmTxtExport");
 		comSubmit.addParam("pType", "S1");
-		comSubmit.addParam("hogiHeader", hogiHeader);
-		comSubmit.addParam("xyHeader", xyHeader);
 		comSubmit.addParam("currentPage", goPage);
 		comSubmit.addParam("pagNo", '${DccAlarmList[0].seq}');
 		comSubmit.submit();
@@ -221,7 +196,7 @@
 			<!-- page_title -->
 			<div class="page_title">
 				<h3>ALARM</h3>
-				<div class="bc"><span>DCC</span><span>Alarm</span><strong>Alarm</strong></div>
+				<div class="bc"><span>DCC</span><span>Alarm</span><strong>ALARM</strong></div>
 			</div>
 			<!-- //page_title -->
 			<!-- fx_srch_wrap -->

@@ -18,6 +18,7 @@
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/admin.js" />" charset="utf-8"></script>
 <script type="text/javascript" >
+var timerOn = false;
 
 	$(function () {
 		
@@ -27,15 +28,40 @@
 		});
 		
 		$(document.body).delegate('#userInfoTable tr', 'click', function() {
+			var mGroup = $(this).children().eq(3).text();
+			var mUseYN = $(this).children().eq(8).text() == '승인' ? 'Y' : 'N';
+			var mGrade = '일반';
+			switch( $(this).children().eq(4).text() ) {
+				case '슈퍼관리자':
+					mGrade = '슈퍼';
+					break;
+				case 'DCC 관리자':
+					mGrade = 'DCC';
+					break;
+				case 'MARK-V 관리자':
+					mGrade = 'MARK';
+					break;
+			}
 			
-			$("#uId").val($(this).children().eq(0).text());
-			$("#uUserName").val($(this).children().eq(1).text());		      
-			$("#uPwd").val("");
-			$("select[name='uGroupCode'] option:contains('"+$(this).children().eq(3).text() +"')").attr("selected", "selected")
-			$("select[name='uGrade'] option:contains('"+$(this).children().eq(4).text() +"')").attr("selected", "selected")
-			$("select[name='uLoginHogi'] option:contains('"+$(this).children().eq(5).text() +"')").attr("selected", "selected")
-			$("select[name='uUseYN'] option:contains('"+$(this).children().eq(8).text() +"')").attr("selected", "selected")
-			$("#uEmail").val($(this).children().eq(9).text());
+			$("#uUId").val($(this).children().eq(0).text());
+			$("#uUUserName").val($(this).children().eq(1).text());		      
+			$("#uUPwd").val($(this).children().eq(2).text());
+			//$("select[name='uUGroupCode'] option:contains('"+$(this).children().eq(3).text() +"')").attr("selected", "selected")
+			$("select[name='uUGroupCode'] option:contains('"+mGroup+"')").each(function() {
+				if( $.trim(mGroup) == $.trim($(this).text()) ) {
+					$(this).attr("selected", "selected");
+					return false;
+				}
+				return true;
+			});
+			//$("select[name='uUGrade'] option:contains('"+$(this).children().eq(4).text() +"')").attr("selected", "selected")
+			$("select[name='uUGrade'] option:contains('"+mGrade+"')").attr("selected", "selected")
+			$("select[name='uULoginHogi'] option:contains('"+$(this).children().eq(5).text() +"')").attr("selected", "selected")
+			//$("select[name='uUUseYN'] option:contains('"+$(this).children().eq(8).text() +"')").attr("selected", "selected")
+			$("select[name='uUUseYN'] option:contains('"+mUseYN+"')").attr("selected", "selected")
+			$("#uUEmail").val($(this).children().eq(9).text());
+			
+			openLayer('modal_3');
 		});
 	
 		$("#memberSearch").click(function(){
@@ -51,7 +77,7 @@
 			if($("#searchKey option:selected").val() == ""){
 				$("#searchWord").val("");
 			}
-		});		
+		});
 		
 		$("#userSave").click(function(){
 			
@@ -119,7 +145,7 @@
 			var	comSubmit	=	new ComSubmit("memberInsertForm");
 			comSubmit.setUrl("/dcc/admin/memberInsert");
 			comSubmit.submit();
-		});	
+		});
 		
 		$("#userGroupInsert").click(function(){
 			usrGrpEvent(1);
@@ -143,7 +169,7 @@
 			}
 			
 			if (confirm("사용자 암호를 변경 합니다..!!")) {
-				var	comSubmit	=	new ComSubmit("memberUpdateForm");
+				var	comSubmit	=	new ComSubmit("memberUUpdateForm");
 				comSubmit.setUrl("/dcc/admin/memberUpdate");
 				comSubmit.submit();
 			} else {
@@ -155,7 +181,7 @@
 		$("#userDelete").click(function(){
 			
 			if(confirm("사용자 정보를 삭제 합니다.")){
-				var	comSubmit	=	new ComSubmit("memberUpdateForm");
+				var	comSubmit	=	new ComSubmit("memberUUpdateForm");
 				comSubmit.setUrl("/dcc/admin/memberDelete");
 				comSubmit.submit();
 			} else {
@@ -251,10 +277,10 @@
 							<select id="groupCode" name="groupCode">
 								<option value="">전체</option>
 								<c:forEach var="groupComboInfo" items="${GroupComboList}">
-								    <c:if test="${DccSearchAdmin.groupCode eq groupComboInfo.groupCode }"> 
+								    <c:if test="${BaseSearch.groupCode eq groupComboInfo.groupCode }"> 
 										<option value="${groupComboInfo.groupCode}" selected>${groupComboInfo.groupName}</option>
 									</c:if>
-									<c:if test="${DccSearchAdmin.groupCode ne groupComboInfo.groupCode }"> 
+									<c:if test="${BaseSearch.groupCode ne groupComboInfo.groupCode }"> 
 										<option value="${groupComboInfo.groupCode}"> ${groupComboInfo.groupName}</option>
 									</c:if>
 								</c:forEach>
@@ -264,16 +290,16 @@
 							<label>승인여부</label>
 							<select id="useYn" name="useYN" >
 								<option value="">전체</option>
-								 <c:if test="${DccSearchAdmin.useYN eq 'Y' }"> 
+								 <c:if test="${BaseSearch.useYN eq 'Y' }"> 
 									<option value="Y" selected>승인</option>
 								</c:if>
-								<c:if test="${DccSearchAdmin.useYN ne 'Y' }"> 
+								<c:if test="${BaseSearch.useYN ne 'Y' }"> 
 									<option value="Y" >승인</option>
 								</c:if>
-								<c:if test="${DccSearchAdmin.useYN eq 'N' }"> 
+								<c:if test="${BaseSearch.useYN eq 'N' }"> 
 									<option value="N" selected>미승인</option>
 								</c:if>
-								<c:if test="${DccSearchAdmin.useYN ne 'N' }"> 
+								<c:if test="${BaseSearch.useYN ne 'N' }"> 
 									<option value="N" >미승인</option>
 								</c:if>					        									
 							</select>
@@ -282,21 +308,21 @@
 							<label>검색조건</label>
 							<div class="fx_form">
 								<select id="searchKey" name="searchKey" class="fx_none" style="width:90px;">
-									<option value="">전체</option>
-									<c:if test="${DccSearchAdmin.searchKey eq 'userId' }"> 
+									<option value="all">전체</option>
+									<c:if test="${BaseSearch.searchKey eq 'userId' }"> 
 										<option value="userId" selected>아이디</option>
 									</c:if>
-									<c:if test="${DccSearchAdmin.searchKey ne 'userId' }"> 
+									<c:if test="${BaseSearch.searchKey ne 'userId' }"> 
 										<option value="userId" >아이디</option>
 									</c:if>
-									<c:if test="${DccSearchAdmin.searchKey eq 'userName' }">
+									<c:if test="${BaseSearch.searchKey eq 'userName' }">
 					        			<option value="userName" selected>이름</option>
 					        		</c:if>
-					        		<c:if test="${DccSearchAdmin.searchKey ne 'userName' }">
+					        		<c:if test="${BaseSearch.searchKey ne 'userName' }">
 					        			<option value="userName">이름</option>
 					        		</c:if>					        		
 								</select>
-								<input type="text" id="searchWord" name="searchWord" value="${DccSearchAdmin.searchWord}">
+								<input type="text" id="searchWord" name="searchWord" value="${BaseSearch.searchWord}">
 							</div>
 						</div>
 					</div>
@@ -316,7 +342,7 @@
 				<!-- list_head -->
 				<div class="list_head">
 					<div class="list_info">
-						<label>Total : <strong>${DccSearchAdmin.totalCnt}</strong></label>
+						<label>Total : <strong>${BaseSearch.totalCnt}</strong></label>
 					</div>
 					<!-- button -->
 					<div class="button">
@@ -385,7 +411,7 @@
 							      <c:when test="${memberInfo.useYn eq 'Y' }"> 
 							      		<td class="tc">승인</td>
 							      </c:when>
-							      <c:when test="${memberInfo.useYn eq 'N' }"> 
+							      <c:when test="${memberInfo.useYn ne 'Y' }"> 
 							      		<td class="tc">미승인</td>
 							      </c:when>  
 							</c:choose>                            
@@ -613,7 +639,7 @@
 	<div class="pop_contents">
 		<!-- form_wrap -->
 		<div class="form_wrap">
-		<form id="memberUpdateForm" name="memberUpdateForm">
+		<form id="memberUUpdateForm" name="memberUUpdateForm">
 			<!-- form_table -->
             <table class="form_table">
                 <colgroup>
@@ -622,17 +648,17 @@
                 </colgroup>
                 <tr>
                     <th>아이디 *</th>
-                    <td><input type="text"  id="uId" name="uId" readonly></td>
+                    <td><input type="text"  id="uUId" name="uUId" readonly></td>
                 </tr>
                 <tr>
                     <th>성명 *</th>
-                    <td><input type="text"  id="uUserName" name="uUserName"  disabled></td>
+                    <td><input type="text"  id="uUUserName" name="uUUserName" ></td>
                 </tr>
                 <tr>
                     <th>암호 *</th>
                     <td>
                         <div class="fx_form">
-                            <input type="password" class="fx_none" style="width:140px;"  id="uPwd" name="uPwd">
+                            <input type="password" class="fx_none" style="width:140px;"  id="uUPwd" name="uUPwd">
                             <label class="description">* 영문/숫자 혼용 6자리 ~ 10자리 이내</label>
                         </div>
                     </td>
@@ -640,7 +666,7 @@
                 <tr>
                     <th>부서 *</th>
                     <td>
-                        <select id="uGroupCode" name="uGroupCode" disabled>
+                        <select id="uUGroupCode" name="uUGroupCode">
                             <option value="">없음</option>
                             <c:forEach var="groupComboInfo" items="${GroupComboList}">
 									<option value="${groupComboInfo.groupCode}"> ${groupComboInfo.groupName}</option>
@@ -651,7 +677,7 @@
                 <tr>
                     <th>권한 *</th>
                     <td>
-                        <select id="uGrade" name="uGrade" disabled>
+                        <select id="uUGrade" name="uUGrade">
                             <option value="1">슈퍼관리자</option>
                             <option value="2">DCC관리자</option>
                             <option value="3">MARK-V관리자</option>
@@ -662,7 +688,7 @@
                 <tr>
                     <th>호기 *</th>
                     <td>
-                        <select id="uLoginHogi" name="uLoginHogi" disabled>
+                        <select id="uULoginHogi" name="uULoginHogi">
                             <option  value="3">3호기</option>
                             <option  value="4">4호기</option>
                         </select>
@@ -670,7 +696,7 @@
                 </tr>
                 <tr>
                     <th>이메일 *</th>
-                    <td><input type="text"  id="uEmail" name="uEmail" disabled></td>
+                    <td><input type="text"  id="uUEmail" name="uUEmail"></td>
                 </tr>
                 <tr>
                     <th>참조복사</th>
@@ -690,7 +716,7 @@
                 <tr>
                     <th>승인유무 *</th>
                     <td>
-                        <select  id="uUseYN" name="uUseYN" disabled>
+                        <select  id="uUUseYN" name="uUUseYN">
                             <option value="Y">승인</option>
                             <option value="N">미승인</option>
                         </select>

@@ -18,7 +18,26 @@
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/trend.js" />" charset="utf-8"></script>
 <script type="text/javascript">
+var timerOn = true; //true로 변경
+var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
+var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
+
+
 $(function () {
+	
+	if( $("input:radio[id='4']").is(":checked") ) {
+		hogiHeader = "4";
+	} else {
+		hogiHeader = "3";
+	}
+	if( $("input:radio[id='Y']").is(":checked") ) {
+		xyHeader = "Y";
+	} else {
+		xyHeader = "X";
+	}
+	
+	var lblDateVal = '${SearchTime}';
+	$("#lblDate").text(lblDateVal);
 	
   	$("#sUGrpNo").change(function(){
   		
@@ -30,8 +49,25 @@ $(function () {
 			comSubmit.submit();
   		}
   	});
+  	
+	setTimer(hogiHeader,xyHeader,5000);
 	
 });
+
+
+function setTimer(hogiHeader,xyHeader,interval) {
+	
+	if( interval > 0 ) {
+		setTimeout(function() {
+			if( timerOn ) {
+				var	comSubmit	=	new ComSubmit("trendLogFrm");
+				comSubmit.setUrl("/dcc/trend/logsharelist");
+				comSubmit.submit();
+			}
+		},interval);
+	} 
+}
+
 
 </script>
 
@@ -47,14 +83,19 @@ $(function () {
 		<div class="contents">
 			<!-- page_title -->
 			<div class="page_title">
-				<h3>Trend Log(Share)</h3>
-				<div class="bc"><span>DCC</span><span>Trend</span><strong>Trend Log(Share)</strong></div>
+				<h3>Trend Log(Spare)</h3>
+				<div class="bc"><span>DCC</span><span>Trend</span><strong>Trend Log(Spare)</strong></div>
 			</div>
 			<!-- //page_title -->
 			<!-- list_wrap -->
 			<div class="list_wrap">
 				<!-- list_head -->
 				<form id="trendLogFrm" name="trendLogFrm">
+				<input type = "hidden" id="sGrpID" name="sGrpID" value="Trend">
+				<input type = "hidden" id="sMenuNo" name="sMenuNo" value = "24">
+				<input type = "hidden" id="sDive" name="sDive" value = "D">
+				<input type = "hidden" id="sHogi" name="sHogi" value="${UserInfo.hogi }">
+				<input type = "hidden" id="sXYGubun" name="sXYGubun" value="${UserInfo.xyGubun }">
 				<div class="list_head">
 					<div class="list_info">
                          <select style="width:400px;" id="sUGrpNo" name="sUGrpNo">

@@ -91,6 +91,13 @@
 		,'${DccTagInfoList[65].toolTip}'		,'${DccTagInfoList[66].toolTip}'
 	];
 	
+	var lblDataListAjax = {};
+	var DccTagInfoListAjax = {};
+	var lblConvListAjax = {};
+	var vINDValListAjax = {};
+	var shpINDAjax = {};
+	var shpIND2Ajax = {};
+	
 	var selectTag = [{name:"hogi",value:""},{name:"xyGubun",value:""},{name:"loopName",value:""},{name:"ioType",value:""}
 					,{name:"address",value:""},{name:"ioBit",value:""},{name:"descr",value:""}];
 	
@@ -206,7 +213,7 @@
 		$("#lblFP7").text(lblFP[7]);
 		$("#lblFP8").text(lblFP[8]);
 		
-		$("#shpIND0").attr("class","st_label st_cond_out");
+		/*$("#shpIND0").attr("class","st_label st_cond_out");
 		$("#shpIND1").attr("class","st_label st_cond_out");
 		$("#shpIND2").attr("class","st_label st_cond_out");
 		$("#shpIND3").attr("class","st_label st_cond_out");
@@ -218,10 +225,10 @@
 		
 		var in0,in1,in2,in3,in4,in5,in6,in7,in8 = false;
 		var iy0,iy1,iy2,iy3,iy4,iy5,iy6,iy7,iy8 = false;
-		var val6 = tDccTrendValue[6] == 'ON' ? 1 : 0;
-		var val7 = tDccTrendValue[7] == 'ON' ? 1 : 0;
-		var val8 = tDccTrendValue[8] == 'ON' ? 1 : 0;
-		var val9 = tDccTrendValue[9] == 'ON' ? 1 : 0;
+		var val6 = tDccTrendValue[6]*1;
+		var val7 = tDccTrendValue[7]*1;
+		var val8 = tDccTrendValue[8]*1;
+		var val9 = tDccTrendValue[9]*1;
 		
 		in0 = 10**(tDccTrendValue[65]*1) < lblFP[0]*1 ? true : false;
 		in1 = 10**(tDccTrendValue[65]*1) < lblFP[1]*1 ? true : false;
@@ -244,111 +251,92 @@
 			$("#shpIND0").attr("class","st_label st_yes");
 		} else {
 			if( in0 ) {
-				$("#shpIND0").attr("class","st_label st_no");
-			} else {
 				$("#shpIND0").attr("class","st_label st_cond_out");
+			} else {
+				$("#shpIND0").attr("class","st_label st_no");
 			}
 		}
 		if( iy1 ) {
 			$("#shpIND1").attr("class","st_label st_yes");
 		} else {
 			if( in1 ) {
-				$("#shpIND1").attr("class","st_label st_no");
-			} else {
 				$("#shpIND1").attr("class","st_label st_cond_out");
+			} else {
+				$("#shpIND1").attr("class","st_label st_no");
 			}
 		}
 		if( iy2 ) {
 			$("#shpIND2").attr("class","st_label st_yes");
 		} else {
 			if( in2 ) {
-				$("#shpIND2").attr("class","st_label st_no");
-			} else {
 				$("#shpIND2").attr("class","st_label st_cond_out");
+			} else {
+				$("#shpIND2").attr("class","st_label st_no");
 			}
 		}
 		if( in3 ) {
-			$("#shpIND3").attr("class","st_label st_no");
-		} else {
 			$("#shpIND3").attr("class","st_label st_cond_out");
+		} else {
+			$("#shpIND3").attr("class","st_label st_no");
 		}
 		if( in4 ) {
-			$("#shpIND4").attr("class","st_label st_no");
-		} else {
 			$("#shpIND4").attr("class","st_label st_cond_out");
+		} else {
+			$("#shpIND4").attr("class","st_label st_no");
 		}
 		if( iy5 ) {
 			$("#shpIND5").attr("class","st_label st_yes");
 		} else {
 			if( in5 ) {
-				$("#shpIND5").attr("class","st_label st_no");
-			} else {
 				$("#shpIND5").attr("class","st_label st_cond_out");
+			} else {
+				$("#shpIND5").attr("class","st_label st_no");
 			}
 		}
 		if( in6 ) {
-			$("#shpIND6").attr("class","st_label st_no");
-		} else {
 			$("#shpIND6").attr("class","st_label st_cond_out");
+		} else {
+			$("#shpIND6").attr("class","st_label st_no");
 		}
 		if( in7 ) {
-			$("#shpIND7").attr("class","st_label st_no");
-		} else {
 			$("#shpIND7").attr("class","st_label st_cond_out");
+		} else {
+			$("#shpIND7").attr("class","st_label st_no");
 		}
 		if( iy8 ) {
 			$("#shpIND8").attr("class","st_label st_yes");
 		} else {
 			if( in8 ) {
-				$("#shpIND8").attr("class","st_label st_no");
-			} else {
 				$("#shpIND8").attr("class","st_label st_cond_out");
+			} else {
+				$("#shpIND8").attr("class","st_label st_no");
 			}
-		}
+		}*/
+	}
+	
+	function setInitToolTip() {
+		$("#lblConv0").prop("title",'${DccTagInfoList[0].toolTip},${DccTagInfoList[1].toolTip},${DccTagInfoList[2].toolTip}');
+		$("#lblConv3").prop("title",'${DccTagInfoList[3].toolTip},${DccTagInfoList[4].toolTip},${DccTagInfoList[5].toolTip}');
 	}
 	
 	$(function(){
-		if( $("#hogiHeader4").attr("class") == 'current' && $("#hogiHeader4").attr("class") != 'undefined' && $("#hogiHeader4").attr("class") != '') {
-			hogiHeader = "4";
-		} else {
-			hogiHeader = "3";
-		}
 		
-		if( $("input:checkbox[id='xy']").is(":checked") ) {
-			xyHeader = "Y";
-		} else {
-			xyHeader = "X";
-		}
-		
-		var lblDateVal = '${BaseSearch.hogi}'+'${BaseSearch.xyGubun}'+' '+'${DccLogTrendInfoList[0].SCANTIME}';
-		$("#lblDate").text(lblDateVal);
+		$("#lblDate").text('${SearchTime}');
+		$("#lblDate").css('color','${ForeColor}');
 
 		setConst();
+		setInitToolTip();
 
-		$(document.body).delegate('#hogiHeader3', 'click', function() {
-			setTimer('3',xyHeader,0);
-		});
-		$(document.body).delegate('#hogiHeader4', 'click', function() {
-			setTimer('4',xyHeader,0);
-		});
-		$(document.body).delegate('#xy', 'click', function() {
-			if( $("input:checkbox[id='xy']").is(":checked") ) {
-				xyHeader = "Y";
-			} else {
-				xyHeader = "X";
-			}
-			setTimer(hogiHeader,xyHeader,0);
-		});
 		$(document.body).delegate('#dccStatusSTBForm label', 'dblclick', function() {
 			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
 			cId = getToolTipText(cId).split("||")[0];
 			if( cId != null && cId != '' && cId != 'undefined' && cId.indexOf('lbl') == -1 && cId.indexOf('shp') == -1 ) {
-				showTag(cId,tDccTagSeq[cId]);
+				//showTag(cId,tDccTagSeq[cId]);
 			}
 		});
 		$(document.body).delegate('#dccStatusSTBForm label', 'mouseover focus', function() {
 			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
-			showTooltip(cId);
+			//showTooltip(cId);
 		});
 		$(document.body).delegate('#tagSearchTable tr', 'click', function() {
 			for( var t=0;t<selectTag.length;t++ ) {
@@ -411,27 +399,74 @@
 		$(document.body).delegate('#tagSearchList tr', 'dblclick', function() {
 			tagSelect();
 		});
-		
-		setTimer(hogiHeader,xyHeader,5000);
+		console.log(tDccTrendValue);
+		setTimer(5000);
 	});
 		
-	function setTimer(hogiHeader,xyHeader,interval) {
+	function setTimer(interval) {
 		if( interval > 0 ) {
-			setTimeout(function() {
+			setTimeout(function run() {
 				if( timerOn ) {
-					var	comSubmit	=	new ComSubmit("reloadFrm");
-					comSubmit.setUrl("/dcc/status/stepbackstatus");
-					comSubmit.addParam("hogiHeader",hogiHeader);
-					comSubmit.addParam("xyHeader",xyHeader);
-					comSubmit.submit();
+					//var	comSubmit	=	new ComSubmit("reloadFrm");
+					//comSubmit.setUrl("/dcc/status/stepbackstatus");
+					//comSubmit.submit();
+					var comAjax = new ComAjax("reloadFrm");
+					comAjax.setUrl('/dcc/status/reloadStepbackstatus');
+					//comAjax.addParam("sHogi",hogiHeader);
+					//comAjax.addParam("sXYGubun",xyHeader);
+					comAjax.setCallback('statusCallback');
+					comAjax.ajax();
 				}
+				
+				setTimeout(run,interval);
 			},interval);
 		} else {
-			var	comSubmit	=	new ComSubmit("reloadFrm");
-			comSubmit.setUrl("/dcc/status/stepbackstatus");
-			comSubmit.addParam("hogiHeader",hogiHeader);
-			comSubmit.addParam("xyHeader",xyHeader);
-			comSubmit.submit();
+			setTimeout(function run() {
+				if( timerOn ) {
+					//var	comSubmit	=	new ComSubmit("reloadFrm");
+					//comSubmit.setUrl("/dcc/status/stepbackstatus");
+					//comSubmit.submit();
+					var comAjax = new ComAjax("reloadFrm");
+					comAjax.setUrl('/dcc/status/reloadStepbackstatus');
+					//comAjax.addParam("sHogi",hogiHeader);
+					//comAjax.addParam("sXYGubun",xyHeader);
+					comAjax.setCallback('statusCallback');
+					comAjax.ajax();
+				}
+				
+				setTimeout(run,5000);
+			},5000);
+		}
+	}
+
+	function setDate(time,color) {
+		$("#lblDate").text(time);
+		$("#lblDate").css("color",color);
+	}
+	
+	function setData() {
+		for( var i=0;i<lblDataListAjax.length;i++ ) {
+			if( i > 5 ) {
+				$("#lblData"+i).text(lblDataListAjax[i].fValue);
+				$("#lblData"+i).prop("title",DccTagInfoListAjax[i].toolTip);
+			}
+		}
+		for( var j=0;j<lblConvListAjax.length;j++ ) {
+			$("#lblConv"+i).text(lblConvListAjax[i].fValue);
+			$("#lblConv"+i).prop("title",DccTagInfoListAjax[i*3].toolTip+','+DccTagInfoListAjax[i*3+1].toolTip+','+DccTagInfoListAjax[i*3+2].toolTip);
+		}
+		for( var k=0;k<vINDValListAjax.length;k++ ) {
+			$("#vINDVal"+i).text(vINDValListAjax[i].fData);
+			$("#vINDVal"+i).prop("title",DccTagInfoListAjax[i+6].toolTip);
+		}
+		for( var l=0;l<shpINDAjax.length;l++ ) {
+			if( !shpINDAjax[l] && !shpIND2Ajax[l] ) {
+				$("#shpIND"+i).attr("class","st_label st_yes");
+			} else if( shpINDAjax[l] ) {
+				$("#shpIND"+i).attr("class","st_label st_no");
+			} else if( shpIND2Ajax[l] ) {
+				$("#shpIND"+i).attr("class","st_label st_cond_out");
+			}
 		}
 	}
 	
@@ -557,7 +592,12 @@
                 </div>
                 <!-- //마우스 우클릭 메뉴 -->
 				<!-- form_head -->
-                <form id="reloadFrm" style="display:none"></form>
+                <form id="reloadFrm" style="display:none">
+                <input type="hidden" id="gubun" name="gubun" value="${BaseSearch.gubun}">
+				<input type="hidden" id="menuNo" name="menuNo" value="${BaseSearch.menuNo}">
+				<input type="hidden" id="grpId" name="grpId" value="${BaseSearch.grpId}">
+				<input type="hidden" id="grpNo" name="grpNo" value="${BaseSearch.grpNo}">
+				</form>
                 <form id="dccStatusSTBForm">
 				<div class="form_head">
 					<div class="form_info">
@@ -571,16 +611,16 @@
                         </div>
                         <div class="fx_legend txt_type">
                             <ul>
-                                <li class="title">MCA</li>
-                                <li>1)&nbsp;<label id="57" style="font-weight:500;">${lblDataList[57].fValue}</label></li>
-                                <li>2)&nbsp;<label id="58" style="font-weight:500;">${lblDataList[58].fValue}</label></li>
-                                <li>3)&nbsp;<label id="59" style="font-weight:500;">${lblDataList[59].fValue}</label></li>
-                                <li>4)&nbsp;<label id="60" style="font-weight:500;">${lblDataList[60].fValue}</label></li>
+                                <li class="title">MCA(%IN)</li>
+                                <li>1)&nbsp;<label id="lblData57" title="${DccTagInfoList[57].toolTip}" style="font-weight:500;">${lblDataList[57].fValue}</label></li>
+                                <li>2)&nbsp;<label id="lblData58" title="${DccTagInfoList[58].toolTip}" style="font-weight:500;">${lblDataList[58].fValue}</label></li>
+                                <li>3)&nbsp;<label id="lblData59" title="${DccTagInfoList[59].toolTip}" style="font-weight:500;">${lblDataList[59].fValue}</label></li>
+                                <li>4)&nbsp;<label id="lblData60" title="${DccTagInfoList[60].toolTip}" style="font-weight:500;">${lblDataList[60].fValue}</label></li>
                             </ul>
                         </div>
 					</div>
 				</div>
-				<!-- //form_head -->                      
+				<!-- //form_head -->
                 <!-- form_table -->
                 <table class="form_table">
                     <colgroup>
@@ -610,17 +650,17 @@
 	                                <c:if test="${shpIND[0] eq true}">
 	                                    <span id="shpIND0" class="st_label st_yes"></span>
 	                                </c:if>
-	                               	<c:if test="${shpIND2[6] eq true}">
+	                               	<c:if test="${shpIND2[0] eq true}">
 	                                    <span id="shpIND0" class="st_label st_cond_out"></span>
 	                                </c:if>
-                                    <label>RX TRIP</label>
+                                    <label title="Reactor Trip">RX TRIP</label>
                                 </div>
                             </th>
                             <td class="tc">-----------</td>
                             <th class="tc">SDS #1</th>
-                            <td class="tc"><label id="0">${lblConvList[0].fValue}</label></td>
+                            <td class="tc"><label id="lblConv0">${lblConvList[0].fValue}</label></td>
                             <th class="tc">SDS #2</th>
-                            <td class="tc"><label id="3">${lblConvList[1].fValue}</label></td>
+                            <td class="tc"><label id="lblConv3">${lblConvList[1].fValue}</label></td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
@@ -640,14 +680,14 @@
 	                               	<c:if test="${shpIND2[1] eq true}">
 	                                    <span id="shpIND1" class="st_label st_cond_out"></span>
 	                                </c:if>
-                                    <label>PHT 1P TRIP</label>
+                                    <label title="HT Pump Trip">PHT 1P TRIP</label>
                                 </div>
                             </th>
                             <td class="tc">-----------</td>
                             <th class="tc">PHP #1</th>
-                            <td class="tc"><label id="6">${vINDValList[0].fData}</label></td>
+                            <td class="tc"><label id="vINDVal0" title="${DccTagInfoList[6].toolTip}">${vINDValList[0].fData}</label></td>
                             <th class="tc">PHP #2</th>
-                            <td class="tc"><label id="7">${vINDValList[1].fData}</label></td>
+                            <td class="tc"><label id="vINDVal1" title="${DccTagInfoList[7].toolTip}">${vINDValList[1].fData}</label></td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
@@ -667,15 +707,14 @@
 	                               	<c:if test="${shpIND2[2] eq true}">
 	                                    <span id="shpIND2" class="st_label st_cond_out"></span>
 	                                </c:if>
-                                    <span id="shpIND2" class="st_label st_no"></span>
-                                    <label>PHT 2P TRIP</label>
+                                    <label title="HT Pump Trip">PHT 2P TRIP</label>
                                 </div>
                             </th>
                             <td class="tc">-----------</td>
                             <th class="tc">PHP #3</th>
-                            <td class="tc"><label id="8">${vINDValList[2].fData}</label></td>
+                            <td class="tc"><label id="vINDVal2" title="${DccTagInfoList[8].toolTip}">${vINDValList[2].fData}</label></td>
                             <th class="tc">PHP #4</th>
-                            <td class="tc"><label id="9">${vINDValList[3].fData}</label></td>
+                            <td class="tc"><label id="vINDVal3" title="${DccTagInfoList[9].toolTip}">${vINDValList[3].fData}</label></td>
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>
@@ -695,7 +734,7 @@
 	                               	<c:if test="${shpIND2[3] eq true}">
 	                                    <span id="shpIND3" class="st_label st_cond_out"></span>
 	                                </c:if>
-                                    <label>MOD LVL LO</label>
+                                    <label title="Low Moderator Level">MOD LVL LO</label>
                                 </div>
                             </th>
                             <td class="tc">
@@ -706,7 +745,7 @@
                             </td>
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
-                                    <label id="10" class="double flex_end">${lblDataList[10].fValue}</label>
+                                    <label id="lblData10" class="double flex_end" title="${DccTagInfoList[10].toolTip}">${lblDataList[10].fValue}</label>
                                     <label class="full"></label>
                                 </div>   
                             </td>
@@ -729,7 +768,7 @@
 	                               	<c:if test="${shpIND2[4] eq true}">
 	                                    <span id="shpIND4" class="st_label st_cond_out"></span>
 	                                </c:if>
-                                    <label>LOG RATE HI</label>
+                                    <label title="High Log Rate">LOG RATE HI</label>
                                 </div>
                             </th>
                             <td class="tc">
@@ -740,7 +779,7 @@
                             </td>
                             <td class="tc" colspan="4">
                                 <div class="fx_form">
-                                    <label id="11" class="double flex_end">${lblDataList[11].fValue}</label>
+                                    <label id="lblData11" class="double flex_end" title="${DccTagInfoList[11].toolTip}">${lblDataList[11].fValue}</label>
                                     <label class="full"></label>
                                 </div>   
                             </td>
@@ -763,26 +802,47 @@
 	                               	<c:if test="${shpIND2[5] eq true}">
 	                                    <span id="shpIND5 class="st_label st_cond_out"></span>
 	                                </c:if>
-                                    <label>SG LVL LO</label>
+                                    <label title="Low S/G Level">SG LVL LO</label>
                                 </div>
                             </th>
                             <td class="tc" rowspan="2">
                                 <div class="fx_form">
-                                    <label id="61" class="full flex_end">${lblDataList[61].fValue}</label>
+                                    <label id="lblData61" class="full flex_end" title="${DccTagInfoList[61].toolTip}">${lblDataList[61].fValue}</label>
                                     <label id="lblSPUnit2" class="full">M</label>
                                 </div>                                  
                             </td>
                             <th class="tc">SG #1</th>
                             <td class="tc">
-                                <div class="fx_form">
-                                    <label id="12" class="double flex_end">${lblDataList[12].fValue}</label>
+                                <div class="fx_form">                                    
+                                   <c:choose>
+		                            	<c:when test="${lblDataList[12].visible eq true}">
+		                            			 <label id="lblData12" class="double flex_end" title="${DccTagInfoList[12].toolTip}">${lblDataList[12].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[13].visible eq true}">
+		                            			<label id="lblData13" class="double flex_end" title="${DccTagInfoList[13].toolTip}">${lblDataList[13].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[14].visible eq true}">
+		                            			<label id="lblData14" class="double flex_end" title="${DccTagInfoList[14].toolTip}">${lblDataList[14].fValue}</label>
+		                            	</c:when>		                            	
+		                            </c:choose>       
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">SG #2</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="15" class="double flex_end">${lblDataList[15].fValue}</label>
+                                    <label class="double flex_end">
+                                    <c:choose>
+		                            	<c:when test="${lblDataList[15].visible eq true}">
+		                            			 <label id="lblData15" class="double flex_end" title="${DccTagInfoList[15].toolTip}">${lblDataList[15].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[16].visible eq true}">
+		                            			<label id="lblData16" class="double flex_end" title="${DccTagInfoList[16].toolTip}">${lblDataList[16].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[17].visible eq true}">
+		                            			<label id="lblData17" class="double flex_end" title="${DccTagInfoList[17].toolTip}">${lblDataList[17].fValue}</label>
+		                            	</c:when>		                            	
+		                            </c:choose>		                          
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -797,14 +857,36 @@
                             <th class="tc bd_l_line">SG #3</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="18" class="double flex_end">${lblDataList[18].fValue}</label>
+                                    <label class="double flex_end">
+                                    <c:choose>
+		                            	<c:when test="${lblDataList[18].visible eq true}">
+		                            			 <label id="lblData18" class="double flex_end" title="${DccTagInfoList[18].toolTip}">${lblDataList[18].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[19].visible eq true}">
+		                            			<label id="lblData19" class="double flex_end" title="${DccTagInfoList[19].toolTip}">${lblDataList[19].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[20].visible eq true}">
+		                            			<label id="lblData20" class="double flex_end" title="${DccTagInfoList[20].toolTip}">${lblDataList[20].fValue}</label>
+		                            	</c:when>		                            	
+		                            </c:choose>	
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">SG #4</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="21" class="double flex_end">${lblDataList[21].fValue}</label>
+                                    <label class="double flex_end"> 
+                                    <c:choose>
+		                            	<c:when test="${lblDataList[21].visible eq true}">
+		                            			 <label id="lblData21" class="double flex_end" title="${DccTagInfoList[21].toolTip}">${lblDataList[21].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[22].visible eq true}">
+		                            			<label id="lblData22" class="double flex_end" title="${DccTagInfoList[22].toolTip}">${lblDataList[22].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[23].visible eq true}">
+		                            			<label id="lblData23" class="double flex_end" title="${DccTagInfoList[23].toolTip}">${lblDataList[23].fValue}</label>
+		                            	</c:when>		                            	
+		                            </c:choose>	
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -821,7 +903,7 @@
 	                               	<c:if test="${shpIND2[6] eq true}">
 	                                    <span id="shpIND6" class="st_label st_cond_out"></span>
 	                                </c:if>
-                                    <label>HT PR HI</label>
+                                    <label title="High PHT Pressure">HT PR HI</label>
                                 </div>
                             </th>
                             <td class="tc" rowspan="2">
@@ -833,14 +915,14 @@
                             <th class="tc">ROH #1</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="24" class="double flex_end">${lblDataList[24].fValue}</label>
+                                    <label id="lblData24" class="double flex_end" title="${DccTagInfoList[24].toolTip}">${lblDataList[24].fValue}</label>
                                     <label class="full"></label>
                                 </div>                                  
                             </td>
                             <th class="tc">ROH #2</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="25" class="double flex_end">${lblDataList[25].fValue}</label>
+                                    <label id="lblData25" class="double flex_end" title="${DccTagInfoList[25].toolTip}">${lblDataList[25].fValue}</label>
                                     <label class="full"></label>
                                 </div>                                  
                             </td>
@@ -855,14 +937,14 @@
                             <th class="tc bd_l_line">ROH #3</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="26" class="double flex_end">${lblDataList[26].fValue}</label>
+                                    <label id="lblData26" class="double flex_end" title="${DccTagInfoList[26].toolTip}">${lblDataList[26].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">ROH #4</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="27" class="double flex_end">${lblDataList[27].fValue}</label>
+                                    <label id="lblData27" class="double flex_end" title="${DccTagInfoList[27].toolTip}">${lblDataList[27].fValue}</label>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -879,7 +961,7 @@
 	                               	<c:if test="${shpIND2[7] eq true}">
 	                                    <span id="shpIND7 class="st_label st_cond_out"></span>
 	                                </c:if>
-                                    <label>ZONE PWR HI</label>
+                                    <label title="High Neutron Power">ZONE PWR HI</label>
                                 </div>
                             </th>
                             <td class="tc" rowspan="7">
@@ -899,14 +981,29 @@
                             <th class="tc">Z #01</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="28" class="double flex_end">${lblDataList[28].fValue}</label>
+                                    <label class="double flex_end">
+                                    <c:choose>
+		                            	<c:when test="${lblDataList[28].visible eq true}">
+		                            			 <label id="lblData28" class="double flex_end" title="${DccTagInfoList[28].toolTip}">${lblDataList[28].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[29].visible eq true}">
+		                            			 <label id="lblData29" class="double flex_end" title="${DccTagInfoList[29].toolTip}">${lblDataList[29].fValue}</label>
+		                            	</c:when>		                            	
+		                            </c:choose>	
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">Z #08</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="42" class="double flex_end">${lblDataList[42].fValue}</label>
+                                   <c:choose>
+		                            	<c:when test="${lblDataList[42].visible eq true}">
+		                            			<label id="lblData42" class="double flex_end" title="${DccTagInfoList[42].toolTip}">${lblDataList[42].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[43].visible eq true}">
+		                            			<label id="lblData43" class="double flex_end" title="${DccTagInfoList[43].toolTip}">${lblDataList[43].fValue}</label>
+		                            	</c:when>		                            	
+		                            </c:choose>	
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -921,14 +1018,29 @@
                             <th class="tc bd_l_line">Z #02</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="30" class="double flex_end">${lblDataList[30].fValue}</label>
+                                    <label class="double flex_end"> 
+                                    <c:choose>
+		                            	<c:when test="${lblDataList[30].visible eq true}">
+		                            			<label id="lblData30" class="double flex_end" title="${DccTagInfoList[30].toolTip}">${lblDataList[30].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[31].visible eq true}">
+		                            			<label id="lblData31" class="double flex_end" title="${DccTagInfoList[31].toolTip}">${lblDataList[31].fValue}</label>
+		                            	</c:when>		                            	
+		                            </c:choose>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">Z #09</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="44" class="double flex_end">${lblDataList[44].fValue}</label>
+                                    <c:choose>
+		                            	<c:when test="${lblDataList[44].visible eq true}">
+		                            			<label id="lblData44" class="double flex_end" title="${DccTagInfoList[44].toolTip}">${lblDataList[44].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[45].visible eq true}">
+		                            			<label id="lblData45" class="double flex_end" title="${DccTagInfoList[45].toolTip}">${lblDataList[45].fValue}</label>
+		                            	</c:when>		                            	
+		                            </c:choose>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -937,14 +1049,28 @@
                             <th class="tc bd_l_line">Z #03</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="32" class="double flex_end">${lblDataList[32].fValue}</label>
+                                    <c:choose>
+		                            	<c:when test="${lblDataList[32].visible eq true}">
+		                            			<label id="lblData32" class="double flex_end" title="${DccTagInfoList[32].toolTip}">${lblDataList[32].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[33].visible eq true}">
+		                            			<label id="lblData33" class="double flex_end" title="${DccTagInfoList[33].toolTip}">${lblDataList[33].fValue}</label>
+		                            	</c:when>		                            	
+		                            </c:choose>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">Z #10</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="46" class="double flex_end">${lblDataList[46].fValue}</label>
+                                    <c:choose>
+		                            	<c:when test="${lblDataList[46].visible eq true}">
+		                            			<label id="lblData46" class="double flex_end" title="${DccTagInfoList[46].toolTip}">${lblDataList[46].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[47].visible eq true}">
+		                            			<label id="lblData47" class="double flex_end" title="${DccTagInfoList[47].toolTip}">${lblDataList[47].fValue}</label>
+		                            	</c:when>		                            	
+		                            </c:choose>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -953,14 +1079,28 @@
                             <th class="tc bd_l_line">Z #04</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="34" class="double flex_end">${lblDataList[34].fValue}</label>
+                                    <c:choose>
+		                            	<c:when test="${lblDataList[34].visible eq true}">
+		                            			<label id="lblData34" class="double flex_end" title="${DccTagInfoList[34].toolTip}">${lblDataList[34].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[35].visible eq true}">
+		                            			<label id="lblData35" class="double flex_end" title="${DccTagInfoList[35].toolTip}">${lblDataList[35].fValue}</label>
+		                            	</c:when>		                            	
+		                            </c:choose>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">Z #11</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="48" class="double flex_end">${lblDataList[48].fValue}</label>
+                                    <c:choose>
+		                            	<c:when test="${lblDataList[48].visible eq true}">
+		                            			<label id="lblData48" class="double flex_end" title="${DccTagInfoList[48].toolTip}">${lblDataList[48].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[49].visible eq true}">
+		                            			<label id="lblData49" class="double flex_end" title="${DccTagInfoList[49].toolTip}">${lblDataList[49].fValue}</label>
+		                            	</c:when>		                            	
+		                            </c:choose>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -969,14 +1109,28 @@
                             <th class="tc bd_l_line">Z #05</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="36" class="double flex_end">${lblDataList[36].fValue}</label>
+                                     <c:choose>
+		                            	<c:when test="${lblDataList[36].visible eq true}">
+		                            			<label id="lblData36" class="double flex_end" title="${DccTagInfoList[36].toolTip}">${lblDataList[36].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[37].visible eq true}">
+		                            			<label id="lblData37" class="double flex_end" title="${DccTagInfoList[37].toolTip}">${lblDataList[37].fValue}</label>
+		                            	</c:when>	                            	
+		                            </c:choose>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">Z #12</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="50" class="double flex_end">${lblDataList[50].fValue}</label>
+                                    <c:choose>
+		                            	<c:when test="${lblDataList[50].visible eq true}">
+		                            			<label id="lblData50" class="double flex_end" title="${DccTagInfoList[50].toolTip}">${lblDataList[50].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[51].visible eq true}">
+		                            			<label id="lblData51" class="double flex_end" title="${DccTagInfoList[51].toolTip}">${lblDataList[51].fValue}</label>
+		                            	</c:when>		                            	
+		                            </c:choose>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -985,14 +1139,28 @@
                             <th class="tc bd_l_line">Z #06</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="38" class="double flex_end">${lblDataList[38].fValue}</label>
+                                     <c:choose>
+		                            	<c:when test="${lblDataList[38].visible eq true}">
+		                            			<label id="lblData38" class="double flex_end" title="${DccTagInfoList[38].toolTip}">${lblDataList[38].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[39].visible eq true}">
+		                            			<label id="lblData39" class="double flex_end" title="${DccTagInfoList[39].toolTip}">${lblDataList[39].fValue}</label>
+		                            	</c:when>	                            	
+		                            </c:choose>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">Z #13</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="52" class="double flex_end">${lblDataList[52].fValue}</label>
+                                   <c:choose>
+		                            	<c:when test="${lblDataList[52].visible eq true}">
+		                            			<label id="lblData52" class="double flex_end" title="${DccTagInfoList[52].toolTip}">${lblDataList[52].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[53].visible eq true}">
+		                            			<label id="lblData53" class="double flex_end" title="${DccTagInfoList[53].toolTip}">${lblDataList[53].fValue}</label>
+		                            	</c:when>		                            	
+		                            </c:choose>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -1001,14 +1169,28 @@
                             <th class="tc bd_l_line">Z #07</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="40" class="double flex_end">${lblDataList[40].fValue}</label>
+                                     <c:choose>
+		                            	<c:when test="${lblDataList[40].visible eq true}">
+		                            			<label id="lblData40" class="double flex_end" title="${DccTagInfoList[40].toolTip}">${lblDataList[40].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[41].visible eq true}">
+		                            			<label id="lblData41" class="double flex_end" title="${DccTagInfoList[41].toolTip}">${lblDataList[41].fValue}</label>
+		                            	</c:when>	                            	
+		                            </c:choose>
                                     <label class="full"></label>
                                 </div>
                             </td>
                             <th class="tc">Z #14</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="54" class="double flex_end">${lblDataList[54].fValue}</label>
+                                   <c:choose>
+		                            	<c:when test="${lblDataList[54].visible eq true}">
+		                            			<label id="lblData54" class="double flex_end" title="${DccTagInfoList[54].toolTip}">${lblDataList[54].fValue}</label>
+		                            	</c:when>
+		                            	<c:when test="${lblDataList[55].visible eq true}">
+		                            			<label id="lblData55" class="double flex_end" title="${DccTagInfoList[55].toolTip}">${lblDataList[55].fValue}</label>
+		                            	</c:when>	                            	
+		                            </c:choose>
                                     <label class="full"></label>
                                 </div>
                             </td>
@@ -1017,19 +1199,19 @@
                             <th>
                                 <div class="fx_form">
                                		<c:if test="${shpIND[8] ne true && shpIND2[8] ne true}">
-	                                    <span id="shpIND8 class="st_label st_no"></span>
+	                                    <span id="shpIND8" class="st_label st_no"></span>
 	                                </c:if>
 	                                <c:if test="${shpIND[8] eq true}">
 	                                    <span id="shpIND8" class="st_label st_yes"></span>
 	                                </c:if>
 	                               	<c:if test="${shpIND2[8] eq true}">
-	                                    <span id="shpIND8 class="st_label st_cond_out"></span>
+	                                    <span id="shpIND8" class="st_label st_cond_out"></span>
 	                                </c:if>
-                                    <label>TEST</label>
+                                    <label title="Stepback Test">TEST</label>
                                 </div>
                             </th>
                             <td class="tc"></td>
-                            <td class="tc" colspan="4"><label id="56">${lblDataList[56].fValue}</label></td> 
+                            <td class="tc" colspan="4"><label id="lblData56" title="${DccTagInfoList[56].toolTip}">${lblDataList[56].fValue}</label></td> 
                             <td>
                                 <div class="fx_form">
                                     <label class="full"></label>

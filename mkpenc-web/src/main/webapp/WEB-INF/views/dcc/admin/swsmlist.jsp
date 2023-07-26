@@ -22,6 +22,7 @@
 <script type="text/javascript" src="<c:url value="/resources/jquery/jquery-ui-1.13.2.js" />" charset="utf-8"></script>
 
 <script type="text/javascript" >
+var timerOn = false;
 
 	$(function () {
 		
@@ -81,7 +82,20 @@
 			var	comSubmit	=	new ComSubmit("swsmInsertForm");
 			comSubmit.setUrl("/dcc/admin/swsmInsert");
 			comSubmit.submit();
-		});		
+		});	
+		
+		$("#swsmDelete").on('click', function(e){
+			//alert("파일삭제");
+			
+			var	comSubmit	=	new ComSubmit("swsmUpdateForm");
+			comSubmit.setUrl("/dcc/admin/swsmdelete");
+			comSubmit.addParam("seqNo",$("#currentISeq").text());
+			for( var i=0;i<10;i++ ) {
+				comSubmit.addParam("iFileName"+(i+1),$("#attachFile"+(i+1)).text());
+			}
+			comSubmit.submit();
+		
+		});
 		
 		$("#swsmImport").on('click', function(e){
 			
@@ -494,7 +508,7 @@
 	<!-- pop_contents -->
     <!-- pop_footer -->
     <div class="pop_footer">
-        <a href="#none" class="btn_page"  id="swsmInsert" name="swsmInsert">삭제</a>
+        <a href="#none" class="btn_page"  id="swsmDelete" name="swsmDelete">삭제</a>
         <a href="#none" class="btn_page" onclick="closeLayer('modal_2');">닫기</a>
     </div>
     <!-- //pop_footer -->

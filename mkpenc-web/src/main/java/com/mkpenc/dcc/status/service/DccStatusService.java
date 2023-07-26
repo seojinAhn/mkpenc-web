@@ -34,5 +34,5 @@ public interface DccStatusService {
 	
 	List<DccMstTagInfo> selectTagSearch(DccSearchStatus searchStatus);
 
-	List<DccMstTagInfo> selectTagFind(DccSearchStatus searchStatus);		
+	List<DccMstTagInfo> selectTagFind(DccSearchStatus searchStatus);	
 }

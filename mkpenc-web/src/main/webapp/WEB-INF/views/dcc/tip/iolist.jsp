@@ -18,629 +18,894 @@
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/tip.js" />" charset="utf-8"></script>
 <script type="text/javascript">
-	// combobox definiton -> createSelect function
-	var nList=["0:Commssion","1:Not Commission"];
-	var AITypeList=["0:None",
-				"1:High",
-				"2:Low",
-				"3:High/Low",
-				"4:High DTAB",
-				"5:Low DTAB",
-				"6:High/Low DTAB",
-				"7:High/Very High",
-				"8:Low/Very Low",
-				"9:Irrational"];
-	var CITypeList=["0:Alarm on Opening",
-				"1:Alarm on Closing"];
-	var AIPrioList=["0:Printer only","1:Minor","2:Safety","3:Major"];
-	var CIPrioList=["0:Undef","1:Minor","2:Safety","3:Major"];
-	var crList=["0:None","1:Conditioned"];
-	var AIGrpList=["0:None",
-				"1:Reactor and PHT",
-				"2:Turbine and boilers",
-				"3:Safety",
-				"4:Electrical",
-				"5:Auxiliaries"];
-	var CIGrpList=["0:None",
-				"1:Reactor and PHT",
-				"2:SG/Turbine",
-				"3:Safety",
-				"4:Electrical",
-				"5:Auxiliaries"];
-	var trList=["0:Seconds","1:Milliseconds"];
-	var wibaList=["0:OUT","1:IN"];
-	var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
-	var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
+var timerOn = false;
 
-	function sendPage(type){
-		if( type == 0 ) {
-			var iHogiVal = $("#iHogi option:selected").val();
-			var	comSubmit	=	new ComSubmit("iolistForm");
-			comSubmit.setUrl("/dcc/tip/iolist");
-			comSubmit.addParam("iHogi",iHogiVal);
-			//comSubmit.addParam("xyGubun",$("input[name='xyGubun']:checked").val());
-			comSubmit.addParam("ioType",$("#ioType option:selected").val());
-			if( $("#address").val().includes('-') ) {
-				var transAddress = $("#address").val().split("\-");
-				comSubmit.addParam("address",transAddress[0]);
-				comSubmit.addParam("address2",transAddress[1]);
-				comSubmit.addParam("addressType","dash");
-			} else if( $("#address").val().includes(',') ) {
-				var transAddress = $("#address").val();//.replace(/,/gi,"','");
-				console.log(transAddress);
-				comSubmit.addParam("address",transAddress);
-				comSubmit.addParam("addressType","comma");
-			} else {
-				comSubmit.addParam("address",$("#address").val());
-				comSubmit.addParam("addressType","none");
-			}
-			comSubmit.addParam("searchKey_1",$("#searchKey_1").val());
-			comSubmit.addParam("searchWord_1",$("#searchWord_1").val());
-			comSubmit.addParam("searchKey_2",$("#searchKey_2").val());
-			comSubmit.addParam("searchWord_2",$("#searchWord_2").val());
-			comSubmit.addParam("searchKey_3",$("#searchKey_3").val());
-			comSubmit.addParam("searchWord_3",$("#searchWord_3").val());
-			comSubmit.addParam("ioBit",$("#tIoBit").val());
-			comSubmit.addParam("hogiHeader",iHogiVal);
-			if( $("#xyGubunX").val() == "X" ) {
-				comSubmit.addParam("xyHeader",$("#xyGubunX").val());
-			} else {
-				comSubmit.addParam("xyHeader",$("#xyGubunY").val());
-			}
-			comSubmit.submit();
-		} else if( type == 1 ) {
-			var	comSubmit	=	new ComSubmit("iolistForm");
-			comSubmit.setUrl("/dcc/tip/iolist");
-			comSubmit.addParam("hogiHeader",hogiHeader);
-			comSubmit.addParam("xyHeader",xyHeader);
-			comSubmit.submit();
-		}
-	}
+$(function () {
+		var gIOType = "${BaseSearch.ioType}";
+		var chkIOType;
 	
-	function isEmpty(str) {
-		if( str == "undefined" || str == null || str == "" ) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	function isValidAddr(address) {
-		var regexNumeric = /^[0-9]+$/gi;
-		var regexDash = /^[0-9]+[\-]*[0-9]+$/gi;
-		var regexComma = /^[0-9]+(,[0-9]+)+$/gi;
+		initViewConfig(gIOType,'main');
 		
-		if ( regexNumeric.test(address) ) {
-			return 0;
-		} else if( regexComma.test(address) && regexDash.test(address) ) {
-			return 1;	
-		} else if ( !regexComma.test(address) && regexDash.test(address) ) {
-			var transAddress = $("#address").val().split("\-");
-			if( transAddress[0] > transAddress[1] ) {
-				return 4;
-			}
-			return 2;
-		} else if ( regexComma.test(address) && !regexDash.test(address) ) {
-			return 3;
-		} else if ( !regexComma.test(address) && !regexDash.test(address) ) {
-			return 4;
-		}
-	}
+		/*if (gIOType == null || gIOType == ""){
+		
+			$("#ioType_0_List").show();
+			$("#ioType_0_Input").show();			
+		}else {
+					switch(gIOType){
+				      case "AI" :	
+				    	  	$("#ioType_0_List").show();
+				    	  	$("#ioType_0_Input").show();
+						  break;						 
+				      case "AO" :					    	  
+				  			$("#ioType_1_List").show();
+				  			$("#ioType_1_Input").show();
+				    	  break;				                
+				      case "CI" :  				    	  
+				  			$("#ioType_2_List").show();
+				  			$("#ioType_2_Input").show();
+				    	  break;				    	
+				      case "DI" :  				    	  
+				  			$("#ioType_3_List").show();
+				  			$("#ioType_3_Input").show();
+				    	  break;    				    	
+				       case "DO" :				    	   
+				  			$("#ioType_4_List").show();
+				  			$("#ioType_4_Input").show();
+				    	  break
+				       case "DT" :     
+				  			$("#ioType_5_List").show();
+				  			$("#ioType_5_Input").show();;
+						  break;	   
+					   case "SC":
+				  			$("#ioType_6_List").show();
+				  			$("#ioType_6_Input").show();
+						  break;
+					   case "FTAI":
+				  			$("#ioType_7_List").show();
+				  			$("#ioType_7_Input").show();
+				  			$('#history').css("display", "block"); 
+						  break;
+					   case "FTDT":
+				  			$("#ioType_8_List").show();
+				  			$("#ioType_8_Input").show();
+				  			$('#history').css("display", "block"); 
+						  break;								  
+					 } // end swith			
+		}*/
+		
+		
+		$(document.body).delegate('#ioType_0_List tbody tr', 'click', function() {
+			
+		
+				if($(this).children().eq(32).text() == null || $(this).children().eq(32).text() == "" ||                         // hogi 
+						$(this).children().eq(33).text() ==null || $(this).children().eq(33).text() == "" ||                   // iseq
+						$(this).children().eq(34).text() ==null || $(this).children().eq(34).text() == "" ||					// iotype
+						$(this).children().eq(35).text() == null || $(this).children().eq(35).text()  == ""					// xygubun
+					){
+						if(chkIOType == null || chkIOType==''){
+							//alert("저장할 I/O를 검색하여 주십시요!!!");
+							return;
+						}
+				}			
+			
+				chkIOType = "AI";
+				
+				$('#ioType_0_form [name="address"]').val($(this).children().eq(0).text().trim());
+				$('#ioType_0_form [name="descr"]').val($(this).children().eq(1).text().trim());
+				$('#ioType_0_form [name="message"]').val($(this).children().eq(2).text().trim());
+				$('#ioType_0_form [name="rev"]').val($(this).children().eq(3).text().trim());
+				$('#ioType_0_form [name="drawing"]').val($(this).children().eq(4).text().trim());
+				$('#ioType_0_form [name="loopname"]').val($(this).children().eq(5).text().trim());
+				$('#ioType_0_form [name="device"]').val($(this).children().eq(6).text().trim());
+				$('#ioType_0_form [name="purpose"]').val($(this).children().eq(7).text().trim());
+				$('#ioType_0_form [name="program"]').val($(this).children().eq(8).text().trim());
+				$('#ioType_0_form [name="vlow"]').val($(this).children().eq(9).text().trim());
+				$('#ioType_0_form [name="vhigh"]').val($(this).children().eq(10).text().trim());
+				$('#ioType_0_form [name="elow"]').val($(this).children().eq(11).text().trim());
+				$('#ioType_0_form [name="ehigh"]').val($(this).children().eq(12).text().trim());
+				$('#ioType_0_form [name="unit"]').val($(this).children().eq(13).text().trim());
+				$('#ioType_0_form [name="conv"]').val($(this).children().eq(14).text().trim());
+				$('#ioType_0_form [name="rtd"]').val($(this).children().eq(15).text().trim());
+				$('#ioType_0_form [name="type"] option:contains("' + $(this).children().eq(16).text().trim() +'")').prop("selected", true);
+				$('#ioType_0_form [name="iogroup"] option:contains("' + $(this).children().eq(17).text().trim() +'")').prop("selected", true);
+				$('#ioType_0_form [name="window"]').val($(this).children().eq(18).text().trim());
+				$('#ioType_0_form [name="priority"] option:contains("' + $(this).children().eq(19).text().trim() +'")').prop("selected", true);
+				$('#ioType_0_form [name="cr"] option:contains("' + $(this).children().eq(20).text().trim() +'")').prop("selected", true);
+				$('#ioType_0_form [name="limit1"]').val($(this).children().eq(21).text().trim());
+				$('#ioType_0_form [name="limit2"]').val($(this).children().eq(22).text().trim());
+				$('#ioType_0_form [name="j"]').val($(this).children().eq(23).text().trim());
+				$('#ioType_0_form [name="n"] option:contains("' + $(this).children().eq(24).text() .trim()+'")').prop("selected", true);
+				$('#ioType_0_form [name="equ"]').val($(this).children().eq(25).text().trim());
+				$('#ioType_0_form [name="bascal"]').val($(this).children().eq(26).text().trim());
+				$('#ioType_0_form [name="wiba"] option:contains("' + $(this).children().eq(27).text().trim() +'")').prop("selected", true);
+				$('#ioType_0_form [name="wb"]').val($(this).children().eq(28).text().trim());
+				$('#ioType_0_form [name="ztext1"]').val($(this).children().eq(29).text().trim());
+				$('#ioType_0_form [name="ztext2"]').val($(this).children().eq(30).text().trim());
+				$('#ioType_0_form [name="ztext3"]').val($(this).children().eq(31).text().trim());
+				
+				$('#ioType_0_form [name="ihogi"]').val($(this).children().eq(32).text().trim());
+         		$('#ioType_0_form [name="iseq"]').val($(this).children().eq(33).text().trim());
+         		$('#ioType_0_form [name="iotype"]').val($(this).children().eq(34).text().trim());
+         		$('#ioType_0_form [name="xygubun"]').val($(this).children().eq(35).text().trim());
+
+				$('#ioType_0_form [name="reqno"]').val($(this).children().eq(36).text().trim());
+				$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(37).text().trim());
+				$('#ioType_0_form [name="reqname"]').val($(this).children().eq(38).text().trim());
+				$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(39).text().trim());
+				$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(40).text().trim());
+				
+				/*
+				alert($(this).children().eq(32).text());
+				alert($(this).children().eq(33).text());
+				alert($(this).children().eq(34).text());
+				alert($(this).children().eq(35).text());
+				*/				
+		});
+		
+		$(document.body).delegate('#ioType_1_List tbody tr', 'click', function() {
+			
+			chkIOType = "AO";
+			
+			$('#ioType_1_form [name="address"]').val($(this).children().eq(0).text().trim());
+			$('#ioType_1_form [name="rev"]').val($(this).children().eq(1).text().trim());
+			$('#ioType_1_form [name="descr"]').val($(this).children().eq(2).text().trim());
+			$('#ioType_1_form [name="drawing"]').val($(this).children().eq(3).text().trim());
+			$('#ioType_1_form [name="device"]').val($(this).children().eq(4).text().trim());
+			$('#ioType_1_form [name="purpose"]').val($(this).children().eq(5).text().trim());
+			$('#ioType_1_form [name="ctrlname"]').val($(this).children().eq(6).text().trim());
+			$('#ioType_1_form [name="interlock"]').val($(this).children().eq(7).text().trim());
+			$('#ioType_1_form [name="feedback"]').val($(this).children().eq(8).text().trim());
+			$('#ioType_1_form [name="com1"]').val($(this).children().eq(9).text().trim());
+			$('#ioType_1_form [name="com2"]').val($(this).children().eq(10).text().trim());
+			$('#ioType_1_form [name="wiba"] option:contains("' + $(this).children().eq(11).text().trim() +'")').prop("selected", true);
+			
+			$('#ioType_1_form [name="ihogi"]').val($(this).children().eq(12).text().trim());
+     		$('#ioType_1_form [name="iseq"]').val($(this).children().eq(13).text().trim());
+     		$('#ioType_1_form [name="iotype"]').val($(this).children().eq(14).text().trim());
+     		$('#ioType_1_form [name="xygubun"]').val($(this).children().eq(15).text().trim());
+
+			$('#ioType_0_form [name="reqno"]').val($(this).children().eq(16).text().trim());
+			$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(17).text().trim());
+			$('#ioType_0_form [name="reqname"]').val($(this).children().eq(18).text().trim());
+			$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(19).text().trim());
+			$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(20).text().trim());
+			
+		});
+		
+		$(document.body).delegate('#ioType_2_List tbody tr', 'click', function() {
+			
+			chkIOType = "CI";   
+			
+			$('#ioType_2_form [name="address"]').val($(this).children().eq(0).text().trim());
+			$('#ioType_2_form [name="tr"] option:contains("' + $(this).children().eq(1).text().trim() +'")').prop("selected", true);
+			$('#ioType_2_form [name="cr"] option:contains("' + $(this).children().eq(2).text().trim() +'")').prop("selected", true);
+			$('#ioType_2_form [name="priority"]').val($(this).children().eq(3).text().trim());
+			$('#ioType_2_form [name="iogroup"] option:contains("' + $(this).children().eq(4).text().trim() +'")').prop("selected", true);
+			$('#ioType_2_form [name="type"] option:contains("' + $(this).children().eq(5).text().trim() +'")').prop("selected", true);
+			$('#ioType_2_form [name="message"]').val($(this).children().eq(6).text().trim());
+			$('#ioType_2_form [name="drawing"]').val($(this).children().eq(7).text().trim());
+			$('#ioType_2_form [name="rev"]').val($(this).children().eq(8).text().trim());
+			$('#ioType_2_form [name="device"]').val($(this).children().eq(9).text().trim());
+			$('#ioType_2_form [name="condition"]').val($(this).children().eq(10).text().trim());
+			$('#ioType_2_form [name="wiba"] option:contains("' + $(this).children().eq(11).text().trim() +'")').prop("selected", true);
+			$('#ioType_2_form [name="wb"]').val($(this).children().eq(12).text().trim());
+			$('#ioType_2_form [name="ztext1"]').val($(this).children().eq(13).text().trim());
+     		$('#ioType_2_form [name="ztext2"]').val($(this).children().eq(14).text().trim());
+     		$('#ioType_2_form [name="ztext3"]').val($(this).children().eq(15).text().trim());
+			
+			$('#ioType_2_form [name="ihogi"]').val($(this).children().eq(16).text().trim());
+     		$('#ioType_2_form [name="iseq"]').val($(this).children().eq(17).text().trim());
+     		$('#ioType_2_form [name="iotype"]').val($(this).children().eq(18).text().trim());
+     		$('#ioType_2_form [name="xygubun"]').val($(this).children().eq(19).text().trim());
+
+			$('#ioType_0_form [name="reqno"]').val($(this).children().eq(20).text().trim());
+			$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(21).text().trim());
+			$('#ioType_0_form [name="reqname"]').val($(this).children().eq(22).text().trim());
+			$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(23).text().trim());
+			$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(24).text().trim());
+
+		});		
+		
+		$(document.body).delegate('#ioType_3_List tbody tr', 'click', function() {
+			
+			chkIOType = "DI";    
+			
+			$('#ioType_3_form [name="address"]').val($(this).children().eq(0).text().trim());
+			$('#ioType_3_form [name="bit"]').val($(this).children().eq(1).text().trim());
+			$('#ioType_3_form [name="rev"]').val($(this).children().eq(2).text().trim());
+			$('#ioType_3_form [name="descr"]').val($(this).children().eq(3).text().trim());
+			$('#ioType_3_form [name="drawing"]').val($(this).children().eq(4).text().trim());
+			$('#ioType_3_form [name="device"]').val($(this).children().eq(5).text().trim());
+			$('#ioType_3_form [name="propose"]').val($(this).children().eq(6).text().trim());
+			$('#ioType_3_form [name="ctrlname"]').val($(this).children().eq(7).text().trim());
+			$('#ioType_3_form [name="alarmcond"]').val($(this).children().eq(8).text().trim());
+			$('#ioType_3_form [name="indicate"]').val($(this).children().eq(9).text().trim());
+			$('#ioType_3_form [name="com1"]').val($(this).children().eq(10).text().trim());
+			$('#ioType_3_form [name="com2"]').val($(this).children().eq(11).text().trim());
+			$('#ioType_3_form [name="wiba"] option:contains("' + $(this).children().eq(12).text().trim() +'")').prop("selected", true);
+			
+			$('#ioType_3_form [name="ihogi"]').val($(this).children().eq(13).text().trim());
+     		$('#ioType_3_form [name="iseq"]').val($(this).children().eq(14).text().trim());
+     		$('#ioType_3_form [name="iotype"]').val($(this).children().eq(15).text().trim());
+     		$('#ioType_3_form [name="xygubun"]').val($(this).children().eq(16).text().trim());
+
+			$('#ioType_0_form [name="reqno"]').val($(this).children().eq(17).text().trim());
+			$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(18).text().trim());
+			$('#ioType_0_form [name="reqname"]').val($(this).children().eq(19).text().trim());
+			$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(20).text().trim());
+			$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(21).text().trim());
+		});	
+		
+		$(document.body).delegate('#ioType_4_List tbody tr', 'click', function() {
+			
+			chkIOType = "DO";    
+			
+			$('#ioType_4_form [name="address"]').val($(this).children().eq(0).text().trim());
+			$('#ioType_4_form [name="bit"]').val($(this).children().eq(1).text().trim());
+			$('#ioType_4_form [name="rev"]').val($(this).children().eq(2).text().trim());
+			$('#ioType_4_form [name="descr"]').val($(this).children().eq(3).text().trim());
+			$('#ioType_4_form [name="drawing"]').val($(this).children().eq(4).text().trim());
+			$('#ioType_4_form [name="device"]').val($(this).children().eq(5).text().trim());
+			$('#ioType_4_form [name="propose"]').val($(this).children().eq(6).text().trim());
+			$('#ioType_4_form [name="ctrlname"]').val($(this).children().eq(7).text().trim());
+			$('#ioType_4_form [name="interlock"]').val($(this).children().eq(8).text().trim());
+			$('#ioType_4_form [name="com1"]').val($(this).children().eq(9).text().trim());
+			$('#ioType_4_form [name="com2"]').val($(this).children().eq(10).text().trim());
+			$('#ioType_4_form [name="wiba"] option:contains("' + $(this).children().eq(11).text().trim() +'")').prop("selected", true);
+			
+			$('#ioType_4_form [name="ihogi"]').val($(this).children().eq(12).text().trim());
+     		$('#ioType_4_form [name="iseq"]').val($(this).children().eq(13).text().trim());
+     		$('#ioType_4_form [name="iotype"]').val($(this).children().eq(14).text().trim());
+     		$('#ioType_4_form [name="xygubun"]').val($(this).children().eq(15).text().trim());
+
+			$('#ioType_0_form [name="reqno"]').val($(this).children().eq(16).text().trim());
+			$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(17).text().trim());
+			$('#ioType_0_form [name="reqname"]').val($(this).children().eq(18).text().trim());
+			$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(19).text().trim());
+			$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(20).text().trim());
+		});	
+		
+		$(document.body).delegate('#ioType_5_List tbody tr', 'click', function() {
+			
+			chkIOType = "DT";    
+			
+			$('#ioType_5_form [name="address"]').val($(this).children().eq(0).text().trim());
+			$('#ioType_5_form [name="program"]').val($(this).children().eq(1).text().trim());
+			$('#ioType_5_form [name="descr"]').val($(this).children().eq(2).text().trim());
+			$('#ioType_5_form [name="loopname"]').val($(this).children().eq(3).text().trim());
+			$('#ioType_5_form [name="bscal"]').val($(this).children().eq(4).text().trim());
+			$('#ioType_5_form [name="elow"]').val($(this).children().eq(5).text().trim());
+			$('#ioType_5_form [name="ehigh"]').val($(this).children().eq(6).text().trim());
+			
+			$('#ioType_5_form [name="ihogi"]').val($(this).children().eq(7).text().trim());
+     		$('#ioType_5_form [name="iseq"]').val($(this).children().eq(8).text().trim());
+     		$('#ioType_5_form [name="iotype"]').val($(this).children().eq(9).text().trim());
+     		$('#ioType_5_form [name="xygubun"]').val($(this).children().eq(10).text().trim());
+
+			$('#ioType_0_form [name="reqno"]').val($(this).children().eq(11).text().trim());
+			$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(12).text().trim());
+			$('#ioType_0_form [name="reqname"]').val($(this).children().eq(13).text().trim());
+			$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(14).text().trim());
+			$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(15).text().trim());
+		});
+		
+		$(document.body).delegate('#ioType_6_List tbody tr', 'click', function() {
+			
+			chkIOType = "SC";       
+			
+			$('#ioType_6_form [name="address"]').val($(this).children().eq(0).text().trim());
+			$('#ioType_6_form [name="bit"]').val($(this).children().eq(1).text().trim());
+			$('#ioType_6_form [name="descr"]').val($(this).children().eq(2).text().trim());
+			$('#ioType_6_form [name="program"]').val($(this).children().eq(3).text().trim());
+			$('#ioType_6_form [name="indicate"]').val($(this).children().eq(4).text().trim());
+			$('#ioType_6_form [name="bscal"]').val($(this).children().eq(5).text().trim());
+			
+			$('#ioType_6_form [name="ihogi"]').val($(this).children().eq(6).text().trim());
+     		$('#ioType_6_form [name="iseq"]').val($(this).children().eq(7).text().trim());
+     		$('#ioType_6_form [name="iotype"]').val($(this).children().eq(8).text().trim());
+     		$('#ioType_6_form [name="xygubun"]').val($(this).children().eq(9).text().trim());
+     		
+			$('#ioType_0_form [name="reqno"]').val($(this).children().eq(10).text().trim());
+			$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(11).text().trim());
+			$('#ioType_0_form [name="reqname"]').val($(this).children().eq(12).text().trim());
+			$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(13).text().trim());
+			$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(14).text().trim());
+		});
+		
+		$(document.body).delegate('#ioType_7_List tbody tr', 'click', function() {
+			
+			chkIOType = "FTAI";
 	
-	function createSelect(id,list) {
-		if( id == "type" ) {
-			$("#tType").empty();
-			//$("#tType").append( '<option></option>' );
-			for( var i=0;i<list.length;i++ ){
-				$("#tType").append( '<option value='+list[i].split(":")[0]+'>'+list[i].split(":")[1]+'</option>');
+			$('#ioType_7_form [name="address"]').val($(this).children().eq(0).text().trim());
+			$('#ioType_7_form [name="descr"]').val($(this).children().eq(1).text().trim());
+			$('#ioType_7_form [name="message"]').val($(this).children().eq(2).text().trim());
+			$('#ioType_7_form [name="rev"]').val($(this).children().eq(3).text().trim());
+			$('#ioType_7_form [name="drawing"]').val($(this).children().eq(4).text().trim());
+			$('#ioType_7_form [name="loopname"]').val($(this).children().eq(5).text().trim());
+			$('#ioType_7_form [name="device"]').val($(this).children().eq(6).text().trim());
+			$('#ioType_7_form [name="purpose"]').val($(this).children().eq(7).text().trim());
+			$('#ioType_7_form [name="program"]').val($(this).children().eq(8).text().trim());
+			$('#ioType_7_form [name="vlow"]').val($(this).children().eq(9).text().trim());
+			$('#ioType_7_form [name="vhigh"]').val($(this).children().eq(10).text().trim());
+			$('#ioType_7_form [name="elow"]').val($(this).children().eq(11).text().trim());
+			$('#ioType_7_form [name="ehigh"]').val($(this).children().eq(12).text().trim());
+			$('#ioType_7_form [name="unit"]').val($(this).children().eq(13).text().trim());
+			$('#ioType_7_form [name="conv"]').val($(this).children().eq(14).text().trim());
+			$('#ioType_7_form [name="rtd"]').val($(this).children().eq(15).text().trim());
+			$('#ioType_7_form [name="type"] option:contains("' + $(this).children().eq(16).text().trim() +'")').prop("selected", true);
+			$('#ioType_7_form [name="iogroup"] option:contains("' + $(this).children().eq(17).text().trim() +'")').prop("selected", true);
+			$('#ioType_7_form [name="window"]').val($(this).children().eq(18).text().trim());
+			$('#ioType_7_form [name="priority"] option:contains("' + $(this).children().eq(19).text().trim() +'")').prop("selected", true);
+			$('#ioType_7_form [name="cr"] option:contains("' + $(this).children().eq(20).text().trim() +'")').prop("selected", true);
+			$('#ioType_7_form [name="limit1"]').val($(this).children().eq(21).text().trim());
+			$('#ioType_7_form [name="limit2"]').val($(this).children().eq(22).text().trim());
+			$('#ioType_7_form [name="j"]').val($(this).children().eq(23).text().trim());
+			$('#ioType_7_form [name="n"] option:contains("' + $(this).children().eq(24).text() .trim()+'")').prop("selected", true);
+			$('#ioType_7_form [name="equ"]').val($(this).children().eq(25).text().trim());
+			$('#ioType_7_form [name="bascal"]').val($(this).children().eq(26).text().trim());
+			$('#ioType_7_form [name="wiba"] option:contains("' + $(this).children().eq(27).text().trim() +'")').prop("selected", true);
+			$('#ioType_7_form [name="wb"]').val($(this).children().eq(28).text().trim());
+			
+			$('#ioType_7_form [name="ihogi"]').val($(this).children().eq(29).text().trim());
+     		$('#ioType_7_form [name="iseq"]').val($(this).children().eq(30).text().trim());
+     		$('#ioType_7_form [name="iotype"]').val($(this).children().eq(31).text().trim());
+     		$('#ioType_7_form [name="xygubun"]').val($(this).children().eq(32).text().trim());
+     		
+			$('#ioType_0_form [name="reqno"]').val($(this).children().eq(33).text().trim());
+			$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(34).text().trim());
+			$('#ioType_0_form [name="reqname"]').val($(this).children().eq(35).text().trim());
+			$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(36).text().trim());
+			$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(37).text().trim());
+		});			
+		
+		$(document.body).delegate('#ioType_8_List tbody tr', 'click', function() {
+			
+			chkIOType = "FTDT";  
+			
+			$('#ioType_8_form [name="address"]').val($(this).children().eq(0).text().trim());
+			$('#ioType_8_form [name="program"]').val($(this).children().eq(1).text().trim());
+			$('#ioType_8_form [name="descr"]').val($(this).children().eq(2).text().trim());
+			$('#ioType_8_form [name="loopname"]').val($(this).children().eq(3).text().trim());
+			$('#ioType_8_form [name="bscal"]').val($(this).children().eq(4).text().trim());
+			$('#ioType_8_form [name="elow"]').val($(this).children().eq(5).text().trim());
+			$('#ioType_8_form [name="ehigh"]').val($(this).children().eq(6).text().trim());
+			
+			$('#ioType_8_form [name="ihogi"]').val($(this).children().eq(7).text().trim());
+     		$('#ioType_8_form [name="iseq"]').val($(this).children().eq(8).text().trim());
+     		$('#ioType_8_form [name="iotype"]').val($(this).children().eq(9).text().trim());
+     		$('#ioType_8_form [name="xygubun"]').val($(this).children().eq(10).text().trim());
+     		
+			$('#ioType_0_form [name="reqno"]').val($(this).children().eq(11).text().trim());
+			$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(12).text().trim());
+			$('#ioType_0_form [name="reqname"]').val($(this).children().eq(13).text().trim());
+			$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(14).text().trim());
+			$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(15).text().trim());
+		});			
+		
+		$("input[name='xyGubun']:radio").change(function () {
+		
+			var chkVal = this.value;
+			var xyGubun = "${BaseSearch.xyGubun}";
+			
+			if(chkVal =="X"){
+				if(xyGubun == "7"){
+					$("#ioType").append('<option value="FTAI" selected>Fast AI</option>');
+				}else {
+					$("#ioType").append('<option value="FTAI">Fast AI</option>');	
+				}
+				
+				if(xyGubun == "8"){
+					$("#ioType").append('<option value="FTDT" selected>Fast DT</option>');
+				}else {
+					$("#ioType").append('<option value="FTDT">Fast DT</option>');	
+				}
+				
+			}else if(chkVal == "Y"){
+				$("#ioType option[value='FTAI']").remove();
+				$("#ioType option[value='FTDT']").remove();
 			}
-		} else if( id == "tr" ) {
-			$("#tTr").empty();
-			//$("#tType").append( '<option></option>' );
-			for( var i=0;i<list.length;i++ ){
-				$("#tTr").append( '<option value='+list[i].split(":")[0]+'>'+list[i].split(":")[1]+'</option>');
+		});		
+		
+		$(document.body).delegate("#ioType","change",function(){
+		
+			var ioType = this.value;
+			
+			if(ioType != "FTAI" && ioType != "FTDT"){
+				$('#history').css("display", "none"); 
+			}else {
+				$('#history').css("display", "block"); 
 			}
-		} else if( id == "cr" ) {
-			$("#tCr").empty();
-			//$("#tType").append( '<option></option>' );
-			for( var i=0;i<list.length;i++ ){
-				$("#tCr").append( '<option value='+list[i].split(":")[0]+'>'+list[i].split(":")[1]+'</option>');
+
+			 $("select[name=searchKeys]").each(function(index, item){
+			      //alert($(item).val());
+			      //alert(index);
+			      //alert(item);
+			      
+			      $(item).empty();
+			      
+			      switch(ioType){
+				      case "AI" :	
+				      case "FTAI" :
+				    	  $(item).append('<option value="0">DESCR</option>');
+				    	  $(item).append('<option value="1">MESSAGE</option>');
+				    	  $(item).append('<option value="2">REV</option>');
+				    	  $(item).append('<option value="3">DRAWING</option>');
+				    	  $(item).append('<option value="4">LOOPNAME</option>');
+				    	  $(item).append('<option value="5">DEVICE</option>');
+				    	  $(item).append('<option value="6">PURPOSE</option>');
+				    	  $(item).append('<option value="7">PROGRAM</option>');
+				    	  $(item).append('<option value="8">VLOW</option>');
+				    	  $(item).append('<option value="9">VHIGH</option>');
+				    	  $(item).append('<option value="10">ELOW</option>');
+				    	  $(item).append('<option value="11">EHIGH</option>');
+				    	  $(item).append('<option value="12">UNIT</option>');
+				    	  $(item).append('<option value="13">CONV</option>');
+				    	  $(item).append('<option value="14">RTD</option>');
+				    	  $(item).append('<option value="15">TYPE</option>');
+				    	  $(item).append('<option value="16">GROUP</option>');
+				    	  $(item).append('<option value="17">WINDOW</option>');
+				    	  $(item).append('<option value="18">PRIORITY</option>');
+				    	  $(item).append('<option value="19">CR</option>');
+				    	  $(item).append('<option value="20">LIMIT1</option>');
+				    	  $(item).append('<option value="21">LIMIT2</option>');
+				    	  $(item).append('<option value="22">J</option>');
+				    	  $(item).append('<option value="23">N</option>');
+				    	  $(item).append('<option value="24">EQU#</option>');
+				    	  $(item).append('<option value="25">BSCAL</option>');
+				    	  $(item).append('<option value="26">WIBA</option>');
+				    	  $(item).append('<option value="27">WB#</option>');
+						  break;						 
+				      case "AO" :					    	  
+				    	  $(item).append('<option value="0">REV</option>');
+				    	  $(item).append('<option value="1">DESCR</option>');
+				    	  $(item).append('<option value="2">DRAWING</option>');
+				    	  $(item).append('<option value="3">DEVICE</option>');
+				    	  $(item).append('<option value="4">PURPOSE</option>');
+				    	  $(item).append('<option value="5">CTRLNAME</option>');
+				    	  $(item).append('<option value="6">INTERLOCK</option>');
+				    	  $(item).append('<option value="7">FEEDBACK</option>');
+				    	  $(item).append('<option value="8">COM1</option>');
+				    	  $(item).append('<option value="9">COM2</option>');
+				    	  $(item).append('<option value="10">WIBA</option>');
+				    	  break;				                
+				      case "CI" :  				    	  
+				    	  $(item).append('<option value="0">CR</option>');
+				    	  $(item).append('<option value="1">MESSAGE</option>');
+				    	  $(item).append('<option value="2">DRAWING</option>');
+				    	  $(item).append('<option value="3">REV</option>');
+				    	  $(item).append('<option value="4">DEVICE</option>');
+				    	  $(item).append('<option value="5">CONDITION</option>');
+				    	  $(item).append('<option value="6">WIBA</option>');
+				    	  $(item).append('<option value="7">GROUP</option>');
+				    	  $(item).append('<option value="8">TR</option>');
+				    	  $(item).append('<option value="9">PRIORITY</option>');
+				    	  $(item).append('<option value="10">TYPE</option>');
+				    	  break;				    	
+				      case "DI" :  				    	  
+				    	  $(item).append('<option value="0">BIT</option>');
+				    	  $(item).append('<option value="1">REV</option>');
+				    	  $(item).append('<option value="2">DESCR</option>');
+				    	  $(item).append('<option value="3">DRAWING</option>');
+				    	  $(item).append('<option value="4">DEVICE</option>');
+				    	  $(item).append('<option value="5">PURPOSE</option>');
+				    	  $(item).append('<option value="6">CTRLNAME</option>');
+				    	  $(item).append('<option value="7">ALARMCOND</option>');
+				    	  $(item).append('<option value="8">INDICATE</option>');
+				    	  $(item).append('<option value="9">WIBA</option>');
+				    	  break;    				    	
+				       case "DO" :				    	   
+				    	  $(item).append('<option value="0">BIT</option>');
+				    	  $(item).append('<option value="1">REV</option>');
+				    	  $(item).append('<option value="2">DESCR</option>');
+				    	  $(item).append('<option value="3">DRAWING</option>');
+				    	  $(item).append('<option value="4">DEVICE</option>');
+				    	  $(item).append('<option value="5">PURPOSE</option>');
+				    	  $(item).append('<option value="6">CTRLNAME</option>');
+				    	  $(item).append('<option value="7">INTERLOCK</option>');
+				    	  $(item).append('<option value="8">WIBA</option>');
+				    	  break
+				       case "DT" :     
+				       case "FTDT" :
+				    	  $(item).append('<option value="0">PROGRAM</option>');
+					      $(item).append('<option value="1">DESCR</option>');
+					      $(item).append('<option value="2">LOOPNAME</option>');
+					      $(item).append('<option value="3">BSCAL</option>');
+					      $(item).append('<option value="4">ELOW</option>');
+					      $(item).append('<option value="5">EHIGH</option>');
+						  break;	   
+					   case "SC":
+						  $(item).append('<option value="0">BIT</option>');
+						  $(item).append('<option value="1">PROGRAM</option>');
+						  $(item).append('<option value="2">DESCR</option>');
+						  $(item).append('<option value="3">INDICATE</option>');
+						  break;
+				 } // end swith
+			   }); // end searchKey Control
+			   
+			  	initViewConfig(ioType,'change');
+
+			 	/*switch(ioType){
+				      case "AI" :	
+				    	  	$("#ioType_0_List").show();
+				    	  	$("#ioType_0_Input").show();
+						  break;						 
+				      case "AO" :					    	  
+				  			$("#ioType_1_List").show();
+				  			$("#ioType_1_Input").show();
+				    	  break;				                
+				      case "CI" :  				    	  
+				  			$("#ioType_2_List").show();
+				  			$("#ioType_2_Input").show();
+				    	  break;				    	
+				      case "DI" :  				    	  
+				  			$("#ioType_3_List").show();
+				  			$("#ioType_3_Input").show();
+				    	  break;    				    	
+				       case "DO" :				    	   
+				  			$("#ioType_4_List").show();
+				  			$("#ioType_4_Input").show();
+				    	  break
+				       case "DT" :     
+				  			$("#ioType_5_List").show();
+				  			$("#ioType_5_Input").show();;
+						  break;	   
+					   case "SC":
+				  			$("#ioType_6_List").show();
+				  			$("#ioType_6_Input").show();
+						  break;
+					   case "FTAI":
+				  			$("#ioType_7_List").show();
+				  			$("#ioType_7_Input").show();
+						  break;
+				       case "FTDT" :
+				  			$("#ioType_8_List").show();
+				  			$("#ioType_8_Input").show();;
+						  break;	  
+				 } // end swith*/
+			   
+		});	// end ioType 	change event
+		
+		$(document.body).delegate("#iolistInfoUpdate","click",function(){
+			
+			if(chkIOType == null || chkIOType==''){
+				alert("목록에서 저장할 I/O를 선택하여 주십시요!!!");
+				return;
 			}
-		} else if( id == "group" ) {
-			$("#tGroup").empty();
-			//$("#tType").append( '<option></option>' );
-			for( var i=0;i<list.length;i++ ){
-				$("#tGroup").append( '<option value='+list[i].split(":")[0]+'>'+list[i].split(":")[1]+'</option>');
-			}
-		} else if( id == "n" ) {
-			$("#tN").empty();
-			//$("#tType").append( '<option></option>' );
-			for( var i=0;i<list.length;i++ ){
-				$("#tN").append( '<option value='+list[i].split(":")[0]+'>'+list[i].split(":")[1]+'</option>');
-			}
-		} else if( id == "prio" ) {
-			$("#tPriority").empty();
-			//$("#tType").append( '<option></option>' );
-			for( var i=0;i<list.length;i++ ){
-				$("#tPriority").append( '<option value='+list[i].split(":")[0]+'>'+list[i].split(":")[1]+'</option>');
-			}
-		} else if( id == "wiba" ) {
-			$("#tWba").empty();
-			//$("#tType").append( '<option></option>' );
-			for( var i=0;i<list.length;i++ ){
-				$("#tWba").append( '<option value='+list[i].split(":")[0]+'>'+list[i].split(":")[1]+'</option>');
-			}
-		}
-	}
+			
+			if (confirm("I/O LIST을 저장 합니다..!!")) {	
+			
+					 switch(chkIOType){
+						     case "AI" :
+									var comAjax = new ComAjax("ioType_0_form");
+									comAjax.setUrl("/dcc/admin/iolistupdate");
+									comAjax.setCallback("mbr_IOListUpdateEventCallback");
+									comAjax.ajax();
+						  		break;
+						     case "AO" :
+									var comAjax = new ComAjax("ioType_1_form");
+									comAjax.setUrl("/dcc/admin/iolistupdate");
+									comAjax.setCallback("mbr_IOListUpdateEventCallback");
+									comAjax.ajax();
+						  		break;   
+						     case "CI" :
+									var comAjax = new ComAjax("ioType_2_form");
+									comAjax.setUrl("/dcc/admin/iolistupdate");
+									comAjax.setCallback("mbr_IOListUpdateEventCallback");
+									comAjax.ajax();
+						  		break;
+						     case "DI" :
+									var comAjax = new ComAjax("ioType_3_form");
+									comAjax.setUrl("/dcc/admin/iolistupdate");
+									comAjax.setCallback("mbr_IOListUpdateEventCallback");
+									comAjax.ajax();
+						  		break;           
+						     case "DO" :
+									var comAjax = new ComAjax("ioType_4_form");
+									comAjax.setUrl("/dcc/admin/iolistupdate");
+									comAjax.setCallback("mbr_IOListUpdateEventCallback");
+									comAjax.ajax();
+						  		break;
+						     case "DT" :
+									var comAjax = new ComAjax("ioType_5_form");
+									comAjax.setUrl("/dcc/admin/iolistupdate");
+									comAjax.setCallback("mbr_IOListUpdateEventCallback");
+									comAjax.ajax();
+						  		break;
+						     case "SC" :
+									var comAjax = new ComAjax("ioType_6_form");
+									comAjax.setUrl("/dcc/admin/iolistupdate");
+									comAjax.setCallback("mbr_IOListUpdateEventCallback");
+									comAjax.ajax();
+						  		break;
+						     case "FTAI" :
+									var comAjax = new ComAjax("ioType_7_form");
+									comAjax.setUrl("/dcc/admin/iolistupdate");
+									comAjax.setCallback("mbr_IOListUpdateEventCallback");
+									comAjax.ajax();
+						  		break;
+						     case "FTDT" :
+									var comAjax = new ComAjax("ioType_8_form");
+									comAjax.setUrl("/dcc/admin/iolistupdate");
+									comAjax.setCallback("mbr_IOListUpdateEventCallback");
+									comAjax.ajax();
+						  		break;				
+					 	}
+			}else {
+				alert("I/O LIST 저장을 취소 합니다...!!");
+			}	
+		});		
+		
+		
+		$(document.body).delegate("#ioListSearch","click",function(){
+			sendPage(1);
+		});		
+		
+		$(document.body).delegate("#excelExport","click",function(){
+			toCSV();
+		});		
 	
-	function excelExport(){
-		if (confirm("검색 조건으로 파일을 다운로드 합니다..!!")) {
-			var	comSubmit	=	new ComSubmit("iolistForm");
+	
+});	
+
+	function toCSV() {
+		//if (confirm("검색 조건으로 파일을 다운로드 합니다..!!")) {	
+			
+			var	comSubmit	=	new ComSubmit("ioListForm");
 			comSubmit.setUrl("/dcc/tip/iolistExcelExport");
 			comSubmit.submit();
-		}else {
-			alert("선택한 파일의 다운로드를 취소 합니다..!!");
-		}
+			
+		//}else {
+		//	alert("검색 조건의  파일의 다운로드를 취소 합니다..!!");
+		//}
 	}
-	
-	function initSearch(type) {
-		$("#address").val('');
-		$("#searchKey_1 option:eq(0)").prop("selected",true);
-		$("#searchKey_2 option:eq(0)").prop("selected",true);
-		$("#searchKey_3 option:eq(0)").prop("selected",true);
-		$("#searchWord_1").val('');
-		$("#searchWord_2").val('');
-		$("#searchWord_3").val('');
+   
+    function initViewConfig(type,trigger){
+    	
+    	if( type == 'AI' || type == '' || type == null ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<32;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_0_List_body").empty();
+	    		$("#ioType_0_List_body").append(clearBodyStr);
+	    	}
+    		
+    		$("#ioType_0_List").show();
+    		$("#ioType_0_Input").show();
+    	} else {
+    		$("#ioType_0_List").hide();
+    		$("#ioType_0_Input").hide();
+    	}
+    	if( type == 'AO' ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<12;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_1_List_body").empty();
+	    		$("#ioType_1_List_body").append(clearBodyStr);
+	    	}
+    		
+			$("#ioType_1_List").show();
+			$("#ioType_1_Input").show();
+    	} else {
+    		$("#ioType_1_List").hide();
+    		$("#ioType_1_Input").hide();
+    	}
+    	if( type == 'CI' ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<16;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_2_List_body").empty();
+	    		$("#ioType_2_List_body").append(clearBodyStr);
+	    	}
+    		
+			$("#ioType_2_List").show();
+			$("#ioType_2_Input").show();
+    	} else {
+    		$("#ioType_2_List").hide();
+    		$("#ioType_2_Input").hide();
+    	}
+    	if( type == 'DI' ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<13;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_3_List_body").empty();
+	    		$("#ioType_3_List_body").append(clearBodyStr);
+	    	}
+    		
+			$("#ioType_3_List").show();
+			$("#ioType_3_Input").show();
+    	} else {
+    		$("#ioType_3_List").hide();
+    		$("#ioType_3_Input").hide();
+    	}
+    	if( type == 'DO' ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<12;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_4_List_body").empty();
+	    		$("#ioType_4_List_body").append(clearBodyStr);
+	    	}
+    		
+			$("#ioType_4_List").show();
+			$("#ioType_4_Input").show();
+    	} else {
+    		$("#ioType_4_List").hide();
+    		$("#ioType_4_Input").hide();
+    	}
+    	if( type == 'DT' ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<7;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_5_List_body").empty();
+	    		$("#ioType_5_List_body").append(clearBodyStr);
+	    	}
+    		
+			$("#ioType_5_List").show();
+			$("#ioType_5_Input").show();
+    	} else {
+    		$("#ioType_5_List").hide();
+    		$("#ioType_5_Input").hide();
+    	}
+    	if( type == 'SC' ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<6;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_6_List_body").empty();
+	    		$("#ioType_6_List_body").append(clearBodyStr);
+	    	}
+    		
+			$("#ioType_6_List").show();
+			$("#ioType_6_Input").show();
+    	} else {
+    		$("#ioType_6_List").hide();
+    		$("#ioType_6_Input").hide();
+    	}
+    	if( type == 'FTAI' ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<29;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_7_List_body").empty();
+	    		$("#ioType_7_List_body").append(clearBodyStr);
+	    	}
+    		
+			$("#ioType_7_List").show();
+			$("#ioType_7_Input").show();
+  			$('#history').css("display", "block"); 
+    	} else {
+    		$("#ioType_7_List").hide();
+    		$("#ioType_7_Input").hide();
+    		if( type != 'FTDT' ) $('#history').css("display", "none"); 
+    	}
+    	if( type == 'FTDT' ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<7;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_8_List_body").empty();
+	    		$("#ioType_8_List_body").append(clearBodyStr);
+	    	}
+    		
+			$("#ioType_8_List").show();
+			$("#ioType_8_Input").show();
+  			$('#history').css("display", "block"); 
+    	} else {
+    		$("#ioType_8_List").hide();
+    		$("#ioType_8_Input").hide();
+    		if( type != 'FTAI' ) $('#history').css("display", "none"); 
+    	}  	
 		
-		$("#tAddress").val("");
-		$("#tRev").val("");
-		$("#tType").val("");
-		$("#tEqu").val("");
-		$("#tDescr").val("");
-		$("#tGroup").val("");
-		$("#tBscal").val("");
-		$("#tMessage").val("");
-		$("#tWindows").val("");
-		$("#tWba").val("");
-		$("#tDrawing").val("");
-		$("#tLoopName").val("");
-		$("#tPriority").val("");
-		$("#tDevice").val("");
-		$("#tUnit").val("");
-		$("#tLimit1").val("");
-		$("#tPurpose").val("");
-		$("#tVlow").val("");
-		$("#tElow").val("");
-		$("#tLimit2").val("");
-		$("#tProgram").val("");
-		$("#tConv").val("");
-		$("#tRtd").val("");
-		$("#tJ").val("");
-		$("#tIseq").val("");
-		$("#tIhogi").val("");
-		$("#tXygubun").val("");
-		$("#tIotype").val("");
-		$("#tTr").val("");
-		$("#tCr").val("");
-		$("#tIoBit").val("");
-		$("#tCom1").val("");
-		$("#tCom2").val("");
-		$("#tN").val("");
-		$("#tCondition").val("");
-	}
+		//$('#history').css("display", "none"); 
+    }
+
+	function sendPage(pageNum){
 	
-	function convertNum(type,id,str) {
-		if( id == 'type' ) {
-			if( type == 'AI' ) {
-				if( str == 'None' ) return 0;
-				if( str == 'High' ) return 1;
-				if( str == 'Low' ) return 2;
-				if( str == 'High/Low' ) return 3;
-				if( str == 'High DTAB' ) return 4;
-				if( str == 'Low DTAB' ) return 5;
-				if( str == 'High/Low DTAB' ) return 6;
-				if( str == 'High/Very High' ) return 7;
-				if( str == 'Low/Very Low' ) return 8;
-				if( str == 'Irrational' ) return 9;
-			} else if( type == 'CI' ) {
-				if( str == 'Alarm on Opening' ) return 0;
-				if( str == 'Alarm on Closing' ) return 1;
-			}
-		} else if( id == 'n' ) {
-			if( str == 'Commssion' ) return 0;
-			if( str == 'Not Commission' ) return 1;
-		} else if( id == 'prio' ) {
-			if( type == 'AI' ) {
-				if( str == 'Printer only' ) return 0;
-			} else if( type == 'CI' ) {
-				if( str == 'Undef' ) return 0;
-			}
-			if( str == 'Minor' ) return 1;
-			if( str == 'Safety' ) return 2;
-			if( str == 'Major' ) return 3;
-		} else if( id == 'cr' ) {
-			if( str == 'None' ) return 0;
-			if( str == 'Conditioned' ) return 1;
-		} else if( id == 'tr' ) {
-			if( str == 'Seconds' ) return 0;
-			if( str == 'Milliseconds' ) return 1;
-		} else if( id == 'grp' ) {
-			if( str == 'None' ) return 0;
-			if( str == 'Reactor and PHT' ) return 1;
-			if( str == 'Safety' ) return 3;
-			if( str == 'Electrical' ) return 4;
-			if( str == 'Auxiliaries' ) return 5;
-			if( type == 'AI' ) {
-				if( str == 'Turbine and boilers' ) return 2;
-			} else if( type == 'CI' ) {
-				if( str == 'SG/Turbine' ) return 2;
-			}
-		} else if( id == 'wiba' ) {
-			if( str == 'OUT' ) return 0;
-			if( str == 'IN' ) return 1;
-		}
-	}
-	
-	$(function() {
-		if( $("#hogiHeader4").attr("class") == 'current' && $("#hogiHeader4").attr("class") != 'undefined' && $("#hogiHeader4").attr("class") != '') {
-			hogiHeader = "4";
-			$("#iHogi").val("4").prop("selected",true);
-		} else {
-			hogiHeader = "3";
-			$("#iHogi").val("3").prop("selected",true);
-		}
-		
-		if( $("input:checkbox[id='xy']").is(":checked") ) {
-			xyHeader = "Y";
-			$("#xyGubunX").prop("checked",false);
-			$("#xyGubunY").prop("checked",true);
-			$("#xyGubunX").val("");
-			$("#xyGubunY").val("Y");
-			$("#FTAI").css("display","none");
-			$("#FTDT").css("display","none");
-		} else {
-			xyHeader = "X";
-			$("#xyGubunX").prop("checked",true);
-			$("#xyGubunY").prop("checked",false);
-			$("#xyGubunX").val("X");
-			$("#xyGubunY").val("");
-			$("#FTAI").css("display","");
-			$("#FTDT").css("display","");
-		}
-		
-		if($("#ioType option:selected").val() == "AI" || $("#ioType option:selected").val() == "FTAI" || $("#ioType option:selected").val() == "") {
-			createSelect("n",nList);
-			createSelect("type",AITypeList);
-			createSelect("prio",AIPrioList);
-			createSelect("cr",crList);
-			createSelect("group",AIGrpList);
-		} else if($("#ioType option:selected").val() == "CI") {
-			createSelect("tr",trList);
-			createSelect("type",CITypeList);
-			createSelect("prio",CIPrioList);
-			createSelect("cr",crList);
-			createSelect("group",CIGrpList);
+		if(!$("input[name='xyGubun']:radio").is(':checked')){
+			alert("X, Y 구분을 선택하세요..!!") ;
+			return;
 		}
 
-		if($("#ioType option:selected").val() != "DT" && $("#ioType option:selected").val() != "FTDT") {
-			createSelect("wiba",wibaList);
+		var sk1 = $("#searchKeys1").val();
+		var sk2 = $("#searchKeys2").val();
+		var sk3 = $("#searchKeys3").val();
+		var sw1 = $("#searchWords1").val();
+		var sw2 = $("#searchWords2").val();
+		var sw3 = $("#searchWords3").val();
+		var searchKeyArray = ['','',''];
+		var searchWordsArray = ['','',''];
+		
+		if( sw1 != '' && typeof sw1 != 'undefined' ) {
+			searchKeyArray.splice(0,1,sk1);
+			searchWordsArray.splice(0,1,sw1);
+		}
+		if( sw2 != '' && typeof sw2 != 'undefined' ) {
+			searchKeyArray.splice(1,1,sk2);
+			searchWordsArray.splice(1,1,sw2);
+		}
+		if( sw3 != '' && typeof sw3 != 'undefined' ) {
+			searchKeyArray.splice(2,1,sk3);
+			searchWordsArray.splice(2,1,sw3);
 		}
 		
-		$(document.body).delegate('#hogiHeader3', 'click', function() {
-			hogiHeader = "3";
-			sendPage(1);
-		});
-		$(document.body).delegate('#hogiHeader4', 'click', function() {
-			hogiHeader = "4";
-			sendPage(1);
-		});
-		$(document.body).delegate('#xy', 'click', function() {
-			if( $("input:checkbox[id='xy']").is(":checked") ) {
-				xyHeader = "Y";
-				$("#xyGubunY").prop("checked",true);
-				$("#xyGubunX").prop("checked",false);
-				$("#xyGubunY").val("Y");
-				$("#xyGubunX").val("");
-				$("#FTAI").css("display","none");
-				$("#FTDT").css("display","none");
-			} else {
-				xyHeader = "X";
-				$("#xyGubunX").prop("checked",true);
-				$("#xyGubunY").prop("checked",false);
-				$("#xyGubunY").val("");
-				$("#xyGubunX").val("X");
-				$("#FTAI").css("display","");
-				$("#FTDT").css("display","");
-			}
-			sendPage(1);
-		});
-		$(document.body).delegate('#xyGubunX', 'click', function() {
-			$("input:checkbox[id='xy']").prop("checked",false);
-			$("#xyGubunX").val("X");
-			$("#xyGubunY").val("");
-			$("#FTAI").css("display","");
-			$("#FTDT").css("display","");
-		});
-		$(document.body).delegate('#xyGubunY', 'click', function() {
-			$("input:checkbox[id='xy']").prop("checked",true);
-			$("#xyGubunX").val("");
-			$("#xyGubunY").val("Y");
-			$("#FTAI").css("display","none");
-			$("#FTDT").css("display","none");
-		});
-		$(document.body).delegate('#dccIolistTable tr', 'click', function() {
-			if(this.id != 'itemHeaders') {
-				if( $("#ioType option:selected").val() == "AI" || $("#ioType option:selected").val() == "FTAI" ) {
-					$("#tAddress").val($(this).children().eq(0).text());
-					$("#tRev").val($(this).children().eq(3).text());
-					$("#tType").val(convertNum('AI','type',$(this).children().eq(13).text()));
-					$("#tEqu").val($(this).children().eq(16).text());
-					$("#tDescr").val($(this).children().eq(1).text());
-					$("#tGroup").val(convertNum('AI','grp',$(this).children().eq(14).text()));
-					$("#tBscal").val($(this).children().eq(17).text());
-					$("#tMessage").val($(this).children().eq(2).text());
-					$("#tWindows").val($(this).children().eq(18).text());
-					$("#tWba").val(convertNum('AI','wiba',$(this).children().eq(19).text()));
-					$("#tDrawing").val($(this).children().eq(4).text());
-					$("#tLoopName").val($(this).children().eq(5).text());
-					$("#tPriority").val(convertNum('AI','prio',$(this).children().eq(15).text()));
-					$("#tDevice").val($(this).children().eq(6).text());
-					$("#tUnit").val($(this).children().eq(20).text());
-					$("#tLimit1").val($(this).children().eq(21).text());
-					$("#tPurpose").val($(this).children().eq(23).text());
-					$("#tVlow").val($(this).children().eq(8).text());
-					$("#tElow").val($(this).children().eq(10).text());
-					$("#tVhigh").val($(this).children().eq(9).text());
-					$("#tEhigh").val($(this).children().eq(11).text());
-					$("#tLimit2").val($(this).children().eq(22).text());
-					$("#tProgram").val($(this).children().eq(24).text());
-					$("#tConv").val($(this).children().eq(12).text());
-					$("#tRtd").val($(this).children().eq(25).text());
-					$("#tJ").val($(this).children().eq(26).text());
-					$("#tProcess").val($(this).children().eq(32).text());
-					$("#tReason").val($(this).children().eq(30).text());
-					$("#tDone").val($(this).children().eq(31).text());
-					$("#tCr").val(convertNum('AI','cr',$(this).children().eq(34).text()));
-					$("#tN").val(convertNum('AI','n',$(this).children().eq(38).text()));
-				} else if( $("#ioType option:selected").val() == "AO" ) {
-					$("#tAddress").val($(this).children().eq(0).text());
-					$("#tRev").val($(this).children().eq(3).text());
-					$("#tDescr").val($(this).children().eq(1).text());
-					$("#tWba").val(convertNum('AI','wiba',$(this).children().eq(19).text()));
-					$("#tDrawing").val($(this).children().eq(4).text());
-					$("#tDevice").val($(this).children().eq(6).text());
-					$("#tPurpose").val($(this).children().eq(23).text());
-					$("#tCtrlName").val($(this).children().eq(40).text());
-					$("#tInterlock").val($(this).children().eq(41).text());
-					$("#tFeedback").val($(this).children().eq(42).text());
-				} else if( $("#ioType option:selected").val() == "CI" ) {
-					$("#tAddress").val($(this).children().eq(0).text());
-					$("#tRev").val($(this).children().eq(3).text());
-					$("#tType").val(convertNum('CI','type',$(this).children().eq(13).text()));
-					$("#tGroup").val(convertNum('CI','grp',$(this).children().eq(14).text()));
-					$("#tMessage").val($(this).children().eq(2).text());
-					$("#tWba").val(convertNum('AI','wiba',$(this).children().eq(19).text()));
-					$("#tDrawing").val($(this).children().eq(4).text());
-					$("#tPriority").val(convertNum('CI','prio',$(this).children().eq(15).text()));
-					$("#tDevice").val($(this).children().eq(6).text());
-					$("#tProcess").val($(this).children().eq(32).text());
-					$("#tReason").val($(this).children().eq(30).text());
-					$("#tDone").val($(this).children().eq(31).text());
-					$("#tTr").val(convertNum('CI','tr',$(this).children().eq(33).text()));
-					$("#tCr").val(convertNum('CI','cr',$(this).children().eq(34).text()));
-					$("#tCondition").val($(this).children().eq(39).text());
-				} else if( $("#ioType option:selected").val() == "DI" ) {
-					$("#tAddress").val($(this).children().eq(0).text());
-					$("#tRev").val($(this).children().eq(3).text());
-					$("#tDescr").val($(this).children().eq(1).text());
-					$("#tWba").val(convertNum('AI','wiba',$(this).children().eq(19).text()));
-					$("#tDrawing").val($(this).children().eq(4).text());
-					$("#tDevice").val($(this).children().eq(6).text());
-					$("#tPurpose").val($(this).children().eq(23).text());
-					$("#tIoBit").val($(this).children().eq(35).text());
-					$("#tCtrlName").val($(this).children().eq(40).text());
-					$("#tInterlock").val($(this).children().eq(41).text());
-					$("#tIndicate").val($(this).children().eq(44).text());
-				} else if( $("#ioType option:selected").val() == "DO" ) {
-					$("#tAddress").val($(this).children().eq(0).text());
-					$("#tRev").val($(this).children().eq(3).text());
-					$("#tDescr").val($(this).children().eq(1).text());
-					$("#tWba").val(convertNum('AI','wiba',$(this).children().eq(19).text()));
-					$("#tDrawing").val($(this).children().eq(4).text());
-					$("#tDevice").val($(this).children().eq(6).text());
-					$("#tPurpose").val($(this).children().eq(23).text());
-					$("#tIoBit").val($(this).children().eq(35).text());
-					$("#tCtrlName").val($(this).children().eq(40).text());
-					$("#tInterlock").val($(this).children().eq(41).text());
-				} else if( $("#ioType option:selected").val() == "DT" || $("#ioType option:selected").val() == "FTDT" ) {
-					$("#tAddress").val($(this).children().eq(0).text());
-					$("#tDescr").val($(this).children().eq(1).text());
-					$("#tLoopName").val($(this).children().eq(5).text());
-					$("#tProgram").val($(this).children().eq(24).text());
-				}
-				$("#tIseq").val($(this).children().eq(27).text());
-				$("#tIhogi").val($(this).children().eq(28).text());
-				$("#tXygubun").val($(this).children().eq(7).text());
-				$("#tIotype").val($(this).children().eq(29).text());
-			}
-		});
-		
-		$("#iolistSearch").click(function(){
-			 sendPage(0);
-		});
-		
-		$("#initSearch").click(function(){
-			initSearch(0);
-		});
-		
-		/* $("#iolistModify").click(function(){
-			
-			console.log($("#tType option:selected").val());
-			
-			//if(!inputVaildationCheck()){
-			//	return;
-			//}
-			
-			if (confirm("I/O List를 저장 합니다..!!")) {
-				var	comSubmit	=	new ComSubmit("iolistModifyForm");
-				comSubmit.setUrl("/dcc/tip/iolistModify");
-				if( !isEmpty($("#tIseq").val()) ) comSubmit.addParam("iSeq",$("#tIseq").val());
-				if( !isEmpty($("#tType option:selected").val()) && $("#tType option:selected").val() != 'undefined') comSubmit.addParam("type",$("#tType option:selected").val());
-				if( !isEmpty($("#tAddress").val()) ) comSubmit.addParam("address",$("#tAddress").val());
-				if( !isEmpty($("#tRev").val()) ) comSubmit.addParam("rev",$("#tRev").val());
-				if( !isEmpty($("#tEqu").val()) ) comSubmit.addParam("equ",$("#tEqu").val());
-				if( !isEmpty($("#tDescr").val()) ) comSubmit.addParam("descr",$("#tDescr").val());
-				if( !isEmpty($("#tGroup option:selected").val()) && $("#tGroup option:selected").val() != 'undefined' ) comSubmit.addParam("ioGroup",$("#tGroup option:selected").val());
-				if( !isEmpty($("#tBscal").val()) ) comSubmit.addParam("bscal",$("#tBscal").val());
-				if( !isEmpty($("#tMessage").val()) ) comSubmit.addParam("message",$("#tMessage").val());
-				if( !isEmpty($("#tWindows").val()) ) comSubmit.addParam("winodw",$("#tWindows").val());
-				if( !isEmpty($("#tWba").val()) ) comSubmit.addParam("wiba",$("#tWba").val());
-				if( !isEmpty($("#tDrawing").val()) ) comSubmit.addParam("drawing",$("#tDrawing").val());
-				if( !isEmpty($("#tLoopName").val()) ) comSubmit.addParam("loopName",$("#tLoopName").val());
-				if( !isEmpty($("#tPriority option:selected").val()) && $("#tPriority option:selected").val() != 'undefined' ) comSubmit.addParam("priority",$("#tPriority option:selected").val());
-				if( !isEmpty($("#tDevice").val()) ) comSubmit.addParam("device",$("#tDevice").val());
-				if( !isEmpty($("#tLimit1").val()) ) comSubmit.addParam("limit1",$("#tLimit1").val());
-				if( !isEmpty($("#tPurpose").val()) ) comSubmit.addParam("purpose",$("#tPurpose").val());
-				if( !isEmpty($("#tVlow").val()) ) comSubmit.addParam("vLow",$("#tVlow").val());
-				if( !isEmpty($("#tElow").val()) ) comSubmit.addParam("eLow",$("#tElow").val());
-				if( !isEmpty($("#tVHigh").val()) ) comSubmit.addParam("vHigh",$("#tVHigh").val());
-				if( !isEmpty($("#tEHigh").val()) ) comSubmit.addParam("eHigh",$("#tEHigh").val());
-				if( !isEmpty($("#tLimit2").val()) ) comSubmit.addParam("limit2",$("#tLimit2").val());
-				if( !isEmpty($("#tProgram").val()) ) comSubmit.addParam("program",$("#tProgram").val());
-				if( !isEmpty($("#tConv").val()) ) comSubmit.addParam("conv",$("#tConv").val());
-				if( !isEmpty($("#tUnit").val()) ) comSubmit.addParam("unit",$("#tUnit").val());
-				if( !isEmpty($("#tRtd").val()) ) comSubmit.addParam("rtd",$("#tRtd").val());
-				if( !isEmpty($("#tJ").val()) ) comSubmit.addParam("j",$("#tJ").val());
-				if( !isEmpty($("#tIhogi").val()) ) comSubmit.addParam("iHogi",$("#tIhogi").val());
-				if( !isEmpty($("#tXygubun").val()) ) comSubmit.addParam("xyGubun",$("#tXygubun").val());
-				if( !isEmpty($("#tIotype").val()) ) comSubmit.addParam("ioType",$("#tIotype").val());
-				if( !isEmpty($("#tTr option:selected").val()) && $("#tTr option:selected").val() != 'undefined' ) comSubmit.addParam("tr",$("#tTr option:selected").val());
-				if( !isEmpty($("#tCr option:selected").val()) && $("#tCr option:selected").val() != 'undefined' ) comSubmit.addParam("cr",$("#tCr option:selected").val());
-				if( !isEmpty($("#tIoBit").val()) ) comSubmit.addParam("iobit",$("#tIoBit").val());
-				if( !isEmpty($("#tCom1").val()) ) comSubmit.addParam("com1",$("#tCom1").val());
-				if( !isEmpty($("#tCom2").val()) ) comSubmit.addParam("com2",$("#tCom2").val());
-				if( !isEmpty($("#tN option:selected").val()) && $("#tN option:selected").val() != 'undefined' ) comSubmit.addParam("n",$("#tN option:selected").val());
-				if( !isEmpty($("#tCondition").val()) ) comSubmit.addParam("condition",$("#tCondition").val());
-				if( !isEmpty($("#tCtrlName").val()) ) comSubmit.addParam("ctrlName",$("#tCtrlName").val());
-				if( !isEmpty($("#tInterlock").val()) ) comSubmit.addParam("interlock",$("#tInterlock").val());
-				if( !isEmpty($("#tFeedback").val()) ) comSubmit.addParam("feedback",$("#tFeedback").val());
-				if( !isEmpty($("#tAlarmCond").val()) ) comSubmit.addParam("alarmCond",$("#tAlarmCond").val());
-				if( !isEmpty($("#tIndicate").val()) ) comSubmit.addParam("indicate",$("#tIndicate").val());
-				if( !isEmpty($("#tProcess").val()) ) comSubmit.addParam("zText3",$("#tProcess").val());
-				if( !isEmpty($("#tReason").val()) ) comSubmit.addParam("zText1",$("#tReason").val());
-				if( !isEmpty($("#tDone").val()) ) comSubmit.addParam("zText2",$("#tDone").val());
-				comSubmit.submit();
-			}else {
-				alert("I/O List 저장을 취소 합니다...!!");
-			}
-			
-		}); */
-		
-		$("#iHogi").change(function(){;
-	
-			if($("#iHogi option:selected").val() == ""){
-				$("#iHogi").val("");
-			} else if( $("#iHogi option:selected").val() == "3" ){
-				$("#hogiHeader3").attr("class","current");
-				$("#hogiHeader4").attr("class","");
-			} else if( $("#iHogi option:selected").val() == "4" ){
-				$("#hogiHeader3").attr("class","");
-				$("#hogiHeader4").attr("class","current");
-			}
-		});
-		
-		/*$("input[name='xyGubun']").change(function(){
-	
-			if($("input[name='xyGubun']:checked").val() == ""){
-				console.log("NA");
-				//$("input[name=sXY]");
-			} else if($("input[name='xyGubun']:checked").val() == "X"){
-				console.log("X");
-				$("input:checkbox[id='xy']").prop("checked",false);
-				$("#xyGubunX").val("X");
-				$("#xyGubunY").val("");
-				$("#FTAI").css("display","");
-				$("#FTDT").css("display","");
-			} else if($("input[name='xyGubun']:checked").val() == "Y"){
-				console.log("Y");
-				$("input:checkbox[id='xy']").prop("checked",true);
-				$("#xyGubunX").val("");
-				$("#xyGubunY").val("Y");
-				$("#FTAI").css("display","none");
-				$("#FTDT").css("display","none");
-			}
-		});*/
-		
-		$("#address").change(function() {
-			
-			if(isValidAddr($("#address").val()) == 1 || isValidAddr($("#address").val()) == 4) {
-				alert('정상값을 입력하십시오....');
-			};
-		});
-		
-		$("#ioType").change(function(){
-			
-			if($("#ioType option:selected").val() == ""){
-				$("#divAI").css("display","");
-				$("#divAO").css("display","none");
-				$("#divCI").css("display","none");
-				$("#divDI").css("display","none");
-				$("#divDT").css("display","none");
-			} else if($("#ioType option:selected").val() == "AI"){
-				$("#divAI").css("display","");
-				$("#divAO").css("display","none");
-				$("#divCI").css("display","none");
-				$("#divDI").css("display","none");
-				$("#divDT").css("display","none");
-			} else if($("#ioType option:selected").val() == "AO"){
-				$("#divAI").css("display","none");
-				$("#divAO").css("display","");
-				$("#divCI").css("display","none");
-				$("#divDI").css("display","none");
-				$("#divDT").css("display","none");
-			} else if($("#ioType option:selected").val() == "CI"){
-				$("#divAI").css("display","none");
-				$("#divAO").css("display","none");
-				$("#divCI").css("display","");
-				$("#divDI").css("display","none");
-				$("#divDT").css("display","none");
-			} else if($("#ioType option:selected").val() == "DI"){
-				$("#divAI").css("display","none");
-				$("#divAO").css("display","none");
-				$("#divCI").css("display","none");
-				$("#divDI").css("display","");
-				$("#divDT").css("display","none");
-			} else if($("#ioType option:selected").val() == "DO"){
-				$("#divAI").css("display","none");
-				$("#divAO").css("display","none");
-				$("#divCI").css("display","none");
-				$("#divDI").css("display","");
-				$("#divDT").css("display","none");
-			} else if($("#ioType option:selected").val() == "DT"){
-				$("#divAI").css("display","none");
-				$("#divAO").css("display","none");
-				$("#divCI").css("display","none");
-				$("#divDI").css("display","none");
-				$("#divDT").css("display","");
-			} else if($("#ioType option:selected").val() == "FTAI"){
-				$("#divAI").css("display","");
-				$("#divAO").css("display","none");
-				$("#divCI").css("display","none");
-				$("#divDI").css("display","none");
-				$("#divDT").css("display","none");
-			} else if($("#ioType option:selected").val() == "FTDT"){
-				$("#divAI").css("display","none");
-				$("#divAO").css("display","none");
-				$("#divCI").css("display","none");
-				$("#divDI").css("display","none");
-				$("#divDT").css("display","");
-			}
-			initSearch(1);
-			sendPage();
-		});
-	});
-	
+		var	comSubmit	=	new ComSubmit("ioListForm");
+		comSubmit.addParam("pageNum", pageNum);
+		comSubmit.addParam("searchKeys",searchKeyArray);
+		comSubmit.addParam("searchWords",searchWordsArray);
+		comSubmit.setUrl("/dcc/tip/iolist");
+		comSubmit.submit();
+	}
+
 </script>
+
 
 </head>
 <body>
@@ -659,149 +924,217 @@
 			</div>
 			<!-- //page_title -->
 			<!-- fx_srch_wrap -->
-			<div class="fx_srch_wrap">	
+			<div class="fx_srch_wrap">
 				<div class="fx_srch_form">
-				<form id="iolistForm" name="iolistForm">
+				<form id="ioListForm" name="ioListForm">
 					<div class="fx_srch_row">
 						<div class="fx_srch_item">
 							<label>호기선택</label>
                             <div class="fx_form_multi">
-                                <select id="iHogi" style="width:90px">
-									<c:if test="${BaseSearch.iHogi eq '3' or empty BaseSearch.iHogi}">
-										<option value="3" selected>3호기</option>
-									</c:if>
-									<c:if test="${BaseSearch.iHogi ne '3' and not empty BaseSearch.iHogi}">
-										<option value="3" >3호기</option>
-									</c:if>
-									<c:if test="${BaseSearch.iHogi eq '4'}">
-										<option value="4" selected>4호기</option>
-									</c:if>
-									<c:if test="${BaseSearch.iHogi ne '4'}">
-										<option value="4" >4호기</option>
-									</c:if>
+                                <select style="width:90px" id="iHogi" name="iHogi">
+                                	<c:if test="${BaseSearch.iHogi eq '3'}">
+                                		<option value="3" selected>3호기</option>
+                                	</c:if>
+                                	<c:if test="${BaseSearch.iHogi ne '3'}">
+                                		<option value="3" >3호기</option>
+                                	</c:if>
+                                	<c:if test="${BaseSearch.iHogi eq '4'}">
+                                		<option value="4" selected>4호기</option>
+                                	</c:if>
+                                	<c:if test="${BaseSearch.iHogi ne '4'}">
+                                		<option value="4" >4호기</option>
+                                	</c:if>
                                 </select>
                                 <div class="fx_form">
-                                	<c:if test="${BaseSearch.xyGubun eq 'X' or empty BaseSearch.xyGubun}">
-	                                    <label><input type="radio" id="xyGubunX" name="xyGubun" value="X" checked>X</label>
+                                	<c:if test="${BaseSearch.xyGubun eq null}">
+                                	<label><input type="radio" id="xyGubun" name="xyGubun" value="X"  checked>X</label>
+                                	</c:if>
+                                	<c:if test="${BaseSearch.xyGubun eq 'X'}">
+                                    <label><input type="radio" id="xyGubun" name="xyGubun" value="X"  checked>X</label>
                                     </c:if>
-                                	<c:if test="${BaseSearch.xyGubun ne 'X' and not empty BaseSearch.xyGubun}">
-	                                    <label><input type="radio" id="xyGubunX" name="xyGubun" value="X">X</label>
+                                    <c:if test="${BaseSearch.xyGubun ne null && BaseSearch.xyGubun ne 'X'}">
+                                    <label><input type="radio" id="xyGubun" name="xyGubun" value="X"  >X</label>
                                     </c:if>
                                     <c:if test="${BaseSearch.xyGubun eq 'Y'}">
-	                                    <label><input type="radio" id="xyGubunY" name="xyGubun" value="Y" checked>Y</label>
-	                                </c:if>
+                                    <label><input type="radio" id="xyGubun" name="xyGubun" value="Y"  checked>Y</label>
+                                    </c:if>
                                     <c:if test="${BaseSearch.xyGubun ne 'Y'}">
-	                                    <label><input type="radio" id="xyGubunY" name="xyGubun" value="Y">Y</label>
-	                                </c:if>
+                                    <label><input type="radio" id="xyGubun" name="xyGubun" value="Y"  >Y</label>
+                                    </c:if>
                                 </div>
                             </div>
 						</div>
 						<div class="fx_srch_item">
 							<label>Acess Field</label>
-							<select id="ioType">
-								<c:if test="${BaseSearch.ioType eq 'AI' }">
-									<option id="AI" value="AI" selected>Analog Inputs</option>
+							<select id="ioType" name="ioType">
+								<c:if test="${BaseSearch.ioType eq 'AI'}">
+									<option value="AI" selected>Analog Inputs</option>
 								</c:if>
-								<c:if test="${BaseSearch.ioType ne 'AI' }">
-									<option id="AI" value="AI">Analog Inputs</option>
+								<c:if test="${BaseSearch.ioType ne 'AI'}">
+									<option value="AI" >Analog Inputs</option>
 								</c:if>
-								<c:if test="${BaseSearch.ioType eq 'AO' }">
-									<option id="AO" value="AO" selected>Analog Outputs</option>
+								<c:if test="${BaseSearch.ioType eq 'AO'}">
+									<option value="AO" selected>Analog Outputs</option>
 								</c:if>
-								<c:if test="${BaseSearch.ioType ne 'AO' }">
-									<option id="AO" value="AO">Analog Outputs</option>
+								<c:if test="${BaseSearch.ioType ne 'AO'}">
+									<option value="AO">Analog Outputs</option>
 								</c:if>
-								<c:if test="${BaseSearch.ioType eq 'CI' }">
-									<option id="CI" value="CI" selected>Contact Inputs</option>
+								<c:if test="${BaseSearch.ioType eq 'CI'}">
+									<option value="CI" selected>Contact Inputs</option>
 								</c:if>
-								<c:if test="${BaseSearch.ioType ne 'CI' }">
-									<option id="CI" value="CI">Contact Inputs</option>
+								<c:if test="${BaseSearch.ioType ne 'CI'}">
+									<option value="CI">Contact Inputs</option>
 								</c:if>
-								<c:if test="${BaseSearch.ioType eq 'DI' }">
-									<option id="DI" value="DI" selected>Digital Inputs</option>
+								<c:if test="${BaseSearch.ioType eq 'DI'}">
+									<option value="DI" selected>Digital Inputs</option>
 								</c:if>
-								<c:if test="${BaseSearch.ioType ne 'DI' }">
-									<option id="DI" value="DI">Digital Inputs</option>
+								<c:if test="${BaseSearch.ioType ne 'DI'}">
+									<option value="DI">Digital Inputs</option>
 								</c:if>
-								<c:if test="${BaseSearch.ioType eq 'DO' }">
-									<option id="DO" value="DO" selected>Digital Outputs</option>
+								<c:if test="${BaseSearch.ioType eq 'DO'}">
+									<option value="DO" selected>Digital Outputs</option>
 								</c:if>
-								<c:if test="${BaseSearch.ioType ne 'DO' }">
-									<option id="DO" value="DO">Digital Outputs</option>
+								<c:if test="${BaseSearch.ioType ne 'DO'}">
+									<option value="DO">Digital Outputs</option>
 								</c:if>
-								<c:if test="${BaseSearch.ioType eq 'DT' }">
-									<option id="DT" value="DT" selected>DTAB</option>
+								<c:if test="${BaseSearch.ioType eq 'DT'}">
+									<option value="DT" selected>DTAB</option>
 								</c:if>
-								<c:if test="${BaseSearch.ioType ne 'DT' }">
-									<option id="DT" value="DT">DTAB</option>
+								<c:if test="${BaseSearch.ioType ne 'DT'}">
+									<option value="DT">DTAB</option>
 								</c:if>
-								<c:if test="${BaseSearch.ioType eq 'FTAI' }">
-									<option id="FTAI" value="FTAI" selected>FAST AI</option>
+								<c:if test="${BaseSearch.ioType eq 'FTAI'}">
+									<option value="FTAI" selected>Fast AI</option>
 								</c:if>
-								<c:if test="${BaseSearch.ioType ne 'FTAI' }">
-									<option id="FTAI" value="FTAI">FAST AI</option>
+								<c:if test="${BaseSearch.ioType ne 'FTAI'}">
+									<option value="FTAI">Fast AI</option>
 								</c:if>
-								<c:if test="${BaseSearch.ioType eq 'FTDT' }">
-									<option id="FTDT" value="FTDT" selected>FAST DT</option>
+								<c:if test="${BaseSearch.ioType eq 'FTDT'}">
+									<option value="FTDT" selected>Fast DT</option>
 								</c:if>
-								<c:if test="${BaseSearch.ioType ne 'FTDT' }">
-									<option id="FTDT" value="FTDT">FAST DT</option>
-								</c:if>
+								<c:if test="${BaseSearch.ioType ne 'FTDT'}">
+									<option value="FTDT">Fast DT</option>
+								</c:if>								
 							</select>
 						</div>
 						<div class="fx_srch_item">
 							<label>Address</label>
                             <div class="fx_form">
-                                <input id="address" type="text" value="${BaseSearch.address}">
-                                <label>0-0</label>
+                                <input type="text" id="address" name="address" value="${BaseSearch.address}">
+                                <c:if test="${BaseSearch.addrRange ne null and BaseSearch.addrRange ne ''}">
+                                <label>${BaseSearch.addrRange}</label>
+                                </c:if>
+                                <c:if test="${BaseSearch.addrRange eq null or BaseSearch.addrRange eq ''}">
+                                <label>0 - 0</label>
+                                </c:if>
                             </div>
 						</div>
 					</div>
 					<div class="fx_srch_row">
 						<div class="fx_srch_item">
 							<label class="label_select">
-                                <select id="searchKey_1">
-                                <c:forEach var="dccIoColumnInfo" items="${DccIoColumnList}">
-                                	<c:if test="${BaseSearch.searchKey_1 eq dccIoColumnInfo.columnName}">
-                                   	<option value="${dccIoColumnInfo.columnName}" selected>${dccIoColumnInfo.columnName}</option>
-                                	</c:if>
-                                	<c:if test="${BaseSearch.searchKey_1 ne dccIoColumnInfo.columnName}">
-                                   	<option value="${dccIoColumnInfo.columnName}">${dccIoColumnInfo.columnName}</option>
-                                	</c:if>
-                                </c:forEach>
+                                <select id="searchKeys1" name="searchKeys1">
+                                  <option value="0">DESCR</option>
+						    	  <option value="1">MESSAGE</option>
+						    	  <option value="2">REV</option>
+						    	  <option value="3">DRAWING</option>
+						    	  <option value="4">LOOPNAME</option>
+						    	  <option value="5">DEVICE</option>
+						    	  <option value="6">PURPOSE</option>
+						    	  <option value="7">PROGRAM</option>
+						    	  <option value="8">VLOW</option>
+						    	  <option value="9">VHIGH</option>
+						    	  <option value="10">ELOW</option>
+						    	  <option value="11">EHIGH</option>
+						    	  <option value="12">UNIT</option>
+						    	  <option value="13">CONV</option>
+						    	  <option value="14">RTD</option>
+						    	  <option value="15">TYPE</option>
+						    	  <option value="16">GROUP</option>
+						    	  <option value="17">WINDOW</option>
+						    	  <option value="18">PRIORITY</option>
+						    	  <option value="19">CR</option>
+						    	  <option value="20">LIMIT1</option>
+						    	  <option value="21">LIMIT2</option>
+						    	  <option value="22">J</option>
+						    	  <option value="23">N</option>
+						    	  <option value="24">EQU#</option>
+						    	  <option value="25">BSCAL</option>
+						    	  <option value="26">WIBA</option>
+						    	  <option value="27">WB#</option>
                                 </select>
                             </label>
-                            <input id="searchWord_1" type="text" value="${BaseSearch.searchWord_1}">
+                            <input type="text"  id="searchWords1"  name="searchWords1" value="${BaseSearch.searchWords[0]}">
 						</div>
 						<div class="fx_srch_item">
 							<label class="label_select">
-                                <select id="searchKey_2">
-                                <c:forEach var="dccIoColumnInfo" items="${DccIoColumnList}">
-                                	<c:if test="${BaseSearch.searchKey_2 eq dccIoColumnInfo.columnName}">
-                                   	<option value="${dccIoColumnInfo.columnName}" selected>${dccIoColumnInfo.columnName}</option>
-                                	</c:if>
-                                	<c:if test="${BaseSearch.searchKey_2 ne dccIoColumnInfo.columnName}">
-                                   	<option value="${dccIoColumnInfo.columnName}">${dccIoColumnInfo.columnName}</option>
-                                	</c:if>
-                                </c:forEach>
+                                <select id="searchKeys2" name="searchKeys2">
+                                     <option value="0">DESCR</option>
+						    	  <option value="1">MESSAGE</option>
+						    	  <option value="2">REV</option>
+						    	  <option value="3">DRAWING</option>
+						    	  <option value="4">LOOPNAME</option>
+						    	  <option value="5">DEVICE</option>
+						    	  <option value="6">PURPOSE</option>
+						    	  <option value="7">PROGRAM</option>
+						    	  <option value="8">VLOW</option>
+						    	  <option value="9">VHIGH</option>
+						    	  <option value="10">ELOW</option>
+						    	  <option value="11">EHIGH</option>
+						    	  <option value="12">UNIT</option>
+						    	  <option value="13">CONV</option>
+						    	  <option value="14">RTD</option>
+						    	  <option value="15">TYPE</option>
+						    	  <option value="16">GROUP</option>
+						    	  <option value="17">WINDOW</option>
+						    	  <option value="18">PRIORITY</option>
+						    	  <option value="19">CR</option>
+						    	  <option value="20">LIMIT1</option>
+						    	  <option value="21">LIMIT2</option>
+						    	  <option value="22">J</option>
+						    	  <option value="23">N</option>
+						    	  <option value="24">EQU#</option>
+						    	  <option value="25">BSCAL</option>
+						    	  <option value="26">WIBA</option>
+						    	  <option value="27">WB#</option>
                                 </select>
                             </label>
-                            <input id="searchWord_2" type="text" value="${BaseSearch.searchWord_2}">
+                            <input type="text"  id="searchWords2" name="searchWords2" value="${BaseSearch.searchWords[1]}">
 						</div>
 						<div class="fx_srch_item">
 							<label class="label_select">
-                                <select id="searchKey_3">
-                                <c:forEach var="dccIoColumnInfo" items="${DccIoColumnList}">
-                                	<c:if test="${BaseSearch.searchKey_3 eq dccIoColumnInfo.columnName}">
-                                   	<option value="${dccIoColumnInfo.columnName}" selected>${dccIoColumnInfo.columnName}</option>
-                                	</c:if>
-                                	<c:if test="${BaseSearch.searchKey_3 ne dccIoColumnInfo.columnName}">
-                                   	<option value="${dccIoColumnInfo.columnName}">${dccIoColumnInfo.columnName}</option>
-                                	</c:if>
-                                </c:forEach>
+                                <select id="searchKeys3" name="searchKeys3">
+                                    <option value="0">DESCR</option>
+						    	  <option value="1">MESSAGE</option>
+						    	  <option value="2">REV</option>
+						    	  <option value="3">DRAWING</option>
+						    	  <option value="4">LOOPNAME</option>
+						    	  <option value="5">DEVICE</option>
+						    	  <option value="6">PURPOSE</option>
+						    	  <option value="7">PROGRAM</option>
+						    	  <option value="8">VLOW</option>
+						    	  <option value="9">VHIGH</option>
+						    	  <option value="10">ELOW</option>
+						    	  <option value="11">EHIGH</option>
+						    	  <option value="12">UNIT</option>
+						    	  <option value="13">CONV</option>
+						    	  <option value="14">RTD</option>
+						    	  <option value="15">TYPE</option>
+						    	  <option value="16">GROUP</option>
+						    	  <option value="17">WINDOW</option>
+						    	  <option value="18">PRIORITY</option>
+						    	  <option value="19">CR</option>
+						    	  <option value="20">LIMIT1</option>
+						    	  <option value="21">LIMIT2</option>
+						    	  <option value="22">J</option>
+						    	  <option value="23">N</option>
+						    	  <option value="24">EQU#</option>
+						    	  <option value="25">BSCAL</option>
+						    	  <option value="26">WIBA</option>
+						    	  <option value="27">WB#</option>
                                 </select>
                             </label>
-                            <input id="searchWord_3" type="text" value="${BaseSearch.searchWord_3}">
+                            <input type="text"  id="searchWords3" name="searchWords3" value="${BaseSearch.searchWords[2]}">
 						</div>
 					</div>
 				</form>
@@ -809,706 +1142,992 @@
 				<!-- fx_srch_button -->
 				<div class="fx_srch_button">
 					<a class="btn_reset" title="초기화" id="initSearch"></a>
-					<a class="btn_srch" id="iolistSearch">Search</a>
+					<a class="btn_srch" id="ioListSearch" name="ioListSearch">Search</a>
 				</div>
 				<!-- //fx_srch_button -->
 			</div>
-			<!-- //fx_srch_wrap -->            
+			<!-- //fx_srch_wrap -->
 			<!-- list_wrap -->
 			<div class="list_wrap">
-                <!-- 마우스 우클릭 메뉴 -->
-                <div class="context_menu" id="mouse_area">
-                    <ul>
-                        <li><a href="#none" onclick="openLayer('modal_1');">엑셀로 저장</a></li>
-                    </ul>
-                </div>
-                <!-- //마우스 우클릭 메뉴 -->                
 				<!-- list_head -->
 				<div class="list_head">
 					<div class="list_info">
-						<label>Total : <strong>${DccIolistList.size()}</strong></label>
+						<label>Total : <strong>${BaseSearch.totalCnt}</strong></label>
 					</div>
                     <!-- button -->
                     <div class="button">
-                        <!-- <a class="btn_list primary" href="#none" id="iolistModify" name="iolistModify">저장</a>
-                        <a class="btn_list excel_up" href="#none">엑셀일괄등록</a> -->
-                        <a class="btn_list excel_down" href="javascript:excelExport()">엑셀다운로드</a>
+                     	<a class="btn_list " href="#none" id="history" name="history" style="display:none;">이력조회 및 변경</a>
+                        <a class="btn_list excel_down" href="#none" id="excelExport" name="excelExport">엑셀다운로드</a>
                     </div>
                     <!-- button -->                      
 				</div>
                 <!-- //list_head -->
-                <!-- list_table -->
-                <c:if test="${BaseSearch.ioType eq 'AI' or BaseSearch.ioType eq 'FTAI' or BaseSearch.ioType eq null}">
-                <div class="list_table_scroll" id="divAI">
-                <table id="dccIolistTable" class="list_table">
-                    <colgroup>
-                        <col width="40px"/>
-                        <col width="300px"/>
-                        <col width="240px"/>
-                        <col width="40px"/>
-                        <col width="240px"/>
-                        <col width="240px"/>
-                        <col width="240px"/>
-                        <col width="40px"/>
-                        <col width="50px"/>
-                        <col width="50px"/>
-                        <col width="50px"/>
-                        <col width="50px"/>
-                        <col width="80px"/>
-                        <col width="120px"/>
-                        <col width="120px"/>
-                        <col width="120px"/>
-                    </colgroup>
-                    <thead>
-                        <tr id="itemHeaders">
-                            <th>ADDR</th>
-                            <th>DESCR</th>
-                            <th>MESSAGE</th>
-                            <th>REV</th>
-                            <th>DRAWING</th>
-                            <th>LOOPNAME</th>
-                            <th>DEVICE</th>
-                            <th>XYGUBUN</th>
-                            <th>VLOW</th>
-                            <th>VHIGH</th>
-                            <th>ELOW</th>
-                            <th>EHIGH</th>
-                            <th>CONV</th>
-                            <th>TYPE</th>
-                            <th>IOGROUP</th>
-                            <th>PRIORITY</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-					<c:forEach var="dccIolistInfo" items="${DccIolistList}">
-                    	<tr>
-                            <td class="tc">${dccIolistInfo.address}</td>
-                            <td class="tc">${dccIolistInfo.descr}</td>
-                            <td class="tc">${dccIolistInfo.message}</td>
-                            <td class="tc">${dccIolistInfo.rev}</td>
-                            <td class="tc">${dccIolistInfo.drawing}</td>
-                            <td class="tc">${dccIolistInfo.loopName}</td>
-                            <td class="tc">${dccIolistInfo.device}</td>
-                            <td class="tc">${dccIolistInfo.xyGubun}</td>
-                            <td class="tc">${dccIolistInfo.vLow}</td>
-                            <td class="tc">${dccIolistInfo.vHigh}</td>
-                            <td class="tc">${dccIolistInfo.eLow}</td>                          
-                            <td class="tc">${dccIolistInfo.eHigh}</td>
-                            <td class="tc">${dccIolistInfo.conv}</td>
-                            <td class="tc">${dccIolistInfo.type}</td>
-                            <td class="tc">${dccIolistInfo.ioGroup}</td>
-                            <td class="tc">${dccIolistInfo.priority}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.equ}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.bscal}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.window}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.wiba}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.unit}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.limit1}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.limit2}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.purpose}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.program}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.rtd}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.j}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.iSeq}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.iHogi}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ioType}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.zText1}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.zText2}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.zText3}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.tr}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.cr}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ioBit}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.com1}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.com2}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.n}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.condition}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ctrlName}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.interlock}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.feedback}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.alarmCond}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.indicate}</td>
-                        </tr>
-                    </c:forEach>
-                    <c:set var="rowMax" value="5" />
-                    <c:set var="itemCnt" value="${DccIolistList.size()}" />
-                    <c:if test="${itemCnt < 5}">
-                    <c:forEach var="i" begin="1" end="${rowMax-itemCnt}" step="1">
-                    	<tr>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    	</tr>
-                    </c:forEach>
-                    </c:if>
-                    </tbody>
-                </table>
-                </div>
-                </c:if>
-                <c:if test="${BaseSearch.ioType eq 'AO'}">
-                <div class="list_table_scroll" id="divAO">
-                <table id="dccIolistTable" class="list_table">
-                    <colgroup>
-                        <col width="40px"/>
-                        <col width="300px"/>
-                        <col width="40px"/>
-                        <col width="240px"/>
-                        <col width="240px"/>
-                        <col width="60px"/>
-                        <col width="60px"/>
-                    </colgroup>
-                    <thead>
-                        <tr id="itemHeaders">
-                            <th>ADDR</th>
-                            <th>DESCR</th>
-                            <th>REV</th>
-                            <th>DRAWING</th>
-                            <th>DEVICE</th>
-                            <th>XYGUBUN</th>
-                            <th>PURPOSE</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-					<c:forEach var="dccIolistInfo" items="${DccIolistList}">
-                    	<tr>
-                            <td class="tc">${dccIolistInfo.address}</td>
-                            <td class="tc">${dccIolistInfo.descr}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.message}</td>
-                            <td class="tc">${dccIolistInfo.rev}</td>                          
-                            <td class="tc">${dccIolistInfo.drawing}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.loopName}</td>
-                            <td class="tc">${dccIolistInfo.device}</td>
-                            <td class="tc">${dccIolistInfo.xyGubun}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.vLow}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.vHigh}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.eLow}</td>                          
-                            <td class="tc" style="display:none">${dccIolistInfo.eHigh}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.conv}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.type}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ioGroup}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.priority}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.equ}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.bscal}</td>                          
-                            <td class="tc" style="display:none">${dccIolistInfo.window}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.wiba}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.unit}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.limit1}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.limit2}</td>
-                            <td class="tc">${dccIolistInfo.purpose}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.program}</td>                          
-                            <td class="tc" style="display:none">${dccIolistInfo.rtd}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.j}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.iSeq}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.iHogi}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ioType}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.zText1}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.zText2}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.zText3}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.tr}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.cr}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ioBit}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.com1}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.com2}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.n}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.condition}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ctrlName}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.interlock}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.feedback}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.alarmCond}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.indicate}</td>
-                        </tr>
-                    </c:forEach>
-                    <c:set var="rowMax" value="5" />
-                    <c:set var="itemCnt" value="${DccIolistList.size()}" />
-                    <c:if test="${itemCnt < 5}">
-                    <c:forEach var="i" begin="1" end="${rowMax-itemCnt}" step="1">
-                    	<tr>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    	</tr>
-                    </c:forEach>
-                    </c:if>
-                    </tbody>
-                </table>
-                </div>
-                </c:if>
-                <c:if test="${BaseSearch.ioType eq 'CI'}">
-                <div class="list_table_scroll" id="divCI">
-                <table id="dccIolistTable" class="list_table">
-                    <colgroup>
-                        <col width="40px"/>
-                        <col width="240px"/>
-                        <col width="240px"/>
-                        <col width="240px"/>
-                        <col width="120px"/>
-                        <col width="120px"/>
-                        <col width="120px"/>
-                        <col width="100px"/>
-                        <col width="80px"/>
-                    </colgroup>
-                    <thead>
-                        <tr id="itemHeaders">
-                            <th>ADDR</th>
-                            <th>MESSAGE</th>
-                            <th>DRAWING</th>
-                            <th>DEVICE</th>
-                            <th>TYPE</th>
-                            <th>IOGROUP</th>
-                            <th>PRIORITY</th>
-                            <th>TR</th>
-                            <th>CR</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-					<c:forEach var="dccIolistInfo" items="${DccIolistList}">
-                    	<tr>
-                            <td class="tc">${dccIolistInfo.address}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.descr}</td>
-                            <td class="tc">${dccIolistInfo.message}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.rev}</td>                          
-                            <td class="tc">${dccIolistInfo.drawing}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.loopName}</td>
-                            <td class="tc">${dccIolistInfo.device}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.xyGubun}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.vLow}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.vHigh}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.eLow}</td>                          
-                            <td class="tc" style="display:none">${dccIolistInfo.eHigh}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.conv}</td>
-                            <td class="tc">${dccIolistInfo.type}</td>
-                            <td class="tc">${dccIolistInfo.ioGroup}</td>
-                            <td class="tc">${dccIolistInfo.priority}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.equ}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.bscal}</td>                          
-                            <td class="tc" style="display:none">${dccIolistInfo.window}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.wiba}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.unit}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.limit1}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.limit2}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.purpose}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.program}</td>                          
-                            <td class="tc" style="display:none">${dccIolistInfo.rtd}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.j}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.iSeq}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.iHogi}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ioType}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.zText1}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.zText2}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.zText3}</td>
-                            <td class="tc">${dccIolistInfo.tr}</td>
-                            <td class="tc">${dccIolistInfo.cr}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ioBit}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.com1}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.com2}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.n}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.condition}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ctrlName}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.interlock}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.feedback}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.alarmCond}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.indicate}</td>
-                        </tr>
-                    </c:forEach>
-                    <c:set var="rowMax" value="5" />
-                    <c:set var="itemCnt" value="${DccIolistList.size()}" />
-                    <c:if test="${itemCnt < 5}">
-                    <c:forEach var="i" begin="1" end="${rowMax-itemCnt}" step="1">
-                    	<tr>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    	</tr>
-                    </c:forEach>
-                    </c:if>
-                    </tbody>
-                </table>
-                </div>
-                </c:if>
-                <c:if test="${BaseSearch.ioType eq 'DI' or BaseSearch.ioType eq 'DO'}">
-                <div class="list_table_scroll" id="divDI">
-                <table id="dccIolistTable" class="list_table">
-                    <colgroup>
-                        <col width="40px"/>
-                        <col width="300px"/>
-                        <col width="40px"/>
-                        <col width="240px"/>
-                        <col width="240px"/>
-                        <col width="40px"/>
-                        <col width="40px"/>
-                    </colgroup>
-                    <thead>
-                        <tr id="itemHeaders">
-                            <th>ADDR</th>
-                            <th>DESCR</th>
-                            <th>REV</th>
-                            <th>DRAWING</th>
-                            <th>DEVICE</th>
-                            <th>XYGUBUN</th>
-                            <th>IOBIT</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-					<c:forEach var="dccIolistInfo" items="${DccIolistList}">
-                    	<tr>
-                            <td class="tc">${dccIolistInfo.address}</td>
-                            <td class="tc">${dccIolistInfo.descr}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.message}</td>
-                            <td class="tc">${dccIolistInfo.rev}</td>                          
-                            <td class="tc">${dccIolistInfo.drawing}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.loopName}</td>
-                            <td class="tc">${dccIolistInfo.device}</td>
-                            <td class="tc">${dccIolistInfo.xyGubun}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.vLow}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.vHigh}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.eLow}</td>                          
-                            <td class="tc" style="display:none">${dccIolistInfo.eHigh}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.conv}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.type}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ioGroup}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.priority}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.equ}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.bscal}</td>                          
-                            <td class="tc" style="display:none">${dccIolistInfo.window}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.wiba}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.unit}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.limit1}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.limit2}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.purpose}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.program}</td>                          
-                            <td class="tc" style="display:none">${dccIolistInfo.rtd}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.j}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.iSeq}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.iHogi}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ioType}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.zText1}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.zText2}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.zText3}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.tr}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.cr}</td>
-                            <td class="tc">${dccIolistInfo.ioBit}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.com1}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.com2}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.n}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.condition}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ctrlName}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.interlock}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.feedback}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.alarmCond}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.indicate}</td>
-                        </tr>
-                    </c:forEach>
-                    <c:set var="rowMax" value="5" />
-                    <c:set var="itemCnt" value="${DccIolistList.size()}" />
-                    <c:if test="${itemCnt < 5}">
-                    <c:forEach var="i" begin="1" end="${rowMax-itemCnt}" step="1">
-                    	<tr>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    	</tr>
-                    </c:forEach>
-                    </c:if>
-                    </tbody>
-                </table>
-                </div>
-                </c:if>
-                <c:if test="${BaseSearch.ioType eq 'DT' or BaseSearch.ioType eq 'FTDT' }">
-                <div class="list_table_scroll" id="divDT">
-                <table id="dccIolistTable" class="list_table">
-                    <colgroup>
-                        <col width="40px"/>
-                        <col width="300px"/>
-                        <col width="240px"/>
-                        <col width="150px"/>
-                    </colgroup>
-                    <thead>
-                        <tr id="itemHeaders">
-                            <th>ADDR</th>
-                            <th>DESCR</th>
-                            <th>LOOPNAME</th>
-                            <th>PROGRAM</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-					<c:forEach var="dccIolistInfo" items="${DccIolistList}">
-                    	<tr>
-                            <td class="tc">${dccIolistInfo.address}</td>
-                            <td class="tc">${dccIolistInfo.descr}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.message}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.rev}</td>                          
-                            <td class="tc" style="display:none">${dccIolistInfo.drawing}</td>
-                            <td class="tc">${dccIolistInfo.loopName}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.device}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.xyGubun}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.vLow}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.vHigh}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.eLow}</td>                          
-                            <td class="tc" style="display:none">${dccIolistInfo.eHigh}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.conv}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.type}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ioGroup}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.priority}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.equ}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.bscal}</td>                          
-                            <td class="tc" style="display:none">${dccIolistInfo.window}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.wiba}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.unit}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.limit1}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.limit2}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.purpose}</td>
-                            <td class="tc">${dccIolistInfo.program}</td>                          
-                            <td class="tc" style="display:none">${dccIolistInfo.rtd}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.j}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.iSeq}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.iHogi}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ioType}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.zText1}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.zText2}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.zText3}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.tr}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.cr}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ioBit}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.com1}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.com2}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.n}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.condition}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.ctrlName}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.interlock}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.feedback}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.alarmCond}</td>
-                            <td class="tc" style="display:none">${dccIolistInfo.indicate}</td>
-                        </tr>
-                    </c:forEach>
-                    <c:set var="rowMax" value="5" />
-                    <c:set var="itemCnt" value="${DccIolistList.size()}" />
-                    <c:if test="${itemCnt < 5}">
-                    <c:forEach var="i" begin="1" end="${rowMax-itemCnt}" step="1">
-                    	<tr>
-                    		<td class="tc"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    		<td class="tc" style="display:none"></td>
-                    	</tr>
-                    </c:forEach>
-                    </c:if>
-                    </tbody>
-                </table>
-                </div>
-                </c:if>
-                <!-- //list_table -->
+                <!-- list_table_scroll -->
+                <div class="list_table_scroll" style="min-height:331px">
+	                <!-- list_table -->
+	                <table class="list_table"  id="ioType_0_List"  name="ioType_0_List">
+	                    <colgroup>
+	                        <col width="70px"/>
+	                        <col width="400px"/>
+	                        <col width="280px"/>
+	                        <col width="60px"/>
+	                        <col width="150px"/>
+	                        <col width="120px"/>
+	                        <col width="150px"/>	                        
+	                        <col width="100x"/>
+	                        <col width="100px"/>
+	                        <col width="75px"/>
+	                        <col width="75px"/>
+	                        <col width="75px"/>
+	                        <col width="75px"/>
+	                        <col width="120px"/>	                        
+	                        <col width="90px"/>	                        
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="130px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>	     
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="200px"/>	     
+	                        <col width="200px"/>
+	                        <col width="200px"/>	  	                      
+	                    </colgroup>
+	                    <thead>
+	                        <tr>
+	                              <th>ADDR</th>
+	                              <th>DESCR</th>
+	                              <th>MESSAGE</th>
+	                              <th>REV</th>
+	                              <th>DRAWING</th>
+	                              <th>LOOPNAME</th>
+	                              <th>DEVICE</th>
+	                              <th>PURPOSE</th>
+						    	  <th>PROGRAM</th>
+						    	  <th>VLOW</th>
+						    	  <th>VHIGH</th>
+						    	  <th>ELOW</th>
+						    	  <th>EHIGH</th>
+						    	  <th>UNIT</th>
+						    	  <th>CONV</th>
+						    	  <th>RTD</th>
+						    	  <th>TYPE</th>
+						    	  <th>GROUP</th>
+						    	  <th>WINDOW</th>
+						    	  <th>PRIORITY</th>
+						    	  <th>CR</th>
+						    	  <th>LIMIT1</th>
+						    	  <th>LIMIT2</th>
+						    	  <th>J</th>
+						    	  <th>N</th>
+						    	  <th>EQU#</th>
+						    	  <th>BSCAL</th>
+						    	  <th>WIBA</th>
+						    	  <th>WB#</th>											    	  
+						    	  <th>원인</th>
+						    	  <th>조치</th>
+						    	  <th>관련절차서</th>
+	                        </tr>
+	                    </thead>
+	                    <tbody id="ioType_0_List_body">
+	                    <c:if test="${BaseSearch.ioType eq 'AI' }">
+	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
+	                        <tr>
+	                             <tr>
+	                            <td class="tc">${IOListInfo.address}</td>
+	                            <td class="tc">${IOListInfo.descr}</td>
+	                            <td class="tc">${IOListInfo.message}</td>
+	                            <td class="tc">${IOListInfo.rev}</td>
+	                            <td class="tc">${IOListInfo.drawing}</td>
+	                            <td class="tc">${IOListInfo.loopname}</td>
+	                            <td class="tc">${IOListInfo.device}</td>
+	                            <td class="tc">${IOListInfo.purpose}</td>
+	                            <td class="tc">${IOListInfo.program}</td>
+	                            <td class="tc">${IOListInfo.vlow}</td>
+	                            <td class="tc">${IOListInfo.vhigh}</td>
+	                            <td class="tc">${IOListInfo.elow}</td>
+	                            <td class="tc">${IOListInfo.ehigh}</td>	                            
+	                            <td class="tc">${IOListInfo.unit}</td>
+	                            <td class="tc">${IOListInfo.conv}</td>
+	                            <td class="tc">${IOListInfo.rtd}</td>
+	                            <td class="tc">
+			                            <c:if test="${IOListInfo.type == 0}">None </c:if>
+			                            <c:if test="${IOListInfo.type == 1}">High</c:if>
+			                            <c:if test="${IOListInfo.type == 2}">	Low</c:if>
+										<c:if test="${IOListInfo.type == 3}">	High/Low</c:if>
+										<c:if test="${IOListInfo.type == 4}">	High DTAB</c:if>
+										<c:if test="${IOListInfo.type == 5}">	Low DATB</c:if>
+										<c:if test="${IOListInfo.type == 6}">	High/Low DTAB</c:if>
+										<c:if test="${IOListInfo.type == 7}">	High VH</c:if>
+										<c:if test="${IOListInfo.type == 8}"> Low VL</c:if>
+										<c:if test="${IOListInfo.type == 9}">	Irrational	</c:if>
+								</td>         
+	                            <td class="tc">
+			                            <c:if test="${IOListInfo.iogroup == 0}">None</c:if>
+			                            <c:if test="${IOListInfo.iogroup == 1}">Reactor/PHT</c:if>
+			                            <c:if test="${IOListInfo.iogroup == 2}">Turbine and Boilers</c:if>
+			                            <c:if test="${IOListInfo.iogroup == 3}">Safety/Low</c:if>
+	                            		<c:if test="${IOListInfo.iogroup == 4}">	Electrical</c:if>
+	                            		<c:if test="${IOListInfo.iogroup == 8}">Auxiliaries</c:if>
+	                            </td>           
+	                            <td class="tc"> ${IOListInfo.window}</td>
+                                <td class="tc">
+			                            <c:if test="${IOListInfo.priority == 0}">Printer Only</c:if>
+			                            <c:if test="${IOListInfo.priority == 1}">Minor</c:if>
+			                            <c:if test="${IOListInfo.priority == 2}">Safety</c:if>
+			                            <c:if test="${IOListInfo.priority == 3}">Major</c:if>
+	                            </td>
+	                            <td class="tc">
+	                            		<c:if test="${IOListInfo.cr == 0}">None</c:if>
+			                            <c:if test="${IOListInfo.cr == 1}">Conditioned</c:if>
+	                            </td>
+	                            <td class="tc">${IOListInfo.limit1}</td>
+	                            <td class="tc">${IOListInfo.limit2}</td>
+	                            <td class="tc">${IOListInfo.j}</td>
+	                            <td class="tc">
+		                            		<c:if test="${IOListInfo.n == 0}">commission</c:if>
+				                            <c:if test="${IOListInfo.n == 1}">Not commission</c:if>
+				                </td>
+	                            <td class="tc">${IOListInfo.equ}</td>
+	                            <td class="tc">${IOListInfo.bscal}</td>
+	                            <td class="tc">
+	                            		    <c:if test="${IOListInfo.wiba == 0}">Out</c:if>
+				                            <c:if test="${IOListInfo.wiba == 1}">In</c:if>
+	                            </td>
+	                            <td class="tc">${IOListInfo.wb}</td>
+	                            <td class="tc">${IOListInfo.ztext1}</td>
+	                            <td class="tc">${IOListInfo.ztext2}</td>
+	                            <td class="tc">${IOListInfo.ztext3}</td>
+	                            <td style="display:none;">${IOListInfo.ihogi}</td>
+	                            <td style="display:none;">${IOListInfo.iseq}</td>
+	                            <td style="display:none;">${IOListInfo.iotype}</td>
+	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
+	                        </tr>
+	                        </c:forEach>
+	                        </c:if>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                        <tr>
+	                           <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                        </tr>
+	                        </c:forEach>
+	                        </c:if>
+	                    </tbody>
+	                </table>
+	                
+	                <table class="list_table"  id="ioType_1_List"  name="ioType_1_List">
+	                    <colgroup>
+	                        <col width="70px"/>
+	                        <col width="60px"/>
+	                        <col width="600px"/>	                        
+	                        <col width="150px"/>
+	                        <col width="150px"/>
+	                        <col width="150px"/>
+	                        <col width="150px"/>	                        
+	                        <col width="150x"/>
+	                        <col width="150px"/>
+	                        <col width="120px"/>	                        	                      
+	                        <col width="120px"/>
+	                        <col width="75px"/>
+	                    </colgroup>
+	                    <thead>
+	                        <tr>
+	                            <th>ADDR</th>
+	                            <th>REV</th>
+								<th>DESCR</th>
+	                            <th>DRAWING</th>
+	                            <th>DEVICE</th>
+	                            <th>PURPOSE</th>
+	                            <th>CTRLNAME</th>
+	                            <th>INTERLOCK</th>                      
+	                            <th>FEEDBACK</th>
+						    	<th>COM1</th>
+						    	<th>COM2</th>
+						    	<th>WIBA</th>
+	                        </tr>
+	                    </thead>
+	                    <tbody id="ioType_1_List_body">
+	                    <c:if test="${BaseSearch.ioType eq 'AO' }">
+	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
+	                        <tr>
+	                            <td class="tc">${IOListInfo.address}</td>
+	                            <td class="tc">${IOListInfo.rev}</td>
+	                            <td class="tc">${IOListInfo.descr}</td>
+	                            <td class="tc">${IOListInfo.drawing}</td>
+	                            <td class="tc">${IOListInfo.device}</td>
+	                            <td class="tc">${IOListInfo.purpose}</td>
+	                            <td class="tc">${IOListInfo.ctrlname}</td>
+	                            <td class="tc">${IOListInfo.interlock}</td>
+	                            <td class="tc">${IOListInfo.feedback}</td>
+	                            <td class="tc">${IOListInfo.com1}</td>
+	                            <td class="tc">${IOListInfo.com2}</td>
+	                            <td class="tc">
+	                            			<c:if test="${IOListInfo.wiba == 0}">Out</c:if>
+				                            <c:if test="${IOListInfo.wiba == 1}">In</c:if>
+				                </td>
+	                            <td style="display:none;">${IOListInfo.ihogi}</td>
+	                            <td style="display:none;">${IOListInfo.iseq}</td>
+	                            <td style="display:none;">${IOListInfo.iotype}</td>
+	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                       	<tr>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>	   	                  	                                      
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
+	                    </tbody>
+	                </table>
+	                
+	                <table class="list_table"  id="ioType_2_List"  name="ioType_2_List">
+	                    <colgroup>
+	                        <col width="70px"/>
+	                        <col width="100px"/>
+	                        <col width="100px"/>
+	                        <col width="120px"/>
+	                        <col width="120px"/>
+	                        <col width="70px"/>
+	                        <col width="400px"/>	                        
+	                        <col width="150x"/>
+	                        <col width="55px"/>
+	                        <col width="200px"/>
+	                        <col width="75px"/>
+	                        <col width="75px"/>
+	                        <col width="75px"/>
+	                        <col width="200px"/>
+	                        <col width="200px"/>
+	                        <col width="200px"/>
+	                    </colgroup>
+	                    <thead>
+	                        <tr>
+	                            <th>ADDR</th>
+	                            <th>TR</th>
+	                            <th>CR</th>
+	                            <th>PRIORITY</th>
+	                            <th>GROUP</th>
+	                            <th>TYPE</th>
+	                            <th>MESSAGE</th>
+	                            <th>DRAWING</th>
+						    	<th>REV</th>
+						    	<th>DEVICE</th>
+						    	<th>CONDITION</th>
+						    	<th>WIBA</th>
+						    	<th>WB#</th>
+						    	<th>원인</th>
+						    	<th>조치</th>
+						    	<th>관련절차서</th>
+	                        </tr>
+	                    </thead>
+	                    <tbody id="ioType_2_List_body">
+	                    <c:if test="${BaseSearch.ioType eq 'CI' }">
+	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
+	                        <tr>
+	                            <td class="tc">${IOListInfo.address}</td>
+	                            <td class="tc">
+	                            		<c:if test="${IOListInfo.tr == 0}">Seconds</c:if>
+			                            <c:if test="${IOListInfo.tr == 1}">Millisecond</c:if>
+			                    </td>
+	                            <td class="tc">
+	                            	    <c:if test="${IOListInfo.cr == 0}">None</c:if>
+			                            <c:if test="${IOListInfo.cr == 1}">Conditioned</c:if>
+	                            </td>
+	                            <td class="tc">${IOListInfo.priority}</td>
+	                            <td class="tc">
+	                                    <c:if test="${IOListInfo.iogroup == 0}">None</c:if>
+			                            <c:if test="${IOListInfo.iogroup == 1}">Reactor/PHT</c:if>
+			                            <c:if test="${IOListInfo.iogroup == 2}">Turbine and Boilers</c:if>
+			                            <c:if test="${IOListInfo.iogroup == 3}">Safety/Low</c:if>
+	                            		<c:if test="${IOListInfo.iogroup == 4}">	Electrical</c:if>
+	                            		<c:if test="${IOListInfo.iogroup == 8}">Auxiliaries</c:if>
+	                            </td>
+	                            <td class="tc">
+	                                    <c:if test="${IOListInfo.type == 0}">None </c:if>
+			                            <c:if test="${IOListInfo.type == 1}">High</c:if>
+			                            <c:if test="${IOListInfo.type == 2}">	Low</c:if>
+										<c:if test="${IOListInfo.type == 3}">	High/Low</c:if>
+										<c:if test="${IOListInfo.type == 4}">	High DTAB</c:if>
+										<c:if test="${IOListInfo.type == 5}">	Low DATB</c:if>
+										<c:if test="${IOListInfo.type == 6}">	High/Low DTAB</c:if>
+										<c:if test="${IOListInfo.type == 7}">	High VH</c:if>
+										<c:if test="${IOListInfo.type == 8}"> Low VL</c:if>
+										<c:if test="${IOListInfo.type == 9}">	Irrational	</c:if>
+	                            </td>
+	                            <td class="tc">${IOListInfo.message}</td>
+	                            <td class="tc">${IOListInfo.drawing}</td>
+	                            <td class="tc">${IOListInfo.rev}</td>
+	                            <td class="tc">${IOListInfo.device}</td>
+	                            <td class="tc">${IOListInfo.condition}</td>
+	                            <td class="tc">
+	                            			<c:if test="${IOListInfo.wiba == 0}">Out</c:if>
+				                            <c:if test="${IOListInfo.wiba == 1}">In</c:if>
+	                            </td>
+	                            <td class="tc">${IOListInfo.wb}</td>
+	                            <td class="tc">${IOListInfo.ztext1}</td>
+	                            <td class="tc">${IOListInfo.ztext2}</td>
+	                            <td class="tc">${IOListInfo.ztext3}</td>
+	                            <td style="display:none;">${IOListInfo.ihogi}</td>
+	                            <td style="display:none;">${IOListInfo.iseq}</td>
+	                            <td style="display:none;">${IOListInfo.iotype}</td>
+	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
+	                        </tr>
+	                    </c:forEach>
+	                    </c:if>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                       	<tr>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>	   	                  	                                      
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
+	                    </tbody>
+	                </table>
+	                
+	                <table class="list_table"  id="ioType_3_List"  name="ioType_3_List">
+	                    <colgroup>
+	                        <col width="70px"/>
+	                        <col width="55px"/>
+	                        <col width="55px"/>
+	                        <col width="600px"/>
+	                        <col width="150px"/>
+	                        <col width="200px"/>
+	                        <col width="100px"/>	                        
+	                        <col width="110x"/>
+	                        <col width="120px"/>
+	                        <col width="100px"/>
+	                        <col width="120px"/>
+	                        <col width="120px"/>
+	                        <col width="75px"/>
+	                    </colgroup>
+	                    <thead>
+	                        <tr>
+	                            <th>ADDR</th>
+	                            <th>BIT</th>
+	                            <th>REV</th>
+								<th>DESCR</th>
+	                            <th>DRAWING</th>
+	                            <th>DEVICE</th>
+	                            <th>PURPOSE</th>
+						    	<th>CTRLNAME</th>
+						    	<th>ALARMCOND</th>
+						    	<th>INDICATE</th>
+						    	<th>OPEN상태</th>
+						    	<th>CLOSE상태</th>
+						    	<th>WIBA</th>
+	                        </tr>
+	                    </thead>
+	                    <tbody id="ioType_3_List_body">
+	                    <c:if test="${BaseSearch.ioType eq 'DI' }">
+	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
+	                        <tr>
+	                            <td class="tc">${IOListInfo.address}</td>
+	                            <td class="tc">${IOListInfo.iobit}</td>
+	                            <td class="tc">${IOListInfo.rev}</td>
+	                            <td class="tc">${IOListInfo.descr}</td>
+	                            <td class="tc">${IOListInfo.drawing}</td>
+	                            <td class="tc">${IOListInfo.device}</td>
+	                            <td class="tc">${IOListInfo.purpose}</td>
+	                            <td class="tc">${IOListInfo.ctrlname}</td>
+	                            <td class="tc">${IOListInfo.alarmcond}</td>
+	                            <td class="tc">${IOListInfo.indicate}</td>
+	                            <td class="tc">${IOListInfo.com1}</td>
+	                            <td class="tc">${IOListInfo.com2}</td>
+	                            <td class="tc">
+	                            			<c:if test="${IOListInfo.wiba == 0}">Out</c:if>
+				                            <c:if test="${IOListInfo.wiba == 1}">In</c:if>
+	                            </td>
+	                            <td style="display:none;">${IOListInfo.ihogi}</td>
+	                            <td style="display:none;">${IOListInfo.iseq}</td>
+	                            <td style="display:none;">${IOListInfo.iotype}</td>
+	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
+	                        </tr>
+	                    </c:forEach>
+	                    </c:if>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                       	<tr>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>	   	                  	                                      
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
+	                    </tbody>
+	                </table>
+	                
+	                <table class="list_table"  id="ioType_4_List"  name="ioType_4_List">
+	                    <colgroup>
+	                        <col width="70px"/>
+	                        <col width="55px"/>
+	                        <col width="55px"/>
+	                        <col width="600px"/>
+	                        <col width="150px"/>
+	                        <col width="200px"/>
+	                        <col width="100px"/>	                        
+	                        <col width="110x"/>
+	                        <col width="120px"/>
+	                        <col width="120px"/>
+	                        <col width="120px"/>
+	                        <col width="75px"/>
+	                    </colgroup>
+	                    <thead>
+	                        <tr>
+	                            <th>ADDR</th>
+	                            <th>BIT</th>
+	                            <th>REV</th>
+								<th>DESCR</th>
+	                            <th>DRAWING</th>
+	                            <th>DEVICE</th>
+	                            <th>PURPOSE</th>
+						    	<th>CTRLNAME</th>
+						    	<th>INTERLOCK</th>
+						    	<th>OPEN상태</th>
+						    	<th>CLOSE상태</th>
+						    	<th>WIBA</th>
+	                        </tr>
+	                    </thead>
+	                    <tbody id="ioType_4_List_body">
+	                    <c:if test="${BaseSearch.ioType eq 'DO' }">
+	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
+	                        <tr>
+	                            <td class="tc">${IOListInfo.address}</td>
+	                            <td class="tc">${IOListInfo.iobit}</td>
+	                            <td class="tc">${IOListInfo.rev}</td>
+	                            <td class="tc">${IOListInfo.descr}</td>
+	                            <td class="tc">${IOListInfo.drawing}</td>
+	                            <td class="tc">${IOListInfo.device}</td>
+	                            <td class="tc">${IOListInfo.purpose}</td>
+	                            <td class="tc">${IOListInfo.ctrlname}</td>
+	                            <td class="tc">${IOListInfo.interlock}</td>
+	                            <td class="tc">${IOListInfo.com1}</td>
+	                            <td class="tc">${IOListInfo.com2}</td>
+	                            <td class="tc">
+	                           				<c:if test="${IOListInfo.wiba == 0}">Out</c:if>
+				                            <c:if test="${IOListInfo.wiba == 1}">In</c:if>
+	                           	</td>
+	                            <td style="display:none;">${IOListInfo.ihogi}</td>
+	                            <td style="display:none;">${IOListInfo.iseq}</td>
+	                            <td style="display:none;">${IOListInfo.iotype}</td>
+	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
+	                        </tr>
+	                    </c:forEach>    
+	                    </c:if>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                       	<tr>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>	   	                  	                                      
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
+	                    </tbody>
+	                </table>
+	                
+	                <table class="list_table"  id="ioType_5_List"  name="ioType_5__8List">
+	                    <colgroup>
+	                        <col width="70px"/>
+	                        <col width="200px"/>
+	                        <col width="600px"/>
+	                        <col width="150px"/>
+	                        <col width="150px"/>
+	                        <col width="75px"/>
+	                        <col width="75px"/>
+	                    </colgroup>
+	                    <thead>
+	                        <tr>
+	                            <th>ADDR</th>
+	                            <th>PROGRAM</th>
+	                            <th>DESCR</th>
+	                            <th>LOOPNAME</th>
+	                            <th>BSCAL</th>
+	                            <th>ELOW</th>
+	                            <th>EHIGH</th>
+	                        </tr>
+	                    </thead>
+	                    <tbody id="ioType_5_List_body">
+	                    <c:if test="${BaseSearch.ioType eq 'DT' || BaseSearch.ioType eq 'FTDT' }">
+	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
+	                        <tr>
+	                            <td class="tc">${IOListInfo.address}</td>
+	                            <td class="tc">${IOListInfo.program}</td>
+	                            <td class="tc">${IOListInfo.descr}</td>
+	                            <td class="tc">${IOListInfo.loopname}</td>
+	                            <td class="tc">${IOListInfo.bscal}</td>
+	                            <td class="tc">${IOListInfo.elow}</td>
+	                            <td class="tc">${IOListInfo.ehigh}</td>
+	                            <td style="display:none;">${IOListInfo.ihogi}</td>
+	                            <td style="display:none;">${IOListInfo.iseq}</td>
+	                            <td style="display:none;">${IOListInfo.iotype}</td>
+	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
+	                        </tr>
+	                    </c:forEach>
+	                    </c:if>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                       	<tr>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>	   	                  	                                      
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
+	                    </tbody>
+	                </table>
+	                
+	                <table class="list_table"  id="ioType_6_List"  name="ioType_6_List">
+	                    <colgroup>
+	                        <col width="70px"/>
+	                        <col width="55px"/>
+	                        <col width="600px"/>
+	                        <col width="110px"/>
+	                        <col width="110px"/>
+	                        <col width="80px"/>
+	                    </colgroup>
+	                    <thead>
+	                        <tr>
+	                            <th>ADDR</th>
+	                            <th>BIT</th>
+	                            <th>DESCR</th>
+	                            <th>PROGRAM</th>
+	                            <th>INDICATE</th>
+	                            <th>BSCAL</th>
+	                        </tr>
+	                    </thead>
+	                    <tbody id="ioType_6_List_body">
+	                    <c:if test="${BaseSearch.ioType eq 'SC'}">
+	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
+	                        <tr>
+	                            <td class="tc">${IOListInfo.address}</td>
+	                            <td class="tc">${IOListInfo.iobit}</td>
+	                            <td class="tc">${IOListInfo.descr}</td>
+	                            <td class="tc">${IOListInfo.program}</td>
+	                            <td class="tc">${IOListInfo.indicate}</td>
+	                            <td class="tc">${IOListInfo.bscal}</td>
+	                            <td style="display:none;">${IOListInfo.ihogi}</td>
+	                            <td style="display:none;">${IOListInfo.iseq}</td>
+	                            <td style="display:none;">${IOListInfo.iotype}</td>
+	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
+	                        </tr>
+	                    </c:forEach>
+	                    </c:if>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                       	<tr>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>	   	                  	                                      
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
+	                    </tbody>
+	                </table>
+	                
+	                <table class="list_table"  id="ioType_7_List"  name="ioType_7_List">
+	                    <colgroup>
+	                        <col width="70px"/>
+	                        <col width="600px"/>
+	                        <col width="380px"/>
+	                        <col width="60px"/>
+	                        <col width="150px"/>
+	                        <col width="120px"/>
+	                        <col width="150px"/>	                        
+	                        <col width="100x"/>
+	                        <col width="100px"/>
+	                        <col width="75px"/>
+	                        <col width="75px"/>
+	                        <col width="75px"/>
+	                        <col width="75px"/>
+	                        <col width="120px"/>	                        
+	                        <col width="90px"/>	                        
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                        <col width="80px"/>	     
+	                        <col width="80px"/>
+	                        <col width="80px"/>
+	                    </colgroup>
+	                    <thead>
+	                        <tr>
+	                              <th>ADDR</th>
+	                              <th>DESCR</th>
+	                              <th>MESSAGE</th>
+	                              <th>REV</th>
+	                              <th>DRAWING</th>
+	                              <th>LOOPNAME</th>
+	                              <th>DEVICE</th>
+	                              <th>PURPOSE</th>
+						    	  <th>PROGRAM</th>
+						    	  <th>VLOW</th>
+						    	  <th>VHIGH</th>
+						    	  <th>ELOW</th>
+						    	  <th>EHIGH</th>
+						    	  <th>UNIT</th>
+						    	  <th>CONV</th>
+						    	  <th>RTD</th>
+						    	  <th>TYPE</th>
+						    	  <th>GROUP</th>
+						    	  <th>WINDOW</th>
+						    	  <th>PRIORITY</th>
+						    	  <th>CR</th>
+						    	  <th>LIMIT1</th>
+						    	  <th>LIMIT2</th>
+						    	  <th>J</th>
+						    	  <th>N</th>
+						    	  <th>EQU#</th>
+						    	  <th>BSCAL</th>
+						    	  <th>WIBA</th>
+						    	  <th>WB#</th>											    	  
+	                        </tr>
+	                    </thead>
+	                    <tbody id="ioType_7_List_body">
+	                    <c:if test="${BaseSearch.ioType eq 'FTAI'}">
+	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
+	                        <tr>
+	                            <td class="tc">${IOListInfo.address}</td>
+	                            <td class="tc">${IOListInfo.descr}</td>
+	                            <td class="tc">${IOListInfo.message}</td>
+	                            <td class="tc">${IOListInfo.rev}</td>
+	                            <td class="tc">${IOListInfo.drawing}</td>
+	                            <td class="tc">${IOListInfo.loopname}</td>
+	                            <td class="tc">${IOListInfo.device}</td>
+	                            <td class="tc">${IOListInfo.purpose}</td>
+	                            <td class="tc">${IOListInfo.program}</td>
+	                            <td class="tc">${IOListInfo.vlow}</td>
+	                            <td class="tc">${IOListInfo.vhigh}</td>
+	                            <td class="tc">${IOListInfo.elow}</td>
+	                            <td class="tc">${IOListInfo.ehigh}</td>
+	                            <td class="tc">${IOListInfo.unit}</td>
+	                            <td class="tc">${IOListInfo.conv}</td>
+	                            <td class="tc">${IOListInfo.rtd}</td>
+	                            <td class="tc">
+	                                    <c:if test="${IOListInfo.type == 0}">None </c:if>
+			                            <c:if test="${IOListInfo.type == 1}">High</c:if>
+			                            <c:if test="${IOListInfo.type == 2}">	Low</c:if>
+										<c:if test="${IOListInfo.type == 3}">	High/Low</c:if>
+										<c:if test="${IOListInfo.type == 4}">	High DTAB</c:if>
+										<c:if test="${IOListInfo.type == 5}">	Low DATB</c:if>
+										<c:if test="${IOListInfo.type == 6}">	High/Low DTAB</c:if>
+										<c:if test="${IOListInfo.type == 7}">	High VH</c:if>
+										<c:if test="${IOListInfo.type == 8}"> Low VL</c:if>
+										<c:if test="${IOListInfo.type == 9}">	Irrational	</c:if>
+	                            </td>
+	                            <td class="tc">
+	                                    <c:if test="${IOListInfo.iogroup == 0}">None</c:if>
+			                            <c:if test="${IOListInfo.iogroup == 1}">Reactor/PHT</c:if>
+			                            <c:if test="${IOListInfo.iogroup == 2}">Turbine and Boilers</c:if>
+			                            <c:if test="${IOListInfo.iogroup == 3}">Safety/Low</c:if>
+	                            		<c:if test="${IOListInfo.iogroup == 4}">	Electrical</c:if>
+	                            		<c:if test="${IOListInfo.iogroup == 8}">Auxiliaries</c:if>
+	                            </td>
+	                            <td class="tc">${IOListInfo.window}</td>
+	                            <td class="tc">${IOListInfo.priority}</td>
+	                            <td class="tc">
+	                            	    <c:if test="${IOListInfo.cr == 0}">None</c:if>
+			                            <c:if test="${IOListInfo.cr == 1}">Conditioned</c:if>
+	                            </td>
+	                            <td class="tc">${IOListInfo.limit1}</td>
+	                            <td class="tc">${IOListInfo.limit2}</td>
+	                            <td class="tc">${IOListInfo.j}</td>
+	                            <td class="tc">${IOListInfo.n}</td>
+	                            <td class="tc">${IOListInfo.equ}</td>
+	                            <td class="tc">${IOListInfo.bscal}</td>
+	                            <td class="tc">
+	                            			<c:if test="${IOListInfo.wiba == 0}">Out</c:if>
+				                            <c:if test="${IOListInfo.wiba == 1}">In</c:if>
+	                            </td>
+	                            <td class="tc">${IOListInfo.wb}</td>
+	                            <td style="display:none;">${IOListInfo.ihogi}</td>
+	                            <td style="display:none;">${IOListInfo.iseq}</td>
+	                            <td style="display:none;">${IOListInfo.iotype}</td>
+	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
+	                        </tr>
+	                    </c:forEach>
+	                    </c:if>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                       	<tr>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>	   	                  	                                      
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
+	                    </tbody>
+	                </table>
+	                
+	                <table class="list_table"  id="ioType_8_List"  name="ioType_5__8List">
+	                     <colgroup>
+	                        <col width="70px"/>
+	                        <col width="200px"/>
+	                        <col width="600px"/>
+	                        <col width="150px"/>
+	                        <col width="150px"/>
+	                        <col width="75px"/>
+	                        <col width="75px"/>
+	                    </colgroup>
+	                    <thead>
+	                        <tr>
+	                            <th>ADDR</th>
+	                            <th>PROGRAM</th>
+	                            <th>DESCR</th>
+	                            <th>LOOPNAME</th>
+	                            <th>BSCAL</th>
+	                            <th>ELOW</th>
+	                            <th>EHIGH</th>
+	                        </tr>
+	                    </thead>
+	                    <tbody id="ioType_8_List_body">
+	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
+	                        <tr>
+	                            <td class="tc">${IOListInfo.address}</td>
+	                            <td class="tc">${IOListInfo.program}</td>
+	                            <td class="tc">${IOListInfo.descr}</td>
+	                            <td class="tc">${IOListInfo.loopname}</td>
+	                            <td class="tc">${IOListInfo.bscal}</td>
+	                            <td class="tc">${IOListInfo.elow}</td>
+	                            <td class="tc">${IOListInfo.ehigh}</td>
+	                            <td style="display:none;">${IOListInfo.ihogi}</td>
+	                            <td style="display:none;">${IOListInfo.iseq}</td>
+	                            <td style="display:none;">${IOListInfo.iotype}</td>
+	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
+	                        </tr>
+	                    </c:forEach>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                       	<tr>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>	   	                  	                                      
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
+	                    </tbody>
+	                </table>
+	                <!-- //list_table -->
+				</div>	                
 			</div>
 			<!-- //list_wrap -->
             <!-- form_wrap -->
-            <c:if test="${BaseSearch.ioType eq 'AI' or BaseSearch.ioType eq 'FTAI' or BaseSearch.ioType eq null}">
             <div class="form_wrap">
-			<form id="iolistModifyForm" name="iolistModifyForm">
                 <!-- form_table -->
-                <table class="form_table">
+                <form id="ioType_0_form"  name="ioType_0_form">
+                <input type="hidden"  id ="ihogi" name="ihogi" >
+                <input type="hidden"  id ="iseq" name="iseq" >
+                <input type="hidden"  id ="xygubun" name="xygubun" >
+                <input type="hidden"  id ="iotype" name="iotype" >
+                
+                <table class="form_table" id="ioType_0_Input" name="ioType_0_Input" >
                     <colgroup>
+                        <col width="120px"/>
+                        <col />
                         <col width="120px"/>
                         <col />
                         <col width="120px"/>
@@ -1520,128 +2139,712 @@
                     </colgroup>
                     <tr>
                         <th>ADDRESS</th>
-                        <td><input type="text" id="tAddress" value="" disabled></td>
+                        <td><input type="text"  id="address" name="address" readonly></td>
+                        <th>DSECR</th>
+                        <td colspan="3"><input type="text" id="descr" name="descr"></td>
+                        <th>MESSAGE</th>
+                        <td colspan="3"><input type="text" id="message" name="message"></td>
+                    </tr>
+                    <tr>
                         <th>REV</th>
-                        <td><input type="text" id="tRev" value=""></td>
+                        <td><input type="text" id="rev" name="rev"></td>
+                        <th>DRAWNG</th>
+                        <td><input type="text" id="drawing" name="drawing"></td>
+                        <th>LOOPNAME</th>
+                        <td><input type="text" id="loopname" name="loopname"></td>
+                        <th>DEVICE</th>
+                        <td><input type="text" id="device" name="device"></td>
+                        <th>PURPOSE</th>
+                        <td><input type="text" id="purpose" name="purpose"></td>
+                    </tr>
+                    <tr>
+                        <th>PROGRAM</th>
+                        <td><input type="text" id="program" name="program"></td>
+                        <th>VLOW</th>
+                        <td><input type="text" id="vlow" name="vlow"></td>
+                        <th>VHIGH</th>
+                        <td><input type="text" id="vhigh" name="vhigh"></td>
+                        <th>ELOW</th>
+                        <td><input type="text" id="elow" name="elow"></td>
+                        <th>EHIGH</th>
+                        <td><input type="text" id="ehigh" name="ehigh"></td>
+                    </tr>
+                    <tr>
+                        <th>UNIT</th>
+                        <td><input type="text" id="unit" name="unit"></td>
+                        <th>CONV</th>
+                        <td><input type="text" id="conv" name="conv"></td>
+                        <th>RTD</th>
+                        <td><input type="text" id="rtd" name="rtd"></td>
                         <th>TYPE</th>
                         <td>
-                        	<select id="tType">
-                        		<option></option>
+                            <select id="type" name="type">
+                                <option  value="0">None</option>
+                                <option  value="1">High</option>
+                                <option  value="2">Low</option>
+                                <option  value="3">High/Low</option>
+                                <option  value="4">High DTAB</option>
+                                <option  value="5">Low DATB</option>
+                                <option  value="6">High/Low DTAB</option>
+                                <option  value="7">High VH</option>
+                                <option  value="8">Low VL</option>
+                                <option  value="9">Irrational</option>                                
+                            </select>
+                        </td>
+                        <th>IOGROUP</th>
+                        <td>
+                            <select id="iogroup" name="iogroup">
+                                <option value="0">None</option>
+                                <option value="1">Reactor/PHT</option>
+                                <option value="2">Turbine and Boilers</option>
+                                <option value="3">Safety</option>
+                                <option value="4">Electrical</option>
+                                <option value="8">Auxiliaries</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>WINDOW</th>
+                        <td><input type="text" id="window" name="window"></td>
+                        <th>PRIORITY</th>
+                        <td>
+                            <select  id="priority" name="priority">
+                                <option value="0">Printer Only</option>
+                                <option value="1">Minor</option>
+                                <option value="2">Safety</option>
+                                <option value="3">Major</option>
+                            </select>
+                        </td>
+                        <th>CR</th>
+                        <td>
+                            <select id="cr" name="cr">>
+                                <option value="0">None</option>
+                                <option value="1">Conditioned</option>                                
+                            </select>
+                        </td>
+                        <th>LIMT1</th>
+                        <td><input type="text" id="limit1" name="limit1"></td>
+                        <th>LIMT2</th>
+                        <td><input type="text" id="limit2" name="limit2"></td>
+                    </tr>
+                    <tr>
+                        <th>J</th>
+                        <td><input type="text" id="j" name="j"></td>
+                        <th>N</th>
+                        <td>
+                            <select id="n" name="n">>
+                                <option value="0">commission</option>
+                                <option value="1">Not commission</option>                                
                             </select>
                         </td>
                         <th>EQU#</th>
-                        <td><input type="text" id="tEqu" value=""></td>
-                    </tr>
-                    <tr>
-                        <th>DESCR</th>
-                        <td colspan="3"><input type="text" id="tDescr" value=""></td>
-                        <th>GROUP</th>
-                        <td>
-                        	<select id="tGroup">
-                        		<option></option>
+                        <td><input type="text" id="equ" name="equ"></td>
+                        <th>BASCAL</th>
+                        <td><input type="text" id="bascal" name="bascal"></td>
+                        <th>WIBA</th>
+                        <td><select id="wiba" name="wiba">
+                                <option value="0">Out</option>
+                                <option value="1">In</option>
                             </select>
                         </td>
-                        <th>B-SCAL</th>
-                        <td><input type="text" id="tBscal" value=""></td>
                     </tr>
                     <tr>
-                        <th>MESSAGE</th>
-                        <td colspan="3"><input type="text" id="tMessage" value=""></td>
-                        <th>WINDOWS</th>
-                        <td><input type="text" id="tWindows" value=""></td>
-                        <th>WBA</th>
-                        <td>
-                        	<select id="tWba">
-                        		<option></option>
-                            </select>
-                        </td>
-                    </tr>                    
+                        <th>WB#</th>
+                        <td><input type="text" id="wb" name="wb"></td>
+                        <th>REQ_NO</th>
+                        <td><input type="text" id="reqno" name="reqno"></td>
+                        <th>REQ_DATE</th>
+                        <td><input type="text" id="reqdate" name="reqdate"></td>
+                        <th>REQ_NAME</th>
+                        <td><input type="text" id="reqname" name="reqname"></td>
+                        <th>REQ_DEPT</th>
+                        <td><input type="text" id="reqdept" name="reqdept"></td>
+                    </tr>
                     <tr>
+                        <th>비고</th>
+                        <td colspan="5"><input type="text" id="reqbigo" name="reqbigo"></td>
+                        <th>관련절차서</th>
+                        <td colspan="3"><input type="text" id="ztext1" name="ztext1"></td>
+                    </tr>
+                    <tr>
+                        <th>원인</th>
+                        <td colspan="3">
+                            <textarea  id="ztext2" name="ztext2"></textarea>
+                        </td>
+                        <th>조치</th>
+                        <td colspan="5">
+                            <textarea  id="ztext3" name="ztext3"></textarea>
+                        </td>
+                    </tr>
+                </table>
+                </form>
+                
+                <form id="ioType_1_form"  name="ioType_1_form">
+                <input type="hidden"  id ="ihogi" name="ihogi" >
+                <input type="hidden"  id ="iseq" name="iseq" >
+                <input type="hidden"  id ="xygubun" name="xygubun" >
+                <input type="hidden"  id ="iotype" name="iotype" >
+                <table class="form_table" id="ioType_1_Input" name="ioType_1_Input" >
+                    <colgroup>
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                    </colgroup>
+                    <tr>
+                        <th>ADDRESS</th>
+                        <td><input type="text" id="address" name="address"></td>
+                        <th>REV</th>
+                        <td><input type="text" id="rev" name="rev"></td>
+                         <th>DSECR</th>
+                        <td colspan="3"><input type="text" id="descr" name="descr"></td>
                         <th>DRAWING</th>
-                        <td><input type="text" id="tDrawing" value=""></td>
+                        <td><input type="text" id="drawing" name="drawing"></td>
+                    </tr>
+                    <tr>
+                        <th>DEVICE</th>
+                        <td><input type="text" id="device" name="device"></td>
+                        <th>PURPOSE</th>
+                        <td><input type="text" id="purpose" name="purpose"></td>
+                        <th>CTRLNAME</th>
+                        <td><input type="text" id="ctrlname" name="ctrlname"></td>
+                        <th>INTERLOCK</th>
+                        <td><input type="text" id="interlock" name="interlock"></td>
+                        <th>FEEDBACK</th>
+                        <td><input type="text" id="feedback" name="feedback"></td>
+                    </tr>
+                    <tr>
+                        <th>COM1</th>
+                        <td><input type="text" id="com1" name="com1"></td>
+                        <th>COM2</th>
+                        <td><input type="text" id="com2" name="com2"></td>
+                        <th>WIBA</th>
+                        <td> <select id="wiba" name="wiba">
+                                <option value="0">Out</option>
+                                <option value="1">In</option>
+                            </select>
+                        </td>
+                         <th>REQ_NO</th>
+                        <td><input type="text" id="reqno" name="reqno"></td>
+                        <th>REQ_DATE</th>
+                        <td><input type="text" id="reqdate" name="reqdate"></td>
+                    </tr>
+                    <tr>
+                    	<th>REQ_NAME</th>
+                        <td><input type="text" id="reqname" name="reqname"></td>
+                        <th>REQ_DEPT</th>
+                        <td><input type="text" id="reqdept" name="reqdept"></td>
+                        <th>비고</th>
+                        <td colspan="5"><input type="reqbigo" id="descr" name="reqbigo"></td>
+                    </tr>
+                </table>
+                </form>
+                
+                <form id="ioType_2_form"  name="ioType_2_form">
+                <input type="hidden"  id ="ihogi" name="ihogi" >
+                <input type="hidden"  id ="iseq" name="iseq" >
+                <input type="hidden"  id ="xygubun" name="xygubun" >
+                <input type="hidden"  id ="iotype" name="iotype" >
+                 <table class="form_table" id="ioType_2_Input" name="ioType_2_Input" >
+                    <colgroup>
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                    </colgroup>
+                    <tr>
+                         <th>ADDRESS</th>
+                        <td><input type="text" id="address" name="address"></td>
+                        <th>TR</th>
+                        <td><select id="tr" name="tr">
+                        		<option  value="0">Seconds</option>
+                        		<option  value="1">Milliseconds</option>
+                        		</select>
+                        </td>
+                        <th>CR</th>
+                        <td><select id="cr" name="cr">
+                        		<option  value="0">None</option>
+                        		<option  value="1">Conditioned</option>
+                        	</select>
+                        </td>
+                        <th>PRIORITY</th>
+                        <td><select id="priority" name="priority">
+                        		<option  value="0">Undef</option>
+                        		<option  value="1">Minor</option>
+                        		<option  value="2">Safety</option>
+                        		<option  value="3">Major</option>
+                        	</select>
+                        </td>
+                        <th>GROUP</th>
+                        <td><select id="iogroup" name="iogroup">
+                        			<option value="0"> None </option>
+                        			<option value="1"> Reactor/PHT </option>
+                        			<option value="2"> SG/Turbine </option>
+                        			<option value="3"> Safety </option>
+                        			<option value="4"> Electrical </option>
+                        			<option value="8"> Auxiliaries </option>
+                        		</select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>TYPE</th>
+                        <td><select id="type" name="type">
+                        		<option  value="0">Alarm on Opening</option>
+                        		<option  value="1">Alarm on Closing</option>
+                        	</select>                        
+                        </td>
+                        <th>MESSAGE</th>
+                        <td><input type="text" id="message" name="message"></td>
+                        <th>DRAWING</th>
+                        <td><input type="text" id="drawing" name="drawing"></td>
+                        <th>REV</th>
+                        <td><input type="text" id="rev" name="rev"></td>
+                        <th>DEVICE</th>
+                        <td><input type="text" id="device" name="device"></td>
+                    </tr>
+                    <tr>
+                        <th>CONDITION</th>
+                        <td><input type="text" id="condition" name="condition"></td>
+                        <th>WIBA</th>
+                        <td><select id="wiba" name="wiba">
+                                <option  value="0">Out</option>
+                                <option  value="1">In</option>
+                            </select></td>
+                        <th>WB#</th>
+                        <td><input type="text" id="wb" name="wb"></td>
+                        <th>REQ_NO</th>
+                        <td><input type="text" id="reqno" name="reqno"></td>
+                        <th>REQ_DATE</th>
+                        <td><input type="text" id="reqdate" name="reqdate"></td>
+                    </tr>
+                    <tr>
+                    	<th>REQ_NAME</th>
+                        <td><input type="text" id="reqname" name="reqname"></td>
+                        <th>REQ_DEPT</th>
+                        <td><input type="text" id="reqdept" name="reqdept"></td>
+                        <th>비고</th>
+                        <td colspan="3"><input type="text" id="reqbigo" name="reqbito"></td>
+                        <th>관련 절차서</th>
+                        <td><input type="text" id="ztext1" name="ztext1"></td>
+                    </tr>
+                    <tr>
+                        <th>원인</th>
+                        <td colspan="4">
+                            <textarea id="ztext2" name="ztext2"></textarea>
+                        </td>
+                        <th>조치</th>
+                        <td colspan="4">
+                            <textarea id="ztext3" name="ztext3"></textarea>
+                        </td>
+                    </tr>
+                </table>
+                </form>
+                
+                <form id="ioType_3_form"  name="ioType_3_form">
+                <input type="hidden"  id ="ihogi" name="ihogi" >
+                <input type="hidden"  id ="iseq" name="iseq" >
+                <input type="hidden"  id ="xygubun" name="xygubun" >
+                <input type="hidden"  id ="iotype" name="iotype" >
+                <table class="form_table" id="ioType_3_Input" name="ioType_3_Input" >
+                    <colgroup>
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                    </colgroup>
+                    <tr>
+                        <th>ADDRESS</th>
+                        <td><input type="text" id="address" name="address"></td>
+                        <th>BIT</th>
+                        <td><input type="text" id="iobit" name="iobit"></td>
+                        <th>REV</th>
+                        <td><input type="text" id="rev" name="rev"></td>
+                        <th>DESCR</th>
+                        <td colspan="3"><input type="text" id="descr" name="descr"></td>
+                    </tr>
+                    <tr>
+                        <th>DRAWNG</th>
+                        <td><input type="text" id="drawing" name="drawing"></td>
+                        <th>DEVICE</th>
+                        <td><input type="text" id="device" name="device"></td>
+                        <th>PURPOSE</th>
+                        <td><input type="text" id="purpose" name="purpose"></td>
+                        <th>CTRLNAME</th>                        
+                        <td><input type="text" id="ctrlname" name="ctrlname"></td>
+                        <th>ALARMCOND</th>
+                        <td><input type="text" id="alarmcond" name="alarmcond"></td>
+                    </tr>
+                    <tr>
+                        <th>INDICATE</th>
+                        <td><input type="text" id="indicate" name="indicate"></td>
+                        <th>OPEN상태</th>
+                        <td><input type="text" id="com1" name="com1"></td>
+                        <th>CLOSE상태</th>
+                        <td><input type="text" id="com2" name="com2"></td>
+                        <th>WIBA</th>
+                        <td><select id="wiba" name="wiba">
+                                <option  value="0">Out</option>
+                                <option  value="1">In</option>
+                            </select></td>
+                        <th>REQ_NO</th>
+                        <td><input type="text" id="reqno" name="reqno"></td>
+                    </tr>
+                    <tr>
+                        <th>REQ_DATE</th>
+                        <td><input type="text" id="reqdate" name="reqdate"></td>
+                        <th>REQ_NAME</th>
+                        <td><input type="text" id="reqname" name="reqname"></td>
+                        <th>REQ_DEPT</th>
+                        <td><input type="text" id="reqdept" name="reqdept"></td>
+                        <th>비고</th>
+                        <td colspan="3"><input type="text" id="reqbigo" name="reqbigo"></td>
+                    </tr>
+                </table>
+                </form>
+                
+                <form id="ioType_4_form"  name="ioType_4_form">
+                <input type="hidden"  id ="ihogi" name="ihogi" >
+                <input type="hidden"  id ="iseq" name="iseq" >
+                <input type="hidden"  id ="xygubun" name="xygubun" >
+                <input type="hidden"  id ="iotype" name="iotype" >
+                <table class="form_table" id="ioType_4_Input" name="ioType_4_Input" >
+                    <colgroup>
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                    </colgroup>
+                    <tr>
+                        <th>ADDRESS</th>
+                        <td><input type="text" id="address" name="address"></td>
+                        <th>REV</th>
+                        <td><input type="text" id="rev" name="rev"></td>
+                        <th>DSECR</th>
+                        <td colspan="3"><input type="text" id="descr" name="descr"></td>
+                        <th>DRAWNG</th>
+                        <td><input type="text" id="drawing" name="drawing"></td>
+                    </tr>
+                    <tr>
+                    	<th>DEVICE</th>
+                        <td><input type="text" id="device" name="device"></td>
+                        <th>PURPOSE</th>
+                        <td><input type="text" id="purpose" name="purpose"></td>
+                        <th>CTRLNAME</th>
+                        <td><input type="text" id="ctrlname" name="ctrlname"></td>
+                        <th>INTERLOCK</th>
+                        <td><input type="text" id="interlock" name="interlock"></td>
+                        <th>OPEN상태</th>
+                        <td><input type="text" id="com1" name="com1"></td>
+                        
+                    </tr>
+                    <tr>
+                        <th>CLOSE상태</th>
+                        <td><input type="text" id="com2" name="com2"></td>
+                        <th>WIBA</th>
+                        <td><select id="wiba" name="wiba">
+                                <option  value="0">Out</option>
+                                <option  value="1">In</option>
+                            </select></td>
+                        <th>REQ_NO</th>
+                        <td><input type="text" id="reqno" name="reqno"></td>
+                        <th>REQ_DATE</th>
+                        <td><input type="text" id="reqdate" name="reqdate"></td>
+                        <th>REQ_NAME</th>
+                        <td><input type="text" id="reqname" name="reqname"></td>
+                    </tr>
+                    <tr>
+                        <th>REQ_DEPT</th>
+                        <td><input type="text" id="reqdept" name=""reqdept""></td>
+                        <th>비고</th>
+                        <td colspan="7"><input type="text" id="reqbigo" name="regbigo"></td>
+                    </tr>
+                </table>
+                </form>
+                
+                <form id="ioType_5_form"  name="ioType_5_form">
+                <input type="hidden"  id ="ihogi" name="ihogi" >
+                <input type="hidden"  id ="iseq" name="iseq" >
+                <input type="hidden"  id ="xygubun" name="xygubun" >
+                <input type="hidden"  id ="iotype" name="iotype" >
+                <table class="form_table" id="ioType_5_Input" name="ioType_5_Input" >
+                    <colgroup>
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                    </colgroup>
+                    <tr>
+                        <th>ADDRESS</th>
+                        <td><input type="text" id="address" name="address"></td>
+                         <th>PROGRAM</th>
+                        <td><input type="text" id="program" name="program"></td>
+                        <th>DSECR</th>
+                        <td colspan="3"><input type="text" id="descr" name="descr"></td>
                         <th>LOOPNAME</th>
-                        <td><input type="text" id="tLoopName" value=""></td>
+                        <td><input type="text" id="loopname" name="loopname"></td>
+                      
+                    </tr>
+                    <tr>
+                      	<th>BSCAL</th>
+                        <td><input type="text" id="bscal" name="bscal"></td>
+                        <th>ELOW</th>
+                        <td><input type="text" id="elow" name="elow"></td>
+                        <th>EHIGH</th>
+                        <td><input type="text" id="ehigh" name="ehigh"></td>
+                        <th>REQ_NO</th>
+                        <td><input type="text" id="reqno" name="reqno"></td>
+                        <th>REQ_DATE</th>
+                        <td><input type="text" id="reqdate" name="reqdate"></td>
+                       
+                    </tr>
+                    <tr>
+                     <th>REQ_NAME</th>
+                        <td><input type="text" id="reqname" name="reqname"></td>
+                    	 <th>REQ_DEPT</th>
+                        <td><input type="text" id="reqdept" name="reqdept"></td>
+                        <th>비고</th>
+                        <td colspan="5"><input type="text" id="reqbigo" name="reqbigo"></td>
+                    </tr>
+                </table>
+                </form>
+                
+                <form id="ioType_6_form"  name="ioType_6_form">
+                <input type="hidden"  id ="ihogi" name="ihogi" >
+                <input type="hidden"  id ="iseq" name="iseq" >
+                <input type="hidden"  id ="xygubun" name="xygubun" >
+                <input type="hidden"  id ="iotype" name="iotype" >
+                <table class="form_table" id="ioType_6_Input" name="ioType_6_Input" >
+                    <colgroup>
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                    </colgroup>
+                    <tr>
+                        <th>ADDRESS</th>
+                        <td><input type="text" id="address" name="address"></td>
+                         <th>BIT</th>
+                        <td><input type="text" id="iobit" name="iobit"></td>
+                        <th>DSECR</th>
+                        <td colspan="3"><input type="text" id="descr" name="descr"></td>
+                        <th>PROGRAM</th>
+                        <td><input type="text" id="program" name="program"></td>
+                    </tr>
+                    <tr>
+                        <th>INDICATE</th>
+                        <td><input type="text" id="indicate" name="indicate"></td>
+                        <th>BSCAL</th>
+                        <td><input type="text" id="bascal" name="bascal"></td>
+                        <th>REQ_NO</th>
+                        <td><input type="text" id="reqno" name="reqno"></td>
+                        <th>REQ_DATE</th>
+                        <td><input type="text"  id="reqdate" name="reqdate"></td>
+                        <th>REQ_NAME</th>
+                        <td><input type="text" id="reqname" name="reqname"></td>
+                       
+                    </tr>
+                    <tr>
+                        <th>REQ_DEPT</th>
+                        <td><input type="text"  id="reqdept" name="reqdept"></td>
+                        <th>비고</th>
+                        <td colspan="7"><input type="text"  id="reqbo" name="reqbigo"></td>
+                    </tr>
+                </table>
+                </form>
+                
+                <form id="ioType_7_form"  name="ioType_7_form">
+                <input type="hidden"  id ="ihogi" name="ihogi" >
+                <input type="hidden"  id ="iseq" name="iseq" >
+                <input type="hidden"  id ="xygubun" name="xygubun" >
+                <input type="hidden"  id ="iotype" name="iotype" >
+                <table class="form_table" id="ioType_7_Input" name="ioType_7_Input" >
+                     <colgroup>
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                        <col width="120px"/>
+                        <col />
+                    </colgroup>
+                    <tr>
+                        <th>ADDRESS</th>
+                        <td><input type="text"  id="address" name="address"></td>
+                        <th>DSECR</th>
+                        <td colspan="3"><input type="text" id="descr" name="descr"></td>
+                        <th>MESSAGE</th>
+                        <td colspan="3"><input type="text" id="message" name="message"></td>
+                    </tr>
+                    <tr>
+                        <th>REV</th>
+                        <td><input type="text" id="rev" name="rev"></td>
+                        <th>DRAWNG</th>
+                        <td><input type="text" id="drawing" name="drawing"></td>
+                        <th>LOOPNAME</th>
+                        <td><input type="text" id="loopname" name="loopname"></td>
+                        <th>DEVICE</th>
+                        <td><input type="text" id="device" name="device"></td>
+                        <th>PURPOSE</th>
+                        <td><input type="text" id="purpose" name="purpose"></td>
+                    </tr>
+                    <tr>
+                        <th>PROGRAM</th>
+                        <td><input type="text" id="program" name="program"></td>
+                        <th>VLOW</th>
+                        <td><input type="text" id="vlow" name="vlow"></td>
+                        <th>VHIGH</th>
+                        <td><input type="text" id="vhigh" name="vhigh"></td>
+                        <th>ELOW</th>
+                        <td><input type="text" id="elow" name="elow"></td>
+                        <th>EHIGH</th>
+                        <td><input type="text" id="ehigh" name="ehigh"></td>
+                    </tr>
+                    <tr>
+                        <th>UNIT</th>
+                        <td><input type="text" id="unit" name="unit"></td>
+                        <th>CONV</th>
+                        <td><input type="text" id="conv" name="conv"></td>
+                        <th>RTD</th>
+                        <td><input type="text" id="rtd" name="rtd"></td>
+                         <th>TYPE</th>
+                        <td>
+                            <select id="type" name="type">
+                                <option  value="0">None</option>
+                                <option  value="1">High</option>
+                                <option  value="2">Low</option>
+                                <option  value="3">High/Low</option>
+                                <option  value="4">High DTAB</option>
+                                <option  value="5">Low DATB</option>
+                                <option  value="6">High/Low DTAB</option>
+                                <option  value="7">High VH</option>
+                                <option  value="8">Low VL</option>
+                                <option  value="9">Irrational</option>                                
+                            </select>
+                        </td>
+                        <th>IOGROUP</th>
+                        <td>
+                            <select id="iogroup" name="iogroup">
+                                <option value="0">None</option>
+                                <option value="1">Reactor/PHT</option>
+                                <option value="2">Turbine and Boilers</option>
+                                <option value="3">Safety</option>
+                                <option value="4">Electrical</option>
+                                <option value="8">Auxiliaries</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>WINDOW</th>
+                        <td><input type="text" id="window" name="window"></td>
                         <th>PRIORITY</th>
                         <td>
-                        	<select id="tPriority">
-                        		<option></option>
+                            <select  id="priority" name="priority">
+                                <option value="0">Printer Only</option>
+                                <option value="1">Minor</option>
+                                <option value="2">Safety</option>
+                                <option value="3">Major</option>
                             </select>
                         </td>
-                        <th>DEVICE</th>
-                        <td><input type="text" id="tDevice" value=""></td>
-                    </tr>
-                    <tr>
-                        <th>DCC</th>
-                        <td><input type="text" id="tXygubun" value=""></td>
-                        <th>UNIT</th>
-                        <td><input type="text" id="tUnit" value=""></td>
                         <th>CR</th>
                         <td>
-                        	<select id="tCr">
-                        		<option></option>
+                            <select id="cr" name="cr">>
+                                <option value="0">None</option>
+                                <option value="1">Conditioned</option>                                
                             </select>
                         </td>
-                        <th>PURPOSE</th>
-                        <td><input type="text" id="tPurpose" value=""></td>
+                        <th>LIMT1</th>
+                        <td><input type="text" id="limit1" name="limit1"></td>
+                        <th>LIMT2</th>
+                        <td><input type="text" id="limit2" name="limit2"></td>
                     </tr>
                     <tr>
-                        <th>VLOW</th>
-                        <td><input type="text" id="tVlow" value=""></td>
-                        <th>ELOW</th>
-                        <td><input type="text" id="tElow" value=""></td>
-                        <th>LIMIT 1</th>
-                        <td><input type="text" id="tLimit1" value=""></td>
-                        <th>PROGRAM</th>
-                        <td><input type="text" id="tProgram" value=""></td>
-                    </tr>
-                    <tr>
-                        <th>VHIGH</th>
-                        <td><input type="text" id="tVhigh" value=""></td>
-                        <th>EHIGH</th>
-                        <td><input type="text" id="tEhigh" value=""></td>
-                        <th>LIMIT 2</th>
-                        <td><input type="text" id="tLimit2" value=""></td>
+                        <th>J</th>
+                        <td><input type="text" id="j" name="j"></td>
                         <th>N</th>
                         <td>
-                        	<select id="tN">
-                        		<option></option>
+                            <select id="n" name="n">>
+                                <option value="0">commission</option>
+                                <option value="1">Not commission</option>                                
+                            </select>
+                        </td>
+                        <th>EQU#</th>
+                        <td><input type="text" id="equ" name="equ"></td>
+                        <th>BASCAL</th>
+                        <td><input type="text" id="bascal" name="bascal"></td>
+                        <th>WIBA</th>
+                        <td><select id="wiba" name="wiba">
+                                <option value="0">Out</option>
+                                <option value="1">In</option>
                             </select>
                         </td>
                     </tr>
                     <tr>
-                        <th>CONV</th>
-                        <td><input type="text" id="tConv" value=""></td>
-                        <th>RTD</th>
-                        <td><input type="text" id="tRtd" value=""></td>
-                        <th>J</th>
-                        <td><input type="text" id="tJ" value=""></td>
-                        <th>관련절차서</th>
-                        <td><input type="text" id="tProcess" value=""></td>
+                        <th>WB#</th>
+                        <td><input type="text" id="wb" name="wb"></td>
+                        <th>REQ_NO</th>
+                        <td><input type="text" id="reqno" name="reqno"></td>
+                        <th>REQ_DATE</th>
+                        <td><input type="text" id="reqdate" name="reqdate"></td>
+                        <th>REQ_NAME</th>
+                        <td><input type="text" id="reqname" name="reqname"></td>
+                        <th>REQ_DEPT</th>
+                        <td><input type="text" id="reqdept" name="reqdept"></td>
                     </tr>
                     <tr>
-                        <th>원인</th>
-                        <td colspan="3">
-                            <textarea id="tReason" value=""></textarea>
-                        </td>
-                        <th>조치</th>
-                        <td colspan="3">
-                            <textarea id="tDone" value=""></textarea>
-                        </td>
-                        <td style="display:none"><input type="hidden" id="tIseq" value=""></td>
-                        <td style="display:none"><input type="hidden" id="tIhogi" value=""></td>
-                        <td style="display:none"><input type="hidden" id="tIotype" value=""></td>
+                        <th>비고</th>
+                        <td colspan="9"><input type="text" id="reqbigo" name="reqbigo"></td>
                     </tr>
                 </table>
-                <!-- //form_table -->
-            </form>
-            </div>
-            </c:if>
-            <c:if test="${BaseSearch.ioType eq 'AO' }">
-            <div class="form_wrap">
-			<form id="iolistModifyForm" name="iolistModifyForm">
-                <!-- form_table -->
-                <table class="form_table">
+                </form>
+                
+                <form id="ioType_8_form"  name="ioType_8_form">
+                <input type="hidden"  id ="ihogi" name="ihogi" >
+                <input type="hidden"  id ="iseq" name="iseq" >
+                <input type="hidden"  id ="xygubun" name="xygubun" >
+                <input type="hidden"  id ="iotype" name="iotype" >
+                <table class="form_table" id="ioType_8_Input" name="ioType_8_Input" >
                     <colgroup>
+                        <col width="120px"/>
+                        <col />
                         <col width="120px"/>
                         <col />
                         <col width="120px"/>
@@ -1653,408 +2856,61 @@
                     </colgroup>
                     <tr>
                         <th>ADDRESS</th>
-                        <td><input type="text" id="tAddress" value="" disabled></td>
-                        <th>REV</th>
-                        <td><input type="text" id="tRev" value=""></td>
-                        <th>DCC</th>
-                        <td><input type="text" id="tXygubun" value=""></td>
-                        <th>PURPOSE</th>
-                        <td><input type="text" id="tPurpose" value=""></td>
-                    </tr>
-                    <tr>
-                        <th>DESCR</th>
-                        <td colspan="3"><input type="text" id="tDescr" value=""></td>
-                        <th>CTRLNAME</th>
-                        <td><input type="text" id="tCrtlName" value=""></td>
-                        <th>INTERLOCK</th>
-                        <td><input type="text" id="tInterlock" value=""></td>
-                    </tr>
-                    <tr>
-                        <th>DRAWING</th>
-                        <td><input type="text" id="tDrawing" value=""></td>
-                        <th>DEVICE</th>
-                        <td><input type="text" id="tDevice" value=""></td>
-                        <th>FEEDBACK</th>
-                        <td><input type="text" id="tFeedback" value=""></td>
-                        <th>WBA</th>
-                        <td>
-                        	<select id="tWba">
-                        		<option></option>
-                            </select>
-                        </td>
-                        <td style="display:none"><input type="hidden" id="tIseq" value=""></td>
-                        <td style="display:none"><input type="hidden" id="tIhogi" value=""></td>
-                        <td style="display:none"><input type="hidden" id="tIotype" value=""></td>
-                    </tr>
-                </table>
-                <!-- //form_table -->
-            </form>
-            </div>
-            </c:if>
-            <c:if test="${BaseSearch.ioType eq 'CI' }">
-            <div class="form_wrap">
-			<form id="iolistModifyForm" name="iolistModifyForm">
-                <!-- form_table -->
-                <table class="form_table">
-                    <colgroup>
-                        <col width="120px"/>
-                        <col />
-                        <col width="120px"/>
-                        <col />
-                        <col width="120px"/>
-                        <col />
-                        <col width="120px"/>
-                        <col />
-                    </colgroup>
-                    <tr>
-                        <th>ADDRESS</th>
-                        <td><input type="text" id="tAddress" value="" disabled></td>
-                        <th>CR</th>
-                        <td>
-                        	<select id="tCr">
-                        		<option></option>
-                            </select>
-                        </td>
-                        <th>WBA</th>
-                        <td>
-                        	<select id="tWba">
-                        		<option></option>
-                            </select>
-                        </td>
-                        <th>GROUP</th>
-                        <td>
-                        	<select id="tGroup">
-                        		<option></option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>MESSAGE</th>
-                        <td colspan="7"><input type="text" id="tMessage" value=""></td>
-                    </tr>
-                    <tr>
-                        <th>DRAWING</th>
-                        <td><input type="text" id="tDrawing" value=""></td>
-                        <th>REV</th>
-                        <td><input type="text" id="tRev" value=""></td>
-                        <th>TR</th>
-                        <td>
-                        	<select id="tTr">
-                        		<option></option>
-                            </select>
-                        </td>
-                        <th>PRIORITY</th>
-                        <td>
-                        	<select id="tPriority">
-                        		<option></option>
-                            </select>
-                        </td>
-                    </tr>                    
-                    <tr>
-                        <th>DEVICE</th>
-                        <td><input type="text" id="tDevice" value=""></td>
-                        <th>CONDITION</th>
-                        <td><input type="text" id="tCondition" value=""></td>
-                        <th>TYPE</th>
-                        <td>
-                        	<select id="tType">
-                        		<option></option>
-                            </select>
-                        </td>
-                        <th>관련절차서</th>
-                        <td><input type="text" id="tProcess" value=""></td>
-                    </tr>
-                    <tr>
-                        <th>원인</th>
-                        <td colspan="3">
-                            <textarea id="tReason" value=""></textarea>
-                        </td>
-                        <th>조치</th>
-                        <td colspan="3">
-                            <textarea id="tDone" value=""></textarea>
-                        </td>
-                        <td style="display:none"><input type="hidden" id="tIseq" value=""></td>
-                        <td style="display:none"><input type="hidden" id="tIhogi" value=""></td>
-                        <td style="display:none"><input type="hidden" id="tIotype" value=""></td>
-                    </tr>
-                </table>
-                <!-- //form_table -->
-            </form>
-            </div>
-            </c:if>
-            <c:if test="${BaseSearch.ioType eq 'DI' }">
-            <div class="form_wrap">
-			<form id="iolistModifyForm" name="iolistModifyForm">
-                <!-- form_table -->
-                <table class="form_table">
-                    <colgroup>
-                        <col width="120px"/>
-                        <col />
-                        <col width="120px"/>
-                        <col />
-                        <col width="120px"/>
-                        <col />
-                        <col width="120px"/>
-                        <col />
-                    </colgroup>
-                    <tr>
-                        <th>ADDRESS</th>
-                        <td><input type="text" id="tAddress" value="" disabled></td>
-                        <th>REV</th>
-                        <td><input type="text" id="tRev" value=""></td>
-                        <th>PURPOSE</th>
-                        <td><input type="text" id="tPurpose" value=""></td>
-                        <th>CTRLNAME</th>
-                        <td><input type="text" id="tCrtlName" value=""></td>
-                    </tr>
-                    <tr>
-                        <th>DESCR</th>
-                        <td colspan="7"><input type="text" id="tDescr" value=""></td>
-                    </tr>
-                    <tr>
-                        <th>IOBIT</th>
-                        <td><input type="text" id="tIoBit" value=""></td>
-                        <th>DRAWING</th>
-                        <td><input type="text" id="tDrawing" value=""></td>
-                        <th>ALARMCOND</th>
-                        <td><input type="text" id="tAlarmCond" value=""></td>
-                        <th>INDICATE</th>
-                        <td><input type="text" id="tIndicate" value=""></td>
-                    </tr>                    
-                    <tr>
-                        <th>DEVICE</th>
-                        <td><input type="text" id="tDevice" value=""></td>
-                        <th>DCC</th>
-                        <td><input type="text" id="tXygubun" value=""></td>
-                        <th>WBA</th>
-                        <td>
-                        	<select id="tWba">
-                        		<option></option>
-                            </select>
-                        </td>
-                        <th></th><td></td>
-                        <td style="display:none"><input type="hidden" id="tIseq" value=""></td>
-                        <td style="display:none"><input type="hidden" id="tIhogi" value=""></td>
-                        <td style="display:none"><input type="hidden" id="tIotype" value=""></td>
-                    </tr>
-                </table>
-                <!-- //form_table -->
-            </form>
-            </div>
-            </c:if>
-            <c:if test="${BaseSearch.ioType eq 'DO' }">
-            <div class="form_wrap">
-			<form id="iolistModifyForm" name="iolistModifyForm">
-                <!-- form_table -->
-                <table class="form_table">
-                    <colgroup>
-                        <col width="120px"/>
-                        <col />
-                        <col width="120px"/>
-                        <col />
-                        <col width="120px"/>
-                        <col />
-                        <col width="120px"/>
-                        <col />
-                    </colgroup>
-                    <tr>
-                        <th>ADDRESS</th>
-                        <td><input type="text" id="tAddress" value="" disabled></td>
-                        <th>REV</th>
-                        <td><input type="text" id="tRev" value=""></td>
-                        <th>DEVICE</th>
-                        <td><input type="text" id="tDevice" value=""></td>
-                        <th>DCC</th>
-                        <td><input type="text" id="tXygubun" value=""></td>
-                    </tr>
-                    <tr>
-                        <th>DESCR</th>
-                        <td colspan="3"><input type="text" id="tDescr" value=""></td>
-                        <th>PURPOSE</th>
-                        <td><input type="text" id="tPurpose" value=""></td>
-                        <th>CTRLNAME</th>
-                        <td><input type="text" id="tCrtlName" value=""></td>
-                    </tr>
-                    <tr>
-                        <th>IOBIT</th>
-                        <td><input type="text" id="tIoBit" value=""></td>
-                        <th>DRAWING</th>
-                        <td><input type="text" id="tDrawing" value=""></td>
-                        <th>INTERLOCK</th>
-                        <td><input type="text" id="tInterlock" value=""></td>
-                        <th>WBA</th>
-                        <td>
-                        	<select id="tWba">
-                        		<option></option>
-                            </select>
-                        </td>
-                        <td style="display:none"><input type="hidden" id="tIseq" value=""></td>
-                        <td style="display:none"><input type="hidden" id="tIhogi" value=""></td>
-                        <td style="display:none"><input type="hidden" id="tIotype" value=""></td>
-                    </tr>
-                </table>
-                <!-- //form_table -->
-            </form>
-            </div>
-            </c:if>
-            <c:if test="${BaseSearch.ioType eq 'DT' or BaseSearch.ioType eq 'FTDT'}">
-            <div class="form_wrap">
-			<form id="iolistModifyForm" name="iolistModifyForm">
-                <!-- form_table -->
-                <table class="form_table">
-                    <colgroup>
-                        <col width="120px"/>
-                        <col />
-                        <col width="120px"/>
-                        <col />
-                        <col width="120px"/>
-                        <col />
-                        <col width="120px"/>
-                        <col />
-                    </colgroup>
-                    <tr>
-                        <th>ADDRESS</th>
-                        <td><input type="text" id="tAddress" value="" disabled></td>
-                        <th>PROGRAM</th>
-                        <td><input type="text" id="tProgram" value=""></td>
+                        <td><input type="text" id="address" name="address"></td>
+                         <th>PROGRAM</th>
+                        <td><input type="text" id="program" name="program"></td>
+                        <th>DSECR</th>
+                        <td colspan="3"><input type="text" id="descr" name="descr"></td>
                         <th>LOOPNAME</th>
-                        <td><input type="text" id="tLoopName" value=""></td>
-                        <th></th><td></td>
+                        <td><input type="text" id="loopname" name="loopname"></td>
+                      
                     </tr>
                     <tr>
-                        <th>DESCR</th>
-                        <td colspan="7"><input type="text" id="tDescr" value=""></td>
-                        <td style="display:none"><input type="hidden" id="tIseq" value=""></td>
-                        <td style="display:none"><input type="hidden" id="tIhogi" value=""></td>
-                        <td style="display:none"><input type="hidden" id="tIotype" value=""></td>
+                      	<th>BSCAL</th>
+                        <td><input type="text" id="bscal" name="bscal"></td>
+                        <th>ELOW</th>
+                        <td><input type="text" id="elow" name="elow"></td>
+                        <th>EHIGH</th>
+                        <td><input type="text" id="ehigh" name="ehigh"></td>
+                        <th>REQ_NO</th>
+                        <td><input type="text" id="reqno" name="reqno"></td>
+                        <th>REQ_DATE</th>
+                        <td><input type="text" id="reqdate" name="reqdate"></td>
+                       
+                    </tr>
+                    <tr>
+                     <th>REQ_NAME</th>
+                        <td><input type="text" id="reqname" name="reqname"></td>
+                    	 <th>REQ_DEPT</th>
+                        <td><input type="text" id="reqdept" name="reqdept"></td>
+                        <th>비고</th>
+                        <td colspan="5"><input type="text" id="reqbigo" name="reqbigo"></td>
                     </tr>
                 </table>
+                </form>
                 <!-- //form_table -->
-            </form>
             </div>
-            </c:if>
-            <!-- //form_wrap -->
+            <!-- //form_wrap -->            
 		</div>
 		<!-- //contents -->
 	</div>
+                <!-- 마우스 우클릭 메뉴 -->
+                <div class="context_menu" id="mouse_area">
+                    <ul>
+                        <li><a href="#none" onclick="javascript:toCSV();">엑셀로 저장</a></li>
+                    </ul>
+                </div>
+                <!-- //마우스 우클릭 메뉴 -->
 	<!-- //container -->
 	<!-- footer -->
 	<%@ include file="/WEB-INF/views/include/include-footer.jspf" %>
 	<!-- //footer -->
 </div>
 <!--  //wrap  -->
-<!-- layer_pop_wrap -->
-<div class="layer_pop_wrap large" id="modal_1">
-    <!-- header_wrap -->
-	<div class="pop_header">
-	    <h3>엑셀로 저장</h3>
-        <a onclick="closeLayer('modal_1');" title="Close"></a>
-    </div>
-	<!-- //header_wrap -->
-	<!-- pop_contents -->
-	<div class="pop_contents">
-
-        <!-- fx_layout -->
-        <div class="fx_layout"> 
-            <div class="fx_block">        
-                <!-- form_wrap -->
-                <div class="form_wrap">
-                    <div class="form_head">
-                        <h4>저장일자</h4>
-                    </div>
-                    <!-- form_table -->
-                    <table class="form_table">
-                        <colgroup>
-                            <col width="120px"/>
-                            <col />
-                        </colgroup>
-                        <tr>
-                            <th>시작 시간</th>
-                            <td>
-                                <div class="fx_form_multi">
-                                    <div class="fx_form_date">
-                                        <input type="text">
-                                        <a href="#none"></a>
-                                    </div>                                    
-                                    <input type="text" value="13:17:42">
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>끝 시간</th>
-                            <td>
-                                <div class="fx_form_multi">
-                                    <div class="fx_form_date">
-                                        <input type="text">
-                                        <a href="#none"></a>
-                                    </div>                                    
-                                    <input type="text" value="13:17:42">
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                    <!-- //form_table -->
-                </div>
-                <!-- //form_wrap -->
-            </div>
-            <div class="fx_block">        
-                <!-- form_wrap -->
-                <div class="form_wrap">
-                    <div class="form_head">
-                        <h4>주기</h4>
-                    </div>
-                    <!-- form_table -->
-                    <table class="form_table">
-                        <colgroup>
-                            <col />
-                        </colgroup>
-                        <tr>
-                            <td>
-                                <div class="fx_form">
-                                    <label><input type="radio" name="radio">0.5초 데이타</label>
-                                    <label><input type="radio" name="radio">5분 데이타</label>
-                                    <label><input type="radio" name="radio">5초 데이타</label>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="fx_form">
-                                    <label><input type="radio" name="radio">1시간 데이타</label>
-                                    <label><input type="radio" name="radio">1분 데이타</label>
-                                    <label><input type="radio" name="radio">직접입력</label>
-                                    <input type="text" class="tr fx_none" style="width:60px;">
-                                    <label>초</label>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                    <!-- //form_table -->
-                </div>
-                <!-- //form_wrap -->
-            </div>
-        </div>
-        <!-- //fx_layout -->    
-        <!-- file_upload -->
-        <div class="fx_form file_upload">
-            <div class="fx_form">
-                <input type="text" />
-                <a href="#none" class="btn_list">파일선택</a>
-            </div>
-        </div>
-        <!-- //file_upload -->
-	</div>
-	<!-- pop_contents -->
-    <!-- pop_footer -->
-    <div class="pop_footer">
-        <a href="#none" class="btn_page primary">저장</a>
-        <a href="#none" class="btn_page" onclick="closeLayer('modal_1');">닫기</a>
-    </div>
-    <!-- //pop_footer -->
-</div>
-<!-- //layer_pop_wrap -->
 
 <script type="text/javascript" src="<c:url value="/resources/js/context_menu.js" />" charset="utf-8"></script>
 </body>
 </html>
+
+
 

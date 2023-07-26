@@ -22,6 +22,8 @@ import com.mkpenc.dcc.performance.model.DccSearchPerformance;
 import com.mkpenc.dcc.performance.model.GroupNameInfo;
 import com.mkpenc.dcc.performance.service.DccPerformanceService;
 import com.mkpenc.dcc.status.model.DccSearchStatus;
+import com.mkpenc.dcc.trend.model.DccSearchTrend;
+import com.mkpenc.dcc.trend.service.DccTrendService;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
@@ -33,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -51,7 +54,7 @@ public class DccPerformanceContentsController {
 	private String menuName = "PERFORMANCE";
 	
 	@Autowired
-	 private CommonConstant commonConstant;	
+	private CommonConstant commonConstant;	
 	
 	@Autowired
 	private BasCommonService basCommonService;
@@ -65,6 +68,12 @@ public class DccPerformanceContentsController {
 	@Autowired
 	private DccPerformanceService dccPerfornamceService;
 	
+	@Autowired
+	private DccTrendService dccTrendService;
+	
+	@Autowired
+	private DccAdminService dccAdminService;
+	
 	
 	@RequestMapping("fixed")
 	public ModelAndView fixed(DccSearchPerformance dccSearchPerformance, HttpServletRequest request) {
@@ -77,22 +86,63 @@ public class DccPerformanceContentsController {
         	
         	dccSearchPerformance.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchPerformance.getsMenuNo() == null || dccSearchPerformance.getsMenuNo().isEmpty()) {
         	
 	        	dccSearchPerformance.setsDive("D");
 	        	dccSearchPerformance.setsMenuNo("41");
 	        	dccSearchPerformance.setsGrpID("CompareVar");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchPerformance.setsHogi(member.getHogi());
-	        	dccSearchPerformance.setsXYGubun(member.getXyGubun());
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");	        	
         	}
+        	
+        	dccSearchPerformance.setsHogi(member.getHogi());
+        	dccSearchPerformance.setsXYGubun(member.getXyGubun());
         	        	
         	getMainPerformance(dccSearchPerformance, mav);        	
         	
         	mav.addObject("BaseSearch", dccSearchPerformance);        	
-        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));        	
+        }
+
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadFixed",method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadFixed(DccSearchPerformance dccSearchPerformance, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadFixed");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
         	
+        	dccSearchPerformance.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchPerformance.getsMenuNo() == null || dccSearchPerformance.getsMenuNo().isEmpty()) {
+        	
+	        	dccSearchPerformance.setsDive("D");
+	        	dccSearchPerformance.setsMenuNo("41");
+	        	dccSearchPerformance.setsGrpID("CompareVar");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");	        	
+        	}
+        	
+        	dccSearchPerformance.setsHogi(member.getHogi());
+        	dccSearchPerformance.setsXYGubun(member.getXyGubun());
+        	        	
+        	getMainPerformance(dccSearchPerformance, mav);
+
+        	mav.addObject("resultType","fixed");
+        	
+        	mav.addObject("BaseSearch", dccSearchPerformance);        	
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));        	
         }
 
         return mav;
@@ -109,19 +159,63 @@ public class DccPerformanceContentsController {
         	
         	dccSearchPerformance.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchPerformance.getsMenuNo() == null || dccSearchPerformance.getsMenuNo().isEmpty()) {
             	
 	        	dccSearchPerformance.setsDive("D");
 	        	dccSearchPerformance.setsMenuNo("42");	        	
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchPerformance.setsHogi(member.getHogi());
-	        	dccSearchPerformance.setsXYGubun(member.getXyGubun());
-	        	
-	        	dccSearchPerformance.setsGrpID(member.getId());
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");	        	
         	}
+        	
+        	dccSearchPerformance.setsHogi(member.getHogi());
+        	dccSearchPerformance.setsXYGubun(member.getXyGubun());
+        	
+        	dccSearchPerformance.setsGrpID(member.getId());
         	        	
         	getMainPerformance(dccSearchPerformance, mav);       
+        	
+        	mav.addObject("BaseSearch", dccSearchPerformance);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+      
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadSpare", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadSpare(DccSearchPerformance dccSearchPerformance, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadSpare");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchPerformance.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchPerformance.getsMenuNo() == null || dccSearchPerformance.getsMenuNo().isEmpty()) {
+            	
+	        	dccSearchPerformance.setsDive("D");
+	        	dccSearchPerformance.setsMenuNo("42");	        	
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");	        	
+        	}
+        	
+        	dccSearchPerformance.setsHogi(member.getHogi());
+        	dccSearchPerformance.setsXYGubun(member.getXyGubun());
+        	
+        	dccSearchPerformance.setsGrpID(member.getId());
+        	        	
+        	getMainPerformance(dccSearchPerformance, mav);
+        	
+        	mav.addObject("resultType","spare");
         	
         	mav.addObject("BaseSearch", dccSearchPerformance);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
@@ -167,7 +261,7 @@ public class DccPerformanceContentsController {
     			searchMap.put("mskSpareS", dccSearchPerformance.getMskSpareS());
     			searchMap.put("mskSpareE", dccSearchPerformance.getMskSpareE());
     			
-    			if(commonConstant.getUrl().equals("http://10.135.101.222")) {
+    			if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {
     				
     				rtnMap = dccPerfornamceService.selectTrendInfoByUrlA(searchMap);
     				
@@ -241,16 +335,14 @@ public class DccPerformanceContentsController {
 	    					tagDccInfo.setSpareMinFldNo(methodCompare(rtnMap.get("minTvalue").toString(), tagDccInfo));
 	    				}else {
 	    					tagDccInfo.setSpareMinFldNo("");
-	    				}
-	    				
-    				}
-   
+	    				}	    				
+    				}   
     			}
     			
     			searchMap.put("mskFixedS", dccSearchPerformance.getMskFixedS());
     			searchMap.put("mskFixedE", dccSearchPerformance.getMskFixedE());
     			
-    			if(commonConstant.getUrl().equals("http://10.135.101.222")) {
+    			if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {
     				
     				rtnMap = dccPerfornamceService.selectTrendInfoByUrlB(searchMap);
     				
@@ -294,8 +386,7 @@ public class DccPerformanceContentsController {
 	    					tagDccInfo.setSpareMinFldNo("");
 	    				}
     					
-    				}else {
-	    				
+    				}else {	    				
 	    				
 	    				if(rtnMap.get("avgTvalue") != null) {
 	    					tagDccInfo.setFixedAvgFldNo(methodCompare(rtnMap.get("avgTvalue").toString(), tagDccInfo));
@@ -319,8 +410,7 @@ public class DccPerformanceContentsController {
 	    					tagDccInfo.setFixedMinFldNo(methodCompare(rtnMap.get("minTvalue").toString(), tagDccInfo));
 	    				}else {
 	    					tagDccInfo.setFixedMinFldNo("");
-	    				}	    				
-	    				
+	    				}
     				}
     			}
     			
@@ -362,11 +452,11 @@ public class DccPerformanceContentsController {
 		if(Double.parseDouble(iVal) < -9999999) {
 			return rVal;
 		}else {
-			if(tagDccInfo.getIOTYPE().equals("SC") && tagDccInfo.getBScale() != 0) {
+			if(tagDccInfo.getIOTYPE().equals("SC") && tagDccInfo.getBScale() != -1) {
 				rVal = (Integer.parseInt(rVal) / (2 ^ (15 - tagDccInfo.getBScale()))) + "";
 			}
 			
-			if(tagDccInfo.getIOTYPE().equals("SC") && tagDccInfo.getSaveCore() != 1 && tagDccInfo.getIOBIT() != 0) {
+			if(tagDccInfo.getIOTYPE().equals("SC") && tagDccInfo.getSaveCore() != 1 && tagDccInfo.getIOBIT() != -1) {
 				  rVal = GetBitVal(iVal, Integer.toString(tagDccInfo.getIOBIT()));
 			}
 			
@@ -410,7 +500,7 @@ public class DccPerformanceContentsController {
 	    
 	    long Rest = 0;
 	    
-	    long di_val;
+	    double di_val;
 	    int bit_no;	    
 	    
 	    if(digitalBit.isEmpty()) {
@@ -421,13 +511,16 @@ public class DccPerformanceContentsController {
 	       }
 	    }
 	    
-	    di_val = Math.round(Double.parseDouble(digitalValue));	    
+	    di_val = Double.parseDouble(digitalValue);	    
 	    bit_no = Integer.parseInt(digitalBit);
 
-	    for(int i = 0;i < bit_no;i++) {
-	        Rest = (di_val % 2);
-	        //di_val = di_val \ 2;
-	    	di_val = di_val / 2;
+	    for(int i = 0;i < bit_no+1;i++) {
+	    	
+	    	//if(di_val == 1) break;
+	    	
+	        Rest = Math.round(di_val % 2);
+	        di_val = Math.floor(di_val / 2);
+	    	//di_val = di_val >> 2;
 		}
 	    
 	    return Rest +"";
@@ -467,8 +560,7 @@ public class DccPerformanceContentsController {
                 
 		ModelAndView mav = new ModelAndView("jsonView");
 		
-		dccSearchPerformance.setMenuName(this.menuName);
-		
+		dccSearchPerformance.setMenuName(this.menuName);		
 				
 		Map searchMap = new HashMap();
 		searchMap.put("dive",dccSearchPerformance.getsDive()== null?  "": dccSearchPerformance.getsDive());
@@ -702,6 +794,8 @@ public class DccPerformanceContentsController {
 
         logger.info("############ compare34");
         
+        MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	if(dccSearchPerformance.getsMenuNo() == null || dccSearchPerformance.getsMenuNo().isEmpty()) {
@@ -709,13 +803,14 @@ public class DccPerformanceContentsController {
 	        	dccSearchPerformance.setsDive("D");
 	        	dccSearchPerformance.setsMenuNo("43");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchPerformance.setsHogi(member.getHogi());
-	        	dccSearchPerformance.setsXYGubun(member.getXyGubun());
-	        	
-	        	dccSearchPerformance.setsGrpID(member.getId());
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");		        	
         	}
-        	        	
+        	
+        	dccSearchPerformance.setsHogi(member.getHogi());
+        	dccSearchPerformance.setsXYGubun(member.getXyGubun());
+        	
+        	dccSearchPerformance.setsGrpID(member.getId());        	        	
         	
         	Map grpSearchMap = new HashMap();
     		grpSearchMap.put("dive",dccSearchPerformance.getsDive()==null?  "": dccSearchPerformance.getsDive());
@@ -889,8 +984,6 @@ public class DccPerformanceContentsController {
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
-
-        	
         	String preSPer = "";
         	dccSearchPerformance.setMenuName(this.menuName);
         	
@@ -955,7 +1048,7 @@ public class DccPerformanceContentsController {
 			 }
 		 
 			List<Map> varValueX = new ArrayList<Map>();
-			if(commonConstant.getUrl().equals("http://10.135.101.222")) {    				
+			if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {    				
 				
 				for(int i=1;i<=113;i++) {
 		               
@@ -1015,7 +1108,7 @@ public class DccPerformanceContentsController {
 			 }
 			
 			List<Map> varValueY = new ArrayList<Map>();
-			if(commonConstant.getUrl().equals("http://10.135.101.222")) {    				
+			if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {    				
 				
 				for(int i=1;i<=113;i++) {
 		               
@@ -1063,7 +1156,7 @@ public class DccPerformanceContentsController {
 							break;
 				case "1": 
 							pRsListTotalCnt = dccPerfornamceService.selectXYIOTypeDITotalCnt(selectMap);
-							pRsList = dccPerfornamceService.selectXYIOTypeDI(selectMap);    					
+							pRsList = dccPerfornamceService.selectXYIOTypeDI(selectMap);
 							break;   							
 				case "2": 
 							pRsListTotalCnt = dccPerfornamceService.selectXYIOTypeAIWIBATotalCnt(selectMap);
@@ -1087,28 +1180,29 @@ public class DccPerformanceContentsController {
 				switch(dccSearchPerformance.getsIOType()) {
 	    				case "0": 			    					
 			    					for(j=0;j<varValueX.size();j++) {
-			    	                    if(pRs.get("TBLNO").equals(varValueX.get(j).get("SEQ"))){
+			    						 //System.out.println(pRs.get("TBLNO") + ":::" + varValueX.get(j).get("SEQ") + "::::" + j);
+			    						 
+			    	                    if(pRs.get("TBLNO").toString().equals(varValueX.get(j).get("SEQ").toString())){
+			    	                    	break;
+			    	                    }
+			    	                    
+			    	                    if(pRs.get("TBLNO") == varValueX.get(j).get("SEQ")){
 			    	                    	break;
 			    	                    }
 			    					 }
 			    					 fldNoX = pRs.get("FLDNO").toString();
-			    	                 xValue = varValueX.get(j).get("TVALUE" + (Integer.parseInt(fldNoX))).toString();
+			    					 //System.out.println("fldNoX=" + fldNoX + ":::" + varValueX.size() + "::::" + j);
+			    	                 xValue = varValueX.get(j).get("TVALUE" + fldNoX).toString();
 			    	                 
 			    	                 for(j=0;j<varValueY.size();j++) {
-				    					 if(pRs.get("B_TBLNO").equals(varValueY.get(j).get("SEQ"))){
+				    					 if(pRs.get("B_TBLNO").toString().equals(varValueY.get(j).get("SEQ").toString())){
 				    	                    	break;
 				    	                 }
 				    				 }
 				    				 fldNoY= pRs.get("B_FLDNO").toString();
-				    	             yValue = varValueY.get(j).get("TVALUE" + (Integer.parseInt(fldNoY))).toString();
-				    	             /*
-				    	             BigDecimal yBigValue = new BigDecimal(Double.parseDouble(yValue));
+				    	             yValue = varValueY.get(j).get("TVALUE" + fldNoY).toString();
+				    	            
 				    	             
-				    	             if(yBigValue.toString().length() > 10) {      
-				    	                 yValue = yBigValue.toString().substring(0, 10);
-				    	                 System.out.println("yValue = " + yValue);
-			    	                 }	
-				    	             */
 				    	             double xyValue = Double.parseDouble(xValue) - Double.parseDouble(yValue);
 
 				    	             if(xyValue < 0 ) {
@@ -1147,27 +1241,25 @@ public class DccPerformanceContentsController {
 					                 }
 					             	    					
 				    	             break;
-	    				case "1":     			
-	    				
+	    				case "1":
 			    					for(j=0;j<varValueX.size();j++) {
-			    	                    if(pRs.get("TBLNO").equals(varValueX.get(j).get("SEQ"))){
+			    	                    if(pRs.get("TBLNO").toString().equals(varValueX.get(j).get("SEQ").toString())){
 			    	                    	break;
 			    	                    }
 			    					 }
 			    					 fldNoX= pRs.get("FLDNO").toString();
-			    	                 xValue = varValueX.get(j).get("TVALUE" + (Integer.parseInt(fldNoX))).toString();
+			    	                 xValue = varValueX.get(j).get("TVALUE" + fldNoX).toString();
 			    					
 				    				 for(j=0;j<varValueY.size();j++) {
-				    					 if(pRs.get("B_TBLNO").equals(varValueY.get(j).get("SEQ"))){
+				    					 if(pRs.get("B_TBLNO").toString().equals(varValueY.get(j).get("SEQ").toString())){
 				    	                    	break;
 				    	                 }
 				    				 }
-				    				 fldNoY= pRs.get("B_TBLNO").toString();
-				    	             yValue = varValueY.get(j).get("TVALUE" + (Integer.parseInt(fldNoY))).toString();
+				    				 fldNoY= pRs.get("B_FLDNO").toString();
+				    	             yValue = varValueY.get(j).get("TVALUE" + fldNoY).toString();
 				    	             
 				    	             String xBit = GetBitVal(xValue, pRs.get("IOBIT").toString());
 				    	             String yBit = GetBitVal(yValue, pRs.get("IOBIT").toString());
-				    	             
 				    	             
 				    	             if(Double.parseDouble(xBit) != Double.parseDouble(yBit)) {
 				    	            	 
@@ -1199,20 +1291,20 @@ public class DccPerformanceContentsController {
 	    				case "2": 
 	    					
 			    					for(j=0;j<varValueX.size();j++) {
-			    	                    if(pRs.get("TBLNO").equals(varValueX.get(j).get("SEQ"))){
+			    	                    if(pRs.get("TBLNO").toString().equals(varValueX.get(j).get("SEQ").toString())){
 			    	                    	break;
 			    	                    }
 			    					}
 			    					fldNoX= pRs.get("FLDNO").toString();
-			    	                xValue = varValueX.get(j).get("TVALUE" + (Integer.parseInt(fldNoX))).toString();
+			    	                xValue = varValueX.get(j).get("TVALUE" + fldNoX).toString();
 			    					
 				    				for(j=0;j<varValueY.size();j++) {
-				    					 if(pRs.get("B_TBLNO").equals(varValueY.get(j).get("SEQ"))){
+				    					 if(pRs.get("B_TBLNO").toString().equals(varValueY.get(j).get("SEQ").toString())){
 				    	                    	break;
 				    	                 }
 				    				}
-				    				fldNoY= pRs.get("B_TBLNO").toString();
-				    	            yValue = varValueY.get(j).get("TVALUE" + (Integer.parseInt(fldNoY))).toString();
+				    				fldNoY= pRs.get("B_FLDNO").toString();
+				    	            yValue = varValueY.get(j).get("TVALUE" + fldNoY).toString();
 	    					
 				    	            if(Double.parseDouble(xValue) <= -32768 ||  Double.parseDouble(yValue) <= -32768) {
 				    	            	
@@ -1262,6 +1354,147 @@ public class DccPerformanceContentsController {
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
+        	dccSearchPerformance.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchPerformance.getsMenuNo() == null || dccSearchPerformance.getsMenuNo().isEmpty()) {
+            	
+	        	dccSearchPerformance.setsDive("D");
+	        	dccSearchPerformance.setsMenuNo("44");
+	        	dccSearchPerformance.setsGrpID("mimic");
+	        	dccSearchPerformance.setsUGrpNo("2");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");	
+        	}
+        	
+        	dccSearchPerformance.setsHogi(member.getHogi());
+        	dccSearchPerformance.setsXYGubun(member.getXyGubun());
+        	
+    		Map dccGrpTagSearchMap = new HashMap();
+    		dccGrpTagSearchMap.put("xyGubun",dccSearchPerformance.getsXYGubun()==null?  "": dccSearchPerformance.getsXYGubun());
+    		dccGrpTagSearchMap.put("hogi",dccSearchPerformance.getsHogi()==null?  "": dccSearchPerformance.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchPerformance.getsDive()==null?  "": dccSearchPerformance.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchPerformance.getsGrpID()==null?  "": dccSearchPerformance.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchPerformance.getsMenuNo()==null?  "": dccSearchPerformance.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchPerformance.getsUGrpNo()==null?  "": dccSearchPerformance.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+        	Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+        	
+        	List<Map> lblDataList = (ArrayList)dccVal.get("lblDataList");
+        	
+        	String SteamData_1 = "";
+        	String SteamData_0 = "";
+        	Map lblSCM = new HashMap();
+        	double fValue;
+        	
+        	for(int i=0;i<4;i++) {        		
+        		
+        		if(lblDataList.get(i * 2).get("fValue").equals("***IRR")) {
+        			SteamData_1 = "***IRR";
+        		}else {
+        			 fValue = Double.parseDouble(lblDataList.get(i * 2).get("fValue").toString());
+ 				     SteamData_1 = (fValue > -32768? String.format(gFormat[tagDccInfoList.get(i).getBScale()], fValue) : "***IRR");
+        		}
+        		
+        		if(lblDataList.get(i * 2 + 1).get("fValue").equals("***IRR")) {
+        			lblSCM.put(i, "***IRR");
+        		}else {
+			            fValue = Double.parseDouble(lblDataList.get(i * 2 + 1).get("fValue").toString());
+			            SteamData_0 = (fValue > -32768? String.format(gFormat[tagDccInfoList.get(i).getBScale()], fValue) : "***IRR");
+			            double vSCM = getSaturationMargin(Double.parseDouble(SteamData_1), Double.parseDouble(SteamData_0));
+			            lblSCM.put("idx" + i,(vSCM > -32768? String.format("%.3f", vSCM): "***IRR"));
+        		}        		
+        	}        	
+        	
+        	mav.addObject("DccGrpTagList",tagDccInfoList);
+        	mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", lblDataList);
+        	mav.addObject("lblSCM", lblSCM);
+        	
+        	mav.addObject("BaseSearch", dccSearchPerformance);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));        	
+        }
+        
+        return mav;
+	}
+	
+	@RequestMapping(value = "reloadScm", method = { RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadScm(DccSearchPerformance dccSearchPerformance, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadScm");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchPerformance.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchPerformance.getsMenuNo() == null || dccSearchPerformance.getsMenuNo().isEmpty()) {
+            	
+	        	dccSearchPerformance.setsDive("D");
+	        	dccSearchPerformance.setsMenuNo("44");
+	        	dccSearchPerformance.setsGrpID("mimic");
+	        	dccSearchPerformance.setsUGrpNo("2");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");	
+        	}
+        	
+        	dccSearchPerformance.setsHogi(member.getHogi());
+        	dccSearchPerformance.setsXYGubun(member.getXyGubun());
+        	
+    		Map dccGrpTagSearchMap = new HashMap();
+    		dccGrpTagSearchMap.put("xyGubun",dccSearchPerformance.getsXYGubun()==null?  "": dccSearchPerformance.getsXYGubun());
+    		dccGrpTagSearchMap.put("hogi",dccSearchPerformance.getsHogi()==null?  "": dccSearchPerformance.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchPerformance.getsDive()==null?  "": dccSearchPerformance.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchPerformance.getsGrpID()==null?  "": dccSearchPerformance.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchPerformance.getsMenuNo()==null?  "": dccSearchPerformance.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchPerformance.getsUGrpNo()==null?  "": dccSearchPerformance.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+        	Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+        	
+        	List<Map> lblDataList = (ArrayList)dccVal.get("lblDataList");
+        	
+        	String SteamData_1 = "";
+        	String SteamData_0 = "";
+        	Map lblSCM = new HashMap();
+        	double fValue;
+        	
+        	for(int i=0;i<4;i++) {        		
+        		
+        		if(lblDataList.get(i * 2).get("fValue").equals("***IRR")) {
+        			SteamData_1 = "***IRR";
+        		}else {
+        			 fValue = Double.parseDouble(lblDataList.get(i * 2).get("fValue").toString());
+ 				     SteamData_1 = (fValue > -32768? String.format(gFormat[tagDccInfoList.get(i).getBScale()], fValue) : "***IRR");
+        		}
+        		
+        		if(lblDataList.get(i * 2 + 1).get("fValue").equals("***IRR")) {
+        			lblSCM.put(i, "***IRR");
+        		}else {
+			            fValue = Double.parseDouble(lblDataList.get(i * 2 + 1).get("fValue").toString());
+			            SteamData_0 = (fValue > -32768? String.format(gFormat[tagDccInfoList.get(i).getBScale()], fValue) : "***IRR");
+			            double vSCM = getSaturationMargin(Double.parseDouble(SteamData_1), Double.parseDouble(SteamData_0));
+			            lblSCM.put("idx" + i,(vSCM > -32768? String.format("%.3f", vSCM): "***IRR"));
+        		}        		
+        	}        	
+        	
+        	mav.addObject("DccGrpTagList",tagDccInfoList);
+        	mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", lblDataList);
+        	mav.addObject("lblSCM", lblSCM);
+        	
         	mav.addObject("BaseSearch", dccSearchPerformance);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));        	
         }
@@ -1280,6 +1513,8 @@ public class DccPerformanceContentsController {
         	
         	dccSearchPerformance.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchPerformance.getsMenuNo() == null || dccSearchPerformance.getsMenuNo().isEmpty()) {
             	
 	        	dccSearchPerformance.setsDive("D");
@@ -1287,11 +1522,12 @@ public class DccPerformanceContentsController {
 	        	dccSearchPerformance.setsGrpID("mimic");
 	        	dccSearchPerformance.setsUGrpNo("3");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchPerformance.setsHogi(member.getHogi());
-	        	dccSearchPerformance.setsXYGubun(member.getXyGubun());
-	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");	
         	}
+        	
+        	dccSearchPerformance.setsHogi(member.getHogi());
+        	dccSearchPerformance.setsXYGubun(member.getXyGubun());
         	
     		Map dccGrpTagSearchMap = new HashMap();
     		dccGrpTagSearchMap.put("xyGubun",dccSearchPerformance.getsXYGubun()==null?  "": dccSearchPerformance.getsXYGubun());
@@ -1328,11 +1564,87 @@ public class DccPerformanceContentsController {
 			            SteamData_0 = (fValue > -32768? String.format(gFormat[tagDccInfoList.get(i).getBScale()], fValue) : "***IRR");
 			            double vSCM = getSaturationMargin(Double.parseDouble(SteamData_1), Double.parseDouble(SteamData_0));
 			            lblSCM.put("idx" + i,(vSCM > -32768? String.format("%.3f", vSCM): "***IRR"));
+        		}        		
+        	}        	
+        	
+        	mav.addObject("SearchTime", dccVal.get("SearchTime"));
+        	mav.addObject("ForeColor", dccVal.get("ForeColor"));
+        	mav.addObject("lblDataList", lblDataList);
+        	mav.addObject("lblSCM", lblSCM);
+        	
+        	mav.addObject("BaseSearch", dccSearchPerformance);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
 
-        		}
-        		
+        return mav;
+    }
+	
+	@RequestMapping(value = "reloadRsv", method = { RequestMethod.POST} )
+	@ResponseBody
+	public ModelAndView reloadRsv(DccSearchPerformance dccSearchPerformance, HttpServletRequest request) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadRsv");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchPerformance.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchPerformance.getsMenuNo() == null || dccSearchPerformance.getsMenuNo().isEmpty()) {
+            	
+	        	dccSearchPerformance.setsDive("D");
+	        	dccSearchPerformance.setsMenuNo("44");
+	        	dccSearchPerformance.setsGrpID("mimic");
+	        	dccSearchPerformance.setsUGrpNo("3");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");	
         	}
         	
+        	dccSearchPerformance.setsHogi(member.getHogi());
+        	dccSearchPerformance.setsXYGubun(member.getXyGubun());
+        	
+    		Map dccGrpTagSearchMap = new HashMap();
+    		dccGrpTagSearchMap.put("xyGubun",dccSearchPerformance.getsXYGubun()==null?  "": dccSearchPerformance.getsXYGubun());
+    		dccGrpTagSearchMap.put("hogi",dccSearchPerformance.getsHogi()==null?  "": dccSearchPerformance.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchPerformance.getsDive()==null?  "": dccSearchPerformance.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchPerformance.getsGrpID()==null?  "": dccSearchPerformance.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchPerformance.getsMenuNo()==null?  "": dccSearchPerformance.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchPerformance.getsUGrpNo()==null?  "": dccSearchPerformance.getsUGrpNo());
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+
+        	Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+        	
+        	List<Map> lblDataList = (ArrayList)dccVal.get("lblDataList");
+        	
+        	String SteamData_1 = "";
+        	String SteamData_0 = "";
+        	Map lblSCM = new HashMap();
+        	double fValue;
+        	
+        	for(int i=0;i<4;i++) {        		
+        		
+        		if(lblDataList.get(32 + i * 2).get("fValue").equals("***IRR")) {
+        			SteamData_1 = "***IRR";
+        		}else {
+        			 fValue = Double.parseDouble(lblDataList.get(32 + i * 2).get("fValue").toString());
+ 				     SteamData_1 = (fValue > -32768? String.format(gFormat[tagDccInfoList.get(i).getBScale()], fValue) : "***IRR");
+        		}
+        		
+        		if(lblDataList.get(32 + i * 2 + 1).get("fValue").equals("***IRR")) {
+        			lblSCM.put(i, "***IRR");
+        		}else {
+			            fValue = Double.parseDouble(lblDataList.get(32 + i * 2 + 1).get("fValue").toString());
+			            SteamData_0 = (fValue > -32768? String.format(gFormat[tagDccInfoList.get(i).getBScale()], fValue) : "***IRR");
+			            double vSCM = getSaturationMargin(Double.parseDouble(SteamData_1), Double.parseDouble(SteamData_0));
+			            lblSCM.put("idx" + i,(vSCM > -32768? String.format("%.3f", vSCM): "***IRR"));
+        		}        		
+        	}        	
         	
         	mav.addObject("SearchTime", dccVal.get("SearchTime"));
         	mav.addObject("ForeColor", dccVal.get("ForeColor"));
@@ -1721,7 +2033,9 @@ public class DccPerformanceContentsController {
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
-        	dccSearchPerformance.setMenuName(this.menuName);        	
+        	dccSearchPerformance.setMenuName(this.menuName);   
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
         	
         	if(dccSearchPerformance.getsMenuNo() == null || dccSearchPerformance.getsMenuNo().isEmpty()) {
             	
@@ -1730,10 +2044,12 @@ public class DccPerformanceContentsController {
 	        	dccSearchPerformance.setsGrpID("admin");
 	        	dccSearchPerformance.setsUGrpNo("1");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchPerformance.setsHogi(member.getHogi());
-	        	dccSearchPerformance.setsXYGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");	        		        	
         	}
+        	
+        	dccSearchPerformance.setsHogi(member.getHogi());
+        	dccSearchPerformance.setsXYGubun(member.getXyGubun());
         	
     		Map dccGrpTagSearchMap = new HashMap();
     		dccGrpTagSearchMap.put("hogi",dccSearchPerformance.getsHogi()==null?  "": dccSearchPerformance.getsHogi());
@@ -1747,7 +2063,7 @@ public class DccPerformanceContentsController {
     		List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer  
-        	Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList);
+        	Map dccValX = basDccMimicService.getDccValue2(dccGrpTagSearchMap, tagDccInfoXList);
         	
         	List<Map> lblDataXList = (ArrayList)dccValX.get("lblDataList");
         	List<Map> shpDataXList = new ArrayList<Map>();
@@ -1808,7 +2124,7 @@ public class DccPerformanceContentsController {
     		List<ComTagDccInfo> tagDccInfoYList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer  
-        	Map dccValY = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoYList);
+        	Map dccValY = basDccMimicService.getDccValue2(dccGrpTagSearchMap, tagDccInfoYList);
         	
         	List<Map> lblDataYList = (ArrayList)dccValY.get("lblDataList");
         	List<Map> shpDataYList = new ArrayList<Map>();
@@ -1883,6 +2199,186 @@ public class DccPerformanceContentsController {
         return mav;
     }
 	
+	@RequestMapping(value="reloadDccselfcheck", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadDccselfcheck(DccSearchPerformance dccSearchPerformance, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadDccselfcheck");
+        
+        double[] vPOT = {-4.9,	4.9,	-1.25,		1.25,		2.5,	-4.9, 1.25,	4.9,	-0.5,	0.5,	-4.9,	1.25,	-1.25,		2.5};
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchPerformance.setMenuName(this.menuName);   
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchPerformance.getsMenuNo() == null || dccSearchPerformance.getsMenuNo().isEmpty()) {
+            	
+	        	dccSearchPerformance.setsDive("D");
+	        	dccSearchPerformance.setsMenuNo("91");
+	        	dccSearchPerformance.setsGrpID("admin");
+	        	dccSearchPerformance.setsUGrpNo("1");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");	        		        	
+        	}
+        	
+        	dccSearchPerformance.setsHogi(member.getHogi());
+        	dccSearchPerformance.setsXYGubun(member.getXyGubun());
+        	
+    		Map dccGrpTagSearchMap = new HashMap();
+    		dccGrpTagSearchMap.put("hogi",dccSearchPerformance.getsHogi()==null?  "": dccSearchPerformance.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchPerformance.getsDive()==null?  "": dccSearchPerformance.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchPerformance.getsGrpID()==null?  "": dccSearchPerformance.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchPerformance.getsMenuNo()==null?  "": dccSearchPerformance.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchPerformance.getsUGrpNo()==null?  "": dccSearchPerformance.getsUGrpNo());
+    		        	
+        	//VB : ScreenInit
+    		dccGrpTagSearchMap.put("xyGubun","X");
+    		List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
+        	
+        	//VB : timer  
+        	Map dccValX = basDccMimicService.getDccValue2(dccGrpTagSearchMap, tagDccInfoXList);
+        	
+        	List<Map> lblDataXList = (ArrayList)dccValX.get("lblDataList");
+        	List<Map> shpDataXList = new ArrayList<Map>();
+        	
+        	if(lblDataXList != null && lblDataXList.size() > 0){
+
+        		for(int i=26;i<=67;i++) {
+	        		
+	        		Map lblDataX = lblDataXList.get(i);
+	        		lblDataX.put("ForeColor", "#80000012");
+	        		
+	        		int iPos = (i - 26);
+	        		int iPot = 0;
+	     			if((iPos % 3) == 0) {
+	     				iPot = iPos / 3;
+	     			}
+	     			
+	     			Map shpDataX = new HashMap();
+	     			String lblDataXfValue = lblDataX.get("fValue") != null? lblDataX.get("fValue").toString():"";
+	     			if(StringUtils.isNumeric(lblDataXfValue)) {
+	     				if(Math.abs(vPOT[iPot]) - Double.parseDouble(lblDataXfValue) >= 0.004 && Math.abs(vPOT[iPot]) - Double.parseDouble(lblDataXfValue) <= 0.005) {
+	     					shpDataX.put("BackColor", "#80FFFF");
+	     				}else if(Math.abs(vPOT[iPot]) - Double.parseDouble(lblDataXfValue) > 0.005) {
+	     					shpDataX.put("BackColor", "#8080FF");
+	     				}else {
+	     					shpDataX.put("BackColor", "#FFFFFF");
+	     				}
+	     			}else {
+	     				shpDataX.put("BackColor", "#FFFFFF");
+	     			}
+	     			
+	     			shpDataXList.add(shpDataX);     			
+	        	} // end for
+        		
+        	}else {
+        		
+        		if(lblDataXList == null) {
+        			lblDataXList = new ArrayList<Map>();
+        		}
+        		
+        		for(int i=0;i<=74;i++) {
+        			Map lblDataX = new HashMap();
+        			lblDataX.put("fValue", "0");
+        			
+        			lblDataXList.add(lblDataX);
+        		}
+        		
+        		for(int i=0;i<=41;i++) {
+        			Map shpDataX = new HashMap();
+        			shpDataX.put("BackColor", "#FFFFFF");
+        			
+        			shpDataXList.add(shpDataX);   
+        		}
+        	}
+        	
+        	//VB : ScreenInit
+        	dccGrpTagSearchMap.put("xyGubun","Y");
+    		List<ComTagDccInfo> tagDccInfoYList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
+        	
+        	//VB : timer  
+        	Map dccValY = basDccMimicService.getDccValue2(dccGrpTagSearchMap, tagDccInfoYList);
+        	
+        	List<Map> lblDataYList = (ArrayList)dccValY.get("lblDataList");
+        	List<Map> shpDataYList = new ArrayList<Map>();
+        	
+        	if(lblDataYList != null && lblDataYList.size() > 0){
+        	
+	        	for(int i=26;i<67;i++) {
+	        		
+	     			Map lblDataY = lblDataYList.get(i);
+	        		lblDataY.put("ForeColor", "#80000012");
+	        		
+	        		int iPos = (i - 26);
+	        		int iPot = 0;
+	     			if((iPos % 3) == 0) {
+	     				iPot = iPos / 3;
+	     			}
+	     			
+	     			Map shpDataY = new HashMap();
+	     			String lblDataYfValue = lblDataY.get("fValue") != null? lblDataY.get("fValue").toString():"";
+	     			if(StringUtils.isNumeric(lblDataYfValue)) {
+	     				if(Math.abs(vPOT[iPot]) - Double.parseDouble(lblDataYfValue) >= 0.004 && Math.abs(vPOT[iPot]) - Double.parseDouble(lblDataYfValue) <= 0.005) {
+	     					shpDataY.put("BackColor", "#80FFFF");
+	     				}else if(Math.abs(vPOT[iPot]) - Double.parseDouble(lblDataYfValue) > 0.005) {
+	     					shpDataY.put("BackColor", "#8080FF");
+	     				}else {
+	     					shpDataY.put("BackColor", "#FFFFFF");
+	     				}
+	     			}else {
+	     				shpDataY.put("BackColor", "#FFFFFF");
+	     			}
+	     			
+	     			shpDataYList.add(shpDataY);     			
+	        	} // end for
+	        	
+        	}else {
+        		
+        		if(lblDataYList == null) {
+        			lblDataYList = new ArrayList<Map>();
+        		}
+        		
+        		for(int i=0;i<=74;i++) {
+        			Map lblDataY = new HashMap();
+        			lblDataY.put("fValue", "0");
+        			
+        			lblDataYList.add(lblDataY);
+        		}
+        		
+        		for(int i=0;i<=41;i++) {
+        			Map shpDataY = new HashMap();
+        			shpDataY.put("BackColor", "#FFFFFF");
+        			
+        			shpDataYList.add(shpDataY);   
+        		}
+        		
+        	}
+
+        	mav.addObject("resultType", "dccselfcheck");
+        	
+        	mav.addObject("XSearchTime", dccValX.get("SearchTime"));
+        	mav.addObject("XForeColor", dccValX.get("ForeColor"));
+        	mav.addObject("lblDataXList", lblDataXList);
+        	mav.addObject("shpDataXList", shpDataXList);
+        	
+        	mav.addObject("YSearchTime", dccValY.get("SearchTime"));
+        	mav.addObject("YForeColor", dccValY.get("ForeColor"));
+        	mav.addObject("lblDataYList", lblDataYList);
+        	mav.addObject("shpDataYList", shpDataYList);
+        	
+        	mav.addObject("BaseSearch", dccSearchPerformance);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }
+	
 	@RequestMapping("mainsysiostatus")
 	public ModelAndView mainsysiostatus(DccSearchPerformance dccSearchPerformance, HttpServletRequest request) {
         
@@ -1894,6 +2390,8 @@ public class DccPerformanceContentsController {
         	
         	dccSearchPerformance.setMenuName(this.menuName);
         	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
         	if(dccSearchPerformance.getsMenuNo() == null || dccSearchPerformance.getsMenuNo().isEmpty()) {
             	
 	        	dccSearchPerformance.setsDive("D");
@@ -1901,10 +2399,12 @@ public class DccPerformanceContentsController {
 	        	dccSearchPerformance.setsGrpID("admin");
 	        	dccSearchPerformance.setsUGrpNo("2");
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchPerformance.setsHogi(member.getHogi());
-	        	dccSearchPerformance.setsXYGubun(member.getXyGubun());	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");		        		        	
         	}
+        	
+        	dccSearchPerformance.setsHogi(member.getHogi());
+        	dccSearchPerformance.setsXYGubun(member.getXyGubun());        	
         	
     		Map dccGrpTagSearchMap = new HashMap();
     		dccGrpTagSearchMap.put("hogi",dccSearchPerformance.getsHogi()==null?  "": dccSearchPerformance.getsHogi());
@@ -1918,14 +2418,81 @@ public class DccPerformanceContentsController {
         	List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer--X
-        	Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList);
+        	Map dccValX = basDccMimicService.getDccValue2(dccGrpTagSearchMap, tagDccInfoXList);
         	
         	//VB : ScreenInit--Y
         	dccGrpTagSearchMap.put("xyGubun","Y");
         	List<ComTagDccInfo> tagDccInfoYList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer--Y
-        	Map dccValY = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoYList);
+        	Map dccValY = basDccMimicService.getDccValue2(dccGrpTagSearchMap, tagDccInfoYList);
+        	
+        	mav.addObject("XSearchTime", dccValX.get("SearchTime"));
+        	mav.addObject("XForeColor", dccValX.get("ForeColor"));
+        	mav.addObject("lblDataXList", dccValX.get("lblDataList"));
+        	
+        	mav.addObject("YSearchTime", dccValY.get("SearchTime"));
+        	mav.addObject("YForeColor", dccValY.get("ForeColor"));
+        	mav.addObject("lblDataYList", dccValY.get("lblDataList"));
+        	
+        	mav.addObject("BaseSearch", dccSearchPerformance);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadMainsysiostatus", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadMainsysiostatus(DccSearchPerformance dccSearchPerformance, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadMainsysiostatus");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchPerformance.setMenuName(this.menuName);
+        	
+        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	if(dccSearchPerformance.getsMenuNo() == null || dccSearchPerformance.getsMenuNo().isEmpty()) {
+            	
+	        	dccSearchPerformance.setsDive("D");
+	        	dccSearchPerformance.setsMenuNo("91");
+	        	dccSearchPerformance.setsGrpID("admin");
+	        	dccSearchPerformance.setsUGrpNo("2");
+	        	
+	        	member.setHogi("3");
+	        	member.setXyGubun("X");		        		        	
+        	}
+        	
+        	dccSearchPerformance.setsHogi(member.getHogi());
+        	dccSearchPerformance.setsXYGubun(member.getXyGubun());        	
+        	
+    		Map dccGrpTagSearchMap = new HashMap();
+    		dccGrpTagSearchMap.put("hogi",dccSearchPerformance.getsHogi()==null?  "": dccSearchPerformance.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchPerformance.getsDive()==null?  "": dccSearchPerformance.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchPerformance.getsGrpID()==null?  "": dccSearchPerformance.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchPerformance.getsMenuNo()==null?  "": dccSearchPerformance.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchPerformance.getsUGrpNo()==null?  "": dccSearchPerformance.getsUGrpNo());
+    		        	
+        	//VB : ScreenInit--X
+    		dccGrpTagSearchMap.put("xyGubun","X");
+        	List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
+        	
+        	//VB : timer--X
+        	Map dccValX = basDccMimicService.getDccValue2(dccGrpTagSearchMap, tagDccInfoXList);
+        	
+        	//VB : ScreenInit--Y
+        	dccGrpTagSearchMap.put("xyGubun","Y");
+        	List<ComTagDccInfo> tagDccInfoYList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
+        	
+        	//VB : timer--Y
+        	Map dccValY = basDccMimicService.getDccValue2(dccGrpTagSearchMap, tagDccInfoYList);
+        	
+        	mav.addObject("resultType", "mainsysiostatus");
         	
         	mav.addObject("XSearchTime", dccValX.get("SearchTime"));
         	mav.addObject("XForeColor", dccValX.get("ForeColor"));
@@ -1944,9 +2511,9 @@ public class DccPerformanceContentsController {
     }
 	
 	@RequestMapping("dccstatus")
-	public ModelAndView dccstatus(DccSearchPerformance dccSearchPerformance, HttpServletRequest request) {
+	public ModelAndView dccstatus(DccSearchTrend dccSearchTrend, HttpServletRequest request) {
        
-		ModelAndView mav = new ModelAndView();
+		/*ModelAndView mav = new ModelAndView();
 
         logger.info("############ dccstatus");
         
@@ -1958,8 +2525,343 @@ public class DccPerformanceContentsController {
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
         }
         
-        return mav;
+        return mav;*/
+		ModelAndView mav = new ModelAndView();
+
+		logger.info("############ realtimetrendfixed");
+		
+		if( dccSearchTrend.getHogiHeader() != null && !"".equals(dccSearchTrend.getHogiHeader()) ) {
+    		if( dccSearchTrend.getHogi() == null || "".equals(dccSearchTrend.getHogi()) ) dccSearchTrend.setsHogi(dccSearchTrend.getHogiHeader());
+    	} else {
+    		if( dccSearchTrend.getHogi() == null || "".equals(dccSearchTrend.getHogi()) ) {
+    			if( commonConstant.getUrl().indexOf("10.135.101.222") > -1 ) {
+    				dccSearchTrend.setsHogi("4");
+    			} else {
+    				dccSearchTrend.setsHogi("3");
+    			}
+    		} else {
+    			dccSearchTrend.setsHogi(dccSearchTrend.getHogi());
+    		}
+    	}
+    	if( dccSearchTrend.getXyHeader() != null && !"".equals(dccSearchTrend.getXyHeader()) ) {
+    		//if( dccSearchTrend.getXyGubun() == null || "".equals(dccSearchTrend.getXyGubun()) ) {
+    			dccSearchTrend.setsXYGubun(dccSearchTrend.getXyHeader());
+    		//}
+    	} else {
+    		if( dccSearchTrend.getXyGubun() == null || "".equals(dccSearchTrend.getXyGubun()) ) {
+    			dccSearchTrend.setsXYGubun("X");
+    		} else {
+    			dccSearchTrend.setsXYGubun(dccSearchTrend.getXyGubun());
+    		}
+    	}
+		if( dccSearchTrend.getFixed() == null ) dccSearchTrend.setFixed("A");
+		if( dccSearchTrend.getgHis() == null ) dccSearchTrend.setgHis("R");
+		if( dccSearchTrend.getsDive() == null ) dccSearchTrend.setsDive("D");
+		if( dccSearchTrend.getgUseGap() == null ) dccSearchTrend.setgUseGap("0");
+		if( dccSearchTrend.getsMenuNo() == null ) dccSearchTrend.setsMenuNo("51");
+		if( dccSearchTrend.getsUGrpNo() == null ) dccSearchTrend.setsUGrpNo("");
+		if( dccSearchTrend.getTxtTimeGap() == null ) dccSearchTrend.setTxtTimeGap("5");
+		
+		MemberInfo userInfo = (MemberInfo)request.getSession().getAttribute("USER_INFO");
+		DccSearchAdmin dccSearchAdmin = new DccSearchAdmin();
+		dccSearchAdmin.setUserId(userInfo.getId());
+		MemberInfo mberInfo = dccAdminService.selectMemberInfo(dccSearchAdmin);
+		
+		if(request.getSession().getAttribute("USER_INFO") != null) {
+			getTrendData(dccSearchTrend,mav,mberInfo);
+			//getGrpTagList(dccSearchTrend,mav);
+			
+			//changeGrpName(dccSearchTrend,mav);
+	    	
+			dccSearchTrend.setMenuName(this.menuName);
+			
+			userInfo.setHogi(dccSearchTrend.getsHogi());
+			userInfo.setXyGubun(dccSearchTrend.getsXYGubun());
+			
+			mav.addObject("BaseSearch", dccSearchTrend);
+			mav.addObject("UserInfo",userInfo);
+			//mav.addObject("UserInfo",mberInfo);
+			
+		}
+
+		return mav;
         
+	}
+	
+	private void getTrendData(DccSearchTrend dccSearchTrend, ModelAndView mav, MemberInfo userInfo) {
+		String strHogi = dccSearchTrend.getsHogi() == null ? "3" : dccSearchTrend.getsHogi();
+		String strXY = dccSearchTrend.getsXYGubun() == null ? "X" : dccSearchTrend.getsXYGubun();
+    	String strGrpID = dccSearchTrend.getsGrpID() == null ? userInfo.getId() : dccSearchTrend.getsGrpID();
+    	String strMenuNo = dccSearchTrend.getsMenuNo() == null ? "51" : dccSearchTrend.getsMenuNo();
+    	String strUGrpNo = dccSearchTrend.getsUGrpNo() == null ? "" : dccSearchTrend.getsUGrpNo();
+    	String sFixed = dccSearchTrend.getFixed() == null ? "A" : dccSearchTrend.getFixed();
+    	String sGrade = userInfo.getGrade() == null ? "9" : userInfo.getGrade();
+    	String strHis = dccSearchTrend.getgHis() == null ? "R" : dccSearchTrend.getgHis();
+    	String strDive = dccSearchTrend.getsDive() == null ? "D" : dccSearchTrend.getsDive();
+    	String strFast = dccSearchTrend.getgStrFast() == null ? "5" : dccSearchTrend.getgStrFast();
+    	int nType = 0;
+    	
+    	LocalDateTime endDate = LocalDateTime.now();
+    	LocalDateTime startDate = endDate.minusMinutes(10);
+    	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    	
+    	String mskStart = dccSearchTrend.getStartDate();
+    	String mskEnd = dccSearchTrend.getEndDate();
+		
+    	switch( sFixed.toUpperCase() ) {
+	    	case "F": case "H":
+	    		strGrpID = "Trend";
+	    		strMenuNo = "21";
+	    		break;
+	    	case "S":
+	    		strGrpID = userInfo.getId();
+	    		strMenuNo = "22";
+	    		break;
+	    	case "A":
+	    		strGrpID = "Trend";
+	    		strMenuNo = "51";
+	    		break;
+	    	case "B":
+	    		strGrpID = userInfo.getId();
+	    		strMenuNo = "91";
+	    		break;
+    	}
+    	
+    	if( "R".equalsIgnoreCase(strHis) ) {
+    		nType = 0;
+    	} else {
+    		nType = 1;
+    		mskStart = mskStart == null ? dtf.format(startDate) : mskStart;
+    		mskEnd = mskEnd == null ? dtf.format(endDate) : mskEnd;
+    	}
+    	
+    	Long lGap = Long.parseLong(dccSearchTrend.getTxtTimeGap())*1000;
+    	
+    	Map trendSearchMap = new HashMap();
+    	trendSearchMap.put("sDive",strDive);
+    	trendSearchMap.put("sGrpID",strGrpID);
+    	trendSearchMap.put("sMenuNo",strMenuNo);
+    	
+    	List<Map> dccGroupNmaeList = dccTrendService.selectGroupName(trendSearchMap);
+    	List<Map> dccGroupList = new ArrayList<Map>();
+    	
+    	for( Map dccGroupInfo : dccGroupNmaeList ) {
+    		Map tmpMap = new HashMap();
+    		
+    		String tmpGrpNo = dccGroupInfo.get("UGrpNo") != null ? dccGroupInfo.get("UGrpNo").toString() : "";
+    		while( tmpGrpNo.length() < 3 ) {
+    			tmpGrpNo = "0"+tmpGrpNo;
+    		}
+    		
+    		tmpMap.put("groupName",strHogi+"-"+tmpGrpNo+" "+dccGroupInfo.get("UGrpName").toString());
+    		tmpMap.put("groupNo",dccGroupInfo.get("UGrpNo").toString());
+    		
+    		dccGroupList.add(tmpMap);
+    	}
+    	
+    	mav.addObject("DccGroupList",dccGroupList);
+	}
+	
+	private List<Map> getTrendDataE(DccSearchTrend dccSearchTrend, MemberInfo userInfo) {
+		String strHogi = dccSearchTrend.getsHogi() == null ? "3" : dccSearchTrend.getsHogi();
+		String strXY = dccSearchTrend.getsXYGubun() == null ? "X" : dccSearchTrend.getsXYGubun();
+    	String strGrpID = dccSearchTrend.getsGrpID() == null ? userInfo.getId() : dccSearchTrend.getsGrpID();
+    	String strMenuNo = dccSearchTrend.getsMenuNo() == null ? "51" : dccSearchTrend.getsMenuNo();
+    	String strUGrpNo = dccSearchTrend.getsUGrpNo() == null ? "" : dccSearchTrend.getsUGrpNo();
+    	String sFixed = dccSearchTrend.getFixed() == null ? "A" : dccSearchTrend.getFixed();
+    	String sGrade = userInfo.getGrade() == null ? "9" : userInfo.getGrade();
+    	String strHis = dccSearchTrend.getgHis() == null ? "R" : dccSearchTrend.getgHis();
+    	String strDive = dccSearchTrend.getsDive() == null ? "D" : dccSearchTrend.getsDive();
+    	int nType = 0;
+    	
+    	LocalDateTime endDate = LocalDateTime.now();
+    	LocalDateTime startDate = endDate.minusMinutes(10);
+    	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    	
+    	String mskStart = dccSearchTrend.getStartDate();
+    	String mskEnd = dccSearchTrend.getEndDate();
+		
+    	switch( sFixed.toUpperCase() ) {
+	    	case "F":
+	    		strGrpID = "Trend";
+	    		strMenuNo = "21";
+	    		break;
+	    	case "S":
+	    		strGrpID = userInfo.getId();
+	    		strMenuNo = "22";
+	    		break;
+	    	case "A":
+	    		strGrpID = "Trend";
+	    		strMenuNo = "51";
+	    		break;
+	    	case "B":
+	    		strGrpID = userInfo.getId();
+	    		strMenuNo = "91";
+	    		break;
+    	}
+    	
+    	if( "R".equalsIgnoreCase(strHis) ) {
+    		nType = 0;
+    	} else {
+    		nType = 1;
+    		mskStart = mskStart == null ? dtf.format(startDate) : mskStart;
+    		mskEnd = mskEnd == null ? dtf.format(endDate) : mskEnd;
+    	}
+    	
+    	Long lGap = Long.parseLong(dccSearchTrend.getTxtTimeGap())*1000;
+    	
+    	Map trendSearchMap = new HashMap();
+    	trendSearchMap.put("sDive",strDive);
+    	trendSearchMap.put("sGrpID",strGrpID);
+    	trendSearchMap.put("sMenuNo",strMenuNo);
+    	
+    	List<Map> dccGroupNmaeList = dccTrendService.selectGroupName(trendSearchMap);
+    	List<Map> dccGroupList = new ArrayList<Map>();
+    	
+    	for( Map dccGroupInfo : dccGroupNmaeList ) {
+    		Map tmpMap = new HashMap();
+    		
+    		String tmpGrpNo = dccGroupInfo.get("UGrpNo") != null ? dccGroupInfo.get("UGrpNo").toString() : "";
+    		while( tmpGrpNo.length() < 3 ) {
+    			tmpGrpNo = "0"+tmpGrpNo;
+    		}
+    		
+    		tmpMap.put("groupName",strHogi+"-"+tmpGrpNo+" "+dccGroupInfo.get("UGrpName").toString());
+    		tmpMap.put("groupNo",dccGroupInfo.get("UGrpNo").toString());
+    		
+    		dccGroupList.add(tmpMap);
+    	}
+    	
+    	return dccGroupList;
+	}
+	
+	@RequestMapping(value = "reloadGrp", method = { RequestMethod.POST } )
+	@ResponseBody
+	private ModelAndView reloadGrp(DccSearchTrend dccSearchTrend, HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("jsonView");
+
+		logger.info("############ reloadGrp");
+		
+		if( dccSearchTrend.getHogiHeader() != null && !"".equals(dccSearchTrend.getHogiHeader()) ) {
+    		if( dccSearchTrend.getHogi() == null || "".equals(dccSearchTrend.getHogi()) ) dccSearchTrend.setsHogi(dccSearchTrend.getHogiHeader());
+    	} else {
+    		if( dccSearchTrend.getHogi() == null || "".equals(dccSearchTrend.getHogi()) ) {
+    			if( commonConstant.getUrl().indexOf("10.135.101.222") > -1 ) {
+    				dccSearchTrend.setsHogi("4");
+    			} else {
+    				dccSearchTrend.setsHogi("3");
+    			}
+    		} else {
+    			dccSearchTrend.setsHogi(dccSearchTrend.getHogi());
+    		}
+    	}
+    	if( dccSearchTrend.getXyHeader() != null && !"".equals(dccSearchTrend.getXyHeader()) ) {
+    		//if( dccSearchTrend.getXyGubun() == null || "".equals(dccSearchTrend.getXyGubun()) ) {
+    			dccSearchTrend.setsXYGubun(dccSearchTrend.getXyHeader());
+    		//}
+    	} else {
+    		if( dccSearchTrend.getXyGubun() == null || "".equals(dccSearchTrend.getXyGubun()) ) {
+    			dccSearchTrend.setsXYGubun("X");
+    		} else {
+    			dccSearchTrend.setsXYGubun(dccSearchTrend.getXyGubun());
+    		}
+    	}
+		if( dccSearchTrend.getFixed() == null ) dccSearchTrend.setFixed("A");
+		if( dccSearchTrend.getgHis() == null ) dccSearchTrend.setgHis("R");
+		if( dccSearchTrend.getsDive() == null ) dccSearchTrend.setsDive("D");
+		if( dccSearchTrend.getgUseGap() == null ) dccSearchTrend.setgUseGap("0");
+		if( dccSearchTrend.getsMenuNo() == null ) dccSearchTrend.setsMenuNo("51");
+		if( dccSearchTrend.getsUGrpNo() == null ) dccSearchTrend.setsUGrpNo("");
+		if( dccSearchTrend.getTxtTimeGap() == null ) dccSearchTrend.setTxtTimeGap("5");
+		
+		MemberInfo userInfo = (MemberInfo)request.getSession().getAttribute("USER_INFO");
+		DccSearchAdmin dccSearchAdmin = new DccSearchAdmin();
+		dccSearchAdmin.setUserId(userInfo.getId());
+		MemberInfo mberInfo = dccAdminService.selectMemberInfo(dccSearchAdmin);
+		
+		String strHogi = dccSearchTrend.getHogiHeader() == null ? "3" : dccSearchTrend.getHogiHeader();
+		String strXY = dccSearchTrend.getXyHeader() == null ? "X" : dccSearchTrend.getXyHeader();
+    	String strGrpID = dccSearchTrend.getsGrpID() == null ? userInfo.getId() : dccSearchTrend.getsGrpID();
+    	String strMenuNo = dccSearchTrend.getsMenuNo() == null ? "51" : dccSearchTrend.getsMenuNo();
+    	String strUGrpNo = dccSearchTrend.getsUGrpNo() == null ? "" : dccSearchTrend.getsUGrpNo();
+    	String sFixed = dccSearchTrend.getFixed() == null ? "A" : dccSearchTrend.getFixed();
+    	String sGrade = userInfo.getGrade() == null ? "9" : userInfo.getGrade();
+    	String strHis = dccSearchTrend.getgHis() == null ? "R" : dccSearchTrend.getgHis();
+    	String strDive = dccSearchTrend.getsDive() == null ? "D" : dccSearchTrend.getsDive();
+    	String strFast = dccSearchTrend.getgStrFast() == null ? "5" : dccSearchTrend.getgStrFast();
+    	int nType = 0;
+    	
+    	LocalDateTime endDate = LocalDateTime.now();
+    	LocalDateTime startDate = endDate.minusMinutes(10);
+    	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    	
+    	String mskStart = dccSearchTrend.getStartDate();
+    	String mskEnd = dccSearchTrend.getEndDate();
+		
+    	switch( sFixed.toUpperCase() ) {
+	    	case "F": case "H":
+	    		strGrpID = "Trend";
+	    		strMenuNo = "21";
+	    		break;
+	    	case "S":
+	    		strGrpID = userInfo.getId();
+	    		strMenuNo = "22";
+	    		break;
+	    	case "A":
+	    		strGrpID = "Trend";
+	    		strMenuNo = "51";
+	    		break;
+	    	case "B":
+	    		strGrpID = userInfo.getId();
+	    		strMenuNo = "91";
+	    		break;
+    	}
+    	
+    	if( "R".equalsIgnoreCase(strHis) ) {
+    		nType = 0;
+    	} else {
+    		nType = 1;
+    		mskStart = mskStart == null ? dtf.format(startDate) : mskStart;
+    		mskEnd = mskEnd == null ? dtf.format(endDate) : mskEnd;
+    	}
+    	
+    	Long lGap = Long.parseLong(dccSearchTrend.getTxtTimeGap())*1000;
+    	
+    	Map trendSearchMap = new HashMap();
+    	trendSearchMap.put("sDive",strDive);
+    	trendSearchMap.put("sGrpID",strGrpID);
+    	trendSearchMap.put("sMenuNo",strMenuNo);
+    	
+    	List<Map> dccGroupNmaeList = dccTrendService.selectGroupName(trendSearchMap);
+    	List<Map> dccGroupList = new ArrayList<Map>();
+    	
+    	for( Map dccGroupInfo : dccGroupNmaeList ) {
+    		Map tmpMap = new HashMap();
+    		
+    		String tmpGrpNo = dccGroupInfo.get("UGrpNo") != null ? dccGroupInfo.get("UGrpNo").toString() : "";
+    		while( tmpGrpNo.length() < 3 ) {
+    			tmpGrpNo = "0"+tmpGrpNo;
+    		}
+    		
+    		tmpMap.put("groupName",strHogi+"-"+tmpGrpNo+" "+dccGroupInfo.get("UGrpName").toString());
+    		tmpMap.put("groupNo",dccGroupInfo.get("UGrpNo").toString());
+    		
+    		dccGroupList.add(tmpMap);
+    	}
+    	
+    	mav.addObject("DccGroupList",dccGroupList);
+    	
+    	return mav;
+	}
+	
+	private boolean getIsNumeric(String num) {
+		try {
+			Double.parseDouble(num);
+			
+			return true;
+		} catch( NumberFormatException nfe ) {
+			return false;
+		}
 	}
 	
 	@RequestMapping("programonoff")
@@ -1999,7 +2901,7 @@ public class DccPerformanceContentsController {
         	List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer--X
-        	Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList);
+        	Map dccValX = basDccMimicService.getDccValue2(dccGrpTagSearchMap, tagDccInfoXList);
         	
         	List<Map> lblDataXList = (ArrayList)dccValX.get("lblDataList");
         	List<Map> shpDataXList = new ArrayList<Map>();
@@ -2019,7 +2921,7 @@ public class DccPerformanceContentsController {
 	            			
 	            			String lblDataValue = lblData.get("fValue") != null? lblData.get("fValue").toString():"";
 	            			
-	            			if(StringUtils.isNumeric(lblDataValue)) {
+	            			if(getIsNumeric(lblDataValue)) {
 	            				lblDataX[j] = (int) Math.round (Double.parseDouble(lblDataValue));
 	            			}else {
 	            				lblDataX[j] = 0;
@@ -2027,9 +2929,11 @@ public class DccPerformanceContentsController {
 	            		}
 	            		
 	            		// bit 연산관련
-	            		if((lblDataX[0] & lblDataX[1] & lblDataX[2] & lblDataX[3] & lblDataX[4]) == 1) {
+	            		//if((lblDataX[0] & lblDataX[1] & lblDataX[2] & lblDataX[3] & lblDataX[4]) == 1) {
+	            		if( (lblDataX[0] & (lblDataX[1] & lblDataX[2]) & (lblDataX[3] & lblDataX[4])) == 1) {
 	            			shpDataX.put("BackColor", "#80FF80");
-	            		}else if(lblDataX[0] == 0 && (lblDataX[1] & lblDataX[2] & lblDataX[3] & lblDataX[4]) == 0) {
+	            	//	}else if(lblDataX[0] == 0 && (lblDataX[1] & lblDataX[2] & lblDataX[3] & lblDataX[4]) == 0) {
+	            		}else if(lblDataX[0] == 0 && ((lblDataX[1] & lblDataX[2]) & (lblDataX[3] & lblDataX[4])) == 0) {
 	            			shpDataX.put("BackColor", "#FFFFFF");
 	            		}else {
 	            			shpDataX.put("BackColor", "#8080FF");
@@ -2039,7 +2943,7 @@ public class DccPerformanceContentsController {
 	            	   
 	            		Map lblData= lblDataXList.get(vHS[i]);
 	            		String lblDataValue = lblData.get("fValue") != null? lblData.get("fValue").toString():"";
-	            		if(StringUtils.isNumeric(lblDataValue)) {
+	            		if(getIsNumeric(lblDataValue)) {
 	        				int lblDataX = (int) Math.round (Double.parseDouble(lblDataValue));
 	        				if(lblDataX == 1) {
 	        					shpDataX.put("BackColor", "#80FF80");
@@ -2060,7 +2964,7 @@ public class DccPerformanceContentsController {
         	List<ComTagDccInfo> tagDccInfoYList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer --Y
-        	Map dccValY = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoYList);
+        	Map dccValY = basDccMimicService.getDccValue2(dccGrpTagSearchMap, tagDccInfoYList);
         	
         	List<Map> lblDataYList = (ArrayList)dccValY.get("lblDataList");
         	List<Map> shpDataYList = new ArrayList<Map>();
@@ -2080,7 +2984,7 @@ public class DccPerformanceContentsController {
 	            			
 	            			String lblDataValue = lblData.get("fValue") != null? lblData.get("fValue").toString():"";
 	            			
-	            			if(StringUtils.isNumeric(lblDataValue)) {
+	            			if(getIsNumeric(lblDataValue)) {
 	            				lblDataY[j] = (int) Math.round (Double.parseDouble(lblDataValue));
 	            			}else {
 	            				lblDataY[j] = 0;
@@ -2088,9 +2992,11 @@ public class DccPerformanceContentsController {
 	            		}
 	            		
 	            		// bit 연산관련
-	            		if((lblDataY[0] & lblDataY[1] & lblDataY[2] & lblDataY[3] & lblDataY[4]) == 1) {
+	            		//if((lblDataY[0] & lblDataY[1] & lblDataY[2] & lblDataY[3] & lblDataY[4]) == 1) {
+	            		if( (lblDataY[0] & (lblDataY[1] & lblDataY[2]) & (lblDataY[3] & lblDataY[4])) == 1) {
 	            			shpDataY.put("BackColor", "#80FF80");
-	            		}else if(lblDataY[0] == 0 && (lblDataY[1] & lblDataY[2] & lblDataY[3] & lblDataY[4]) == 0) {
+	            		//}else if(lblDataY[0] == 0 && (lblDataY[1] & lblDataY[2] & lblDataY[3] & lblDataY[4]) == 0) {
+	            		}else if(lblDataY[0] == 0 && ((lblDataY[1] & lblDataY[2]) & (lblDataY[3] & lblDataY[4])) == 0) {
 	            			shpDataY.put("BackColor", "#FFFFFF");
 	            		}else {
 	            			shpDataY.put("BackColor", "#8080FF");
@@ -2100,7 +3006,7 @@ public class DccPerformanceContentsController {
 	            	   
 	            		Map lblData= lblDataYList.get(vHS[i]);
 	            		String lblDataValue = lblData.get("fValue") != null? lblData.get("fValue").toString():"";
-	            		if(StringUtils.isNumeric(lblDataValue)) {
+	            		if(getIsNumeric(lblDataValue)) {
 	        				int lblDataY = (int) Math.round (Double.parseDouble(lblDataValue));
 	        				if(lblDataY == 1) {
 	        					shpDataY.put("BackColor", "#80FF80");
@@ -2114,6 +3020,185 @@ public class DccPerformanceContentsController {
 	     			shpDataYList.add(shpDataY);     			
 	        	} // end for
         	}
+        	
+        	mav.addObject("XSearchTime", dccValX.get("SearchTime"));
+        	mav.addObject("XForeColor", dccValX.get("ForeColor"));
+        	mav.addObject("lblDataXList", lblDataXList);
+        	mav.addObject("shpDataXList", shpDataXList);
+        	
+        	mav.addObject("YSearchTime", dccValY.get("SearchTime"));
+        	mav.addObject("YForeColor", dccValY.get("ForeColor"));        	
+        	mav.addObject("lblDataYList", lblDataYList);
+        	mav.addObject("shpDataYList", shpDataYList);        	
+        	
+        	mav.addObject("BaseSearch", dccSearchPerformance);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+        
+
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadProgramonoff", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadProgramonoff(DccSearchPerformance dccSearchPerformance, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+		
+		int[]  vHS = { 0	 , 5 , 6 , 11 , 16 , 21 , 26 , 27 , 28 , 29 , 30 , 31 , 32 , 33 , 34 , 39 , 40 , 41 , 42};
+
+        logger.info("############ reloadProgramonoff");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchPerformance.setMenuName(this.menuName);
+        	
+        	if(dccSearchPerformance.getsMenuNo() == null || dccSearchPerformance.getsMenuNo().isEmpty()) {
+            	
+	        	dccSearchPerformance.setsDive("D");
+	        	dccSearchPerformance.setsMenuNo("91");
+	        	dccSearchPerformance.setsGrpID("admin");
+	        	dccSearchPerformance.setsUGrpNo("4");
+	        	
+	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+	        	dccSearchPerformance.setsHogi(member.getHogi());
+	        	dccSearchPerformance.setsXYGubun(member.getXyGubun());	        	
+        	}
+        	
+    		Map dccGrpTagSearchMap = new HashMap();
+    		dccGrpTagSearchMap.put("hogi",dccSearchPerformance.getsHogi()==null?  "": dccSearchPerformance.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchPerformance.getsDive()==null?  "": dccSearchPerformance.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchPerformance.getsGrpID()==null?  "": dccSearchPerformance.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchPerformance.getsMenuNo()==null?  "": dccSearchPerformance.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchPerformance.getsUGrpNo()==null?  "": dccSearchPerformance.getsUGrpNo());
+    		        	
+        	//VB : ScreenInit--X
+    		dccGrpTagSearchMap.put("xyGubun","X");
+        	List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
+        	
+        	//VB : timer--X
+        	Map dccValX = basDccMimicService.getDccValue2(dccGrpTagSearchMap, tagDccInfoXList);
+        	
+        	List<Map> lblDataXList = (ArrayList)dccValX.get("lblDataList");
+        	List<Map> shpDataXList = new ArrayList<Map>();
+        	
+        	if(lblDataXList != null && lblDataXList.size() > 0){
+        	
+	        	for(int i=0;i<vHS.length;i++) {
+	        		
+	        		Map shpDataX = new HashMap();
+	        	
+	        		if(vHS[i] == 0 || vHS[i] == 6 || vHS[i] == 11 || vHS[i] == 16 || vHS[i] == 21 || vHS[i] == 34 || vHS[i] == 42) {
+	        			
+	        			// lblDataX type casting part
+	            		int[] lblDataX = new int[5];
+	            		for(int j=0;j<lblDataX.length;j++) {
+	            			Map lblData= lblDataXList.get(vHS[i] + j);
+	            			
+	            			String lblDataValue = lblData.get("fValue") != null? lblData.get("fValue").toString():"";
+	            			
+	            			if(getIsNumeric(lblDataValue)) {
+	            				lblDataX[j] = (int) Math.round (Double.parseDouble(lblDataValue));
+	            			}else {
+	            				lblDataX[j] = 0;
+	            			}            			
+	            		}
+	            		
+	            		// bit 연산관련
+	            		//if((lblDataX[0] & lblDataX[1] & lblDataX[2] & lblDataX[3] & lblDataX[4]) == 1) {
+	            		if( (lblDataX[0] & (lblDataX[1] & lblDataX[2]) & (lblDataX[3] & lblDataX[4])) == 1) {
+	            			shpDataX.put("BackColor", "#80FF80");
+	            		//}else if(lblDataX[0] == 0 && (lblDataX[1] & lblDataX[2] & lblDataX[3] & lblDataX[4]) == 0) {
+	            		}else if(lblDataX[0] == 0 && ((lblDataX[1] & lblDataX[2]) & (lblDataX[3] & lblDataX[4])) == 0) {
+	            			shpDataX.put("BackColor", "#FFFFFF");
+	            		}else {
+	            			shpDataX.put("BackColor", "#8080FF");
+	            		}
+	
+	               }else {
+	            	   
+	            		Map lblData= lblDataXList.get(vHS[i]);
+	            		String lblDataValue = lblData.get("fValue") != null? lblData.get("fValue").toString():"";
+	            		if(getIsNumeric(lblDataValue)) {
+	        				int lblDataX = (int) Math.round (Double.parseDouble(lblDataValue));
+	        				if(lblDataX == 1) {
+	        					shpDataX.put("BackColor", "#80FF80");
+	        				}else {
+	        					shpDataX.put("BackColor", "#8080FF");
+	        				}
+	        			}else {
+	        				shpDataX.put("BackColor", "#8080FF");
+	        			}            			
+	               }
+	     			shpDataXList.add(shpDataX);     			
+	        	} // end for
+        	}
+        	
+        	
+        	//VB : ScreenInit--Y
+        	dccGrpTagSearchMap.put("xyGubun","Y");
+        	List<ComTagDccInfo> tagDccInfoYList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
+        	
+        	//VB : timer --Y
+        	Map dccValY = basDccMimicService.getDccValue2(dccGrpTagSearchMap, tagDccInfoYList);
+        	
+        	List<Map> lblDataYList = (ArrayList)dccValY.get("lblDataList");
+        	List<Map> shpDataYList = new ArrayList<Map>();
+        	
+        	if(lblDataYList != null && lblDataYList.size() > 0){
+        	
+	        	for(int i=0;i<vHS.length;i++) {
+	        		
+	        		Map shpDataY = new HashMap();
+	        	
+	        		if(vHS[i] == 0 || vHS[i] == 6 || vHS[i] == 11 || vHS[i] == 16 || vHS[i] == 21 || vHS[i] == 34 || vHS[i] == 42) {
+	        			
+	        			// lblDataY type casting part
+	            		int[] lblDataY = new int[5];
+	            		for(int j=0;j<lblDataY.length;j++) {
+	            			Map lblData= lblDataYList.get(vHS[i] + j);
+	            			
+	            			String lblDataValue = lblData.get("fValue") != null? lblData.get("fValue").toString():"";
+	            			
+	            			if(getIsNumeric(lblDataValue)) {
+	            				lblDataY[j] = (int) Math.round (Double.parseDouble(lblDataValue));
+	            			}else {
+	            				lblDataY[j] = 0;
+	            			}            			
+	            		}
+	            		
+	            		// bit 연산관련
+	            		//if((lblDataY[0] & lblDataY[1] & lblDataY[2] & lblDataY[3] & lblDataY[4]) == 1) {
+	            		if( (lblDataY[0] & (lblDataY[1] & lblDataY[2]) & (lblDataY[3] & lblDataY[4])) == 1) {
+	            			shpDataY.put("BackColor", "#80FF80");
+	            		//}else if(lblDataY[0] == 0 && (lblDataY[1] & lblDataY[2] & lblDataY[3] & lblDataY[4]) == 0) {
+	            		}else if(lblDataY[0] == 0 && ((lblDataY[1] & lblDataY[2]) & (lblDataY[3] & lblDataY[4])) == 0) {
+	            			shpDataY.put("BackColor", "#FFFFFF");
+	            		}else {
+	            			shpDataY.put("BackColor", "#8080FF");
+	            		}
+	
+	               }else {
+	            	   
+	            		Map lblData= lblDataYList.get(vHS[i]);
+	            		String lblDataValue = lblData.get("fValue") != null? lblData.get("fValue").toString():"";
+	            		if(getIsNumeric(lblDataValue)) {
+	        				int lblDataY = (int) Math.round (Double.parseDouble(lblDataValue));
+	        				if(lblDataY == 1) {
+	        					shpDataY.put("BackColor", "#80FF80");
+	        				}else {
+	        					shpDataY.put("BackColor", "#8080FF");
+	        				}
+	        			}else {
+	        				shpDataY.put("BackColor", "#8080FF");
+	        			}            			
+	               }
+	     			shpDataYList.add(shpDataY);     			
+	        	} // end for
+        	}
+        	
+        	mav.addObject("resultType","programonoff");
         	
         	mav.addObject("XSearchTime", dccValX.get("SearchTime"));
         	mav.addObject("XForeColor", dccValX.get("ForeColor"));
@@ -2169,10 +3254,12 @@ public class DccPerformanceContentsController {
         	
         	//VB : ScreenInit--X
     		dccGrpTagSearchMap.put("xyGubun","X");
-        	List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
+        	//List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
+        	List<ComTagDccInfo> tagDccInfoXList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
         	
         	//VB : timer--X 
-        	Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList);
+        	//Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList);
+        	Map dccValX = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList);
         	
         	List<Map> lblDataXList = (ArrayList)dccValX.get("lblDataList");
         	List<Map> shpDataXList = new ArrayList<Map>();
@@ -2197,10 +3284,10 @@ public class DccPerformanceContentsController {
 	     				}else if(Math.abs(vPOT[iPot]) - Double.parseDouble(lblDataXfValue) > 0.005) {
 	     					shpDataX.put("BackColor", "#8080FF");
 	     				}else {
-	     					shpDataX.put("BackColor", "#FFFFFF");
+	     					shpDataX.put("BackColor", "#000000");
 	     				}
 	     			}else {
-	     				shpDataX.put("BackColor", "#FFFFFF");
+	     				shpDataX.put("BackColor", "#000000");
 	     			}
 	     			
 	     			shpDataXList.add(shpDataX);     			
@@ -2208,6 +3295,100 @@ public class DccPerformanceContentsController {
         	}else {
         		lblDataXList = new ArrayList<Map>();
         	}
+        	
+        	mav.addObject("XSearchTime", dccValX.get("SearchTime"));
+        	mav.addObject("XForeColor", dccValX.get("ForeColor"));
+        	mav.addObject("lblDataXList", lblDataXList);
+        	mav.addObject("shpDataXList", shpDataXList);
+        	
+        	mav.addObject("BaseSearch", dccSearchPerformance);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+          
+
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadAicheck", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadAicheck(DccSearchPerformance dccSearchPerformance, HttpServletRequest request, HttpServletResponse response) {
+        
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadAicheck");
+        
+        double[] vPOT = {-4.9,	4.9,	-1.25,		1.25,		2.5,	-4.9, 1.25,	4.9,	-0.5,	0.5,	-4.9,	1.25,	-1.25,		2.5};
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	dccSearchPerformance.setMenuName(this.menuName);
+        	
+        	if(dccSearchPerformance.getsMenuNo() == null || dccSearchPerformance.getsMenuNo().isEmpty()) {
+            	
+	        	dccSearchPerformance.setsDive("D");
+	        	dccSearchPerformance.setsMenuNo("91");
+	        	dccSearchPerformance.setsGrpID("admin");
+	        	dccSearchPerformance.setsUGrpNo("7");
+	        	
+	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+	        	dccSearchPerformance.setsHogi(member.getHogi());
+	        	dccSearchPerformance.setsXYGubun(member.getXyGubun());	        	
+        	}
+        	
+        	Map dccGrpTagSearchMap = new HashMap();
+    		dccGrpTagSearchMap.put("hogi",dccSearchPerformance.getsHogi()==null?  "": dccSearchPerformance.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchPerformance.getsDive()==null?  "": dccSearchPerformance.getsDive());
+    		dccGrpTagSearchMap.put("grpID", dccSearchPerformance.getsGrpID()==null?  "": dccSearchPerformance.getsGrpID());
+    		dccGrpTagSearchMap.put("menuNo", dccSearchPerformance.getsMenuNo()==null?  "": dccSearchPerformance.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchPerformance.getsUGrpNo()==null?  "": dccSearchPerformance.getsUGrpNo());
+    		     
+        	
+        	//VB : ScreenInit--X
+    		dccGrpTagSearchMap.put("xyGubun","X");
+        	//List<ComTagDccInfo> tagDccInfoXList = basDccMimicService.getDccGrpTagList(dccGrpTagSearchMap);
+        	List<ComTagDccInfo> tagDccInfoXList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+        	
+        	//VB : timer--X 
+        	//Map dccValX = basDccMimicService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList);
+        	Map dccValX = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoXList);
+        	
+        	List<Map> lblDataXList = (ArrayList)dccValX.get("lblDataList");
+        	List<Map> shpDataXList = new ArrayList<Map>();
+        	
+        	if(lblDataXList != null && lblDataXList.size() > 0) {
+        	
+	        	for(int i=0;i<lblDataXList.size();i++) {
+	        		
+	        		Map lblDataX = lblDataXList.get(i);
+	        		lblDataX.put("ForeColor", "#80000012");
+	        		
+	        		int iPot = 0;
+	     			if((i % 3) == 0) {
+	     				iPot = i / 3;
+	     			}
+	     			
+	     			Map shpDataX = new HashMap();
+	     			String lblDataXfValue = lblDataX.get("fValue") != null? lblDataX.get("fValue").toString():"";
+	     			if(StringUtils.isNumeric(lblDataXfValue)) {
+	     				if(Math.abs(vPOT[iPot]) - Double.parseDouble(lblDataXfValue) >= 0.004 && Math.abs(vPOT[iPot]) - Double.parseDouble(lblDataXfValue) <= 0.005) {
+	     					shpDataX.put("BackColor", "#80FFFF");
+	     				}else if(Math.abs(vPOT[iPot]) - Double.parseDouble(lblDataXfValue) > 0.005) {
+	     					shpDataX.put("BackColor", "#8080FF");
+	     				}else {
+	     					shpDataX.put("BackColor", "#000000");
+	     				}
+	     			}else {
+	     				shpDataX.put("BackColor", "#000000");
+	     			}
+	     			
+	     			shpDataXList.add(shpDataX);     			
+	        	} // end for
+        	}else {
+        		lblDataXList = new ArrayList<Map>();
+        	}
+        	
+        	mav.addObject("resultType","aicheck");
         	
         	mav.addObject("XSearchTime", dccValX.get("SearchTime"));
         	mav.addObject("XForeColor", dccValX.get("ForeColor"));

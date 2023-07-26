@@ -97,43 +97,47 @@ function mbr_SwSmEventCallback(data){
                 + '</tr>'      
                 + '<tr>'
                 + '   <th>첨부파일1</th>'
-                + '   <td><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +1+ ')">'+  (swsmInfo.fileName1 != null?  swsmInfo.fileName1:"") +'</a> </td>'
+                + '   <td id="attachFile1"><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +1+ ')">'+  (swsmInfo.fileName1 != null?  swsmInfo.fileName1:"") +'</a> </td>'
                 + '</tr>'  
                 + '<tr>'
                 + '    <th>첨부파일2</th>'
-                + '   <td><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +2+ ')">'+ (swsmInfo.fileName2 != null?  swsmInfo.fileName2:"")  +'</a> </td>'
+                + '   <td id="attachFile2"><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +2+ ')">'+ (swsmInfo.fileName2 != null?  swsmInfo.fileName2:"")  +'</a> </td>'
                 + '</tr>'   
                 + '<tr>'
                 + '    <th>첨부파일3</th>'
-                 + '   <td><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +3+ ')">'+  (swsmInfo.fileName3 != null?  swsmInfo.fileName3:"")  +'</a> </td>'
+                 + '   <td id="attachFile3"><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +3+ ')">'+  (swsmInfo.fileName3 != null?  swsmInfo.fileName3:"")  +'</a> </td>'
                 + '</tr>'  
                 + ' <tr>'
                 + '    <th>첨부파일4</th>'
-                + '   <td><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +4+ ')">'+  (swsmInfo.fileName4 != null?  swsmInfo.fileName4:"") +'</a> </td>'
+                + '   <td id="attachFile4"><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +4+ ')">'+  (swsmInfo.fileName4 != null?  swsmInfo.fileName4:"") +'</a> </td>'
                 + '</tr>'
                 + '<tr>'
                 + '   <th>첨부파일5</th>'
-                + '   <td><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +5+ ')">'+  (swsmInfo.fileName5 != null?  swsmInfo.fileName5:"")  +'</a> </td>'
+                + '   <td id="attachFile5"><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +5+ ')">'+  (swsmInfo.fileName5 != null?  swsmInfo.fileName5:"")  +'</a> </td>'
                 + '</tr>'  
                 +'<tr>'
                 + '    <th>첨부파일6</th>'
-                 + '   <td><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +6+ ')">'+  (swsmInfo.fileName6 != null?  swsmInfo.fileName6:"") +'</a> </td>'
+                 + '   <td id="attachFile6"><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +6+ ')">'+  (swsmInfo.fileName6 != null?  swsmInfo.fileName6:"") +'</a> </td>'
                 + '</tr>'
                 + '<tr>'
                 + '    <th>첨부파일7</th>'
-                 + '   <td><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +7+ ')">'+ (swsmInfo.fileName7 != null?  swsmInfo.fileName7:"") +'</a> </td>'
+                 + '   <td id="attachFile7"><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +7+ ')">'+ (swsmInfo.fileName7 != null?  swsmInfo.fileName7:"") +'</a> </td>'
                 + '</tr>'  
                 + '<tr>'
                 + '    <th>첨부파일8</th>'
-                 + '   <td><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +8+ ')">'+ (swsmInfo.fileName8 != null?  swsmInfo.fileName8:"") +'</a> </td>'
+                 + '   <td id="attachFile8"><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +8+ ')">'+ (swsmInfo.fileName8 != null?  swsmInfo.fileName8:"") +'</a> </td>'
                 + '</tr>'
                 + '<tr>'
                 + '    <th>첨부파일9</th>'
-                 + '   <td><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +9+ ')">'+  (swsmInfo.fileName9 != null?  swsmInfo.fileName9:"")+'</a> </td>'
+                 + '   <td id="attachFile9"><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +9+ ')">'+  (swsmInfo.fileName9 != null?  swsmInfo.fileName9:"")+'</a> </td>'
                 + '</tr>'  
                 + '<tr>'
                 + '    <th>첨부파일10</th>'
-                 + '   <td><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +10+ ')">'+ (swsmInfo.fileName10 != null?  swsmInfo.fileName10:"") +'</a> </td>'
+                 + '   <td id="attachFile10"><a href="javascript:swsmDownload('+swsmInfo.seqNo +',' +10+ ')">'+ (swsmInfo.fileName10 != null?  swsmInfo.fileName10:"") +'</a> </td>'
+                + '</tr>'  
+                + '<tr style="display:none">'
+                + '    <th>iSeq</th>'
+                 + '   <td id="currentISeq">'+swsmInfo.seqNo+'</td>'
                 + '</tr>' ;
 				
 		swsmBody.empty();
@@ -433,3 +437,11 @@ function mbr_IOListUpdateEventCallback(data){
 	}
 }
 
+function adminCallback(data) {
+	masterStatesAjax = data.masterStates;
+	slaveStatesAjax = data.slaveStates;
+	
+	$("#lblDate").text(data.ScanTime);
+	
+	setStates(1);
+}

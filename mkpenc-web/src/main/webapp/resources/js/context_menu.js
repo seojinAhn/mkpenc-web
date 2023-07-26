@@ -23,9 +23,11 @@ menuOption.addEventListener("click", e => {
 
 window.addEventListener("contextmenu", e => {
   e.preventDefault();
+  const comX = e.clientX + $("#mouse_area").outerWidth() > window.innerWidth ? window.innerWidth - $("#mouse_area").outerWidth() : e.clientX;
+  const comY = e.clientY + $("#mouse_area").outerHeight() > window.innerHeight ? window.innerHeight - $("#mouse_area").outerHeight() : e.clientY;      	  
   const origin = {
-    left: e.pageX,
-    top: e.pageY
+    left: comX,
+    top: comY
   };
   setPosition(origin);
   return false;

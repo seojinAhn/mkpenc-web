@@ -18,6 +18,7 @@
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/admin.js" />" charset="utf-8"></script>
 <script type="text/javascript" >
+var timerOn = false;
 
 	$(function () {
 		

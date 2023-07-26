@@ -22,6 +22,8 @@ public  interface BasDccMimicService {
 	
 	public Map getDccValue(Map searchMap, List<ComTagDccInfo> tagDccInfoList);
 	
+	public Map getDccValue2(Map searchMap, List<ComTagDccInfo> tagDccInfoList);
+	
 	String selectSeqInfo(DccSearchMimic searchMimic);
 	
 	int updateTagInfo(DccSearchMimic searchMimic);

@@ -18,16 +18,15 @@
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/admin.js" />" charset="utf-8"></script>
 <script type="text/javascript">
+var timerOn = false;
 
 $(function () {
-	
-	
-		initViewConfig();
-		
 		var gIOType = "${BaseSearch.sIOType}";
 		var chkIOType;
+	
+		initViewConfig(gIOType,'main');
 		
-		if (gIOType == null || gIOType == ""){
+		/*if (gIOType == null || gIOType == ""){
 		
 			$("#ioType_0_List").show();
 			$("#ioType_0_Input").show();			
@@ -72,7 +71,7 @@ $(function () {
 				  			$('#history').css("display", "block"); 
 						  break;								  
 					 } // end swith			
-		}
+		}*/
 		
 		
 		$(document.body).delegate('#ioType_0_List tbody tr', 'click', function() {
@@ -84,7 +83,7 @@ $(function () {
 						$(this).children().eq(35).text() == null || $(this).children().eq(35).text()  == ""					// xygubun
 					){
 						if(chkIOType == null || chkIOType==''){
-							alert("저장할 I/O를 검색하여 주십시요!!!");
+							//alert("저장할 I/O를 검색하여 주십시요!!!");
 							return;
 						}
 				}			
@@ -128,6 +127,12 @@ $(function () {
          		$('#ioType_0_form [name="iseq"]').val($(this).children().eq(33).text().trim());
          		$('#ioType_0_form [name="iotype"]').val($(this).children().eq(34).text().trim());
          		$('#ioType_0_form [name="xygubun"]').val($(this).children().eq(35).text().trim());
+
+				$('#ioType_0_form [name="reqno"]').val($(this).children().eq(36).text().trim());
+				$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(37).text().trim());
+				$('#ioType_0_form [name="reqname"]').val($(this).children().eq(38).text().trim());
+				$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(39).text().trim());
+				$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(40).text().trim());
 				
 				/*
 				alert($(this).children().eq(32).text());
@@ -158,6 +163,12 @@ $(function () {
      		$('#ioType_1_form [name="iseq"]').val($(this).children().eq(13).text().trim());
      		$('#ioType_1_form [name="iotype"]').val($(this).children().eq(14).text().trim());
      		$('#ioType_1_form [name="xygubun"]').val($(this).children().eq(15).text().trim());
+
+			$('#ioType_0_form [name="reqno"]').val($(this).children().eq(16).text().trim());
+			$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(17).text().trim());
+			$('#ioType_0_form [name="reqname"]').val($(this).children().eq(18).text().trim());
+			$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(19).text().trim());
+			$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(20).text().trim());
 			
 		});
 		
@@ -187,6 +198,12 @@ $(function () {
      		$('#ioType_2_form [name="iotype"]').val($(this).children().eq(18).text().trim());
      		$('#ioType_2_form [name="xygubun"]').val($(this).children().eq(19).text().trim());
 
+			$('#ioType_0_form [name="reqno"]').val($(this).children().eq(20).text().trim());
+			$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(21).text().trim());
+			$('#ioType_0_form [name="reqname"]').val($(this).children().eq(22).text().trim());
+			$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(23).text().trim());
+			$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(24).text().trim());
+
 		});		
 		
 		$(document.body).delegate('#ioType_3_List tbody tr', 'click', function() {
@@ -210,8 +227,13 @@ $(function () {
 			$('#ioType_3_form [name="ihogi"]').val($(this).children().eq(13).text().trim());
      		$('#ioType_3_form [name="iseq"]').val($(this).children().eq(14).text().trim());
      		$('#ioType_3_form [name="iotype"]').val($(this).children().eq(15).text().trim());
-     		$('#ioType_3_form [name="xygubun"]').val($(this).children().eq(16).text().trim());			
+     		$('#ioType_3_form [name="xygubun"]').val($(this).children().eq(16).text().trim());
 
+			$('#ioType_0_form [name="reqno"]').val($(this).children().eq(17).text().trim());
+			$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(18).text().trim());
+			$('#ioType_0_form [name="reqname"]').val($(this).children().eq(19).text().trim());
+			$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(20).text().trim());
+			$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(21).text().trim());
 		});	
 		
 		$(document.body).delegate('#ioType_4_List tbody tr', 'click', function() {
@@ -234,8 +256,13 @@ $(function () {
 			$('#ioType_4_form [name="ihogi"]').val($(this).children().eq(12).text().trim());
      		$('#ioType_4_form [name="iseq"]').val($(this).children().eq(13).text().trim());
      		$('#ioType_4_form [name="iotype"]').val($(this).children().eq(14).text().trim());
-     		$('#ioType_4_form [name="xygubun"]').val($(this).children().eq(15).text().trim());		
-			
+     		$('#ioType_4_form [name="xygubun"]').val($(this).children().eq(15).text().trim());
+
+			$('#ioType_0_form [name="reqno"]').val($(this).children().eq(16).text().trim());
+			$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(17).text().trim());
+			$('#ioType_0_form [name="reqname"]').val($(this).children().eq(18).text().trim());
+			$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(19).text().trim());
+			$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(20).text().trim());
 		});	
 		
 		$(document.body).delegate('#ioType_5_List tbody tr', 'click', function() {
@@ -253,8 +280,13 @@ $(function () {
 			$('#ioType_5_form [name="ihogi"]').val($(this).children().eq(7).text().trim());
      		$('#ioType_5_form [name="iseq"]').val($(this).children().eq(8).text().trim());
      		$('#ioType_5_form [name="iotype"]').val($(this).children().eq(9).text().trim());
-     		$('#ioType_5_form [name="xygubun"]').val($(this).children().eq(10).text().trim());		
-			
+     		$('#ioType_5_form [name="xygubun"]').val($(this).children().eq(10).text().trim());
+
+			$('#ioType_0_form [name="reqno"]').val($(this).children().eq(11).text().trim());
+			$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(12).text().trim());
+			$('#ioType_0_form [name="reqname"]').val($(this).children().eq(13).text().trim());
+			$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(14).text().trim());
+			$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(15).text().trim());
 		});
 		
 		$(document.body).delegate('#ioType_6_List tbody tr', 'click', function() {
@@ -271,8 +303,13 @@ $(function () {
 			$('#ioType_6_form [name="ihogi"]').val($(this).children().eq(6).text().trim());
      		$('#ioType_6_form [name="iseq"]').val($(this).children().eq(7).text().trim());
      		$('#ioType_6_form [name="iotype"]').val($(this).children().eq(8).text().trim());
-     		$('#ioType_6_form [name="xygubun"]').val($(this).children().eq(9).text().trim());		
-
+     		$('#ioType_6_form [name="xygubun"]').val($(this).children().eq(9).text().trim());
+     		
+			$('#ioType_0_form [name="reqno"]').val($(this).children().eq(10).text().trim());
+			$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(11).text().trim());
+			$('#ioType_0_form [name="reqname"]').val($(this).children().eq(12).text().trim());
+			$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(13).text().trim());
+			$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(14).text().trim());
 		});
 		
 		$(document.body).delegate('#ioType_7_List tbody tr', 'click', function() {
@@ -313,6 +350,12 @@ $(function () {
      		$('#ioType_7_form [name="iseq"]').val($(this).children().eq(30).text().trim());
      		$('#ioType_7_form [name="iotype"]').val($(this).children().eq(31).text().trim());
      		$('#ioType_7_form [name="xygubun"]').val($(this).children().eq(32).text().trim());
+     		
+			$('#ioType_0_form [name="reqno"]').val($(this).children().eq(33).text().trim());
+			$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(34).text().trim());
+			$('#ioType_0_form [name="reqname"]').val($(this).children().eq(35).text().trim());
+			$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(36).text().trim());
+			$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(37).text().trim());
 		});			
 		
 		$(document.body).delegate('#ioType_8_List tbody tr', 'click', function() {
@@ -330,8 +373,13 @@ $(function () {
 			$('#ioType_8_form [name="ihogi"]').val($(this).children().eq(7).text().trim());
      		$('#ioType_8_form [name="iseq"]').val($(this).children().eq(8).text().trim());
      		$('#ioType_8_form [name="iotype"]').val($(this).children().eq(9).text().trim());
-     		$('#ioType_8_form [name="xygubun"]').val($(this).children().eq(10).text().trim());		
-	
+     		$('#ioType_8_form [name="xygubun"]').val($(this).children().eq(10).text().trim());
+     		
+			$('#ioType_0_form [name="reqno"]').val($(this).children().eq(11).text().trim());
+			$('#ioType_0_form [name="reqdate"]').val($(this).children().eq(12).text().trim());
+			$('#ioType_0_form [name="reqname"]').val($(this).children().eq(13).text().trim());
+			$('#ioType_0_form [name="reqdept"]').val($(this).children().eq(14).text().trim());
+			$('#ioType_0_form [name="reqbigo"]').val($(this).children().eq(15).text().trim());
 		});			
 		
 		$("input[name='sXYGubun']:radio").change(function () {
@@ -358,7 +406,7 @@ $(function () {
 			}
 		});		
 		
-		$("#sIOType").change(function(){
+		$(document.body).delegate("#sIOType","change",function(){
 		
 			var sIOType = this.value;
 			
@@ -474,9 +522,9 @@ $(function () {
 				 } // end swith
 			   }); // end searchKey Control
 			   
-			  	initViewConfig();
+			  	initViewConfig(sIOType,'change');
 
-			 	switch(sIOType){
+			 	/*switch(sIOType){
 				      case "AI" :	
 				    	  	$("#ioType_0_List").show();
 				    	  	$("#ioType_0_Input").show();
@@ -513,11 +561,11 @@ $(function () {
 				  			$("#ioType_8_List").show();
 				  			$("#ioType_8_Input").show();;
 						  break;	  
-				 } // end swith
+				 } // end swith*/
 			   
 		});	// end ioType 	change event
 		
-		$("#iolistInfoUpdate").click(function(){
+		$(document.body).delegate("#iolistInfoUpdate","click",function(){
 			
 			if(chkIOType == null || chkIOType==''){
 				alert("목록에서 저장할 I/O를 선택하여 주십시요!!!");
@@ -588,47 +636,243 @@ $(function () {
 		});		
 		
 		
-		$("#ioListSearch").click(function(){
+		$(document.body).delegate("#ioListSearch","click",function(){
 			sendPage(1);
 		});		
 		
-		$("#excelExport").click(function(){
+		$(document.body).delegate("#excelExport","click",function(){
+			toCSV();
+		});		
+	
+	
+});	
 
-			if (confirm("검색 조건으로 파일을 다운로드 합니다..!!")) {	
+	function toCSV() {
+		var dataLen =  '${IOListInfoList}'.length;
+		
+		if( dataLen == 0 || typeof dataLen == 'undefined' ) {
+			alert('엑셀파일로 저장할 I/O 데이타를 검색하여 주십시오!');
+		} else {
+			var selHogi = typeof $("#sIHogi option:selected").val() == 'undefined' ? '3' : $("#sIHogi option:selected").val();
+			var selXY = typeof $("#sXYGubun option:selected").val() == 'undefined' ? 'X' : $("#sXYGubun option:selected").val();
+			var selType = typeof $("#sIOType option:selected").val() == 'undefined' ? 'AI' : $("#sIOType option:selected").val();
+
+			if ( confirm(selHogi+selXY+' '+selType+'의 I/O데이타를 엑셀파일로 저장하시겠습니까?') ) {	
 				
 				var	comSubmit	=	new ComSubmit("ioListForm");
 				comSubmit.setUrl("/dcc/admin/iolistExcelExport");
 				comSubmit.submit();
 				
-			}else {
-				alert("검색 조건의  파일의 다운로드를 취소 합니다..!!");
+			//}else {
+				//alert("검색 조건의  파일의 다운로드를 취소 합니다..!!");
 			}
-		});		
-	
-	
-});	
+		}
+	}
    
-    function initViewConfig(){
+    function initViewConfig(type,trigger){
     	
-    	$("#ioType_0_List").hide();
-		$("#ioType_1_List").hide();
-		$("#ioType_2_List").hide();
-		$("#ioType_3_List").hide();
-		$("#ioType_4_List").hide();
-		$("#ioType_5_List").hide();
-		$("#ioType_6_List").hide();
-		$("#ioType_7_List").hide();
-		$("#ioType_8_List").hide();
-
-		$("#ioType_0_Input").hide();
-		$("#ioType_1_Input").hide();
-		$("#ioType_2_Input").hide();
-		$("#ioType_3_Input").hide();
-		$("#ioType_4_Input").hide();
-		$("#ioType_5_Input").hide();
-		$("#ioType_6_Input").hide();
-		$("#ioType_7_Input").hide();
-		$("#ioType_8_Input").hide();    	
+    	if( type == 'AI' || type == '' || type == null ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<32;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_0_List_body").empty();
+	    		$("#ioType_0_List_body").append(clearBodyStr);
+	    	}
+    		
+    		$("#ioType_0_List").show();
+    		$("#ioType_0_Input").show();
+    	} else {
+    		$("#ioType_0_List").hide();
+    		$("#ioType_0_Input").hide();
+    	}
+    	if( type == 'AO' ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<12;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_1_List_body").empty();
+	    		$("#ioType_1_List_body").append(clearBodyStr);
+	    	}
+    		
+			$("#ioType_1_List").show();
+			$("#ioType_1_Input").show();
+    	} else {
+    		$("#ioType_1_List").hide();
+    		$("#ioType_1_Input").hide();
+    	}
+    	if( type == 'CI' ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<16;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_2_List_body").empty();
+	    		$("#ioType_2_List_body").append(clearBodyStr);
+	    	}
+    		
+			$("#ioType_2_List").show();
+			$("#ioType_2_Input").show();
+    	} else {
+    		$("#ioType_2_List").hide();
+    		$("#ioType_2_Input").hide();
+    	}
+    	if( type == 'DI' ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<13;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_3_List_body").empty();
+	    		$("#ioType_3_List_body").append(clearBodyStr);
+	    	}
+    		
+			$("#ioType_3_List").show();
+			$("#ioType_3_Input").show();
+    	} else {
+    		$("#ioType_3_List").hide();
+    		$("#ioType_3_Input").hide();
+    	}
+    	if( type == 'DO' ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<12;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_4_List_body").empty();
+	    		$("#ioType_4_List_body").append(clearBodyStr);
+	    	}
+    		
+			$("#ioType_4_List").show();
+			$("#ioType_4_Input").show();
+    	} else {
+    		$("#ioType_4_List").hide();
+    		$("#ioType_4_Input").hide();
+    	}
+    	if( type == 'DT' ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<7;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_5_List_body").empty();
+	    		$("#ioType_5_List_body").append(clearBodyStr);
+	    	}
+    		
+			$("#ioType_5_List").show();
+			$("#ioType_5_Input").show();
+    	} else {
+    		$("#ioType_5_List").hide();
+    		$("#ioType_5_Input").hide();
+    	}
+    	if( type == 'SC' ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<6;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_6_List_body").empty();
+	    		$("#ioType_6_List_body").append(clearBodyStr);
+	    	}
+    		
+			$("#ioType_6_List").show();
+			$("#ioType_6_Input").show();
+    	} else {
+    		$("#ioType_6_List").hide();
+    		$("#ioType_6_Input").hide();
+    	}
+    	if( type == 'FTAI' ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<29;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_7_List_body").empty();
+	    		$("#ioType_7_List_body").append(clearBodyStr);
+	    	}
+    		
+			$("#ioType_7_List").show();
+			$("#ioType_7_Input").show();
+  			$('#history').css("display", "block"); 
+    	} else {
+    		$("#ioType_7_List").hide();
+    		$("#ioType_7_Input").hide();
+    		if( type != 'FTDT' ) $('#history').css("display", "none"); 
+    	}
+    	if( type == 'FTDT' ) {
+    		if( trigger == 'change' ) {
+	    		var clearBodyStr = '';
+	    		
+	    		for( var i=0;i<10;i++ ) {
+	    			clearBodyStr += '<tr>';
+	    			for( var j=0;j<7;j++ ) {
+	    				clearBodyStr += ' <td class="tc"></td>';
+	    			}
+	    			clearBodyStr += '</tr>';
+	    		}
+	    		
+	    		$("#ioType_8_List_body").empty();
+	    		$("#ioType_8_List_body").append(clearBodyStr);
+	    	}
+    		
+			$("#ioType_8_List").show();
+			$("#ioType_8_Input").show();
+  			$('#history').css("display", "block"); 
+    	} else {
+    		$("#ioType_8_List").hide();
+    		$("#ioType_8_Input").hide();
+    		if( type != 'FTAI' ) $('#history').css("display", "none"); 
+    	}  	
 		
 		//$('#history').css("display", "none"); 
     }
@@ -639,9 +883,33 @@ $(function () {
 			alert("X, Y 구분을 선택하세요..!!") ;
 			return;
 		}
-				
+
+		var sk1 = $("#searchKeys1").val();
+		var sk2 = $("#searchKeys2").val();
+		var sk3 = $("#searchKeys3").val();
+		var sw1 = $("#searchWords1").val();
+		var sw2 = $("#searchWords2").val();
+		var sw3 = $("#searchWords3").val();
+		var searchKeyArray = ['','',''];
+		var searchWordsArray = ['','',''];
+		
+		if( sw1 != '' && typeof sw1 != 'undefined' ) {
+			searchKeyArray.splice(0,1,sk1);
+			searchWordsArray.splice(0,1,sw1);
+		}
+		if( sw2 != '' && typeof sw2 != 'undefined' ) {
+			searchKeyArray.splice(1,1,sk2);
+			searchWordsArray.splice(1,1,sw2);
+		}
+		if( sw3 != '' && typeof sw3 != 'undefined' ) {
+			searchKeyArray.splice(2,1,sk3);
+			searchWordsArray.splice(2,1,sw3);
+		}
+		
 		var	comSubmit	=	new ComSubmit("ioListForm");
 		comSubmit.addParam("pageNum", pageNum);
+		comSubmit.addParam("searchKeys",searchKeyArray);
+		comSubmit.addParam("searchWords",searchWordsArray);
 		comSubmit.setUrl("/dcc/admin/iolistmgnlist");
 		comSubmit.submit();
 	}
@@ -768,15 +1036,20 @@ $(function () {
 						<div class="fx_srch_item">
 							<label>Address</label>
                             <div class="fx_form">
-                                <input type="text" id="sAddress" name="sAddress">
-                                <label>0-0</label>
+                                <input type="text" id="sAddress" name="sAddress" value="${BaseSearch.sAddress}">
+                                <c:if test="${BaseSearch.addrRange ne null and BaseSearch.addrRange ne ''}">
+                                <label>${BaseSearch.addrRange}</label>
+                                </c:if>
+                                <c:if test="${BaseSearch.addrRange eq null or BaseSearch.addrRange eq ''}">
+                                <label>0 - 0</label>
+                                </c:if>
                             </div>
 						</div>
 					</div>
 					<div class="fx_srch_row">
 						<div class="fx_srch_item">
 							<label class="label_select">
-                                <select id="searchKeys" name="searchKeys">
+                                <select id="searchKeys1" name="searchKeys1">
                                   <option value="0">DESCR</option>
 						    	  <option value="1">MESSAGE</option>
 						    	  <option value="2">REV</option>
@@ -807,11 +1080,11 @@ $(function () {
 						    	  <option value="27">WB#</option>
                                 </select>
                             </label>
-                            <input type="text"  id="searchWords"  name="searchWords" >
+                            <input type="text"  id="searchWords1"  name="searchWords1" value="${BaseSearch.searchWords[0]}">
 						</div>
 						<div class="fx_srch_item">
 							<label class="label_select">
-                                <select id="searchKeys" name="searchKeys">
+                                <select id="searchKeys2" name="searchKeys2">
                                      <option value="0">DESCR</option>
 						    	  <option value="1">MESSAGE</option>
 						    	  <option value="2">REV</option>
@@ -842,11 +1115,11 @@ $(function () {
 						    	  <option value="27">WB#</option>
                                 </select>
                             </label>
-                            <input type="text"  id="searchWords" name="searchWords">
+                            <input type="text"  id="searchWords2" name="searchWords2" value="${BaseSearch.searchWords[1]}">
 						</div>
 						<div class="fx_srch_item">
 							<label class="label_select">
-                                <select id="searchKeys" name="searchKeys">
+                                <select id="searchKeys3" name="searchKeys3">
                                     <option value="0">DESCR</option>
 						    	  <option value="1">MESSAGE</option>
 						    	  <option value="2">REV</option>
@@ -877,7 +1150,7 @@ $(function () {
 						    	  <option value="27">WB#</option>
                                 </select>
                             </label>
-                            <input type="text"  id="searchWords" name="searchWords">
+                            <input type="text"  id="searchWords3" name="searchWords3" value="${BaseSearch.searchWords[2]}">
 						</div>
 					</div>
 				</form>
@@ -888,7 +1161,7 @@ $(function () {
 				</div>
 				<!-- //fx_srch_button -->
 			</div>
-			<!-- //fx_srch_wrap -->            
+			<!-- //fx_srch_wrap -->
 			<!-- list_wrap -->
 			<div class="list_wrap">
 				<!-- list_head -->
@@ -907,13 +1180,13 @@ $(function () {
 				</div>
                 <!-- //list_head -->
                 <!-- list_table_scroll -->
-                <div class="list_table_scroll" >
+                <div class="list_table_scroll" style="min-height:331px">
 	                <!-- list_table -->
 	                <table class="list_table"  id="ioType_0_List"  name="ioType_0_List">
 	                    <colgroup>
 	                        <col width="70px"/>
-	                        <col width="600px"/>
-	                        <col width="380px"/>
+	                        <col width="400px"/>
+	                        <col width="280px"/>
 	                        <col width="60px"/>
 	                        <col width="150px"/>
 	                        <col width="120px"/>
@@ -980,7 +1253,7 @@ $(function () {
 						    	  <th>관련절차서</th>
 	                        </tr>
 	                    </thead>
-	                    <tbody>
+	                    <tbody id="ioType_0_List_body">
 	                    <c:if test="${BaseSearch.sIOType eq 'AI' }">
 	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
 	                        <tr>
@@ -1052,45 +1325,17 @@ $(function () {
 	                            <td style="display:none;">${IOListInfo.ihogi}</td>
 	                            <td style="display:none;">${IOListInfo.iseq}</td>
 	                            <td style="display:none;">${IOListInfo.iotype}</td>
-	                            <td style="display:none;">${IOListInfo.xygubun}</td>	                            
+	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
 	                        </tr>
 	                        </c:forEach>
 	                        </c:if>
-	                        <c:if test="${IOListInfoList eq null }"> 
-	                        <tr>
-	                           <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                             <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                            <td class="tc"></td>
-	                        </tr>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
 	                        <tr>
 	                           <td class="tc"></td>
 	                            <td class="tc"></td>
@@ -1125,6 +1370,7 @@ $(function () {
 	                            <td class="tc"></td>
 	                            <td class="tc"></td>
 	                        </tr>
+	                        </c:forEach>
 	                        </c:if>
 	                    </tbody>
 	                </table>
@@ -1142,7 +1388,7 @@ $(function () {
 	                        <col width="150px"/>
 	                        <col width="120px"/>	                        	                      
 	                        <col width="120px"/>
-	                        <col width="75px"/>	                        
+	                        <col width="75px"/>
 	                    </colgroup>
 	                    <thead>
 	                        <tr>
@@ -1160,7 +1406,7 @@ $(function () {
 						    	<th>WIBA</th>
 	                        </tr>
 	                    </thead>
-	                    <tbody>
+	                    <tbody id="ioType_1_List_body">
 	                    <c:if test="${BaseSearch.sIOType eq 'AO' }">
 	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
 	                        <tr>
@@ -1182,7 +1428,34 @@ $(function () {
 	                            <td style="display:none;">${IOListInfo.ihogi}</td>
 	                            <td style="display:none;">${IOListInfo.iseq}</td>
 	                            <td style="display:none;">${IOListInfo.iotype}</td>
-	                            <td style="display:none;">${IOListInfo.xygubun}</td>	   	                  	                                      
+	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                       	<tr>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>	   	                  	                                      
 	                        </tr>
 	                       </c:forEach>
 	                       </c:if>
@@ -1228,7 +1501,7 @@ $(function () {
 						    	<th>관련절차서</th>
 	                        </tr>
 	                    </thead>
-	                    <tbody>
+	                    <tbody id="ioType_2_List_body">
 	                    <c:if test="${BaseSearch.sIOType eq 'CI' }">
 	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
 	                        <tr>
@@ -1279,9 +1552,40 @@ $(function () {
 	                            <td style="display:none;">${IOListInfo.iseq}</td>
 	                            <td style="display:none;">${IOListInfo.iotype}</td>
 	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
 	                        </tr>
 	                    </c:forEach>
 	                    </c:if>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                       	<tr>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>	   	                  	                                      
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
 	                    </tbody>
 	                </table>
 	                
@@ -1318,7 +1622,7 @@ $(function () {
 						    	<th>WIBA</th>
 	                        </tr>
 	                    </thead>
-	                    <tbody>
+	                    <tbody id="ioType_3_List_body">
 	                    <c:if test="${BaseSearch.sIOType eq 'DI' }">
 	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
 	                        <tr>
@@ -1342,9 +1646,37 @@ $(function () {
 	                            <td style="display:none;">${IOListInfo.iseq}</td>
 	                            <td style="display:none;">${IOListInfo.iotype}</td>
 	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
 	                        </tr>
 	                    </c:forEach>
 	                    </c:if>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                       	<tr>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>	   	                  	                                      
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
 	                    </tbody>
 	                </table>
 	                
@@ -1379,7 +1711,7 @@ $(function () {
 						    	<th>WIBA</th>
 	                        </tr>
 	                    </thead>
-	                    <tbody>
+	                    <tbody id="ioType_4_List_body">
 	                    <c:if test="${BaseSearch.sIOType eq 'DO' }">
 	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
 	                        <tr>
@@ -1402,9 +1734,36 @@ $(function () {
 	                            <td style="display:none;">${IOListInfo.iseq}</td>
 	                            <td style="display:none;">${IOListInfo.iotype}</td>
 	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
 	                        </tr>
 	                    </c:forEach>    
 	                    </c:if>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                       	<tr>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>	   	                  	                                      
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
 	                    </tbody>
 	                </table>
 	                
@@ -1429,7 +1788,7 @@ $(function () {
 	                            <th>EHIGH</th>
 	                        </tr>
 	                    </thead>
-	                    <tbody>
+	                    <tbody id="ioType_5_List_body">
 	                    <c:if test="${BaseSearch.sIOType eq 'DT' || BaseSearch.sIOType eq 'FTDT' }">
 	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
 	                        <tr>
@@ -1444,9 +1803,31 @@ $(function () {
 	                            <td style="display:none;">${IOListInfo.iseq}</td>
 	                            <td style="display:none;">${IOListInfo.iotype}</td>
 	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
 	                        </tr>
 	                    </c:forEach>
 	                    </c:if>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                       	<tr>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>	   	                  	                                      
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
 	                    </tbody>
 	                </table>
 	                
@@ -1469,7 +1850,7 @@ $(function () {
 	                            <th>BSCAL</th>
 	                        </tr>
 	                    </thead>
-	                    <tbody>
+	                    <tbody id="ioType_6_List_body">
 	                    <c:if test="${BaseSearch.sIOType eq 'SC'}">
 	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
 	                        <tr>
@@ -1483,9 +1864,30 @@ $(function () {
 	                            <td style="display:none;">${IOListInfo.iseq}</td>
 	                            <td style="display:none;">${IOListInfo.iotype}</td>
 	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
 	                        </tr>
 	                    </c:forEach>
 	                    </c:if>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                       	<tr>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>	   	                  	                                      
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
 	                    </tbody>
 	                </table>
 	                
@@ -1554,7 +1956,7 @@ $(function () {
 						    	  <th>WB#</th>											    	  
 	                        </tr>
 	                    </thead>
-	                    <tbody>
+	                    <tbody id="ioType_7_List_body">
 	                    <c:if test="${BaseSearch.sIOType eq 'FTAI'}">
 	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
 	                        <tr>
@@ -1615,9 +2017,53 @@ $(function () {
 	                            <td style="display:none;">${IOListInfo.iseq}</td>
 	                            <td style="display:none;">${IOListInfo.iotype}</td>
 	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
 	                        </tr>
 	                    </c:forEach>
 	                    </c:if>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                       	<tr>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>	   	                  	                                      
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
 	                    </tbody>
 	                </table>
 	                
@@ -1642,7 +2088,7 @@ $(function () {
 	                            <th>EHIGH</th>
 	                        </tr>
 	                    </thead>
-	                    <tbody>
+	                    <tbody id="ioType_8_List_body">
 	                    <c:forEach var="IOListInfo" items="${IOListInfoList}">
 	                        <tr>
 	                            <td class="tc">${IOListInfo.address}</td>
@@ -1656,8 +2102,30 @@ $(function () {
 	                            <td style="display:none;">${IOListInfo.iseq}</td>
 	                            <td style="display:none;">${IOListInfo.iotype}</td>
 	                            <td style="display:none;">${IOListInfo.xygubun}</td>
+	                            <td style="display:none;">${IOListInfo.reqno}</td>
+	                            <td style="display:none;">${IOListInfo.reqdate}</td>
+	                            <td style="display:none;">${IOListInfo.reqname}</td>
+	                            <td style="display:none;">${IOListInfo.reqdept}</td>
+	                            <td style="display:none;">${IOListInfo.reqbigo}</td>
 	                        </tr>
 	                    </c:forEach>
+	                       <c:if test="${BaseSearch.totalCnt < 10}">
+	                       <c:forEach var="i" begin="${BaseSearch.totalCnt}" end="9" step="1">
+	                       	<tr>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td class="tc"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>
+	                            <td style="display:none;"></td>	   	                  	                                      
+	                        </tr>
+	                       </c:forEach>
+	                       </c:if>
 	                    </tbody>
 	                </table>
 	                <!-- //list_table -->

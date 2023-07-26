@@ -21,7 +21,17 @@ datasource:
     hikari:
     pool-name: mkpenc-pool
     maximum-pool-size: 20
-    minimum-idle: 5    
+    minimum-idle: 5
+  mssql-alt:
+    type: org.apache.commons.dbcp2.BasicDataSource
+    jdbc-url: jdbc:sqlserver://localhost:1433;databaseName=DCCDB
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    username: dcc
+    password: dcc
+    hikari:
+    pool-name: mkpenc-pool
+    maximum-pool-size: 20
+    minimum-idle: 5
 ---
 
 spring:

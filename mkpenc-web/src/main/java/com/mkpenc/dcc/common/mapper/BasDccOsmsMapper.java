@@ -16,11 +16,15 @@ public interface BasDccOsmsMapper {
 	
 	Map selectScanTime(Map searchMapper);	
 	
+	Map selectScanTimeMark(Map searchMapper);	
+	
 	List<Map>  selectTblNoFldNo(Map searchMapper);
 	
 	List<Map> selectLogDccTrend(Map selectMap);
 	
 	List<Map> selectLogDccTrend4Hogi(Map selectMap);
+	
+	List<Map> selectLogDccTrendSearch(Map selectMap);
 	
 	Map selectLogDccTrendReal(Map selectMap);
 	

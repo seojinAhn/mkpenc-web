@@ -41,10 +41,13 @@
 		,"${DccTagInfoList[10].toolTip}"		,"${DccTagInfoList[11].toolTip}"		,"${DccTagInfoList[12].toolTip}"		,"${DccTagInfoList[13].toolTip}"		,"${DccTagInfoList[14].toolTip}"
 	];
 	
+	var lblDataListAjax = {};
+	var DccTagInfoListAjax = {};
+	
 	var selectTag = [{name:"hogi",value:""},{name:"xyGubun",value:""},{name:"loopName",value:""},{name:"ioType",value:""}
 					,{name:"address",value:""},{name:"ioBit",value:""},{name:"descr",value:""}];
 	
-function showTag(tagNo,iSeq) {
+	function showTag(tagNo,iSeq) {
 		
 		if(${UserInfo.grade} == '1' || ${UserInfo.grade} == '2') { // 나중에 grade 1 은 삭제할 것
 			timerOn = false;
@@ -72,7 +75,7 @@ function showTag(tagNo,iSeq) {
 		}
 	}	
 	
-	function showTooltip(id) {
+	/*function showTooltip(id) {
 		var tooltipText;
 
 		tooltipText = tToolTipText[id*1];
@@ -81,7 +84,7 @@ function showTag(tagNo,iSeq) {
 			tooltipText = tooltipText.replace(":]","]");
 		}
 		$("#"+id).attr("title",tooltipText);
-	}
+	}*/
 	
 	function toCSV() {
 		var	comSubmit = new ComSubmit("reloadFrm");
@@ -90,55 +93,30 @@ function showTag(tagNo,iSeq) {
 	}
 
 	$(function(){
-		if( $("#hogiHeader4").attr("class") == 'current' && $("#hogiHeader4").attr("class") != 'undefined' && $("#hogiHeader4").attr("class") != '') {
-			hogiHeader = "4";
-		} else {
-			hogiHeader = "3";
-		}
-		
-		if( $("input:checkbox[id='xy']").is(":checked") ) {
-			xyHeader = "Y";
-		} else {
-			xyHeader = "X";
-		}
-		
-		var lblDateVal = '${BaseSearch.hogi}'+'${BaseSearch.xyGubun}'+' '+'${DccLogTrendInfoList[0].SCANTIME}';
-		$("#lblDate").text(lblDateVal);
-		
-		$(document.body).delegate('#hogiHeader3', 'click', function() {
-			setTimer('3',xyHeader,0);
-		});
-		$(document.body).delegate('#hogiHeader4', 'click', function() {
-			setTimer('4',xyHeader,0);
-		});
-		$(document.body).delegate('#xy', 'click', function() {
-			if( $("input:checkbox[id='xy']").is(":checked") ) {
-				xyHeader = "Y";
-			} else {
-				xyHeader = "X";
-			}
-			setTimer(hogiHeader,xyHeader,0);
-		});
+
+		$("#lblDate").text('${SearchTime}');
+		$("#lblDate").css('color','${ForeColor}');
+
 		$(document.body).delegate('#dccStatusMTC1 label', 'dblclick', function() {
 			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
 			if( cId != null && cId != '' && cId != 'undefined' ) {
-				showTag(cId,tDccTagSeq[cId]);
+				//showTag(cId,tDccTagSeq[cId]);
 			}
 		});
 		$(document.body).delegate('#dccStatusMTC1 label', 'mouseover focus', function() {
 			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
-			showTooltip(cId);
+			//showTooltip(cId);
 		});
 		
 		$(document.body).delegate('#dccStatusMTC2 label', 'dblclick', function() {
 			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
 			if( cId != null && cId != '' && cId != 'undefined' ) {
-				showTag(cId,tDccTagSeq[cId]);
+				//showTag(cId,tDccTagSeq[cId]);
 			}
 		});
 		$(document.body).delegate('#dccStatusMTC2 label', 'mouseover focus', function() {
 			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
-			showTooltip(cId);
+			//showTooltip(cId);
 		});
 		$(document.body).delegate('#tagSearchTable tr', 'click', function() {
 			for( var t=0;t<selectTag.length;t++ ) {
@@ -202,26 +180,59 @@ function showTag(tagNo,iSeq) {
 			tagSelect();
 		});
 		
-		setTimer(hogiHeader,xyHeader,5000);
+		setTimer(5000);
 	});
 		
-	function setTimer(hogiHeader,xyHeader,interval) {
+	function setTimer(interval) {
 		if( interval > 0 ) {
-			setTimeout(function() {
+			setTimeout(function run() {
 				if( timerOn ) {
-					var	comSubmit	=	new ComSubmit("reloadFrm");
-					comSubmit.setUrl("/dcc/status/mtc");
-					comSubmit.addParam("hogiHeader",hogiHeader);
-					comSubmit.addParam("xyHeader",xyHeader);
-					comSubmit.submit();
+					//var	comSubmit	=	new ComSubmit("reloadFrm");
+					//comSubmit.setUrl("/dcc/status/mtc");
+					//comSubmit.submit();
+					var comAjax = new ComAjax("reloadFrm");
+					comAjax.setUrl('/dcc/status/reloadMtc');
+					//comAjax.addParam("sHogi",hogiHeader);
+					//comAjax.addParam("sXYGubun",xyHeader);
+					comAjax.setCallback('statusCallback');
+					comAjax.ajax();
 				}
+				
+				setTimeout(run, interval);
 			},interval);
 		} else {
-			var	comSubmit	=	new ComSubmit("reloadFrm");
-			comSubmit.setUrl("/dcc/status/mtc");
-			comSubmit.addParam("hogiHeader",hogiHeader);
-			comSubmit.addParam("xyHeader",xyHeader);
-			comSubmit.submit();
+			setTimeout(function run() {
+				if( timerOn ) {
+					//var	comSubmit	=	new ComSubmit("reloadFrm");
+					//comSubmit.setUrl("/dcc/status/mtc");
+					//comSubmit.submit();
+					var comAjax = new ComAjax("reloadFrm");
+					comAjax.setUrl('/dcc/status/reloadMtc');
+					//comAjax.addParam("sHogi",hogiHeader);
+					//comAjax.addParam("sXYGubun",xyHeader);
+					comAjax.setCallback('statusCallback');
+					comAjax.ajax();
+				}
+				
+				setTimeout(run, 5000);
+			},5000);
+		}
+	}
+
+	function setDate(time,color) {
+		$("#lblDate").text(time);
+		$("#lblDate").css('color',color);
+	}
+
+	function setData() {
+		for( var i=0;i<lblDataListAjax.length;i++ ) {
+			if( i == 0 ) {
+				$("#lblUnit"+i).text('°C');
+			} else {
+				$("#lblUnit"+i).text(DccTagInfoListAjax[i].unit);
+			}
+			$("#lblData"+i).text(lblDataListAjax[i].fValue);
+			$("#lblData"+i).prop('title',DccTagInfoListAjax[i].toolTip);
 		}
 	}
 	
@@ -252,8 +263,6 @@ function showTag(tagNo,iSeq) {
 		}
 		
 		comSubmit.setUrl("/dcc/status/mtcSaveTag");
-		comSubmit.addParam("hogiHeader",hogiHeader);
-		comSubmit.addParam("xyHeader",xyHeader);
 		comSubmit.submit();
 	}
 	
@@ -357,7 +366,12 @@ function showTag(tagNo,iSeq) {
                             <h4>MODERATOR TEMP CONTROL STATUS</h4>
                         </div>                            
                         <!-- form_table -->
-                        <form id="reloadFrm" style="display:none"></form>
+                        <form id="reloadFrm" style="display:none">
+                        <input type="hidden" id="gubun" name="gubun" value="${BaseSearch.gubun}">
+						<input type="hidden" id="menuNo" name="menuNo" value="${BaseSearch.menuNo}">
+						<input type="hidden" id="grpId" name="grpId" value="${BaseSearch.grpId}">
+						<input type="hidden" id="grpNo" name="grpNo" value="${BaseSearch.grpNo}">
+						</form>
                         <table id="dccStatusMTC1" class="form_table">
                             <colgroup>
                                 <col />
@@ -367,8 +381,8 @@ function showTag(tagNo,iSeq) {
                                 <th>MODERATOR SETPOINTL</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="0" class="full flex_end">${lblDataList[0].fValue}</label>
-                                    	<label id="unit0" class="full">${DccTagInfoList[0].unit}</label>
+                                        <label id="lblData0" title="${DccTagInfoList[0].toolTip}" class="full flex_end">${lblDataList[0].fValue}</label>
+                                    	<label id="lblUnit0" class="full">°C</label>
                                     </div>
                                 </td>
                             </tr>
@@ -376,8 +390,8 @@ function showTag(tagNo,iSeq) {
                                 <th>MODERATOR OUTLET TEMP</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="1" class="full flex_end">${lblDataList[1].fValue}</label>
-                                    	<label id="unit1" class="full">${DccTagInfoList[1].unit}</label>
+                                        <label id="lblData1" title="${DccTagInfoList[1].toolTip}" class="full flex_end">${lblDataList[1].fValue}</label>
+                                    	<label id="lblUnit1" class="full">${DccTagInfoList[1].unit}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -385,8 +399,8 @@ function showTag(tagNo,iSeq) {
                                 <th>HX1 TCV 8</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="2" class="full flex_end">${lblDataList[0].fValue}</label>
-                                    	<label id="unit2" class="full">${DccTagInfoList[2].unit}</label>
+                                        <label id="lblData2" title="${DccTagInfoList[2].toolTip}" class="full flex_end">${lblDataList[2].fValue}</label>
+                                    	<label id="lblUnit2" >${DccTagInfoList[2].unit}</label>
                                     	<label id="onoff0" class="full">OPEN</label>
                                     </div>
                                 </td>
@@ -395,8 +409,8 @@ function showTag(tagNo,iSeq) {
                                 <th>HX1 TCV 6</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="3" class="full flex_end">${lblDataList[3].fValue}</label>
-                                    	<label id="unit3" class="full">${DccTagInfoList[3].unit}</label>
+                                        <label id="lblData3" title="${DccTagInfoList[3].toolTip}" class="full flex_end">${lblDataList[3].fValue}</label>
+                                    	<label id="lblUnit3">${DccTagInfoList[3].unit}</label>
                                     	<label id="onoff1" class="full">OPEN</label>
                                     </div>
                                 </td>
@@ -405,8 +419,8 @@ function showTag(tagNo,iSeq) {
                                 <th>VALVE TCV 61,62</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="4" class="full flex_end">${lblDataList[4].fValue}</label>
-                                    	<label id="unit4" class="full">${DccTagInfoList[4].unit}</label>
+                                        <label id="lblData4" title="${DccTagInfoList[4].toolTip}" class="full flex_end">${lblDataList[4].fValue}</label>
+                                    	<label id="lblUnit4" >${DccTagInfoList[4].unit}</label>
                                     	<label id="onoff2" class="full">OPEN</label>
                                     </div>
                                 </td>
@@ -415,8 +429,8 @@ function showTag(tagNo,iSeq) {
                                 <th>INTEGRAL LIFT</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="5" class="full flex_end">${lblDataList[5].fValue}</label>
-                                    	<label id="unit5" class="full">${DccTagInfoList[5].unit}</label>
+                                        <label id="lblData5" title="${DccTagInfoList[5].toolTip}" class="full flex_end">${lblDataList[5].fValue}</label>
+                                    	<label id="lblUnit5" class="full">${DccTagInfoList[5].unit}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -424,8 +438,8 @@ function showTag(tagNo,iSeq) {
                                 <th>HX1 OUTLET TEMP</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="10" class="full flex_end">${lblDataList[10].fValue}</label>
-                                    	<label id="unit10" class="full">${DccTagInfoList[10].unit}</label>
+                                        <label id="lblData10" title="${DccTagInfoList[10].toolTip}" class="full flex_end">${lblDataList[10].fValue}</label>
+                                    	<label id="lblUnit10" class="full">${DccTagInfoList[10].unit}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -433,8 +447,8 @@ function showTag(tagNo,iSeq) {
                                 <th>HX2 OUTLET TEMP</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="11" class="full flex_end">${lblDataList[11].fValue}</label>
-                                    	<label id="unit11" class="full">${DccTagInfoList[11].unit}</label>
+                                        <label id="lblData11" title="${DccTagInfoList[11].toolTip}" class="full flex_end">${lblDataList[11].fValue}</label>
+                                    	<label id="lblUnit11" class="full">${DccTagInfoList[11].unit}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -451,8 +465,8 @@ function showTag(tagNo,iSeq) {
                                 <th>MODERATOR PRESENT LEVEL</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="6" class="full flex_end">${lblDataList[6].fValue}</label>
-                                    	<label id="unit6" class="full">${DccTagInfoList[6].unit}</label>
+                                        <label id="lblData6" title="${DccTagInfoList[6].toolTip}" class="full flex_end">${lblDataList[6].fValue}</label>
+                                    	<label id="lblUnit6" class="full">${DccTagInfoList[6].unit}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -477,8 +491,8 @@ function showTag(tagNo,iSeq) {
                                 <th>PURIF COOLER OUT SETPOINT</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="7" class="full flex_end">${lblDataList[7].fValue}</label>
-                                    <label id="unit7" class="full">${DccTagInfoList[7].unit}</label>
+                                        <label id="lblData7" title="${DccTagInfoList[7].toolTip}" class="full flex_end">${lblDataList[7].fValue}</label>
+                                    <label id="lblUnit7" class="full">${DccTagInfoList[7].unit}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -486,8 +500,8 @@ function showTag(tagNo,iSeq) {
                                 <th>PURIF COOLER OUT TEMP</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="8" class="full flex_end">${lblDataList[8].fValue}</label>
-                                    <label id="unit8" class="full">${DccTagInfoList[8].unit}</label>
+                                        <label id="lblData8" title="${DccTagInfoList[8].toolTip}" class="full flex_end">${lblDataList[8].fValue}</label>
+                                    <label id="lblUnit8" class="full">${DccTagInfoList[8].unit}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -495,8 +509,8 @@ function showTag(tagNo,iSeq) {
                                 <th>PURIF COOLER FLOW</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="12" class="full flex_end">${lblDataList[12].fValue}</label>
-                                    <label id="unit12" class="full">${DccTagInfoList[12].unit}</label>
+                                        <label id="lblData12" title="${DccTagInfoList[12].toolTip}" class="full flex_end">${lblDataList[12].fValue}</label>
+                                    <label id="lblUnit12" class="full">${DccTagInfoList[12].unit}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -504,8 +518,8 @@ function showTag(tagNo,iSeq) {
                                 <th>PURIF INTEGRAL LIFT</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="13" class="full flex_end">${lblDataList[13].fValue}</label>
-                                    <label id="unit13" class="full">${DccTagInfoList[13].unit}</label>
+                                        <label id="lblData13" title="${DccTagInfoList[13].toolTip}" class="full flex_end">${lblDataList[13].fValue}</label>
+                                    <label id="lblUnit13" class="full">${DccTagInfoList[13].unit}</label>
                                     </div>
                                 </td>
                             </tr>
@@ -513,7 +527,7 @@ function showTag(tagNo,iSeq) {
                                 <th>VALVE HCV-5 CLOSED IF TEMP</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="const2" class="full flex_end">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;85</label>
+                                        <label id="const2" class="full flex_end">&nbsp;&nbsp;&nbsp;> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;85</label>
                                         <label id="const1" class="full">DEG C</label>
                                     </div>
                                 </td>
@@ -522,8 +536,8 @@ function showTag(tagNo,iSeq) {
                                 <th>VALVE TCV-44</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="9" class="full flex_end">${lblDataList[9].fValue}</label>
-                                    	<label id="unit9" class="full">${DccTagInfoList[9].unit}</label>
+                                        <label id="lblData9" title="${DccTagInfoList[9].toolTip}" class="full flex_end">${lblDataList[9].fValue}</label>
+                                    	<label id="lblUnit9">${DccTagInfoList[9].unit}</label>
                                     	<label id="onoff4" class="full">OPEN</label>
                                     </div>
                                 </td>
@@ -532,8 +546,8 @@ function showTag(tagNo,iSeq) {
                                 <th>RCW TEMP</th>
                                 <td class="tc">
                                     <div class="fx_form">
-                                        <label id="14" class="full flex_end">${lblDataList[14].fValue}</label>
-                                    	<label id="unit14" class="full">${DccTagInfoList[14].unit}</label>
+                                        <label id="lblData14" title="${DccTagInfoList[14].toolTip}" class="full flex_end">${lblDataList[14].fValue}</label>
+                                    	<label id="lblUnit14" class="full">${DccTagInfoList[14].unit}</label>
                                     </div>
                                 </td>
                             </tr>

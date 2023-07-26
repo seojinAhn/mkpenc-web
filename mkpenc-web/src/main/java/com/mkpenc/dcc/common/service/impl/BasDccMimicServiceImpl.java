@@ -121,7 +121,7 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 //						tagDccInfo.setUnit(dccGrpTagInfo.getUNIT());
 //					}
 					
-					if(tagDccInfo.getIOBIT() != 0) {
+					if(tagDccInfo.getIOBIT() != -1) {
 						tagDccInfo.setToolTip(tagDccInfo.getDescr() + "[" +tagDccInfo.getHogi() +":" + tagDccInfo.getIOTYPE() +"-" + tagDccInfo.getADDRESS() + ":" + tagDccInfo.getIOBIT() + "]" );
 					}else {
 						tagDccInfo.setToolTip(tagDccInfo.getDescr() + "[" +tagDccInfo.getHogi() +":" + tagDccInfo.getIOTYPE() +"-" + tagDccInfo.getADDRESS() + "]" );
@@ -231,7 +231,7 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 					tagDccInfo.setUnit(dccGrpTagInfo.getUNIT());
 				}
 				
-				if(tagDccInfo.getIOBIT() != 0) {
+				if(tagDccInfo.getIOBIT() != -1) {
 					tagDccInfo.setToolTip(tagDccInfo.getDescr() + "[" +tagDccInfo.getHogi() +":" + tagDccInfo.getIOTYPE() +"-" + tagDccInfo.getADDRESS() + ":" + tagDccInfo.getIOBIT() + "]" );
 				}else {
 					tagDccInfo.setToolTip(tagDccInfo.getDescr() + "[" +tagDccInfo.getHogi() +":" + tagDccInfo.getIOTYPE() +"-" + tagDccInfo.getADDRESS() + "]" );
@@ -360,7 +360,7 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 	        			 if (secondsDifference > 1800) {
 	        				 rtnMap.put("ForeColor", "#FF");
 	        			 }else {
-	        				 rtnMap.put("ForeColor", "#808000");
+	        				 rtnMap.put("ForeColor", "#008080");
 	        			 }
 	        			
     			}catch (Exception e) {
@@ -378,7 +378,75 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
     				i = i; 
     			}
     			
+    			//System.out.print(searchMap.get("hogi").toString() + " " +  searchMap.get("xyGubun").toString());
+    			//System.out.print("     idx = " + i + "   :::: fValue=" + fValue + "  :::   " + tagDccInfoList.get(i).getIOTYPE() + "   " + tagDccInfoList.get(i).getIOBIT());
     			Map lblData = setDataConv(fValue, tagDccInfoList.get(i), searchMap);
+    			//System.out.println("   :::: lblData=" + lblData);
+    			checkAlarm(lblData, tagDccInfoList.get(i));
+    			
+    			lblDataList.add(lblData);
+    		}else {
+    			lblDataList.add(new HashMap());
+    		}
+    	}
+    	
+    	 rtnMap.put("lblDataList", lblDataList);
+   	
+    	return rtnMap; 
+	}
+	
+	public Map getDccValue2(Map searchMap, List<ComTagDccInfo> tagDccInfoList){
+		
+		Map rtnMap = new HashMap();
+		
+		String[] varValue = sqlQueryDcc(searchMap).split("\\|");
+		
+		//*** Start getDccValue 에 포함 된 로직
+    	if(varValue != null && varValue.length != 0) {
+    		if(varValue[0].length() == 19) {
+    			
+    			rtnMap.put("SearchTime", searchMap.get("hogi").toString() + " " +  searchMap.get("xyGubun").toString() + " " + varValue[0]);
+    			
+    			try {
+	        			java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	       			    java.util.Date date = format.parse(varValue[0]);
+	        			
+	        			Calendar c = Calendar.getInstance();
+	        			c.setTime(date); 
+	        			c.add(Calendar.MILLISECOND, 1);
+	        			
+	        			long searchTime = date.getTime();
+	        			long currentTime = System.currentTimeMillis();
+	        			
+	        			long secondsDifference = (currentTime -searchTime)  / 1000;   
+	        			
+	        			searchMap.put("TimeGap", secondsDifference);
+	        			
+	        			 if (secondsDifference > 1800) {
+	        				 rtnMap.put("ForeColor", "#FF");
+	        			 }else {
+	        				 rtnMap.put("ForeColor", "#008080");
+	        			 }
+	        			
+    			}catch (Exception e) {
+    				e.printStackTrace();
+    			}        			
+    		} // end if varVal[0] len 19
+    	} // end if varValue is not null
+    	
+    	
+    	List<Map> lblDataList = new ArrayList<Map>();
+    	for(int i=0;i<tagDccInfoList.size();i++) {
+    		if(varValue[i+1] != null && !varValue[i+1].isEmpty()) {
+    			double fValue = Double.parseDouble(varValue[i+1]);
+    			if(i == 365) { 
+    				i = i; 
+    			}
+    			
+    			//System.out.print(searchMap.get("hogi").toString() + " " +  searchMap.get("xyGubun").toString());
+    			//System.out.print("     idx = " + i + "   :::: fValue=" + fValue + "  :::   " + tagDccInfoList.get(i).getIOTYPE() + "   " + tagDccInfoList.get(i).getIOBIT());
+    			Map lblData = setDataConv2(fValue, tagDccInfoList.get(i), searchMap);
+    			//System.out.println("   :::: lblData=" + lblData);
     			checkAlarm(lblData, tagDccInfoList.get(i));
     			
     			lblDataList.add(lblData);
@@ -397,20 +465,74 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 		Map dataConv = new HashMap();
 		
 		if(fValue == 0) {
-			dataConv.put("fValue", "-");
+			dataConv.put("fValue", "0");
 			return dataConv;
 		}
 		
 		// '- IOTYPE에 대한 설정
+	   if(tagDccInfo.getIOTYPE().equals("SC")) {
+	    	 if( tagDccInfo.getSaveCore() != 1 &&  tagDccInfo.getIOBIT() != -1) {
+	 	            fValue = Double.parseDouble(GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
+	    	 }else if( tagDccInfo.getBScale() != -1) {
+	 	            fValue = fValue / (2 ^ (15 - tagDccInfo.getBScale() ));
+	 	     }	    	
+	    }else {
+	    	/*
+	    	  if( tagDccInfo.getIOTYPE().equals("AI") && (tagDccInfo.getADDRESS().equals("2010") ||  tagDccInfo.getADDRESS().equals("2140"))){
+	  	            fValue = fValue / 0.0081;
+	    	  }
+	    	  */
+	    	
+	    	 //if( tagDccInfo.getIOTYPE().equals("DI") ||  tagDccInfo.getIOTYPE().equals("DO")){
+	 	        if(tagDccInfo.getIOBIT() > 0) {
+	 	            fValue = Double.parseDouble(GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
+	 	        }
+	 	    //}else 
+	    }
+	    
+	    if(searchMap.get("menuNo").equals("21") || searchMap.get("menuNo").equals("22")) {
+	    	if(Double.parseDouble(searchMap.get("TimeGap").toString())  < 5000 && tagDccInfo.getFASTIOCHK() == 1 && tagDccInfo.getBScale() != -1 ) {
+	    		  fValue = fValue / (2 ^ (15 - tagDccInfo.getBScale() ));
+	    	}
+	    }
+	    
+	    if( tagDccInfo.getIOTYPE().equals("DI") ||  tagDccInfo.getIOTYPE().equals("DO") || tagDccInfo.getIOTYPE().equals("SC") && tagDccInfo.getSaveCore() == 1){
+	    	dataConv.put("fValue", fValue > -32768? String.format("%f", fValue) : "***IRR");
+	    }else if(tagDccInfo.getBScale() != -1) {
+	    	dataConv.put("fValue",  fValue > -32768? String.format(gFormat[tagDccInfo.getBScale()], fValue) : "***IRR");
+	    }else {
+	    	dataConv.put("fValue", fValue > -32768? fValue+"": "***IRR");
+	    }		
+	    
+	    return dataConv;
+	}
+	
+	private Map setDataConv2(double fValue, ComTagDccInfo tagDccInfo, Map searchMap) {
+		
+		Map dataConv = new HashMap();
+		//System.out.println("setDataConv setDataConv ::: IOTYPE = " + fValue + "::::" +  tagDccInfo.getIOTYPE());
+		if(fValue == 0) {
+			dataConv.put("fValue", "0");
+			return dataConv;
+		}
+
+		//System.out.println("iotype = " + tagDccInfo.getIOTYPE() + ":::: iobit = " + tagDccInfo.getIOBIT() + "::::: address = " + tagDccInfo.getADDRESS() );
+		// '- IOTYPE에 대한 설정
 	    if( tagDccInfo.getIOTYPE().equals("DI") ||  tagDccInfo.getIOTYPE().equals("DO")){
-	        if(tagDccInfo.getIOBIT() != 0) {
+	        if(tagDccInfo.getIOBIT() > -1) {
 	            fValue = Double.parseDouble(GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
+	        }else {
+	        	fValue = 0;
 	        }
 	    }else if(tagDccInfo.getIOTYPE().equals("SC")) {
-	    	 if( tagDccInfo.getSaveCore() == 1 &&  tagDccInfo.getIOBIT() != 0) {
-	 	            fValue = Double.parseDouble(GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
+	    	 if( tagDccInfo.getSaveCore() == 1 && tagDccInfo.getIOBIT() != -1) {
+	    		 //System.out.println("setDataConv setDataConv ::: IOTYPE = " + fValue + "::::" +  tagDccInfo.getIOTYPE() + ";;;;" + tagDccInfo.getIOBIT());
+	 	         fValue = Double.parseDouble(GetBitVal(fValue+"", tagDccInfo.getIOBIT()+""));
+	 	         //System.out.println("setDataConv setDataConv ::: IOTYPE getbitval= " + fValue + "::::" +  tagDccInfo.getIOTYPE() + ";;;;" + tagDccInfo.getIOBIT());
 	    	 }else if( tagDccInfo.getBScale() != 0 && tagDccInfo.getSaveCore() != 1) {
-	 	            fValue = fValue / (2 ^ (15 - tagDccInfo.getBScale() ));
+	    		 //System.out.println(Math.pow(2, (15 - tagDccInfo.getBScale())));   
+	    		 fValue = fValue / Math.pow(2, (15 - tagDccInfo.getBScale()));
+	 	         //System.out.println("setDataConv setDataConv ::: IOTYPE not getbitval= " + fValue + "::::" +  tagDccInfo.getIOTYPE() + ";;;;" + tagDccInfo.getIOBIT());
 	 	     }
 	    	
 	    }else {
@@ -421,16 +543,17 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 	    
 	    if(searchMap.get("menuNo").equals("21") || searchMap.get("menuNo").equals("22")) {
 	    	if(Double.parseDouble(searchMap.get("TimeGap").toString())  < 5000 && tagDccInfo.getFASTIOCHK() == 1 && tagDccInfo.getBScale() != 0 ) {
-	    		  fValue = fValue / (2 ^ (15 - tagDccInfo.getBScale() ));
+	    		  fValue = fValue / Math.pow(2, (15 - tagDccInfo.getBScale() ));
 	    	}
 	    }
-	    
+	    //System.out.println("fvalue = " + fValue);
 	    if( tagDccInfo.getIOTYPE().equals("DI") ||  tagDccInfo.getIOTYPE().equals("DO") || tagDccInfo.getIOTYPE().equals("SC") && tagDccInfo.getSaveCore() == 1){
-	    	dataConv.put("fValue", fValue > -32768? String.format("%f", fValue) : "***IRR");
-	    }else if(tagDccInfo.getBScale() != 0) {
+	    	dataConv.put("fValue", fValue > -32768? String.format("%.5f", fValue) : "***IRR");
+	    }else
+	    	if(tagDccInfo.getBScale() != 0) {
 	    	dataConv.put("fValue",  fValue > -32768? String.format(gFormat[tagDccInfo.getBScale()], fValue) : "***IRR");
 	    }else {
-	    	dataConv.put("fValue", fValue > -32768? fValue+"": "***IRR");
+	    	dataConv.put("fValue", fValue > -32768? String.format("%.5f", fValue) +"": "***IRR");
 	    }		
 	    
 	    return dataConv;
@@ -481,7 +604,7 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 	    
 	    long Rest = 0;
 	    
-	    long di_val;
+	    double di_val;
 	    int bit_no;	    
 	    
 	    if(digitalBit.isEmpty()) {
@@ -492,13 +615,13 @@ public class BasDccMimicServiceImpl implements BasDccMimicService{
 	       }
 	    }
 	    
-	    di_val = Math.round(Double.parseDouble(digitalValue));	    
+	    di_val = Double.parseDouble(digitalValue);	    
 	    bit_no = Integer.parseInt(digitalBit);
 
-	    for(int i = 0;i < bit_no;i++) {
-	        Rest = (di_val % 2);
-	        //di_val = di_val \ 2;
-	    	di_val = di_val >> 2;
+	    for(int i = 0;i <= bit_no;i++) {
+	    	
+	        Rest = Math.round(di_val % 2);
+	        di_val = Math.floor(di_val / 2);
 		}
 	    
 	    return Rest +"";

@@ -13,6 +13,8 @@ import com.mkpenc.dcc.admin.model.MemberInfo;
 import com.mkpenc.dcc.alarm.model.DccAlarmInfo;
 import com.mkpenc.dcc.alarm.service.DccAlarmService;
 import com.mkpenc.dcc.common.model.ComTagDccInfo;
+import com.mkpenc.alt.common.service.AltCommonService;
+import com.mkpenc.alt.trend.service.AltTrendService;
 import com.mkpenc.common.model.CommonConstant;
 import com.mkpenc.common.model.Upload;
 import com.mkpenc.common.module.ExcelHelperUtil;
@@ -24,6 +26,9 @@ import com.mkpenc.dcc.common.service.BasDccMimicService;
 import com.mkpenc.dcc.common.service.BasDccOsmsService;
 import com.mkpenc.dcc.performance.model.DccSearchPerformance;
 import com.mkpenc.dcc.tip.model.DccIolistInfo;
+import com.mkpenc.dcc.trend.model.DccSearchTrend;
+import com.mkpenc.dcc.trend.model.TrendTagDccInfo;
+import com.mkpenc.dcc.trend.service.DccTrendService;
 
 import static org.mockito.ArgumentMatchers.contains;
 
@@ -65,6 +70,9 @@ public class DccAlarmContentsController {
 	@Autowired
 	private BasCommonService basCommonService;
 	
+	@Autowired
+	private AltCommonService altCommonService;
+	
 	@Autowired	
 	private BasDccOsmsService basDccOsmsService;
 	
@@ -73,6 +81,12 @@ public class DccAlarmContentsController {
 	
 	@Autowired
 	private DccAlarmService dccAlarmService;
+	
+	@Autowired
+	private DccTrendService dccTrendService;
+	
+	@Autowired
+	private AltTrendService altTrendService;
 	
 	@Autowired
 	private PageHtmlUtil pageHtmlUtil;
@@ -85,32 +99,34 @@ public class DccAlarmContentsController {
 	
 	@RequestMapping("alarm")
 	public ModelAndView alarm(DccSearchAlarm dccSearchAlarm, HttpServletRequest request) {
+		
         ModelAndView mav = new ModelAndView();
 
         logger.info("############ alarm");
-
-        LocalDateTime lDtmS = LocalDateTime.of(2022, 12, 1, 14, 19, 42);
-        LocalDateTime lDtmE = LocalDateTime.of(2022, 12, 1, 14, 20, 44);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        if( dccSearchAlarm.getStartDate() == null ) dccSearchAlarm.setStartDate(lDtmS.format(dtf));
-        if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));
-        if( dccSearchAlarm.getCurrentPage() == null ) dccSearchAlarm.setCurrentPage("0");
-    	if( dccSearchAlarm.getHogiHeader() != null ) {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setHogi(dccSearchAlarm.getHogiHeader());
-    	} else {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setHogi("3");
-    	}
-    	if( dccSearchAlarm.getXyHeader() != null ) {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setXyGubun(dccSearchAlarm.getXyHeader());
-    	} else {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setXyGubun("X");
-    	}
+        
+        dccSearchAlarm.setMenuName(this.menuName);
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-
-        	dccSearchAlarm.setMenuName(this.menuName);
+        	
+        	LocalDateTime lDtmS = LocalDateTime.now();
+            LocalDateTime lDtmE = LocalDateTime.now();
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            if( dccSearchAlarm.getStartDate() == null ) dccSearchAlarm.setStartDate(lDtmS.format(dtf));
+            if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));
+           
+            if( dccSearchAlarm.getCurrentPage() == null ) {
+            	
+            	dccSearchAlarm.setCurrentPage("0"); 
+            	
+            	userInfo.setHogi("3");
+            	userInfo.setXyGubun("X");
+            }
+            
+            dccSearchAlarm.setHogi(userInfo.getHogi());
+            dccSearchAlarm.setXyGubun(userInfo.getXyGubun()); 
+        	
         	String sSeq = "";
         	List<String> staticValues = new ArrayList<String>();
         	staticValues.add("0");
@@ -126,39 +142,45 @@ public class DccAlarmContentsController {
         	dccSearchAlarm.setSeq(sSeq);
         	
         	List<DccAlarmInfo> dccAlarmInfoList = dccAlarmService.selectAlarmProc(dccSearchAlarm);
-
-        	userInfo.setHogi(dccSearchAlarm.getHogiHeader());
-        	userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
         	
         	mav.addObject("BaseSearch", dccSearchAlarm);
         	mav.addObject("UserInfo", userInfo);
             
     		mav.addObject("DccAlarmList", dccAlarmInfoList);
         }
+        
         return mav;
     }
 	
 	@RequestMapping("alarmTxtExport")
 	public void alarmTxtExport(HttpServletRequest request, HttpServletResponse response, DccSearchAlarm dccSearchAlarm) throws Exception {
-        try{
-	        LocalDateTime lDtmS = LocalDateTime.of(2022, 12, 1, 14, 19, 42);
-	        LocalDateTime lDtmE = LocalDateTime.of(2022, 12, 1, 14, 20, 44);
-	        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-	        if( dccSearchAlarm.getStartDate() == null ) dccSearchAlarm.setStartDate(lDtmS.format(dtf));
-	        if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));
-	        if( dccSearchAlarm.getCurrentPage() == null ) dccSearchAlarm.setCurrentPage("0");
-	    	if( dccSearchAlarm.getHogiHeader() != null ) {
-	    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setHogi(dccSearchAlarm.getHogiHeader());
-	    	} else {
-	    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setHogi("3");
-	    	}
-	    	if( dccSearchAlarm.getXyHeader() != null ) {
-	    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setXyGubun(dccSearchAlarm.getXyHeader());
-	    	} else {
-	    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setXyGubun("X");
-	    	}
+       
+		try{			
+			
+			logger.info("############ alarmTxtExport");
+		        
+		    dccSearchAlarm.setMenuName(this.menuName);
 	        
 	        if(request.getSession().getAttribute("USER_INFO") != null) {
+	        	
+	        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));	        	
+	        	
+	        	LocalDateTime lDtmS = LocalDateTime.now();
+	            LocalDateTime lDtmE = LocalDateTime.now();
+		        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		        if( dccSearchAlarm.getStartDate() == null ) dccSearchAlarm.setStartDate(lDtmS.format(dtf));
+		        if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));
+		        
+		        if( dccSearchAlarm.getCurrentPage() == null ) {
+	            	
+	            	dccSearchAlarm.setCurrentPage("0"); 
+	            	
+	            	userInfo.setHogi("3");
+	            	userInfo.setXyGubun("X");
+	            }
+		        
+		        dccSearchAlarm.setHogi(userInfo.getHogi());
+	            dccSearchAlarm.setXyGubun(userInfo.getXyGubun()); 		    	
 	        	
 	        	if( dccSearchAlarm.getPagNo() != null ) {
 		        	String sPagNo = dccSearchAlarm.getPagNo();
@@ -261,28 +283,35 @@ public class DccAlarmContentsController {
 	
 	@RequestMapping("alarmExcelExport")
 	public void alarmExcelExport(HttpServletRequest request, HttpServletResponse response, DccSearchAlarm dccSearchAlarm) throws Exception {
+		
         try{
-            if( dccSearchAlarm.getCurrentPage() == null ) dccSearchAlarm.setCurrentPage("-9999");
-            if( dccSearchAlarm.getAlarmGubun() == null ) dccSearchAlarm.setAlarmGubun("None");
-        	if( dccSearchAlarm.getHogiHeader() != null ) {
-        		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setHogi(dccSearchAlarm.getHogiHeader());
-        	} else {
-        		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setHogi("3");
-        	}
-        	if( dccSearchAlarm.getXyHeader() != null ) {
-        		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setXyGubun(dccSearchAlarm.getXyHeader());
-        	} else {
-        		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setXyGubun("X");
-        	}
+        	
+        	logger.info("############ alarmExcelExport");
 	        
+		    dccSearchAlarm.setMenuName(this.menuName);
+		    
 	        if(request.getSession().getAttribute("USER_INFO") != null) {
 	        	
-	        	List<DccAlarmInfo> dccAlarmInfoList = dccAlarmService.selectAlarmToExport(dccSearchAlarm);
+	        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));	     	        	
 	        	
-	        	String title = "경보메시지 ("+dccSearchAlarm.getStartDate().substring(0,16)
-	        				  +" ~ "+dccSearchAlarm.getEndDate().substring(0,16)+")";
+	        	if( dccSearchAlarm.getCurrentPage() == null ) {
+	        		dccSearchAlarm.setCurrentPage("-9999");
+  
+	        		userInfo.setHogi("3");
+	        		userInfo.setXyGubun("X");
+	        	}
+        	  
+	        	if( dccSearchAlarm.getAlarmGubun() == null ) dccSearchAlarm.setAlarmGubun("None");
+              
+	        	dccSearchAlarm.setHogi(userInfo.getHogi());
+	        	dccSearchAlarm.setXyGubun(userInfo.getXyGubun()); 
+    	
+	        	List<DccAlarmInfo> dccAlarmInfoList = dccAlarmService.selectAlarmToExport(dccSearchAlarm);
 
-				excelHelperUtil.alarmExcelDownload(request, response, dccSearchAlarm.getHogi()+dccSearchAlarm.getXyGubun(),
+	        	String title = "경보메시지 ("+dccSearchAlarm.getStartDate().substring(0,16)
+	        					+" ~ "+dccSearchAlarm.getEndDate().substring(0,16)+")";
+
+	        	excelHelperUtil.alarmExcelDownload(request, response, dccSearchAlarm.getHogi()+dccSearchAlarm.getXyGubun(),
 												title, dccAlarmInfoList, "alarmsearch");
 	        	
 	        }
@@ -297,52 +326,51 @@ public class DccAlarmContentsController {
         ModelAndView mav = new ModelAndView();
 
         logger.info("############ alarmsearch");
-
-        LocalDateTime lDtmS = LocalDateTime.of(2022, 12, 1, 14, 19, 42);
-        LocalDateTime lDtmE = LocalDateTime.of(2022, 12, 1, 14, 20, 44);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));
-        if( dccSearchAlarm.getStartDate() == null ) {
-        	if( dccSearchAlarm.getEndDate() == null ) {
-        		dccSearchAlarm.setStartDate(lDtmS.format(dtf));
-        		dccSearchAlarm.setEndDate(lDtmE.format(dtf));
-        	} else {
-        		lDtmS = LocalDateTime.parse(dccSearchAlarm.getEndDate(),dtf).minusDays(3L);
-        		dccSearchAlarm.setStartDate(lDtmS.format(dtf));
-        	}
-        }
         
-        if( dccSearchAlarm.getCurrentPage() == null ) dccSearchAlarm.setCurrentPage("-9999");
-        if( dccSearchAlarm.getAlarmGubun() == null ) dccSearchAlarm.setAlarmGubun("None");
-    	if( dccSearchAlarm.getHogiHeader() != null ) {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setHogi(dccSearchAlarm.getHogiHeader());
-    	} else {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setHogi("3");
-    	}
-    	if( dccSearchAlarm.getXyHeader() != null ) {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setXyGubun(dccSearchAlarm.getXyHeader());
-    	} else {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setXyGubun("X");
-    	}
+        dccSearchAlarm.setMenuName(this.menuName);
     	
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
-        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));        	
+        	
+        	LocalDateTime lDtmS = LocalDateTime.now();
+            LocalDateTime lDtmE = LocalDateTime.now();
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));
+            if( dccSearchAlarm.getStartDate() == null ) {
+            	if( dccSearchAlarm.getEndDate() == null ) {
+            		dccSearchAlarm.setStartDate(lDtmS.format(dtf));
+            		dccSearchAlarm.setEndDate(lDtmE.format(dtf));
+            	} else {
+            		lDtmS = LocalDateTime.parse(dccSearchAlarm.getEndDate(),dtf).minusDays(3L);
+            		dccSearchAlarm.setStartDate(lDtmS.format(dtf));
+            	}
+            }
+            
+            if( dccSearchAlarm.getCurrentPage() == null ) {
+            	dccSearchAlarm.setCurrentPage("-9999");
+            	
+            	userInfo.setHogi("3");
+        		userInfo.setXyGubun("X");
+            }
 
-        	dccSearchAlarm.setMenuName(this.menuName);
+            if( dccSearchAlarm.getAlarmGubun() == null ) dccSearchAlarm.setAlarmGubun("None");
+            if( dccSearchAlarm.getsPageSize() == null ) dccSearchAlarm.setsPageSize("20");
+            
+            dccSearchAlarm.setHogi(userInfo.getHogi());
+        	dccSearchAlarm.setXyGubun(userInfo.getXyGubun()); 
+        	dccSearchAlarm.setPageSize(Integer.parseInt(dccSearchAlarm.getsPageSize()));
+        	
         	int totalCnt = dccAlarmService.selectAlarmTotalCnt(dccSearchAlarm);
         	dccSearchAlarm.setTotalCnt(totalCnt);
         	
         	List<DccAlarmInfo> dccAlarmInfoList = dccAlarmService.selectAlarmToRecord(dccSearchAlarm);
         	
-        	userInfo.setHogi(dccSearchAlarm.getHogiHeader());
-        	userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
-        	
         	mav.addObject("BaseSearch", dccSearchAlarm);
         	mav.addObject("UserInfo", userInfo);
             
     		mav.addObject("DccAlarmList", dccAlarmInfoList);
-        	mav.addObject("PageHtml", pageHtmlUtil.getPageHtml(dccSearchAlarm));
+        	mav.addObject("PageHtml", pageHtmlUtil.getAlarmPageHtml(dccSearchAlarm));
         	
         }
 
@@ -355,37 +383,33 @@ public class DccAlarmContentsController {
 
         logger.info("############ summary");
         
-        LocalDateTime lDtmS = LocalDateTime.of(2022, 12, 1, 14, 19, 42);
-        LocalDateTime lDtmE = LocalDateTime.of(2022, 12, 1, 14, 20, 44);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        if( dccSearchAlarm.getStartDate() == null ) dccSearchAlarm.setStartDate(lDtmS.format(dtf));
-        if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));
-        if( dccSearchAlarm.getCurrentPage() == null ) dccSearchAlarm.setCurrentPage("2");
-    	if( dccSearchAlarm.getHogiHeader() != null ) {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setHogi(dccSearchAlarm.getHogiHeader());
-    	} else {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setHogi("3");
-    	}
-    	if( dccSearchAlarm.getXyHeader() != null ) {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setXyGubun(dccSearchAlarm.getXyHeader());
-    	} else {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setXyGubun("X");
-    	}
+        dccSearchAlarm.setMenuName(this.menuName);    	
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-
-        	dccSearchAlarm.setMenuName(this.menuName);
+        	
+            LocalDateTime lDtmS = LocalDateTime.now();
+            LocalDateTime lDtmE = LocalDateTime.now();
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            if( dccSearchAlarm.getStartDate() == null ) dccSearchAlarm.setStartDate(lDtmS.format(dtf));
+            if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));
+            if( dccSearchAlarm.getCurrentPage() == null ) {
+            	dccSearchAlarm.setCurrentPage("2");
+            	
+            	userInfo.setHogi("3");
+        		userInfo.setXyGubun("X");
+            }
+            
+            dccSearchAlarm.setHogi(userInfo.getHogi());
+        	dccSearchAlarm.setXyGubun(userInfo.getXyGubun()); 
+        	
         	String sSeq = dccAlarmService.selectSummarySeq(dccSearchAlarm);
         	if( sSeq == null ) sSeq = dccSearchAlarm.getCurrentPage();
         	dccSearchAlarm.setSeq(sSeq);
         	
         	List<DccAlarmInfo> dccAlarmInfoList = dccAlarmService.selectSummaryList(dccSearchAlarm);
-
-        	userInfo.setHogi(dccSearchAlarm.getHogiHeader());
-        	userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
-        	
+       	
         	mav.addObject("BaseSearch", dccSearchAlarm);
         	mav.addObject("UserInfo", userInfo);
             
@@ -397,24 +421,27 @@ public class DccAlarmContentsController {
 	@RequestMapping("summaryTxtExport")
 	public void summaryTxtExport(HttpServletRequest request, HttpServletResponse response, DccSearchAlarm dccSearchAlarm) throws Exception {
         try{
-	        LocalDateTime lDtmS = LocalDateTime.of(2022, 12, 1, 14, 19, 42);
-	        LocalDateTime lDtmE = LocalDateTime.of(2022, 12, 1, 14, 20, 44);
-	        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-	        if( dccSearchAlarm.getStartDate() == null ) dccSearchAlarm.setStartDate(lDtmS.format(dtf));
-	        if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));
-	        if( dccSearchAlarm.getCurrentPage() == null ) dccSearchAlarm.setCurrentPage("0");
-	    	if( dccSearchAlarm.getHogiHeader() != null ) {
-	    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setHogi(dccSearchAlarm.getHogiHeader());
-	    	} else {
-	    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setHogi("3");
-	    	}
-	    	if( dccSearchAlarm.getXyHeader() != null ) {
-	    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setXyGubun(dccSearchAlarm.getXyHeader());
-	    	} else {
-	    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setXyGubun("X");
-	    	}
+
 	        
 	        if(request.getSession().getAttribute("USER_INFO") != null) {
+	        	
+	        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));	        	
+	        	
+		        LocalDateTime lDtmS = LocalDateTime.now();
+		        LocalDateTime lDtmE = LocalDateTime.now();
+		        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		        if( dccSearchAlarm.getStartDate() == null ) dccSearchAlarm.setStartDate(lDtmS.format(dtf));
+		        if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));
+		        if( dccSearchAlarm.getCurrentPage() == null ) {
+		        	
+		        	dccSearchAlarm.setCurrentPage("0");
+		        	
+		        	userInfo.setHogi("3");
+	        		userInfo.setXyGubun("X");		        	
+		        }
+		        
+		        dccSearchAlarm.setHogi(userInfo.getHogi());
+	        	dccSearchAlarm.setXyGubun(userInfo.getXyGubun()); 
 	        	
 //	        	if( dccSearchAlarm.getPagNo() != null ) {
 //		        	String sPagNo = dccSearchAlarm.getPagNo();
@@ -494,37 +521,36 @@ public class DccAlarmContentsController {
 	
 	@RequestMapping("earlywarning")
 	public ModelAndView earlywarning(DccSearchAlarm dccSearchAlarm, HttpServletRequest request) {
+		
         ModelAndView mav = new ModelAndView();
 
         logger.info("############ earlywarning");
-        
-        if( dccSearchAlarm.getHogiHeader() != null ) {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi(dccSearchAlarm.getHogiHeader());
-    	} else {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi("3");
-    	}
-    	if( dccSearchAlarm.getXyHeader() != null ) {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyHeader());
-    	} else {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun("X");
-    	}
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
         	
+        	LocalDateTime lDtmS = LocalDateTime.now();
+	        LocalDateTime lDtmE = LocalDateTime.now();
+	        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        	
+        	if( dccSearchAlarm.getStartDate() == null ) dccSearchAlarm.setStartDate(lDtmS.format(dtf));
+            if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));
+            if( dccSearchAlarm.getsGrpID() == null ) dccSearchAlarm.setsGrpID(userInfo.getId());
+            if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
+        	
     		if(dccSearchAlarm.getsMenuNo() == null || dccSearchAlarm.getsMenuNo().isEmpty()) {
             	
     			dccSearchAlarm.setsDive("D");
     			dccSearchAlarm.setsMenuNo("65");
-    			dccSearchAlarm.setsGrpID("Alarm");;
+    			dccSearchAlarm.setsGrpID(userInfo.getId());	        	
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchAlarm.setsHogi(member.getHogi());
-	        	dccSearchAlarm.setsXYGubun(member.getXyGubun());
-	        	
-	        	//dccSearchAlarm.setsGrpID(member.getId());
+    			userInfo.setHogi("3");
+        		userInfo.setXyGubun("X");	
         	}
+    		
+    		dccSearchAlarm.setsHogi(userInfo.getHogi());
+        	dccSearchAlarm.setsXYGubun(userInfo.getXyGubun());
         	
         	//if(dccSearchAlarm.getsUGrpNo() != null && !dccSearchAlarm.getsUGrpNo().isEmpty()) {
         		
@@ -533,16 +559,17 @@ public class DccAlarmContentsController {
         		dccGrpTagSearchMap.put("hogi",dccSearchAlarm.getsHogi()==null?  "3": dccSearchAlarm.getsHogi());
         		dccGrpTagSearchMap.put("dive",dccSearchAlarm.getsDive()==null?  "D": dccSearchAlarm.getsDive());
         		//dccGrpTagSearchMap.put("grpID", dccSearchAlarm.getsGrpID()==null?  "": dccSearchAlarm.getsGrpID());
-        		dccGrpTagSearchMap.put("grpID", "Alarm");
+        		dccGrpTagSearchMap.put("grpID", userInfo.getId());
         		dccGrpTagSearchMap.put("menuNo", dccSearchAlarm.getsMenuNo()==null?  "65": dccSearchAlarm.getsMenuNo());
-        		dccGrpTagSearchMap.put("uGrpNo", dccSearchAlarm.getsUGrpNo()==null?  "1": dccSearchAlarm.getsUGrpNo());
-        		dccGrpTagSearchMap.put("pSCanTime", dccSearchAlarm.getStartDate()==null?  "2022-12-01 14:52:01.000": dccSearchAlarm.getStartDate());
+        		dccGrpTagSearchMap.put("uGrpNo", dccSearchAlarm.getsUGrpNo()==null?  "1": dccSearchAlarm.getsUGrpNo());        		
+        		dccGrpTagSearchMap.put("pSCanTime", dccSearchAlarm.getStartDate()==null?  lDtmS.format(dtf): dccSearchAlarm.getStartDate());
 
         		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
         		
         		mav.addObject("TagDccInfoList", tagDccInfoList);
         		
-        		String[] varValue =  basDccOsmsService.getDccValueReturn(dccGrpTagSearchMap);
+        		//String[] varValue =  basDccOsmsService.getDccValueReturn(dccGrpTagSearchMap);
+        		Map dccReal = basDccOsmsService.getNumericRealValue2(dccGrpTagSearchMap, tagDccInfoList);
         		
         		List<Map> dccTagList = new ArrayList<Map>();
         		
@@ -551,7 +578,8 @@ public class DccAlarmContentsController {
         			
         			Map rtnMap = new HashMap();
 
-        			rtnMap.put("SCANTIME", varValue[0]);
+        			//rtnMap.put("SCANTIME", varValue[0]);
+        			rtnMap.put("SCANTIME", dccReal.get("SearchTime"));
         			rtnMap.put("IOTYPE", tagDccInfo.getIOTYPE());
         			
         			if(tagDccInfo.getIOTYPE().equals("DI") || tagDccInfo.getIOTYPE().equals("DO")) {
@@ -560,14 +588,20 @@ public class DccAlarmContentsController {
         				rtnMap.put("ADDRESS", tagDccInfo.getADDRESS());    				
         			}
         			
+
+        			rtnMap.put("hogi", tagDccInfo.getHogi());
+        			rtnMap.put("xygubun", tagDccInfo.getXYGubun());
+        			
         			rtnMap.put("DataLoop", tagDccInfo.getDataLoop());
         			rtnMap.put("Descr", tagDccInfo.getDescr());
         			rtnMap.put("MinVal", tagDccInfo.getMinVal());
-        			rtnMap.put("MaxVal", tagDccInfo.getMaxVal());
+        			rtnMap.put("MaxVal", convFormat(tagDccInfo.getMaxVal()+"",4));
         			rtnMap.put("ELow", tagDccInfo.getELOW());
         			rtnMap.put("EHigh", tagDccInfo.getEHIGH());
         			
-        			if(varValue.length > 1) {
+        			List<Map> lblDataList = (List) dccReal.get("lblDataList");
+        			//if(varValue.length > 1) {
+        			if(lblDataList.size() > 1) {
         				
 //        				if(StringUtil.isNumeric(varValue[iRow + 1])){
 //        					
@@ -579,8 +613,23 @@ public class DccAlarmContentsController {
 //        	    				rtnMap.put("Value", String.format(gFormat[tagDccInfo.getBScale()], varValue[iRow + 1])); 		
 //        	    			}
 //        				}
-    					rtnMap.put("Value", varValue[iRow + 1]);
-    					if(StringUtil.isNumeric(varValue[iRow + 1])){
+        				
+        				String varValueNew = lblDataList.get(iRow).get("fValue").toString();
+        				
+    					rtnMap.put("Value", varValueNew);
+    					if(getIsNumeric(varValueNew)){
+	        				if( Double.parseDouble(varValueNew) < tagDccInfo.getMinVal() ) {
+	        					rtnMap.put("BackColor", "#fdf3c0");
+	        				} else if( Double.parseDouble(varValueNew) > tagDccInfo.getMaxVal() ){
+	        					rtnMap.put("BackColor", "#ff5f1f");
+	        				} else {
+	        					rtnMap.put("BackColor", "#ffffff");
+	        				}
+        				} else {
+        					rtnMap.put("BackColor", "#ffffff");
+        				}
+    					/*rtnMap.put("Value", varValue[iRow + 1]);
+    					if(getIsNumeric(varValue[iRow + 1])){
 	        				if( Double.parseDouble(varValue[iRow + 1]) < tagDccInfo.getELOW() ) {
 	        					rtnMap.put("BackColor", "#fdf3c0");
 	        				} else if( Double.parseDouble(varValue[iRow + 1]) < tagDccInfo.getEHIGH() ){
@@ -590,7 +639,7 @@ public class DccAlarmContentsController {
 	        				}
         				} else {
         					rtnMap.put("BackColor", "#ffffff");
-        				}
+        				}*/
         			}
         			
         			rtnMap.put("Unit", tagDccInfo.getUnit());
@@ -606,8 +655,11 @@ public class DccAlarmContentsController {
         				}
         			}
         			iRow++;
-        		}
-        		
+    			}
+
+        		mav.addObject("ScanTime",dccReal.get("SearchTime"));
+        		mav.addObject("ForeColor",dccReal.get("ForeColor"));
+    			mav.addObject("tagSize",dccTagList.size());
         		mav.addObject("DccTagList", dccTagList);
         	//}
         		
@@ -616,7 +668,16 @@ public class DccAlarmContentsController {
     		searchMapGrpNm.put("menuNo", dccSearchAlarm.getsMenuNo());
     		searchMapGrpNm.put("uGrpNo", dccSearchAlarm.getsUGrpNo()==null?  "1": dccSearchAlarm.getsUGrpNo());
     		
-    		List<String> grpNameList = basCommonService.selectGrpNameListB(searchMapGrpNm);
+    		List<String> grpNameList = new ArrayList<String>();
+    		if(commonConstant.getUrl().indexOf("10.135.101.221") > -1) {
+    			grpNameList = basCommonService.selectGrpNameListB(searchMapGrpNm);
+    		}else {
+    			List<Map> grpNameMapList = basCommonService.selectGrpNameList(searchMapGrpNm);
+    			
+    			for(Map grpNameMap:grpNameMapList) {
+    				grpNameList.add(grpNameMap.get("UGrpName").toString());
+    			}
+    		}
     		
     		String groupName = (grpNameList == null || grpNameList.size() == 0)? "경보 설정" : grpNameList.get(0).toString();
     		
@@ -627,7 +688,13 @@ public class DccAlarmContentsController {
     		searchMap.put("menuNo", dccSearchAlarm.getsMenuNo());
     		searchMap.put("uGrpNo", dccSearchAlarm.getsUGrpNo()==null?  "1": dccSearchAlarm.getsUGrpNo());
     		
-        	List<Map> lvIOList = basDccOsmsService.selectDccGrpTagListB(searchMap);
+    		List<Map> lvIOList;
+    		if(commonConstant.getUrl().indexOf("10.135.101.221") > -1) {
+    			lvIOList = basDccOsmsService.selectDccGrpTagListB(searchMap);
+    		}else {
+    			lvIOList = basDccOsmsService.selectDccGrpTagListA(searchMap);
+    		}
+        	        	
         	if( lvIOList.size() > 0 ) {
 	        	for( Map lvIOItem : lvIOList) {
 		        	lvIOItem.put("title", groupName);
@@ -680,9 +747,6 @@ public class DccAlarmContentsController {
         	dccSearchAlarm.setSaveCoreMod("".equals(dccSearchAlarm.getSaveCoreMod()) ? "" : dccSearchAlarm.getSaveCoreMod());
         	
         	dccSearchAlarm.setMenuName(this.menuName);
-
-        	userInfo.setHogi(dccSearchAlarm.getHogiHeader());
-        	userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
         	
         	mav.addObject("BaseSearch", dccSearchAlarm);
         	mav.addObject("UserInfo", userInfo);
@@ -699,115 +763,177 @@ public class DccAlarmContentsController {
 		
 		logger.info("############ runtimerEW");
                 
-		ModelAndView mav = new ModelAndView("jsonView");
-		
-    	if( dccSearchAlarm.getHogiHeader() != null ) {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi(dccSearchAlarm.getHogiHeader());
-    	} else {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi("3");
-    	}
-    	if( dccSearchAlarm.getXyHeader() != null ) {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyHeader());
-    	} else {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun("X");
-    	}
+		ModelAndView mav = new ModelAndView("jsonView");    	
+    	
+    	if(request.getSession().getAttribute("USER_INFO") != null) {
 
-    	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-		
-		if(dccSearchAlarm.getsUGrpNo() != null && !dccSearchAlarm.getsUGrpNo().isEmpty()) {
+    		MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+    		
+    		LocalDateTime lDtmS = LocalDateTime.now();
+	        LocalDateTime lDtmE = LocalDateTime.now();
+	        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         	
-    		Map dccGrpTagSearchMap = new HashMap();
-    		dccGrpTagSearchMap.put("xyGubun",dccSearchAlarm.getsXYGubun()==null?  "X": dccSearchAlarm.getsXYGubun());
-    		dccGrpTagSearchMap.put("hogi",dccSearchAlarm.getsHogi()==null?  "3": dccSearchAlarm.getsHogi());
-    		dccGrpTagSearchMap.put("dive",dccSearchAlarm.getsDive()==null?  "D": dccSearchAlarm.getsDive());
-    		//dccGrpTagSearchMap.put("grpID", dccSearchAlarm.getsGrpID()==null?  "": dccSearchAlarm.getsGrpID());
-    		dccGrpTagSearchMap.put("grpID", "Alarm");
-    		dccGrpTagSearchMap.put("menuNo", dccSearchAlarm.getsMenuNo()==null?  "65": dccSearchAlarm.getsMenuNo());
-    		dccGrpTagSearchMap.put("uGrpNo", dccSearchAlarm.getsUGrpNo()==null?  "1": dccSearchAlarm.getsUGrpNo());
-    		dccGrpTagSearchMap.put("pSCanTime", dccSearchAlarm.getStartDate()==null?  "2022-12-01 14:52:01.000": dccSearchAlarm.getStartDate());
+        	if( dccSearchAlarm.getStartDate() == null ) dccSearchAlarm.setStartDate(lDtmS.format(dtf));
+            if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));
+            if( dccSearchAlarm.getsGrpID() == null ) dccSearchAlarm.setsGrpID(userInfo.getId());
+            if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
     		
-    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
-    		
-    		mav.addObject("TagDccInfoList", tagDccInfoList);
-    		
-    		String[] varValue =  basDccOsmsService.getDccValueReturn(dccGrpTagSearchMap);
-    		
-    		List<Map> dccTagList = new ArrayList<Map>();
-    		
-    		int iRow = 0;
-    		for(ComTagDccInfo tagDccInfo:tagDccInfoList) {
-    			
-    			Map rtnMap = new HashMap();
+        	if( dccSearchAlarm.getsHogi() == null || dccSearchAlarm.getsXYGubun() == null) {
+        		userInfo.setHogi("3");
+        		userInfo.setXyGubun("X");
+        	}
+        	
+        	dccSearchAlarm.setsHogi(userInfo.getHogi());
+    		dccSearchAlarm.setsXYGubun(userInfo.getXyGubun());    		
+		
+			if(dccSearchAlarm.getsUGrpNo() != null && !dccSearchAlarm.getsUGrpNo().isEmpty()) {
+	        	
+	    		Map dccGrpTagSearchMap = new HashMap();
+	    		dccGrpTagSearchMap.put("xyGubun",dccSearchAlarm.getsXYGubun()==null?  "X": dccSearchAlarm.getsXYGubun());
+	    		dccGrpTagSearchMap.put("hogi",dccSearchAlarm.getsHogi()==null?  "3": dccSearchAlarm.getsHogi());
+	    		dccGrpTagSearchMap.put("dive",dccSearchAlarm.getsDive()==null?  "D": dccSearchAlarm.getsDive());
+	    		//dccGrpTagSearchMap.put("grpID", dccSearchAlarm.getsGrpID()==null?  "": dccSearchAlarm.getsGrpID());
+	    		dccGrpTagSearchMap.put("grpID", userInfo.getId());
+	    		dccGrpTagSearchMap.put("menuNo", dccSearchAlarm.getsMenuNo()==null?  "65": dccSearchAlarm.getsMenuNo());
+	    		dccGrpTagSearchMap.put("uGrpNo", dccSearchAlarm.getsUGrpNo()==null?  "1": dccSearchAlarm.getsUGrpNo());
+	    		dccGrpTagSearchMap.put("pSCanTime", dccSearchAlarm.getStartDate()==null?  lDtmS.format(dtf) : dccSearchAlarm.getStartDate());
+	    		
+	    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+	    		
+	    		mav.addObject("TagDccInfoList", tagDccInfoList);
+	    		
+	    		//String[] varValue =  basDccOsmsService.getDccValueReturn(dccGrpTagSearchMap);
+        		Map dccReal = basDccOsmsService.getNumericRealValue2(dccGrpTagSearchMap, tagDccInfoList);
+	    		
+	    		List<Map> dccTagList = new ArrayList<Map>();
+	    		
+	    		int iRow = 0;
+	    		for(ComTagDccInfo tagDccInfo:tagDccInfoList) {
+	    			
+	    			Map rtnMap = new HashMap();
+	
+	    			//rtnMap.put("SCANTIME", varValue[0]);
+        			rtnMap.put("SCANTIME", dccReal.get("SearchTime"));
+	    			rtnMap.put("IOTYPE", tagDccInfo.getIOTYPE());
+	    			
+	    			if(tagDccInfo.getIOTYPE().equals("DI") || tagDccInfo.getIOTYPE().equals("DO")) {
+	    				rtnMap.put("ADDRESS", tagDccInfo.getADDRESS()  + "-" +  tagDccInfo.getIOTYPE());
+	    			}else {
+	    				rtnMap.put("ADDRESS", tagDccInfo.getADDRESS());    				
+	    			}
 
-    			rtnMap.put("SCANTIME", varValue[0]);
-    			rtnMap.put("IOTYPE", tagDccInfo.getIOTYPE());
-    			
-    			if(tagDccInfo.getIOTYPE().equals("DI") || tagDccInfo.getIOTYPE().equals("DO")) {
-    				rtnMap.put("ADDRESS", tagDccInfo.getADDRESS()  + "-" +  tagDccInfo.getIOTYPE());
-    			}else {
-    				rtnMap.put("ADDRESS", tagDccInfo.getADDRESS());    				
-    			}
-    			
-    			rtnMap.put("DataLoop", tagDccInfo.getDataLoop());
-    			rtnMap.put("Descr", tagDccInfo.getDescr());
-    			rtnMap.put("MinVal", tagDccInfo.getMinVal());
-    			rtnMap.put("MaxVal", tagDccInfo.getMaxVal());
-    			rtnMap.put("ELow", tagDccInfo.getELOW());
-    			rtnMap.put("EHigh", tagDccInfo.getEHIGH());
-    			
-    			if(varValue.length > 1) {
-    				
-//    				if(StringUtil.isNumeric(varValue[iRow + 1])){
-//    					
-//    					if(tagDccInfo.getIOTYPE().equals("DI") || tagDccInfo.getIOTYPE().equals("DO")) {
-//    	    				rtnMap.put("Value", GetBitVal(varValue[iRow + 1], ""+tagDccInfo.getIOBIT()));
-//    					}else if(tagDccInfo.getIOTYPE().equals("DI")){
-//    						rtnMap.put("Value", varValue[iRow + 1]);
-//    					}else {
-//    	    				rtnMap.put("Value", String.format(gFormat[tagDccInfo.getBScale()], varValue[iRow + 1])); 		
-//    	    			}
-//    				}
-					rtnMap.put("Value", varValue[iRow + 1]);
-					if(StringUtil.isNumeric(varValue[iRow + 1])){
-        				if( Double.parseDouble(varValue[iRow + 1]) < tagDccInfo.getELOW() ) {
-        					rtnMap.put("BackColor", "#fdf3c0");
-        				} else if( Double.parseDouble(varValue[iRow + 1]) < tagDccInfo.getEHIGH() ){
-        					rtnMap.put("BackColor", "#ff5f1f");
+        			rtnMap.put("hogi", tagDccInfo.getHogi());
+        			rtnMap.put("xygubun", tagDccInfo.getXYGubun());
+	    			rtnMap.put("DataLoop", tagDccInfo.getDataLoop());
+	    			rtnMap.put("Descr", tagDccInfo.getDescr());
+	    			rtnMap.put("MinVal", tagDccInfo.getMinVal());
+	    			rtnMap.put("MaxVal", convFormat(tagDccInfo.getMaxVal()+"",4));
+	    			rtnMap.put("ELow", tagDccInfo.getELOW());
+	    			rtnMap.put("EHigh", tagDccInfo.getEHIGH());
+	    			
+	    			List<Map> lblDataList = (List) dccReal.get("lblDataList");
+        			//if(varValue.length > 1) {
+        			if(lblDataList.size() > 1) {
+	    				
+	//    				if(StringUtil.isNumeric(varValue[iRow + 1])){
+	//    					
+	//    					if(tagDccInfo.getIOTYPE().equals("DI") || tagDccInfo.getIOTYPE().equals("DO")) {
+	//    	    				rtnMap.put("Value", GetBitVal(varValue[iRow + 1], ""+tagDccInfo.getIOBIT()));
+	//    					}else if(tagDccInfo.getIOTYPE().equals("DI")){
+	//    						rtnMap.put("Value", varValue[iRow + 1]);
+	//    					}else {
+	//    	    				rtnMap.put("Value", String.format(gFormat[tagDccInfo.getBScale()], varValue[iRow + 1])); 		
+	//    	    			}
+	//    				}
+	    				
+        				String varValueNew = lblDataList.get(iRow).get("fValue").toString();
+        				
+    					rtnMap.put("Value", varValueNew);
+    					if(getIsNumeric(varValueNew)){
+	        				if( Double.parseDouble(varValueNew) < tagDccInfo.getMinVal() ) {
+	        					rtnMap.put("BackColor", "#fdf3c0");
+	        				} else if( Double.parseDouble(varValueNew) > tagDccInfo.getMaxVal() ){
+	        					rtnMap.put("BackColor", "#ff5f1f");
+	        				} else {
+	        					rtnMap.put("BackColor", "#ffffff");
+	        				}
         				} else {
         					rtnMap.put("BackColor", "#ffffff");
         				}
-    				} else {
-    					rtnMap.put("BackColor", "#ffffff");
-    				}
-    			}
-    			
-    			rtnMap.put("Unit", tagDccInfo.getUnit());
-    			rtnMap.put("rowNum", iRow+1);
-    			
-    			if( dccSearchAlarm.getPageNum() == 2 ) {
-    				if( iRow >= 25 ) {
-    					dccTagList.add(rtnMap);
-    				}
-    			} else {
-    				if( iRow <= 24 ) {
-    					dccTagList.add(rtnMap);
-    				}
-    			}
-    			
-    			//dccTagList.add(rtnMap);
-    			iRow++;
-    		}
-    		
-    		mav.addObject("DccTagList", dccTagList);
+						/*rtnMap.put("Value", varValue[iRow + 1]);
+						if(getIsNumeric(varValue[iRow + 1])){
+	        				if( Double.parseDouble(varValue[iRow + 1]) < tagDccInfo.getELOW() ) {
+	        					rtnMap.put("BackColor", "#fdf3c0");
+	        				} else if( Double.parseDouble(varValue[iRow + 1]) < tagDccInfo.getEHIGH() ){
+	        					rtnMap.put("BackColor", "#ff5f1f");
+	        				} else {
+	        					rtnMap.put("BackColor", "#ffffff");
+	        				}
+	    				} else {
+	    					rtnMap.put("BackColor", "#ffffff");
+	    				}*/
+	    			}
+
+	    			rtnMap.put("Unit", tagDccInfo.getUnit());
+	    			rtnMap.put("rowNum", iRow+1);
+	    			
+	    			if( dccSearchAlarm.getPageNum() == 2 ) {
+	    				if( iRow >= 25 ) {
+	    					dccTagList.add(rtnMap);
+	    				}
+	    			} else {
+	    				if( iRow <= 24 ) {
+	    					dccTagList.add(rtnMap);
+	    				}
+	    			}
+	    			
+	    			//dccTagList.add(rtnMap);
+	    			iRow++;
+	    		}
+
+        		mav.addObject("ScanTime",dccReal.get("SearchTime"));
+        		mav.addObject("ForeColor",dccReal.get("ForeColor"));
+        		mav.addObject("tagSize",dccTagList.size());
+	    		mav.addObject("DccTagList", dccTagList);
+	    	}
+			
+			mav.addObject("BaseSearch", dccSearchAlarm);        	
+	    	mav.addObject("UserInfo", userInfo);
     	}
 
-    	userInfo.setHogi(dccSearchAlarm.getHogiHeader());
-    	userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
-
-		mav.addObject("BaseSearch", dccSearchAlarm);        	
-    	mav.addObject("UserInfo", userInfo);
-
 		return mav;
+	}
+	
+	private String convFormat(String data, int len) {
+		String rtv = "";
+		
+		if( data.indexOf(".") > -1 ) {
+			String[] tmp = data.split("\\.");
+			String fixed = "";
+			if( tmp[1].length() > len ) {
+				if( Integer.parseInt(tmp[1].substring(len,len+1)) > 4 ) {
+					fixed = Integer.parseInt(tmp[1].substring(0,len))+1+"";
+				} else {
+					fixed = tmp[1].substring(0,len);
+				}
+			}
+			
+			rtv = tmp[0]+"."+fixed;
+		} else {
+			rtv = data;
+		}
+		
+		return rtv;
+	}
+	
+	private boolean getIsNumeric(String num) {
+		try {
+			Double.parseDouble(num);
+			
+			return true;
+		} catch( NumberFormatException nfe ) {
+			return false;
+		}
 	}
 	
 	@RequestMapping(value = "ssql", method = { RequestMethod.POST })
@@ -818,50 +944,48 @@ public class DccAlarmContentsController {
                 
 		ModelAndView mav = new ModelAndView("jsonView");
 		
-    	if( dccSearchAlarm.getHogiHeader() != null ) {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi(dccSearchAlarm.getHogiHeader());
-    	} else {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi("3");
-    	}
-    	if( dccSearchAlarm.getXyHeader() != null ) {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyHeader());
-    	} else {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun("X");
-    	}
-    	if( dccSearchAlarm.getIoType() == null || "".equals(dccSearchAlarm.getIoType()) ) dccSearchAlarm.setIoType("AI");
-    	if( dccSearchAlarm.getIoBit() == null || "".equals(dccSearchAlarm.getIoBit()) ) dccSearchAlarm.setIoBit("0");
-    	if( dccSearchAlarm.getSaveCore() == null ) dccSearchAlarm.setSaveCore("0");
-    	if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
-
-    	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+		if(request.getSession().getAttribute("USER_INFO") != null) {
+			
+			MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+			
+			if( dccSearchAlarm.getsHogi() == null || dccSearchAlarm.getsXYGubun() == null) {
+        		userInfo.setHogi("3");
+        		userInfo.setXyGubun("X");
+        	}
+        	
+        	dccSearchAlarm.setsHogi(userInfo.getHogi());
+    		dccSearchAlarm.setsXYGubun(userInfo.getXyGubun());    
 		
-		//if(dccSearchAlarm.getsUGrpNo() != null && !dccSearchAlarm.getsUGrpNo().isEmpty()) {
-    	
-		List<Map> ioList = dccAlarmService.selectSetIOList(dccSearchAlarm);
-		
-		for( Map ioItem: ioList) {
-			ioItem.put("ioBit", dccSearchAlarm.getIoBit());
-			ioItem.put("ioType", dccSearchAlarm.getIoType());
-			ioItem.put("gubun", dccSearchAlarm.getsDive());
-			ioItem.put("hogi", dccSearchAlarm.getsHogi());
-			ioItem.put("xyGubun", dccSearchAlarm.getsXYGubun());
-			ioItem.put("saveCoreChk", dccSearchAlarm.getSaveCore());
-			ioItem.replace("address", ioItem.get("address") == null ? "" : ioItem.get("address"));
-			ioItem.replace("loopName", ioItem.get("loopName") == null ? "" : ioItem.get("loopName"));
-			ioItem.replace("eHigh", ioItem.get("eHigh") == null ? "" : ioItem.get("eHigh"));
-			ioItem.replace("eLow", ioItem.get("eLow") == null ? "" : ioItem.get("eLow"));
-			ioItem.replace("iSeq", ioItem.get("iSeq") == null ? "" : ioItem.get("iSeq"));
-			ioItem.replace("FASTIOCHK", ioItem.get("FASTIOCHK") == null ? "" : ioItem.get("FASTIOCHK"));
+	    	if( dccSearchAlarm.getIoType() == null || "".equals(dccSearchAlarm.getIoType()) ) dccSearchAlarm.setIoType("AI");
+	    	if( dccSearchAlarm.getIoBit() == null || "".equals(dccSearchAlarm.getIoBit()) ) dccSearchAlarm.setIoBit("0");
+	    	if( dccSearchAlarm.getSaveCore() == null ) dccSearchAlarm.setSaveCore("0");
+	    	if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
+			
+			//if(dccSearchAlarm.getsUGrpNo() != null && !dccSearchAlarm.getsUGrpNo().isEmpty()) {
+	    	
+			List<Map> ioList = dccAlarmService.selectSetIOList(dccSearchAlarm);
+			
+			for( Map ioItem: ioList) {
+				ioItem.put("ioBit", dccSearchAlarm.getIoBit());
+				ioItem.put("ioType", dccSearchAlarm.getIoType());
+				ioItem.put("gubun", dccSearchAlarm.getsDive());
+				ioItem.put("hogi", dccSearchAlarm.getsHogi());
+				ioItem.put("xyGubun", dccSearchAlarm.getsXYGubun());
+				ioItem.put("saveCoreChk", dccSearchAlarm.getSaveCore());
+				ioItem.replace("address", ioItem.get("address") == null ? "" : ioItem.get("address"));
+				ioItem.replace("loopName", ioItem.get("loopName") == null ? "" : ioItem.get("loopName"));
+				ioItem.replace("eHigh", ioItem.get("eHigh") == null ? "" : ioItem.get("eHigh"));
+				ioItem.replace("eLow", ioItem.get("eLow") == null ? "" : ioItem.get("eLow"));
+				ioItem.replace("iSeq", ioItem.get("iSeq") == null ? "" : ioItem.get("iSeq"));
+				ioItem.replace("FASTIOCHK", ioItem.get("FASTIOCHK") == null ? "" : ioItem.get("FASTIOCHK"));
+			}
+			
+			mav.addObject("LvIOList", ioList);
+	    	//}
+	
+			mav.addObject("BaseSearch", dccSearchAlarm);        	
+	    	mav.addObject("UserInfo", userInfo);
 		}
-		
-		mav.addObject("LvIOList", ioList);
-    	//}
-
-    	userInfo.setHogi(dccSearchAlarm.getHogiHeader());
-    	userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
-
-		mav.addObject("BaseSearch", dccSearchAlarm);        	
-    	mav.addObject("UserInfo", userInfo);
 
 		return mav;
 	}
@@ -874,171 +998,173 @@ public class DccAlarmContentsController {
                 
 		ModelAndView mav = new ModelAndView("jsonView");
 		
-    	if( dccSearchAlarm.getHogiHeader() != null ) {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi(dccSearchAlarm.getHogiHeader());
-    	} else {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi("3");
-    	}
-    	if( dccSearchAlarm.getXyHeader() != null ) {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyHeader());
-    	} else {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun("X");
-    	}
-    	if( dccSearchAlarm.getIoType() == null || "".equals(dccSearchAlarm.getIoType()) ) dccSearchAlarm.setIoType("AI");
-    	if( dccSearchAlarm.getIoBit() == null || "".equals(dccSearchAlarm.getIoBit()) ) dccSearchAlarm.setIoBit("0");
-    	if( dccSearchAlarm.getSaveCore() == null ) dccSearchAlarm.setSaveCore("0");
-    	if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
-
-    	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+		if(request.getSession().getAttribute("USER_INFO") != null) {
+			
+			MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+			
+			if( dccSearchAlarm.getsHogi() == null || dccSearchAlarm.getsXYGubun() == null) {
+        		userInfo.setHogi("3");
+        		userInfo.setXyGubun("X");
+        	}
+        	
+        	dccSearchAlarm.setsHogi(userInfo.getHogi());
+    		dccSearchAlarm.setsXYGubun(userInfo.getXyGubun());   
 		
-		//if(dccSearchAlarm.getsUGrpNo() != null && !dccSearchAlarm.getsUGrpNo().isEmpty()) {
-    	
-    	String strDive = dccSearchAlarm.getsDive() == "null" ? "D" : dccSearchAlarm.getsDive();
-    	String strGrpID = dccSearchAlarm.getsGrpID() == null ? "Alarm" : dccSearchAlarm.getsGrpID();
-    	String strMenuNo = dccSearchAlarm.getsMenuNo() == null ? "65" : dccSearchAlarm.getsMenuNo();
-    	String strUGrpNo = dccSearchAlarm.getsUGrpNo() == null ? "1" : dccSearchAlarm.getsUGrpNo();
-    	
-    	Map searchMapGrpNm = new HashMap();
-		searchMapGrpNm.put("grpID", strGrpID);
-		searchMapGrpNm.put("menuNo", strMenuNo);
-		searchMapGrpNm.put("uGrpNo", strUGrpNo);
-		
-		String groupName = basCommonService.selectGrpNameListB(searchMapGrpNm).get(0) == null ? "경보 설정" : basCommonService.selectGrpNameListB(searchMapGrpNm).get(0);
-		
-		Map searchMap = new HashMap();
-		searchMap.put("dive", strDive);
-		searchMap.put("grpID", strGrpID);
-		searchMap.put("hogi", dccSearchAlarm.getsHogi());
-		searchMap.put("menuNo", dccSearchAlarm.getsMenuNo());
-		searchMap.put("uGrpNo", strUGrpNo);
-		
-    	List<Map> lvIOList = basDccOsmsService.selectDccGrpTagListB(searchMap);
-    	
-    	String[] iSeqMod = dccSearchAlarm.getiSeqMod().split("==SEP==");
-    	String[] gubunMod = dccSearchAlarm.getGubunMod().split("==SEP==");
-    	String[] hogiMod = dccSearchAlarm.getHogiMod().split("==SEP==");
-    	String[] xyGubunMod = dccSearchAlarm.getXyGubunMod().split("==SEP==");
-    	String[] DescrMod = dccSearchAlarm.getDescrMod().split("==SEP==");
-    	String[] ioTypeMod = dccSearchAlarm.getIoTypeMod().split("==SEP==");
-    	String[] addressMod = dccSearchAlarm.getAddressMod().split("==SEP==");
-    	String[] ioBitMod = dccSearchAlarm.getIoBitMod().split("==SEP==");
-    	String[] minValMod = dccSearchAlarm.getMinValMod().split("==SEP==");
-    	String[] maxValMod = dccSearchAlarm.getMaxValMod().split("==SEP==");
-    	String[] saveCoreMod = dccSearchAlarm.getSaveCoreMod().split("==SEP==");
-    	
-    	//for( Map lvIOItem : lvIOList) {
-    	for( int di=0;di<lvIOList.size();di++ ) {
-    		Map lvIOItem = lvIOList.get(di);
-    		if( iSeqMod[1].indexOf("|") > -1 && iSeqMod[1].length() > 1 ) {
-	    		for( int d=0;d<iSeqMod[1].split("\\|").length;d++ ) {
-		    		if( iSeqMod[1].split("\\|")[d].trim().equals(lvIOItem.get("iSeq").toString().trim()) ) {
+	    	if( dccSearchAlarm.getIoType() == null || "".equals(dccSearchAlarm.getIoType()) ) dccSearchAlarm.setIoType("AI");
+	    	if( dccSearchAlarm.getIoBit() == null || "".equals(dccSearchAlarm.getIoBit()) ) dccSearchAlarm.setIoBit("0");
+	    	if( dccSearchAlarm.getSaveCore() == null ) dccSearchAlarm.setSaveCore("0");
+	    	if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
+			
+			//if(dccSearchAlarm.getsUGrpNo() != null && !dccSearchAlarm.getsUGrpNo().isEmpty()) {
+	    	
+	    	String strDive = dccSearchAlarm.getsDive() == "null" || dccSearchAlarm.getsDive() == null ? "D" : dccSearchAlarm.getsDive();
+	    	String strGrpID = dccSearchAlarm.getsGrpID() == null ? userInfo.getId() : dccSearchAlarm.getsGrpID();
+	    	String strMenuNo = dccSearchAlarm.getsMenuNo() == null ? "65" : dccSearchAlarm.getsMenuNo();
+	    	String strUGrpNo = dccSearchAlarm.getsUGrpNo() == null ? "1" : dccSearchAlarm.getsUGrpNo();
+	    	
+	    	Map searchMapGrpNm = new HashMap();
+			searchMapGrpNm.put("grpID", strGrpID);
+			searchMapGrpNm.put("menuNo", strMenuNo);
+			searchMapGrpNm.put("uGrpNo", strUGrpNo);
+			
+			String groupName = basCommonService.selectGrpNameListB(searchMapGrpNm).get(0) == null ? "경보 설정" : basCommonService.selectGrpNameListB(searchMapGrpNm).get(0);
+			
+			Map searchMap = new HashMap();
+			searchMap.put("dive", strDive);
+			searchMap.put("grpID", strGrpID);
+			searchMap.put("hogi", dccSearchAlarm.getsHogi());
+			searchMap.put("menuNo", dccSearchAlarm.getsMenuNo());
+			searchMap.put("uGrpNo", strUGrpNo);
+			
+	    	List<Map> lvIOList = basDccOsmsService.selectDccGrpTagListB(searchMap);
+	    	
+	    	String[] iSeqMod = dccSearchAlarm.getiSeqMod().split("==SEP==");
+	    	String[] gubunMod = dccSearchAlarm.getGubunMod().split("==SEP==");
+	    	String[] hogiMod = dccSearchAlarm.getHogiMod().split("==SEP==");
+	    	String[] xyGubunMod = dccSearchAlarm.getXyGubunMod().split("==SEP==");
+	    	String[] DescrMod = dccSearchAlarm.getDescrMod().split("==SEP==");
+	    	String[] ioTypeMod = dccSearchAlarm.getIoTypeMod().split("==SEP==");
+	    	String[] addressMod = dccSearchAlarm.getAddressMod().split("==SEP==");
+	    	String[] ioBitMod = dccSearchAlarm.getIoBitMod().split("==SEP==");
+	    	String[] minValMod = dccSearchAlarm.getMinValMod().split("==SEP==");
+	    	String[] maxValMod = dccSearchAlarm.getMaxValMod().split("==SEP==");
+	    	String[] saveCoreMod = dccSearchAlarm.getSaveCoreMod().split("==SEP==");
+	    	
+	    	//for( Map lvIOItem : lvIOList) {
+	    	for( int di=0;di<lvIOList.size();di++ ) {
+	    		Map lvIOItem = lvIOList.get(di);
+	    		if( iSeqMod[1].indexOf("|") > -1 && iSeqMod[1].length() > 1 ) {
+		    		for( int d=0;d<iSeqMod[1].split("\\|").length;d++ ) {
+			    		if( iSeqMod[1].split("\\|")[d].trim().equals(lvIOItem.get("iSeq").toString().trim()) ) {
+			    			lvIOList.remove(lvIOItem);
+			    		}
+		    		}
+	    		} else if( iSeqMod[1].length() > 0 ) {
+	    			if( iSeqMod[1].replaceAll("|", "").equals(lvIOItem.get("iSeq")) ) {
 		    			lvIOList.remove(lvIOItem);
 		    		}
 	    		}
-    		} else if( iSeqMod[1].length() > 0 ) {
-    			if( iSeqMod[1].replaceAll("|", "").equals(lvIOItem.get("iSeq")) ) {
-	    			lvIOList.remove(lvIOItem);
-	    		}
-    		}
-    	}
-    	
-    	if( !"".equals(iSeqMod[0]) && iSeqMod[0].indexOf("|") > -1 ) {
-    		int size = iSeqMod[0].split("\\|").length;
-	    	for ( int i=0;i<size;i++ ) {
-				Map lvIOItem = new HashMap();
-				if( !"|".equals(iSeqMod[0]) ) {
-					lvIOItem.put("iSeq", iSeqMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("iSeq", "");
-				}
-				if( !"|".equals(gubunMod[0]) ) {
-					lvIOItem.put("gubun", gubunMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("gubun", "");
-				}
-				if( !"|".equals(hogiMod[0]) ) {
-					lvIOItem.put("hogi", hogiMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("hogi", "");
-				}
-				if( !"|".equals(xyGubunMod[0]) ) {
-					lvIOItem.put("xyGubun", xyGubunMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("xyGubun", "");
-				}
-				if( size == DescrMod[0].split("\\|").length ) {
-					lvIOItem.put("Descr", DescrMod[0].split("\\|")[i]);
-				} else {
-					if( i < DescrMod[0].split("\\|").length ) {
+	    	}
+	    	
+	    	if( !"".equals(iSeqMod[0]) && iSeqMod[0].indexOf("|") > -1 ) {
+	    		int size = iSeqMod[0].split("\\|").length;
+		    	for ( int i=0;i<size;i++ ) {
+					Map lvIOItem = new HashMap();
+					if( !"|".equals(iSeqMod[0]) ) {
+						lvIOItem.put("iSeq", iSeqMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("iSeq", "");
+					}
+					if( !"|".equals(gubunMod[0]) ) {
+						lvIOItem.put("gubun", gubunMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("gubun", "");
+					}
+					if( !"|".equals(hogiMod[0]) ) {
+						lvIOItem.put("hogi", hogiMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("hogi", "");
+					}
+					if( !"|".equals(xyGubunMod[0]) ) {
+						lvIOItem.put("xyGubun", xyGubunMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("xyGubun", "");
+					}
+					if( size == DescrMod[0].split("\\|").length ) {
 						lvIOItem.put("Descr", DescrMod[0].split("\\|")[i]);
 					} else {
-						lvIOItem.put("Descr", "");
+						if( i < DescrMod[0].split("\\|").length ) {
+							lvIOItem.put("Descr", DescrMod[0].split("\\|")[i]);
+						} else {
+							lvIOItem.put("Descr", "");
+						}
 					}
-				}
-				if( !"|".equals(ioTypeMod[0]) ) {
-					lvIOItem.put("ioType", ioTypeMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("ioType", "");
-				}
-				if( !"|".equals(addressMod[0]) ) {
-					lvIOItem.put("address", addressMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("address", "");
-				}
-				if( !"|".equals(ioBitMod[0]) ) {
-					lvIOItem.put("ioBit", ioBitMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("ioBit", "");
-				}
-				if( !"|".equals(minValMod[0]) ) {
-					lvIOItem.put("minVal", minValMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("minVal", "");
-				}
-				if( !"|".equals(maxValMod[0]) ) {
-					lvIOItem.put("maxVal", maxValMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("maxVal", "");
-				}
-				if( !"|".equals(saveCoreMod[0]) ) {
-					lvIOItem.put("saveCoreChk", saveCoreMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("saveCoreChk", "");
-				}
-				
+					if( !"|".equals(ioTypeMod[0]) ) {
+						lvIOItem.put("ioType", ioTypeMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("ioType", "");
+					}
+					if( !"|".equals(addressMod[0]) ) {
+						lvIOItem.put("address", addressMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("address", "");
+					}
+					if( !"|".equals(ioBitMod[0]) ) {
+						lvIOItem.put("ioBit", ioBitMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("ioBit", "");
+					}
+					if( !"|".equals(minValMod[0]) ) {
+						lvIOItem.put("minVal", minValMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("minVal", "");
+					}
+					if( !"|".equals(maxValMod[0]) ) {
+						lvIOItem.put("maxVal", maxValMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("maxVal", "");
+					}
+					if( !"|".equals(saveCoreMod[0]) ) {
+						lvIOItem.put("saveCoreChk", saveCoreMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("saveCoreChk", "");
+					}
+					
+			    	lvIOList.add(lvIOItem);
+		    	}
+	    	} else if( !"".equals(iSeqMod[0]) && iSeqMod[0].length() > 0 ) {
+				Map lvIOItem = new HashMap();
+				lvIOItem.put("title", groupName);
+		    	lvIOItem.put("iSeq", !"|".equals(dccSearchAlarm.getiSeqMod()) ? iSeqMod[0] : "");
+		    	lvIOItem.put("gubun", !"|".equals(dccSearchAlarm.getGubunMod()) ? gubunMod[0] : "");
+		    	lvIOItem.put("hogi", !"|".equals(dccSearchAlarm.getHogiMod()) ? hogiMod[0] : "");
+		    	lvIOItem.put("xyGubun", !"|".equals(dccSearchAlarm.getXyGubunMod()) ? xyGubunMod[0] : "");
+		    	lvIOItem.put("Descr", !"|".equals(dccSearchAlarm.getDescrMod()) ? DescrMod[0] : "");
+		    	lvIOItem.put("ioType", !"|".equals(dccSearchAlarm.getIoTypeMod()) ? ioTypeMod[0] : "");
+		    	lvIOItem.put("address", !"|".equals(dccSearchAlarm.getAddressMod()) ? addressMod[0] : "");
+		    	lvIOItem.put("ioBit", !"|".equals(dccSearchAlarm.getIoBitMod()) ? ioBitMod[0] : "");
+		    	lvIOItem.put("minVal", !"|".equals(dccSearchAlarm.getMinValMod()) ? minValMod[0] : "");
+		    	lvIOItem.put("maxVal", !"|".equals(dccSearchAlarm.getMaxValMod()) ? maxValMod[0] : "");
+		    	lvIOItem.put("saveCoreChk", !"|".equals(dccSearchAlarm.getSaveCoreMod()) ? saveCoreMod[0] : "");
+	    	
 		    	lvIOList.add(lvIOItem);
 	    	}
-    	} else if( !"".equals(iSeqMod[0]) && iSeqMod[0].length() > 0 ) {
-			Map lvIOItem = new HashMap();
-			lvIOItem.put("title", groupName);
-	    	lvIOItem.put("iSeq", !"|".equals(dccSearchAlarm.getiSeqMod()) ? iSeqMod[0] : "");
-	    	lvIOItem.put("gubun", !"|".equals(dccSearchAlarm.getGubunMod()) ? gubunMod[0] : "");
-	    	lvIOItem.put("hogi", !"|".equals(dccSearchAlarm.getHogiMod()) ? hogiMod[0] : "");
-	    	lvIOItem.put("xyGubun", !"|".equals(dccSearchAlarm.getXyGubunMod()) ? xyGubunMod[0] : "");
-	    	lvIOItem.put("Descr", !"|".equals(dccSearchAlarm.getDescrMod()) ? DescrMod[0] : "");
-	    	lvIOItem.put("ioType", !"|".equals(dccSearchAlarm.getIoTypeMod()) ? ioTypeMod[0] : "");
-	    	lvIOItem.put("address", !"|".equals(dccSearchAlarm.getAddressMod()) ? addressMod[0] : "");
-	    	lvIOItem.put("ioBit", !"|".equals(dccSearchAlarm.getIoBitMod()) ? ioBitMod[0] : "");
-	    	lvIOItem.put("minVal", !"|".equals(dccSearchAlarm.getMinValMod()) ? minValMod[0] : "");
-	    	lvIOItem.put("maxVal", !"|".equals(dccSearchAlarm.getMaxValMod()) ? maxValMod[0] : "");
-	    	lvIOItem.put("saveCoreChk", !"|".equals(dccSearchAlarm.getSaveCoreMod()) ? saveCoreMod[0] : "");
-    	
-	    	lvIOList.add(lvIOItem);
-    	}
-    	
-    	mav.addObject("LvIOList",lvIOList);
-    	//}
-
-    	userInfo.setHogi(dccSearchAlarm.getHogiHeader());
-    	userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
-
-		mav.addObject("BaseSearch", dccSearchAlarm);        	
-    	mav.addObject("UserInfo", userInfo);
+	    	
+	    	mav.addObject("LvIOList",lvIOList);
+	    	//}
+	
+	    	//update hogi, xygubun은 session user info 사용으로 이후 수정 예정 : asj
+	    	//userInfo.setHogi(dccSearchAlarm.getHogiHeader());
+	    	//userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
+	
+			mav.addObject("BaseSearch", dccSearchAlarm);        	
+	    	mav.addObject("UserInfo", userInfo);
+		}
 
 		return mav;
 	}
 	
-	@RequestMapping(value = "tagFind", method = { RequestMethod.POST })
+	/*@RequestMapping(value = "tagFind", method = { RequestMethod.POST })
 	@ResponseBody
 	public ModelAndView tagFind(DccSearchAlarm dccSearchAlarm, HttpServletRequest request) {
 		
@@ -1046,15 +1172,178 @@ public class DccAlarmContentsController {
                 
 		ModelAndView mav = new ModelAndView("jsonView");
 		
+		if(request.getSession().getAttribute("USER_INFO") != null) {
+			
+			MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+			
+			if( dccSearchAlarm.getsHogi() == null || dccSearchAlarm.getsXYGubun() == null) {
+        		userInfo.setHogi("3");
+        		userInfo.setXyGubun("X");
+        	}			
+        	
+        	dccSearchAlarm.setsHogi(userInfo.getHogi());
+    		dccSearchAlarm.setsXYGubun(userInfo.getXyGubun());   
+		
+	    	if( dccSearchAlarm.getIoType() == null || "".equals(dccSearchAlarm.getIoType()) ) dccSearchAlarm.setIoType("AI");
+	    	if( dccSearchAlarm.getIoBit() == null || "".equals(dccSearchAlarm.getIoBit()) ) dccSearchAlarm.setIoBit("0");
+	    	if( dccSearchAlarm.getSaveCore() == null ) dccSearchAlarm.setSaveCore("0");
+	    	if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
+
+			//if(dccSearchAlarm.getsUGrpNo() != null && !dccSearchAlarm.getsUGrpNo().isEmpty()) {
+	    	
+	    	String strDive = dccSearchAlarm.getsDive() == "null" ? "D" : dccSearchAlarm.getsDive();
+	    	String strGrpID = dccSearchAlarm.getsGrpID() == null ? "Alarm" : dccSearchAlarm.getsGrpID();
+	    	String strMenuNo = dccSearchAlarm.getsMenuNo() == null ? "65" : dccSearchAlarm.getsMenuNo();
+	    	String strUGrpNo = dccSearchAlarm.getsUGrpNo() == null ? "1" : dccSearchAlarm.getsUGrpNo();
+	    	
+	    	dccSearchAlarm.setsDive(strDive);
+	    	dccSearchAlarm.setsGrpID(strGrpID);
+	    	dccSearchAlarm.setsMenuNo(strMenuNo);
+	    	dccSearchAlarm.setsUGrpNo(strUGrpNo);
+	    	
+	    	List<Map> tagSearchList = dccAlarmService.selectAlarmTagSearch(dccSearchAlarm);
+	    	
+	    	for( Map tagSearchItem : tagSearchList ) {
+	    		tagSearchItem.replace("iSeq",tagSearchItem.get("iSeq") == null ? "" : tagSearchItem.get("iSeq").toString());
+	    		tagSearchItem.replace("iHogi",tagSearchItem.get("iHogi") == null ? "" : tagSearchItem.get("iHogi").toString());
+	    		tagSearchItem.replace("xyGubun",tagSearchItem.get("xyGubun") == null ? "" : tagSearchItem.get("xyGubun").toString());
+	    		tagSearchItem.replace("loopName",tagSearchItem.get("loopName") == null ? "" : tagSearchItem.get("loopName").toString());
+	    		tagSearchItem.replace("descr",tagSearchItem.get("descr") == null ? "" : tagSearchItem.get("descr").toString());
+	    		tagSearchItem.replace("ioType",tagSearchItem.get("ioType") == null ? "" : tagSearchItem.get("ioType").toString());
+	    		tagSearchItem.replace("address",tagSearchItem.get("address") == null ? "" : tagSearchItem.get("address").toString());
+	    		tagSearchItem.replace("ioBit",tagSearchItem.get("ioBit") == null ? "" : tagSearchItem.get("ioBit").toString());
+	    		tagSearchItem.replace("eLow",tagSearchItem.get("eLow") == null ? "" : tagSearchItem.get("eLow").toString());
+	    		tagSearchItem.replace("eHigh",tagSearchItem.get("eHigh") == null ? "" : tagSearchItem.get("eHigh").toString());
+	    	}
+	    	
+	    	mav.addObject("TagSearchList", tagSearchList);
+	
+	    	//update hogi, xygubun은 session user info 사용으로 이후 수정 예정 : asj
+	    	//userInfo.setHogi(dccSearchAlarm.getHogiHeader());
+	    	//userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
+	
+			mav.addObject("BaseSearch", dccSearchAlarm);
+	    	mav.addObject("UserInfo", userInfo);
+		}
+
+		return mav;
+	}*/
+	
+	@RequestMapping(value="tagFind", method = { RequestMethod.POST })
+	@ResponseBody
+	public ModelAndView tagFind(DccSearchAlarm dccSearchAlarm, HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("jsonView");
+		
+		String getHogiHeader = dccSearchAlarm.getHogiHeader();
+		String getXyHeader = dccSearchAlarm.getXyHeader();
+		
+		if( getHogiHeader.indexOf(",") > -1 ) getHogiHeader = getHogiHeader.substring(0,getHogiHeader.indexOf(",")).trim();
+		if( getXyHeader.indexOf(",") > -1 ) getXyHeader = getXyHeader.substring(0,getXyHeader.indexOf(",")).trim();
+		
+		String strFindData = dccSearchAlarm.getFindData() == null ? "" : dccSearchAlarm.getFindData();
+		String strChkOpt1 = dccSearchAlarm.getChkOpt1() == null ? "" : dccSearchAlarm.getChkOpt1();
+		String strChkOpt2 = dccSearchAlarm.getChkOpt2() == null ? "" : dccSearchAlarm.getChkOpt2();
+		if( strFindData.indexOf(",") > -1 ) strFindData = strFindData.substring(0,strFindData.indexOf(",")).trim();
+		if( strChkOpt1.indexOf(",") > -1 ) strChkOpt1 = strChkOpt1.substring(0,strChkOpt1.indexOf(",")).trim();
+		if( strChkOpt2.indexOf(",") > -1 ) strChkOpt2 = strChkOpt2.substring(0,strChkOpt2.indexOf(",")).trim();
+		
+		String conHogi = commonConstant.getUrl().indexOf("10.135.101.222") > -1 ? "4" : "3";
+		
     	if( dccSearchAlarm.getHogiHeader() != null ) {
     		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi(dccSearchAlarm.getHogiHeader());
     	} else {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi("3");
+    		if( dccSearchAlarm.getHogi() == null ) {
+    			if( "4".equals(conHogi) ) {
+    				dccSearchAlarm.setsHogi("4");
+    			} else {
+    				dccSearchAlarm.setsHogi("3");
+    			}
+    		}
+    	}
+    	if( getXyHeader != null && !"".equals(getXyHeader) ) {
+    		//if( dccSearchAlarm.getXyGubun() == null || "".equals(dccSearchAlarm.getXyGubun()) ) {
+    			dccSearchAlarm.setsXYGubun(getXyHeader);
+    		//}
+    	} else {
+    		if( dccSearchAlarm.getXyGubun() == null || "".equals(dccSearchAlarm.getXyGubun()) ) {
+    			dccSearchAlarm.setsXYGubun("X");
+    		} else {
+    			dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyGubun());
+    		}
+    	}
+		if( dccSearchAlarm.getType() == null ) dccSearchAlarm.setType("0");
+		if( dccSearchAlarm.getTagHogi() == null ) dccSearchAlarm.setTagHogi("3");
+		if( dccSearchAlarm.getTagIOType() == null ) dccSearchAlarm.setTagIOType("AI");
+		if( dccSearchAlarm.getFindData() == null ) dccSearchAlarm.setFindData("");
+		if( dccSearchAlarm.getbAll() == null ) dccSearchAlarm.setbAll("0");
+		if( dccSearchAlarm.getChkOpt1() == null ) dccSearchAlarm.setChkOpt1("0");
+		if( dccSearchAlarm.getChkOpt2() == null ) dccSearchAlarm.setChkOpt2("1");
+	    
+		MemberInfo userInfo = (MemberInfo)request.getSession().getAttribute("USER_INFO");
+		
+		Map searchMap = new HashMap();
+		searchMap.put("type", dccSearchAlarm.getType());
+		searchMap.put("tagHogi", dccSearchAlarm.getTagHogi());
+		searchMap.put("tagIOType", dccSearchAlarm.getTagIOType());
+		searchMap.put("findData", strFindData);
+		searchMap.put("bAll", dccSearchAlarm.getbAll());
+		searchMap.put("chkOpt1", strChkOpt1);
+		searchMap.put("chkOpt2", strChkOpt2);
+		
+		System.out.println("type :: "+searchMap.get("type"));
+		System.out.println("tagHogi :: "+searchMap.get("tagHogi"));
+		System.out.println("tagIOType :: "+searchMap.get("tagIOType"));
+		System.out.println("findData :: "+searchMap.get("findData"));
+		System.out.println("bAll :: "+searchMap.get("bAll"));
+		System.out.println("chkOpt1 :: "+searchMap.get("chkOpt1"));
+		System.out.println("chkOpt2 :: "+searchMap.get("chkOpt2"));
+		
+		if(request.getSession().getAttribute("USER_INFO") != null) {
+			List<Map> tagInfoList = new ArrayList();
+			tagInfoList = dccTrendService.selectTrendTagSearch(searchMap);
+			
+			mav.addObject("TagInfoList",tagInfoList);
+			
+			mav.addObject("BaseSearch", dccSearchAlarm);
+			mav.addObject("UserInfo",userInfo);
+		}
+		
+		return mav;
+	}
+	
+	@RequestMapping(value = "cmdOK", method = { RequestMethod.POST })
+	@ResponseBody
+	public ModelAndView cmdOK(DccSearchAlarm dccSearchAlarm, HttpServletRequest request, HttpServletResponse response) {
+		
+		logger.info("############ cmdOK");
+                
+		ModelAndView mav = new ModelAndView("jsonView");
+		
+		String conHogi = commonConstant.getUrl().indexOf("10.135.101.222") > -1 ? "4" : "3";
+		
+    	if( dccSearchAlarm.getHogiHeader() != null ) {
+    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi(dccSearchAlarm.getHogiHeader());
+    	} else {
+    		if( dccSearchAlarm.getHogi() == null ) {
+    			if( "4".equals(conHogi) ) {
+    				dccSearchAlarm.setsHogi("4");
+    			} else {
+    				dccSearchAlarm.setsHogi("3");
+    			}
+    		} else {
+    			dccSearchAlarm.setsHogi(dccSearchAlarm.getHogi());
+    		}
     	}
     	if( dccSearchAlarm.getXyHeader() != null ) {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyHeader());
+    		//if( dccSearchAlarm.getXyGubun() == null ) {
+    			dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyHeader());
+    		//}
     	} else {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun("X");
+    		if( dccSearchAlarm.getXyGubun() == null ) {
+    			dccSearchAlarm.setsXYGubun("X");
+    		} else {
+    			dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyGubun());
+    		}
     	}
     	if( dccSearchAlarm.getIoType() == null || "".equals(dccSearchAlarm.getIoType()) ) dccSearchAlarm.setIoType("AI");
     	if( dccSearchAlarm.getIoBit() == null || "".equals(dccSearchAlarm.getIoBit()) ) dccSearchAlarm.setIoBit("0");
@@ -1065,35 +1354,91 @@ public class DccAlarmContentsController {
 		
 		//if(dccSearchAlarm.getsUGrpNo() != null && !dccSearchAlarm.getsUGrpNo().isEmpty()) {
     	
-    	String strDive = dccSearchAlarm.getsDive() == "null" ? "D" : dccSearchAlarm.getsDive();
-    	String strGrpID = dccSearchAlarm.getsGrpID() == null ? "Alarm" : dccSearchAlarm.getsGrpID();
+    	String strDive = dccSearchAlarm.getsDive() == null ? "D" : dccSearchAlarm.getsDive();
+    	String strGrpID = dccSearchAlarm.getsGrpID() == null ? userInfo.getId() : dccSearchAlarm.getsGrpID();
     	String strMenuNo = dccSearchAlarm.getsMenuNo() == null ? "65" : dccSearchAlarm.getsMenuNo();
-    	String strUGrpNo = dccSearchAlarm.getsUGrpNo() == null ? "1" : dccSearchAlarm.getsUGrpNo();
+    	String strUGrpName = dccSearchAlarm.getsUGrpName() == null ? "" : dccSearchAlarm.getsUGrpName();
+    	String strUGrpNo = "1";
+    	String strType = dccSearchAlarm.getType() == null ? "" : dccSearchAlarm.getType();
+    	String strISeqMod = dccSearchAlarm.getiSeqMod() == null ? "" : dccSearchAlarm.getiSeqMod();
+    	String strHogiMod = dccSearchAlarm.getHogiMod() == null ? "" : dccSearchAlarm.getHogiMod();
+    	String strXyGubunMod = dccSearchAlarm.getXyGubunMod() == null ? "" : dccSearchAlarm.getXyGubunMod();
+    	String strDescrMod = dccSearchAlarm.getDescrMod() == null ? "" : dccSearchAlarm.getDescrMod();
+    	String strIoTypeMod = dccSearchAlarm.getIoTypeMod() == null ? "" : dccSearchAlarm.getIoTypeMod();
+    	String strAddressMod = dccSearchAlarm.getAddressMod() == null ? "" : dccSearchAlarm.getAddressMod();
+    	String strIoBitMod = dccSearchAlarm.getIoBitMod() == null ? "" : dccSearchAlarm.getIoBitMod();
+    	String strMinValMod = dccSearchAlarm.getMinValMod() == null ? "" : dccSearchAlarm.getMinValMod();
+    	String strMaxValMod = dccSearchAlarm.getMaxValMod() == null ? "" : dccSearchAlarm.getMaxValMod();
+    	String strSaveCoreMod = dccSearchAlarm.getSaveCoreMod() == null ? "" : dccSearchAlarm.getSaveCoreMod();
     	
-    	dccSearchAlarm.setsDive(strDive);
-    	dccSearchAlarm.setsGrpID(strGrpID);
-    	dccSearchAlarm.setsMenuNo(strMenuNo);
-    	dccSearchAlarm.setsUGrpNo(strUGrpNo);
-    	
-    	List<Map> tagSearchList = dccAlarmService.selectAlarmTagSearch(dccSearchAlarm);
-    	
-    	for( Map tagSearchItem : tagSearchList ) {
-    		tagSearchItem.replace("iSeq",tagSearchItem.get("iSeq") == null ? "" : tagSearchItem.get("iSeq").toString());
-    		tagSearchItem.replace("iHogi",tagSearchItem.get("iHogi") == null ? "" : tagSearchItem.get("iHogi").toString());
-    		tagSearchItem.replace("xyGubun",tagSearchItem.get("xyGubun") == null ? "" : tagSearchItem.get("xyGubun").toString());
-    		tagSearchItem.replace("loopName",tagSearchItem.get("loopName") == null ? "" : tagSearchItem.get("loopName").toString());
-    		tagSearchItem.replace("descr",tagSearchItem.get("descr") == null ? "" : tagSearchItem.get("descr").toString());
-    		tagSearchItem.replace("ioType",tagSearchItem.get("ioType") == null ? "" : tagSearchItem.get("ioType").toString());
-    		tagSearchItem.replace("address",tagSearchItem.get("address") == null ? "" : tagSearchItem.get("address").toString());
-    		tagSearchItem.replace("ioBit",tagSearchItem.get("ioBit") == null ? "" : tagSearchItem.get("ioBit").toString());
-    		tagSearchItem.replace("eLow",tagSearchItem.get("eLow") == null ? "" : tagSearchItem.get("eLow").toString());
-    		tagSearchItem.replace("eHigh",tagSearchItem.get("eHigh") == null ? "" : tagSearchItem.get("eHigh").toString());
-    	}
-    	
-    	mav.addObject("TagSearchList", tagSearchList);
-
-    	userInfo.setHogi(dccSearchAlarm.getHogiHeader());
-    	userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
+    	Map searchMapGrpNm = new HashMap();
+		searchMapGrpNm.put("grpID", strGrpID);
+		searchMapGrpNm.put("dive", "D");
+		searchMapGrpNm.put("menuNo", strMenuNo);
+		searchMapGrpNm.put("uGrpName", strUGrpName);
+		//searchMapGrpNm.put("uGrpNo", strUGrpNo);
+		
+		String manageType = "";
+		
+		int nRes = 0;
+		/*if( !"U".equalsIgnoreCase(strType) ) {
+			strUGrpNo = basCommonService.selectMaxGrpName(searchMapGrpNm).get(0) == null ? "" : basCommonService.selectMaxGrpName(searchMapGrpNm).get(0).get("MAX_UGrpNo").toString();
+			if( strUGrpNo == null || "".equals(strUGrpNo) ) {
+				if( "22".equals(strMenuNo) || "24".equals(strMenuNo) || "32".equals(strMenuNo) ) {
+					strUGrpNo = "101";
+				} else {
+					strUGrpNo = "0";
+				}
+			}
+			
+			strUGrpNo = (Integer.parseInt(strUGrpNo)+1)+"";
+			searchMapGrpNm.put("gGrpNo", strUGrpNo);
+			
+			nRes = dccTrendService.addGroupTrendFixed(searchMapGrpNm);
+			
+			manageType = "addNewGroup";
+		} else {
+			strUGrpNo = dccSearchAlarm.getsUGrpNo() == null ? "0" : dccSearchAlarm.getsUGrpNo();
+			
+			searchMapGrpNm.put("gGrpNo", strUGrpNo);
+			
+			nRes = dccTrendService.updateGroupTrendFixed(searchMapGrpNm);
+			
+			manageType = "updateExistGroup";
+		}*/
+		
+		String[] data = new String[10];
+		data[0] = strISeqMod;
+		data[1] = strHogiMod;
+		data[2] = strXyGubunMod;
+		data[3] = strDescrMod;
+		data[4] = strIoTypeMod;
+		data[5] = strAddressMod;
+		data[6] = strIoBitMod;
+		data[7] = strMinValMod;
+		data[8] = strMaxValMod;
+		data[9] = strSaveCoreMod;
+		
+		//if( nRes > 0 ) {
+			nRes = Mst_GrpTagSave(strGrpID, strMenuNo, strUGrpNo, dccSearchAlarm.getsXYGubun(), dccSearchAlarm.getsHogi(), dccSearchAlarm.getsHogi(), data);
+			
+			if( nRes > 0 ) {
+				String tmpHogi = "3".equals(dccSearchAlarm.getsHogi()) ? "4" : "3";
+				nRes = Mst_GrpTagSave(strGrpID, strMenuNo, strUGrpNo, dccSearchAlarm.getsXYGubun(), tmpHogi, dccSearchAlarm.getsHogi(), data);
+			}
+			
+			dccSearchAlarm.setsUGrpNo(strUGrpNo);
+		
+			//GroupSave222(dccSearchTrend,userInfo.getId());
+		//}
+		
+		//System.out.println(strUGrpNo+", "+strMenuNo+", "+strGrpID+", "+strFixed);
+		dccSearchAlarm.setsUGrpNo(strUGrpNo);
+		dccSearchAlarm.setsMenuNo(strMenuNo);
+		dccSearchAlarm.setsGrpID(strGrpID);
+		
+		mav.addObject("ManageType",manageType);
+		mav.addObject("UpdatedGrpNo",strUGrpNo);
 
 		mav.addObject("BaseSearch", dccSearchAlarm);
     	mav.addObject("UserInfo", userInfo);
@@ -1101,7 +1446,280 @@ public class DccAlarmContentsController {
 		return mav;
 	}
 	
-	@RequestMapping(value = "cmdOK", method = { RequestMethod.POST })
+	public int Mst_GrpTagSave(String strGrpID, String strMenuNo, String grpNo, String gXYGubun, String gHogi, String hogi, String[] data) {
+		int nRes = 0;
+
+		Map delMap = new HashMap();
+		delMap.put("gubun", "D");
+		delMap.put("id", strGrpID);
+		delMap.put("grpHOGI", gHogi);
+		delMap.put("menuNo", strMenuNo);
+		delMap.put("grpNo", grpNo);
+		
+		dccTrendService.deleteGrpTag(delMap);
+		
+		for( int i=0;i<data[0].split("\\|").length;i++ ) {
+			String strTagNo = i+"";
+			String strTmpiSeq = "0";
+			
+			Map searchGrpTagMap = new HashMap();
+			searchGrpTagMap.put("gubun", "D");
+			searchGrpTagMap.put("id", strGrpID);
+			searchGrpTagMap.put("ioType", data[4].split("\\|")[i]);
+			searchGrpTagMap.put("menuNo", strMenuNo);
+			searchGrpTagMap.put("address", data[5].split("\\|")[i]);
+			searchGrpTagMap.put("iHogi", data[1].split("\\|")[i]);
+			searchGrpTagMap.put("grpHogi", gHogi);
+			searchGrpTagMap.put("grpNo", grpNo);
+			searchGrpTagMap.put("ioBit", data[6].split("\\|")[i]);
+			if( gHogi.equals(hogi) ) {
+				searchGrpTagMap.put("hogi", data[1].split("\\|")[i]);
+			} else {
+				if( "3".equals(data[1].split("\\|")[i]) ) {
+					searchGrpTagMap.put("hogi", "4");
+				} else {
+					searchGrpTagMap.put("hogi", "3");
+				}
+			}
+			searchGrpTagMap.put("tagNo", strTagNo);
+			searchGrpTagMap.put("saveCoreChk", data[9].split("\\|")[i]);
+			searchGrpTagMap.put("descr", data[3].split("\\|")[i]);
+			
+			if( "X".equalsIgnoreCase(data[2].split("\\|")[i]) ) {
+				searchGrpTagMap.put("xyGubun", "Y");
+				strTmpiSeq = dccTrendService.selectISeqTagDccSearch(searchGrpTagMap);
+			} else {
+				searchGrpTagMap.put("xyGubun", "X");
+				strTmpiSeq = dccTrendService.selectISeqTagDccSearch(searchGrpTagMap);
+			}
+
+			if( "X".equalsIgnoreCase(gXYGubun) ) {
+				searchGrpTagMap.put("iSeq", data[0].split("\\|")[i]);
+			} else {
+				searchGrpTagMap.put("iSeq", strTmpiSeq == null ? "0" : strTmpiSeq);
+			}
+			if( "AI".equalsIgnoreCase(data[4].split("\\|")[i]) && ("2010".equals(data[5].split("\\|")[i]) || "2140".equals(data[5].split("\\|")[i])) ) {
+				searchGrpTagMap.put("maxVal", Double.parseDouble(data[8].split("\\|")[i])*0.0081+"");
+				searchGrpTagMap.put("minVal", Double.parseDouble(data[7].split("\\|")[i])*0.0081+"");
+			} else {
+				searchGrpTagMap.put("maxVal", data[8].split("\\|")[i]);
+				searchGrpTagMap.put("minVal", data[7].split("\\|")[i]);
+			}
+			if( "Y".equalsIgnoreCase(gXYGubun) ) {
+				searchGrpTagMap.put("ySeq", data[0].split("\\|")[i]);
+			} else {
+				searchGrpTagMap.put("ySeq", strTmpiSeq == null ? "0" : strTmpiSeq);
+			}
+			if( "AI".equalsIgnoreCase(data[4].split("\\|")[i]) && ("2010".equals(data[5].split("\\|")[i]) || "2140".equals(data[5].split("\\|")[i])) ) {
+				searchGrpTagMap.put("yMaxVal", Double.parseDouble(data[8].split("\\|")[i])*0.0081+"");
+				searchGrpTagMap.put("yMinVal", Double.parseDouble(data[7].split("\\|")[i])*0.0081+"");
+			} else {
+				searchGrpTagMap.put("yMaxVal", data[8].split("\\|")[i]);
+				searchGrpTagMap.put("yMinVal", data[7].split("\\|")[i]);
+			}
+			
+			//System.out.println(searchGrpTagMap);
+			
+			nRes += dccTrendService.insertGrpTag(searchGrpTagMap);
+			
+			//System.out.println(i+"::"+strISeqMod.split("\\|")[i]+"::"+strHogiMod.split("\\|")[i]+"::"+strXyGubunMod.split("\\|")[i]+"::"+strDescrMod.split("\\|")[i]
+			//					+"::"+strIoTypeMod.split("\\|")[i]+"::"+strAddressMod.split("\\|")[i]+"::"+strIoBitMod.split("\\|")[i]+"::"+strMinValMod.split("\\|")[i]
+			//					+"::"+strMaxValMod.split("\\|")[i]+"::"+strSaveCoreMod.split("\\|")[i]);
+		}
+		
+		return nRes;
+	}
+	
+	public void GroupSave222(DccSearchTrend dccSearchTrend, String userId) {
+		String conHogi = commonConstant.getUrl().indexOf("10.135.101.222") > -1 ? "4" : "3";
+		
+    	if( dccSearchTrend.getHogiHeader() != null ) {
+    		if( dccSearchTrend.getHogi() == null ) dccSearchTrend.setsHogi(dccSearchTrend.getHogiHeader());
+    	} else {
+    		if( dccSearchTrend.getHogi() == null ) {
+    			if( "4".equals(conHogi) ) {
+    				dccSearchTrend.setsHogi("4");
+    			} else {
+    				dccSearchTrend.setsHogi("3");
+    			}
+    		} else {
+    			dccSearchTrend.setsHogi(dccSearchTrend.getHogi());
+    		}
+    	}
+    	if( dccSearchTrend.getXyHeader() != null ) {
+    		//if( dccSearchTrend.getXyGubun() == null ) {
+    			dccSearchTrend.setsXYGubun(dccSearchTrend.getXyHeader());
+    		//}
+    	} else {
+    		if( dccSearchTrend.getXyGubun() == null ) {
+    			dccSearchTrend.setsXYGubun("X");
+    		} else {
+    			dccSearchTrend.setsXYGubun(dccSearchTrend.getXyGubun());
+    		}
+    	}
+    	if( dccSearchTrend.getIoType() == null || "".equals(dccSearchTrend.getIoType()) ) dccSearchTrend.setIoType("AI");
+    	if( dccSearchTrend.getIoBit() == null || "".equals(dccSearchTrend.getIoBit()) ) dccSearchTrend.setIoBit("0");
+    	if( dccSearchTrend.getSaveCore() == null ) dccSearchTrend.setSaveCore("0");
+    	if( dccSearchTrend.getsDive() == null ) dccSearchTrend.setsDive("D");
+		
+		//if(dccSearchTrend.getsUGrpNo() != null && !dccSearchTrend.getsUGrpNo().isEmpty()) {
+    	
+    	String strDive = dccSearchTrend.getsDive() == null ? "D" : dccSearchTrend.getsDive();
+    	String strGrpID = dccSearchTrend.getsGrpID() == null ? userId : dccSearchTrend.getsGrpID();
+    	String strMenuNo = dccSearchTrend.getsMenuNo() == null ? "65" : dccSearchTrend.getsMenuNo();
+    	String strUGrpName = dccSearchTrend.getsUGrpName() == null ? "" : dccSearchTrend.getsUGrpName();
+    	String strUGrpNo = "1";
+    	String strType = dccSearchTrend.getType() == null ? "" : dccSearchTrend.getType();
+    	String strISeqMod = dccSearchTrend.getiSeqMod() == null ? "" : dccSearchTrend.getiSeqMod();
+    	String strHogiMod = dccSearchTrend.getHogiMod() == null ? "" : dccSearchTrend.getHogiMod();
+    	String strXyGubunMod = dccSearchTrend.getXyGubunMod() == null ? "" : dccSearchTrend.getXyGubunMod();
+    	String strDescrMod = dccSearchTrend.getDescrMod() == null ? "" : dccSearchTrend.getDescrMod();
+    	String strIoTypeMod = dccSearchTrend.getIoTypeMod() == null ? "" : dccSearchTrend.getIoTypeMod();
+    	String strAddressMod = dccSearchTrend.getAddressMod() == null ? "" : dccSearchTrend.getAddressMod();
+    	String strIoBitMod = dccSearchTrend.getIoBitMod() == null ? "" : dccSearchTrend.getIoBitMod();
+    	String strMinValMod = dccSearchTrend.getMinValMod() == null ? "" : dccSearchTrend.getMinValMod();
+    	String strMaxValMod = dccSearchTrend.getMaxValMod() == null ? "" : dccSearchTrend.getMaxValMod();
+    	String strSaveCoreMod = dccSearchTrend.getSaveCoreMod() == null ? "" : dccSearchTrend.getSaveCoreMod();
+    	
+    	Map searchMapGrpNm = new HashMap();
+		searchMapGrpNm.put("grpID", strGrpID);
+		searchMapGrpNm.put("dive", "D");
+		searchMapGrpNm.put("menuNo", strMenuNo);
+		searchMapGrpNm.put("uGrpName", strUGrpName);
+		//searchMapGrpNm.put("uGrpNo", strUGrpNo);
+		if( !"U".equalsIgnoreCase(strType) ) {
+			if( dccSearchTrend.getsUGrpNo() == null || "".equals(dccSearchTrend.getsUGrpNo()) ) {
+				strUGrpNo = altCommonService.selectMaxGrpName(searchMapGrpNm).get(0) == null ? "" : altCommonService.selectMaxGrpName(searchMapGrpNm).get(0).get("MAX_UGrpNo").toString();
+				if( strUGrpNo == null || "".equals(strUGrpNo) ) {
+					if( "22".equals(strMenuNo) || "24".equals(strMenuNo) || "32".equals(strMenuNo) ) {
+						strUGrpNo = "101";
+					} else {
+						strUGrpNo = "0";
+					}
+				}
+				
+				strUGrpNo = (Integer.parseInt(strUGrpNo)+1)+"";
+			} else {
+				String strUGrpNo222 = altCommonService.selectMaxGrpName(searchMapGrpNm).get(0) == null ? "0" : altCommonService.selectMaxGrpName(searchMapGrpNm).get(0).get("MAX_UGrpNo").toString();
+				
+				strUGrpNo = Integer.parseInt(dccSearchTrend.getsUGrpNo()) >= Integer.parseInt(strUGrpNo222) ? dccSearchTrend.getsUGrpNo() : strUGrpNo222;
+			}
+			searchMapGrpNm.put("gGrpNo", strUGrpNo);
+			
+			altTrendService.addGroupTrendFixed(searchMapGrpNm);
+		} else {
+			strUGrpNo = dccSearchTrend.getsUGrpNo() == null ? "0" : dccSearchTrend.getsUGrpNo();
+			
+			searchMapGrpNm.put("gGrpNo", strUGrpNo);
+			
+			altTrendService.updateGroupTrendFixed(searchMapGrpNm);
+		}
+		
+		String[] data = new String[10];
+		data[0] = strISeqMod;
+		data[1] = strHogiMod;
+		data[2] = strXyGubunMod;
+		data[3] = strDescrMod;
+		data[4] = strIoTypeMod;
+		data[5] = strAddressMod;
+		data[6] = strIoBitMod;
+		data[7] = strMinValMod;
+		data[8] = strMaxValMod;
+		data[9] = strSaveCoreMod;
+		
+		int nRes = Mst_GrpTagSave222(strGrpID, strMenuNo, strUGrpNo, dccSearchTrend.getsXYGubun(), dccSearchTrend.getsHogi(), dccSearchTrend.getsHogi(), data);
+		
+		if( nRes > 0 ) {
+			String tmpHogi = "3".equals(dccSearchTrend.getsHogi()) ? "4" : "3";
+			nRes = Mst_GrpTagSave222(strGrpID, strMenuNo, strUGrpNo, dccSearchTrend.getsXYGubun(), tmpHogi, dccSearchTrend.getsHogi(), data);
+		}
+	}
+	
+	public int Mst_GrpTagSave222(String strGrpID, String strMenuNo, String grpNo, String gXYGubun, String gHogi, String hogi, String[] data) {
+		int nRes = 0;
+
+		Map delMap = new HashMap();
+		delMap.put("gubun", "D");
+		delMap.put("id", strGrpID);
+		delMap.put("grpHOGI", gHogi);
+		delMap.put("menuNo", strMenuNo);
+		delMap.put("grpNo", grpNo);
+		
+		altTrendService.deleteGrpTag(delMap);
+		
+		for( int i=0;i<data[0].split("\\|").length;i++ ) {
+			String strTagNo = i+"";
+			String strTmpiSeq = "0";
+			
+			Map searchGrpTagMap = new HashMap();
+			searchGrpTagMap.put("gubun", "D");
+			searchGrpTagMap.put("id", strGrpID);
+			searchGrpTagMap.put("ioType", data[4].split("\\|")[i]);
+			searchGrpTagMap.put("menuNo", strMenuNo);
+			searchGrpTagMap.put("address", data[5].split("\\|")[i]);
+			searchGrpTagMap.put("iHogi", data[1].split("\\|")[i]);
+			searchGrpTagMap.put("grpHogi", gHogi);
+			searchGrpTagMap.put("grpNo", grpNo);
+			searchGrpTagMap.put("ioBit", data[6].split("\\|")[i]);
+			if( gHogi.equals(hogi) ) {
+				searchGrpTagMap.put("hogi", data[1].split("\\|")[i]);
+			} else {
+				if( "3".equals(data[1].split("\\|")[i]) ) {
+					searchGrpTagMap.put("hogi", "4");
+				} else {
+					searchGrpTagMap.put("hogi", "3");
+				}
+			}
+			searchGrpTagMap.put("tagNo", strTagNo);
+			searchGrpTagMap.put("saveCoreChk", data[9].split("\\|")[i]);
+			searchGrpTagMap.put("descr", data[3].split("\\|")[i]);
+			
+			if( "X".equalsIgnoreCase(data[2].split("\\|")[i]) ) {
+				searchGrpTagMap.put("xyGubun", "Y");
+				strTmpiSeq = altTrendService.selectISeqTagDccSearch(searchGrpTagMap);
+			} else {
+				searchGrpTagMap.put("xyGubun", "X");
+				strTmpiSeq = altTrendService.selectISeqTagDccSearch(searchGrpTagMap);
+			}
+
+			if( "X".equalsIgnoreCase(gXYGubun) ) {
+				searchGrpTagMap.put("iSeq", data[0].split("\\|")[i]);
+			} else {
+				searchGrpTagMap.put("iSeq", strTmpiSeq == null ? "0" : strTmpiSeq);
+			}
+			if( "AI".equalsIgnoreCase(data[4].split("\\|")[i]) && ("2010".equals(data[5].split("\\|")[i]) || "2140".equals(data[5].split("\\|")[i])) ) {
+				searchGrpTagMap.put("maxVal", Double.parseDouble(data[8].split("\\|")[i])*0.0081+"");
+				searchGrpTagMap.put("minVal", Double.parseDouble(data[7].split("\\|")[i])*0.0081+"");
+			} else {
+				searchGrpTagMap.put("maxVal", data[8].split("\\|")[i]);
+				searchGrpTagMap.put("minVal", data[7].split("\\|")[i]);
+			}
+			if( "Y".equalsIgnoreCase(gXYGubun) ) {
+				searchGrpTagMap.put("ySeq", data[0].split("\\|")[i]);
+			} else {
+				searchGrpTagMap.put("ySeq", strTmpiSeq == null ? "0" : strTmpiSeq);
+			}
+			if( "AI".equalsIgnoreCase(data[4].split("\\|")[i]) && ("2010".equals(data[5].split("\\|")[i]) || "2140".equals(data[5].split("\\|")[i])) ) {
+				searchGrpTagMap.put("yMaxVal", Double.parseDouble(data[8].split("\\|")[i])*0.0081+"");
+				searchGrpTagMap.put("yMinVal", Double.parseDouble(data[7].split("\\|")[i])*0.0081+"");
+			} else {
+				searchGrpTagMap.put("yMaxVal", data[8].split("\\|")[i]);
+				searchGrpTagMap.put("yMinVal", data[7].split("\\|")[i]);
+			}
+			
+			//System.out.println(searchGrpTagMap);
+			
+			nRes += altTrendService.insertGrpTag(searchGrpTagMap);
+			
+			//System.out.println(i+"::"+strISeqMod.split("\\|")[i]+"::"+strHogiMod.split("\\|")[i]+"::"+strXyGubunMod.split("\\|")[i]+"::"+strDescrMod.split("\\|")[i]
+			//					+"::"+strIoTypeMod.split("\\|")[i]+"::"+strAddressMod.split("\\|")[i]+"::"+strIoBitMod.split("\\|")[i]+"::"+strMinValMod.split("\\|")[i]
+			//					+"::"+strMaxValMod.split("\\|")[i]+"::"+strSaveCoreMod.split("\\|")[i]);
+		}
+		
+		return nRes;
+	}
+	
+	/*@RequestMapping(value = "cmdOK", method = { RequestMethod.POST })
 	@ResponseBody
 	public ModelAndView cmdOK(DccSearchAlarm dccSearchAlarm, HttpServletRequest request) {
 		
@@ -1109,249 +1727,311 @@ public class DccAlarmContentsController {
                 
 		ModelAndView mav = new ModelAndView("jsonView");
 		
-    	if( dccSearchAlarm.getHogiHeader() != null ) {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi(dccSearchAlarm.getHogiHeader());
-    	} else {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi("3");
-    	}
-    	if( dccSearchAlarm.getXyHeader() != null ) {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyHeader());
-    	} else {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun("X");
-    	}
-    	if( dccSearchAlarm.getIoType() == null || "".equals(dccSearchAlarm.getIoType()) ) dccSearchAlarm.setIoType("AI");
-    	if( dccSearchAlarm.getIoBit() == null || "".equals(dccSearchAlarm.getIoBit()) ) dccSearchAlarm.setIoBit("0");
-    	if( dccSearchAlarm.getSaveCore() == null ) dccSearchAlarm.setSaveCore("0");
-    	if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
+		if(request.getSession().getAttribute("USER_INFO") != null) {
+			
+			MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+			
+			if( dccSearchAlarm.getsHogi() == null || dccSearchAlarm.getsXYGubun() == null) {
+        		userInfo.setHogi("3");
+        		userInfo.setXyGubun("X");
+        	}			
+        	
+        	dccSearchAlarm.setsHogi(userInfo.getHogi());
+    		dccSearchAlarm.setsXYGubun(userInfo.getXyGubun());   
 
-    	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-		
-		//if(dccSearchAlarm.getsUGrpNo() != null && !dccSearchAlarm.getsUGrpNo().isEmpty()) {
-    	
-    	String strDive = dccSearchAlarm.getsDive() == "null" ? "D" : dccSearchAlarm.getsDive();
-    	String strGrpID = dccSearchAlarm.getsGrpID() == null ? "Alarm" : dccSearchAlarm.getsGrpID();
-    	String strMenuNo = dccSearchAlarm.getsMenuNo() == null ? "65" : dccSearchAlarm.getsMenuNo();
-    	String strUGrpNo = dccSearchAlarm.getsUGrpNo() == null ? "1" : dccSearchAlarm.getsUGrpNo();
-    	
-    	Map searchMapGrpNm = new HashMap();
-		searchMapGrpNm.put("grpID", strGrpID);
-		searchMapGrpNm.put("menuNo", strMenuNo);
-		searchMapGrpNm.put("uGrpNo", strUGrpNo);
-		
-		String groupName = basCommonService.selectGrpNameListB(searchMapGrpNm).get(0) == null ? "경보 설정" : basCommonService.selectGrpNameListB(searchMapGrpNm).get(0);
-		
-		Map searchMap = new HashMap();
-		searchMap.put("dive", strDive);
-		searchMap.put("grpID", strGrpID);
-		searchMap.put("hogi", dccSearchAlarm.getsHogi());
-		searchMap.put("menuNo", dccSearchAlarm.getsMenuNo());
-		searchMap.put("uGrpNo", strUGrpNo);
-		
-    	List<Map> lvIOList = basDccOsmsService.selectDccGrpTagListB(searchMap);
-    	
-    	String[] iSeqMod = dccSearchAlarm.getiSeqMod().split("==SEP==");
-    	String[] gubunMod = dccSearchAlarm.getGubunMod().split("==SEP==");
-    	String[] hogiMod = dccSearchAlarm.getHogiMod().split("==SEP==");
-    	String[] xyGubunMod = dccSearchAlarm.getXyGubunMod().split("==SEP==");
-    	String[] DescrMod = dccSearchAlarm.getDescrMod().split("==SEP==");
-    	String[] ioTypeMod = dccSearchAlarm.getIoTypeMod().split("==SEP==");
-    	String[] addressMod = dccSearchAlarm.getAddressMod().split("==SEP==");
-    	String[] ioBitMod = dccSearchAlarm.getIoBitMod().split("==SEP==");
-    	String[] minValMod = dccSearchAlarm.getMinValMod().split("==SEP==");
-    	String[] maxValMod = dccSearchAlarm.getMaxValMod().split("==SEP==");
-    	String[] saveCoreMod = dccSearchAlarm.getSaveCoreMod().split("==SEP==");
-    	
-    	//for( Map lvIOItem : lvIOList) {
-    	for( int di=0;di<lvIOList.size();di++ ) {
-    		Map lvIOItem = lvIOList.get(di);
-    		if( iSeqMod[1].indexOf("|") > -1 && iSeqMod[1].length() > 1 ) {
-	    		for( int d=0;d<iSeqMod[1].split("\\|").length;d++ ) {
-		    		if( iSeqMod[1].split("\\|")[d].trim().equals(lvIOItem.get("iSeq").toString().trim()) ) {
+	    	if( dccSearchAlarm.getIoType() == null || "".equals(dccSearchAlarm.getIoType()) ) dccSearchAlarm.setIoType("AI");
+	    	if( dccSearchAlarm.getIoBit() == null || "".equals(dccSearchAlarm.getIoBit()) ) dccSearchAlarm.setIoBit("0");
+	    	if( dccSearchAlarm.getSaveCore() == null ) dccSearchAlarm.setSaveCore("0");
+	    	if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
+			
+			//if(dccSearchAlarm.getsUGrpNo() != null && !dccSearchAlarm.getsUGrpNo().isEmpty()) {
+	    	
+	    	String strDive = dccSearchAlarm.getsDive() == "null" ? "D" : dccSearchAlarm.getsDive();
+	    	String strGrpID = dccSearchAlarm.getsGrpID() == null ? "Alarm" : dccSearchAlarm.getsGrpID();
+	    	String strMenuNo = dccSearchAlarm.getsMenuNo() == null ? "65" : dccSearchAlarm.getsMenuNo();
+	    	String strUGrpNo = dccSearchAlarm.getsUGrpNo() == null ? "1" : dccSearchAlarm.getsUGrpNo();
+	    	
+	    	Map searchMapGrpNm = new HashMap();
+			searchMapGrpNm.put("grpID", strGrpID);
+			searchMapGrpNm.put("menuNo", strMenuNo);
+			searchMapGrpNm.put("uGrpNo", strUGrpNo);
+			
+			String groupName = basCommonService.selectGrpNameListB(searchMapGrpNm).get(0) == null ? "경보 설정" : basCommonService.selectGrpNameListB(searchMapGrpNm).get(0);
+			
+			Map searchMap = new HashMap();
+			searchMap.put("dive", strDive);
+			searchMap.put("grpID", strGrpID);
+			searchMap.put("hogi", dccSearchAlarm.getsHogi());
+			searchMap.put("menuNo", dccSearchAlarm.getsMenuNo());
+			searchMap.put("uGrpNo", strUGrpNo);
+			
+	    	List<Map> lvIOList = basDccOsmsService.selectDccGrpTagListB(searchMap);
+	    	
+	    	String[] iSeqMod = dccSearchAlarm.getiSeqMod().split("==SEP==");
+	    	String[] gubunMod = dccSearchAlarm.getGubunMod().split("==SEP==");
+	    	String[] hogiMod = dccSearchAlarm.getHogiMod().split("==SEP==");
+	    	String[] xyGubunMod = dccSearchAlarm.getXyGubunMod().split("==SEP==");
+	    	String[] DescrMod = dccSearchAlarm.getDescrMod().split("==SEP==");
+	    	String[] ioTypeMod = dccSearchAlarm.getIoTypeMod().split("==SEP==");
+	    	String[] addressMod = dccSearchAlarm.getAddressMod().split("==SEP==");
+	    	String[] ioBitMod = dccSearchAlarm.getIoBitMod().split("==SEP==");
+	    	String[] minValMod = dccSearchAlarm.getMinValMod().split("==SEP==");
+	    	String[] maxValMod = dccSearchAlarm.getMaxValMod().split("==SEP==");
+	    	String[] saveCoreMod = dccSearchAlarm.getSaveCoreMod().split("==SEP==");
+	    	
+	    	//for( Map lvIOItem : lvIOList) {
+	    	for( int di=0;di<lvIOList.size();di++ ) {
+	    		Map lvIOItem = lvIOList.get(di);
+	    		if( iSeqMod[1].indexOf("|") > -1 && iSeqMod[1].length() > 1 ) {
+		    		for( int d=0;d<iSeqMod[1].split("\\|").length;d++ ) {
+			    		if( iSeqMod[1].split("\\|")[d].trim().equals(lvIOItem.get("iSeq").toString().trim()) ) {
+			    			lvIOList.remove(lvIOItem);
+			    		}
+		    		}
+	    		} else if( iSeqMod[1].length() > 0 ) {
+	    			if( iSeqMod[1].replaceAll("|", "").equals(lvIOItem.get("iSeq")) ) {
 		    			lvIOList.remove(lvIOItem);
 		    		}
 	    		}
-    		} else if( iSeqMod[1].length() > 0 ) {
-    			if( iSeqMod[1].replaceAll("|", "").equals(lvIOItem.get("iSeq")) ) {
-	    			lvIOList.remove(lvIOItem);
-	    		}
-    		}
-    	}
-    	
-    	if( !"".equals(iSeqMod[0]) && iSeqMod[0].indexOf("|") > -1 ) {
-    		int size = iSeqMod[0].split("\\|").length;
-	    	for ( int i=0;i<size;i++ ) {
-				Map lvIOItem = new HashMap();
-				if( !"|".equals(iSeqMod[0]) ) {
-					lvIOItem.put("iSeq", iSeqMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("iSeq", "");
-				}
-				if( !"|".equals(gubunMod[0]) ) {
-					lvIOItem.put("gubun", gubunMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("gubun", "");
-				}
-				if( !"|".equals(hogiMod[0]) ) {
-					lvIOItem.put("hogi", hogiMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("hogi", "");
-				}
-				if( !"|".equals(xyGubunMod[0]) ) {
-					lvIOItem.put("xyGubun", xyGubunMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("xyGubun", "");
-				}
-				if( size == DescrMod[0].split("\\|").length ) {
-					lvIOItem.put("Descr", DescrMod[0].split("\\|")[i]);
-				} else {
-					if( i < DescrMod[0].split("\\|").length ) {
+	    	}
+	    	
+	    	if( !"".equals(iSeqMod[0]) && iSeqMod[0].indexOf("|") > -1 ) {
+	    		int size = iSeqMod[0].split("\\|").length;
+		    	for ( int i=0;i<size;i++ ) {
+					Map lvIOItem = new HashMap();
+					if( !"|".equals(iSeqMod[0]) ) {
+						lvIOItem.put("iSeq", iSeqMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("iSeq", "");
+					}
+					if( !"|".equals(gubunMod[0]) ) {
+						lvIOItem.put("gubun", gubunMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("gubun", "");
+					}
+					if( !"|".equals(hogiMod[0]) ) {
+						lvIOItem.put("hogi", hogiMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("hogi", "");
+					}
+					if( !"|".equals(xyGubunMod[0]) ) {
+						lvIOItem.put("xyGubun", xyGubunMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("xyGubun", "");
+					}
+					if( size == DescrMod[0].split("\\|").length ) {
 						lvIOItem.put("Descr", DescrMod[0].split("\\|")[i]);
 					} else {
-						lvIOItem.put("Descr", "");
+						if( i < DescrMod[0].split("\\|").length ) {
+							lvIOItem.put("Descr", DescrMod[0].split("\\|")[i]);
+						} else {
+							lvIOItem.put("Descr", "");
+						}
 					}
-				}
-				if( !"|".equals(ioTypeMod[0]) ) {
-					lvIOItem.put("ioType", ioTypeMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("ioType", "");
-				}
-				if( !"|".equals(addressMod[0]) ) {
-					lvIOItem.put("address", addressMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("address", "");
-				}
-				if( !"|".equals(ioBitMod[0]) ) {
-					lvIOItem.put("ioBit", ioBitMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("ioBit", "");
-				}
-				if( !"|".equals(minValMod[0]) ) {
-					lvIOItem.put("minVal", minValMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("minVal", "");
-				}
-				if( !"|".equals(maxValMod[0]) ) {
-					lvIOItem.put("maxVal", maxValMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("maxVal", "");
-				}
-				if( !"|".equals(saveCoreMod[0]) ) {
-					lvIOItem.put("saveCoreChk", saveCoreMod[0].split("\\|")[i]);
-				} else {
-					lvIOItem.put("saveCoreChk", "");
-				}
-				
+					if( !"|".equals(ioTypeMod[0]) ) {
+						lvIOItem.put("ioType", ioTypeMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("ioType", "");
+					}
+					if( !"|".equals(addressMod[0]) ) {
+						lvIOItem.put("address", addressMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("address", "");
+					}
+					if( !"|".equals(ioBitMod[0]) ) {
+						lvIOItem.put("ioBit", ioBitMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("ioBit", "");
+					}
+					if( !"|".equals(minValMod[0]) ) {
+						lvIOItem.put("minVal", minValMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("minVal", "");
+					}
+					if( !"|".equals(maxValMod[0]) ) {
+						lvIOItem.put("maxVal", maxValMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("maxVal", "");
+					}
+					if( !"|".equals(saveCoreMod[0]) ) {
+						lvIOItem.put("saveCoreChk", saveCoreMod[0].split("\\|")[i]);
+					} else {
+						lvIOItem.put("saveCoreChk", "");
+					}
+					
+			    	lvIOList.add(lvIOItem);
+		    	}
+	    	} else if( !"".equals(iSeqMod[0]) && iSeqMod[0].length() > 0 ) {
+				Map lvIOItem = new HashMap();
+				lvIOItem.put("title", groupName);
+		    	lvIOItem.put("iSeq", !"|".equals(dccSearchAlarm.getiSeqMod()) ? iSeqMod[0] : "");
+		    	lvIOItem.put("gubun", !"|".equals(dccSearchAlarm.getGubunMod()) ? gubunMod[0] : "");
+		    	lvIOItem.put("hogi", !"|".equals(dccSearchAlarm.getHogiMod()) ? hogiMod[0] : "");
+		    	lvIOItem.put("xyGubun", !"|".equals(dccSearchAlarm.getXyGubunMod()) ? xyGubunMod[0] : "");
+		    	lvIOItem.put("Descr", !"|".equals(dccSearchAlarm.getDescrMod()) ? DescrMod[0] : "");
+		    	lvIOItem.put("ioType", !"|".equals(dccSearchAlarm.getIoTypeMod()) ? ioTypeMod[0] : "");
+		    	lvIOItem.put("address", !"|".equals(dccSearchAlarm.getAddressMod()) ? addressMod[0] : "");
+		    	lvIOItem.put("ioBit", !"|".equals(dccSearchAlarm.getIoBitMod()) ? ioBitMod[0] : "");
+		    	lvIOItem.put("minVal", !"|".equals(dccSearchAlarm.getMinValMod()) ? minValMod[0] : "");
+		    	lvIOItem.put("maxVal", !"|".equals(dccSearchAlarm.getMaxValMod()) ? maxValMod[0] : "");
+		    	lvIOItem.put("saveCoreChk", !"|".equals(dccSearchAlarm.getSaveCoreMod()) ? saveCoreMod[0] : "");
+	    	
 		    	lvIOList.add(lvIOItem);
 	    	}
-    	} else if( !"".equals(iSeqMod[0]) && iSeqMod[0].length() > 0 ) {
-			Map lvIOItem = new HashMap();
-			lvIOItem.put("title", groupName);
-	    	lvIOItem.put("iSeq", !"|".equals(dccSearchAlarm.getiSeqMod()) ? iSeqMod[0] : "");
-	    	lvIOItem.put("gubun", !"|".equals(dccSearchAlarm.getGubunMod()) ? gubunMod[0] : "");
-	    	lvIOItem.put("hogi", !"|".equals(dccSearchAlarm.getHogiMod()) ? hogiMod[0] : "");
-	    	lvIOItem.put("xyGubun", !"|".equals(dccSearchAlarm.getXyGubunMod()) ? xyGubunMod[0] : "");
-	    	lvIOItem.put("Descr", !"|".equals(dccSearchAlarm.getDescrMod()) ? DescrMod[0] : "");
-	    	lvIOItem.put("ioType", !"|".equals(dccSearchAlarm.getIoTypeMod()) ? ioTypeMod[0] : "");
-	    	lvIOItem.put("address", !"|".equals(dccSearchAlarm.getAddressMod()) ? addressMod[0] : "");
-	    	lvIOItem.put("ioBit", !"|".equals(dccSearchAlarm.getIoBitMod()) ? ioBitMod[0] : "");
-	    	lvIOItem.put("minVal", !"|".equals(dccSearchAlarm.getMinValMod()) ? minValMod[0] : "");
-	    	lvIOItem.put("maxVal", !"|".equals(dccSearchAlarm.getMaxValMod()) ? maxValMod[0] : "");
-	    	lvIOItem.put("saveCoreChk", !"|".equals(dccSearchAlarm.getSaveCoreMod()) ? saveCoreMod[0] : "");
-    	
-	    	lvIOList.add(lvIOItem);
-    	}
+	
+	    	dccSearchAlarm.setsGrpID(strGrpID);
+	    	dccSearchAlarm.setsMenuNo(strMenuNo);
+	    	dccSearchAlarm.setsUGrpNo(strUGrpNo);
+	    	
+	    	Integer delRes = dccAlarmService.deleteGrpTagB(dccSearchAlarm);
+	    	if( delRes == null ) delRes = 0;
+	    	logger.info("successfully delete ["+delRes+"] row(s).");
+	    	
+	    	int idx=0;
+	    	for( Map lvIOItem : lvIOList) {
+	    		String itemHogi = lvIOItem.get("hogi").toString();
+	    		String gHogi = itemHogi;
+	
+	    		dccSearchAlarm.setHogiMod(itemHogi);
+	    		dccSearchAlarm.setIoTypeMod(lvIOItem.get("ioType").toString());
+	    		dccSearchAlarm.setAddressMod(lvIOItem.get("address").toString());
+	    		dccSearchAlarm.setIoBitMod(lvIOItem.get("ioBit").toString());
+	    		dccSearchAlarm.setXyGubunMod(lvIOItem.get("xyGubun").toString());
+	    		
+	    		String ySeq = dccAlarmService.selectISeqGrpTagB(dccSearchAlarm);
+	
+	    		dccSearchAlarm.setgHogi(gHogi);
+	    		dccSearchAlarm.setTagNo(String.valueOf(idx));
+	    		dccSearchAlarm.setiSeqMod(lvIOItem.get("iSeq").toString());
+	    		dccSearchAlarm.setySeq(ySeq);
+	    		dccSearchAlarm.setMaxValMod(lvIOItem.get("maxVal").toString());
+	    		dccSearchAlarm.setMinValMod(lvIOItem.get("minVal").toString());
+	    		dccSearchAlarm.setSaveCoreMod(lvIOItem.get("saveCoreChk").toString());
+	    		dccSearchAlarm.setDescrMod(lvIOItem.get("Descr").toString());
+	    		
+	    		dccAlarmService.insertGrpTagB(dccSearchAlarm);
+	
+	    		if( "1".equals(dccSearchAlarm.getChkHogi()) ) {
+	    			if( "3".equals(itemHogi) ) {
+	    				gHogi = "4";
+	    			} else {
+	    				gHogi = "3";
+	    			}
+	    			
+	    			dccSearchAlarm.setgHogi(gHogi);
+	
+	        		dccAlarmService.insertGrpTagB(dccSearchAlarm);
+	    		}
+	    		
+	    		idx++;
+	    	}
+	    	//}
+	    	
+	    	List<Map> lvIOList2 = basDccOsmsService.selectDccGrpTagListB(searchMap);
+	    	
+	    	mav.addObject("LvIOList", lvIOList2);
+			mav.addObject("BaseSearch", dccSearchAlarm);
+	    	mav.addObject("UserInfo", userInfo);
+		}
 
-    	dccSearchAlarm.setsGrpID(strGrpID);
-    	dccSearchAlarm.setsMenuNo(strMenuNo);
-    	dccSearchAlarm.setsUGrpNo(strUGrpNo);
-    	
-    	Integer delRes = dccAlarmService.deleteGrpTagB(dccSearchAlarm);
-    	if( delRes == null ) delRes = 0;
-    	logger.info("successfully delete ["+delRes+"] row(s).");
-    	
-    	int idx=0;
-    	for( Map lvIOItem : lvIOList) {
-    		String itemHogi = lvIOItem.get("hogi").toString();
-    		String gHogi = itemHogi;
+		return mav;
+	}*/
+	
+	@RequestMapping(value="getTagCall", method = { RequestMethod.POST })
+	@ResponseBody
+	public ModelAndView getTagCall(DccSearchAlarm dccSearchAlarm, HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("jsonView");
 
-    		dccSearchAlarm.setHogiMod(itemHogi);
-    		dccSearchAlarm.setIoTypeMod(lvIOItem.get("ioType").toString());
-    		dccSearchAlarm.setAddressMod(lvIOItem.get("address").toString());
-    		dccSearchAlarm.setIoBitMod(lvIOItem.get("ioBit").toString());
-    		dccSearchAlarm.setXyGubunMod(lvIOItem.get("xyGubun").toString());
-    		
-    		String ySeq = dccAlarmService.selectISeqGrpTagB(dccSearchAlarm);
-
-    		dccSearchAlarm.setgHogi(gHogi);
-    		dccSearchAlarm.setTagNo(String.valueOf(idx));
-    		dccSearchAlarm.setiSeqMod(lvIOItem.get("iSeq").toString());
-    		dccSearchAlarm.setySeq(ySeq);
-    		dccSearchAlarm.setMaxValMod(lvIOItem.get("maxVal").toString());
-    		dccSearchAlarm.setMinValMod(lvIOItem.get("minVal").toString());
-    		dccSearchAlarm.setSaveCoreMod(lvIOItem.get("saveCoreChk").toString());
-    		dccSearchAlarm.setDescrMod(lvIOItem.get("Descr").toString());
-    		
-    		dccAlarmService.insertGrpTagB(dccSearchAlarm);
-
-    		if( "1".equals(dccSearchAlarm.getChkHogi()) ) {
-    			if( "3".equals(itemHogi) ) {
-    				gHogi = "4";
+		
+		String conHogi = commonConstant.getUrl().indexOf("10.135.101.222") > -1 ? "4" : "3";
+		
+    	if( dccSearchAlarm.getHogiHeader() != null ) {
+    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi(dccSearchAlarm.getHogiHeader());
+    	} else {
+    		if( dccSearchAlarm.getHogi() == null ) {
+    			if( "4".equals(conHogi) ) {
+    				dccSearchAlarm.setsHogi("4");
     			} else {
-    				gHogi = "3";
+    				dccSearchAlarm.setsHogi("3");
     			}
-    			
-    			dccSearchAlarm.setgHogi(gHogi);
-
-        		dccAlarmService.insertGrpTagB(dccSearchAlarm);
+    		} else {
+    			dccSearchAlarm.setsHogi(dccSearchAlarm.getHogi());
     		}
-    		
-    		idx++;
     	}
-    	//}
-    	
-    	List<Map> lvIOList2 = basDccOsmsService.selectDccGrpTagListB(searchMap);
-    	
-    	mav.addObject("LvIOList", lvIOList2);
-
-    	userInfo.setHogi(dccSearchAlarm.getHogiHeader());
-    	userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
-
-		mav.addObject("BaseSearch", dccSearchAlarm);
-    	mav.addObject("UserInfo", userInfo);
-
+    	if( dccSearchAlarm.getXyHeader() != null ) {
+    		//if( dccSearchAlarm.getXyGubun() == null ) {
+    			dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyHeader());
+    		//}
+    	} else {
+    		if( dccSearchAlarm.getXyGubun() == null ) {
+    			dccSearchAlarm.setsXYGubun("X");
+    		} else {
+    			dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyGubun());
+    		}
+    	}
+		if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
+	    
+		MemberInfo userInfo = (MemberInfo)request.getSession().getAttribute("USER_INFO");
+		
+		Map searchMap = new HashMap();
+		searchMap.put("hogi", dccSearchAlarm.getsHogi());
+		searchMap.put("xyGubun", dccSearchAlarm.getsXYGubun());
+		searchMap.put("dive", dccSearchAlarm.getsDive());
+		
+		String strUGrpNo = "1";
+		//String strUGrpNo = dccSearchAlarm.getsUGrpNo();
+		String strMenuNo = dccSearchAlarm.getsMenuNo();
+		String strGrpID = dccSearchAlarm.getsGrpID();
+		if( strGrpID.indexOf(",") > -1 ) dccSearchAlarm.setsGrpID(strGrpID.substring(0,strGrpID.indexOf(",")));
+		//if( strUGrpNo.indexOf(",") > -1 ) dccSearchAlarm.setsUGrpNo(strUGrpNo.substring(0,strUGrpNo.indexOf(",")));
+		if( strMenuNo.indexOf(",") > -1 ) dccSearchAlarm.setsMenuNo(strMenuNo.substring(0,strMenuNo.indexOf(",")));
+		
+		if( dccSearchAlarm.getsGrpID() != null ) searchMap.put("grpID", dccSearchAlarm.getsGrpID());
+		if( dccSearchAlarm.getsMenuNo() != null ) searchMap.put("menuNo", dccSearchAlarm.getsMenuNo());
+		if( dccSearchAlarm.getsUGrpNo() != null ) searchMap.put("uGrpNo", dccSearchAlarm.getsUGrpNo());                   
+		
+		
+		if(request.getSession().getAttribute("USER_INFO") != null) {
+			//List<ComTagDccInfo> dccGrpTagList = basDccOsmsService.getDccGrpTagList(searchMap);
+			List<TrendTagDccInfo> dccGrpTagList = dccTrendService.getDccGrpTagList(searchMap);
+			
+			// 소스에 없으나 AS-IS 에서 확인하면 이 부분이 필요
+			dccGrpTagList.forEach(t -> {
+				if( "AI".equalsIgnoreCase(t.getIOTYPE()) && ("2010".equals(t.getADDRESS()) || "2140".equals(t.getADDRESS())) ) {
+					t.setMinVal((Double.parseDouble(t.getMinVal())*0.0081)+"");
+					t.setMaxVal((Double.parseDouble(t.getMaxVal())*0.0081)+"");
+				}
+			});
+			
+			mav.addObject("getTagInfoList",dccGrpTagList);
+			
+			mav.addObject("BaseSearch", dccSearchAlarm);
+			mav.addObject("UserInfo",userInfo);
+		}
+		
 		return mav;
 	}
 	
 	@RequestMapping("ewExcelExport")
 	public void ewExcelExport(DccSearchAlarm dccSearchAlarm, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
-        
-	        if( dccSearchAlarm.getHogiHeader() != null ) {
-	    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi(dccSearchAlarm.getHogiHeader());
-	    	} else {
-	    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi("3");
-	    	}
-	    	if( dccSearchAlarm.getXyHeader() != null ) {
-	    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyHeader());
-	    	} else {
-	    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun("X");
-	    	}
-	        
+                
 	        if(request.getSession().getAttribute("USER_INFO") != null) {
-	        	
-	        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	
+	        		    			
+    			MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+
 	    		if(dccSearchAlarm.getsMenuNo() == null || dccSearchAlarm.getsMenuNo().isEmpty()) {
 	            	
 	    			dccSearchAlarm.setsDive("D");
 	    			dccSearchAlarm.setsMenuNo("65");
 	    			dccSearchAlarm.setsGrpID("Alarm");;
 		        	
-		        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-		        	dccSearchAlarm.setsHogi(member.getHogi());
-		        	dccSearchAlarm.setsXYGubun(member.getXyGubun());
-		        	
+	    			userInfo.setHogi("3");
+	    			userInfo.setXyGubun("X");		        	
 	        	}
+	    		
+	    		dccSearchAlarm.setsHogi(userInfo.getHogi());
+	        	dccSearchAlarm.setsXYGubun(userInfo.getXyGubun());
 	        		
         		Map dccGrpTagSearchMap = new HashMap();
         		dccGrpTagSearchMap.put("xyGubun",dccSearchAlarm.getsXYGubun()==null?  "X": dccSearchAlarm.getsXYGubun());
@@ -1392,7 +2072,7 @@ public class DccAlarmContentsController {
         			
         			if(varValue.length > 1) {
     					rtnMap.put("Value", varValue[iRow + 1]);
-    					if(StringUtil.isNumeric(varValue[iRow + 1])){
+    					if(getIsNumeric(varValue[iRow + 1])){
 	        				if( Double.parseDouble(varValue[iRow + 1]) < tagDccInfo.getELOW() ) {
 	        					rtnMap.put("BackColor", "#fdf3c0");
 	        				} else if( Double.parseDouble(varValue[iRow + 1]) < tagDccInfo.getEHIGH() ){
@@ -1429,7 +2109,9 @@ public class DccAlarmContentsController {
 
         logger.info("############ fixedtimecontrol");
         
-        if(request.getSession().getAttribute("USER_INFO") != null) {        	
+        if(request.getSession().getAttribute("USER_INFO") != null) {     
+        	
+        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
         	
         	LocalDateTime lDtmS = LocalDateTime.now();         	
             LocalDateTime lDtmE = LocalDateTime.now();   
@@ -1447,21 +2129,19 @@ public class DccAlarmContentsController {
             	}
             }
         	
-        	if( dccSearchAlarm.getHogiHeader() != null ) {
-        		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi(dccSearchAlarm.getHogiHeader());
-        	} else {
-        		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi("3");
-        	}
-        	if( dccSearchAlarm.getXyHeader() != null ) {
-        		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyHeader());
-        	} else {
-        		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun("X");
-        	}
         	if( dccSearchAlarm.getIoType() == null || "".equals(dccSearchAlarm.getIoType()) ) dccSearchAlarm.setIoType("AI");
         	if( dccSearchAlarm.getIoBit() == null || "".equals(dccSearchAlarm.getIoBit()) ) dccSearchAlarm.setIoBit("0");
         	if( dccSearchAlarm.getSaveCore() == null ) dccSearchAlarm.setSaveCore("0");
         	if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
         	if( dccSearchAlarm.getpType() == null ) dccSearchAlarm.setpType("000");
+        	
+			if( dccSearchAlarm.getsHogi() == null || dccSearchAlarm.getsXYGubun() == null) {
+        		userInfo.setHogi("3");
+        		userInfo.setXyGubun("X");
+        	}	
+        	
+        	dccSearchAlarm.setsHogi(userInfo.getHogi());
+        	dccSearchAlarm.setsXYGubun(userInfo.getXyGubun());
         	
         	
         	String CI114Init = "268,269,198,272,273,202,276,277,206,280,281,197,"
@@ -1478,8 +2158,6 @@ public class DccAlarmContentsController {
         	String strSDate = dccSearchAlarm.getStartDate();
         	String strEDate = dccSearchAlarm.getEndDate();
         	String strTitle = dccSearchAlarm.getTitle();
-
-        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	List<Map> fixedAlarmList = new ArrayList<Map>();
         	
@@ -1924,7 +2602,7 @@ public class DccAlarmContentsController {
 	                        String dtSDate = "";
 	                        String dtEDate = "";
 	                        
-	                        for( int bi=0;bi<72;bi++ ) {
+	                        for( int bi=0;bi<84;bi++ ) {
 	                        	if( bi > 5 && "".equals(start118.get(bi)) ) {
 	                        		bigo118.put(bi,"");
 	                        	} else {
@@ -2014,13 +2692,13 @@ public class DccAlarmContentsController {
             					
 
         						if( bigo118.get(ti) != null && !"".equals(bigo118.get(ti).toString()) ) {
-	            					if( G1.contains(chk) ) {
+	            					if( G1.contains(chk) && ti < 84) {
 	            						if( Double.parseDouble(bigo118.get(ti).toString()) > 1.1 ) {
 	            							color = "red";
 	            						} else {
 	            							color = "blue";
 	            						}
-	            					} else if( G2.contains(chk) ) {
+	            					} else if( G2.contains(chk) && ti < 84 ) {
 	            						if( Double.parseDouble(bigo118.get(ti).toString()) > 1.15 ) {
 	            							color = "red";
 	            						} else {
@@ -2223,23 +2901,23 @@ public class DccAlarmContentsController {
 		            					
 	        					String chaAi = AlarmDateDiff(iMM,iSS);
 		            					
-		            			chaA.put(ci,chaAi);
+		            			chaA.put(ci+1,chaAi);
 		            			if( ci == 0 ) {
 			            			if( Double.parseDouble(chaAi.replace(":","")) > 4.75 ) {
-			            				chaAColor.put(ci,"red");
+			            				chaAColor.put(ci+1,"red");
 			            			} else {
-			            				chaAColor.put(ci,"black");
+			            				chaAColor.put(ci+1,"black");
 			            			}
 		            			} else {
 		            				if( Double.parseDouble(chaAi.replace(":","")) > 7 ) {
-			            				chaAColor.put(ci,"red");
+			            				chaAColor.put(ci+1,"red");
 			            			} else {
-			            				chaAColor.put(ci,"black");
+			            				chaAColor.put(ci+1,"black");
 			            			}
 		            			}
 		            		} else {
-		            			chaA.put(ci,"");
-	            				chaAColor.put(ci,"black");
+		            			chaA.put(ci+1,"");
+	            				chaAColor.put(ci+1,"black");
 		            		}
 		            		
 		            		if ( !"".equals(sSB) && !"".equals(sEB) ) {
@@ -2248,17 +2926,17 @@ public class DccAlarmContentsController {
 		            					
 	        					String chaBi = AlarmDateDiff(iMM,iSS);
 		            					
-		            			chaB.put(ci,chaBi);
+		            			chaB.put(ci+1,chaBi);
 		            			if( ci == 0 ) {
 			            			if( Double.parseDouble(chaBi.replace(":","")) > 7 && Double.parseDouble(chaBi.replace(":","")) < 15 ) {
-			            				chaBColor.put(ci,"red");
+			            				chaBColor.put(ci+1,"red");
 			            			} else {
-			            				chaBColor.put(ci,"black");
+			            				chaBColor.put(ci+1,"black");
 			            			}
 		            			}
 		            		} else {
-		            			chaB.put(ci,"");
-		            			chaBColor.put(ci,"black");
+		            			chaB.put(ci+1,"");
+		            			chaBColor.put(ci+1,"black");
 		            		}
 		            	}
 	            	} else {
@@ -2526,8 +3204,9 @@ public class DccAlarmContentsController {
         	
         	dccSearchAlarm.setMenuName(this.menuName);
         	
-        	userInfo.setHogi(dccSearchAlarm.getHogiHeader());
-        	userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
+        	//update hogi, xygubun은 session user info 사용으로 이후 수정 예정 : asj
+        	//userInfo.setHogi(dccSearchAlarm.getHogiHeader());
+        	//userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
         	
         	mav.addObject("BaseSearch", dccSearchAlarm);
         	mav.addObject("UserInfo", userInfo);
@@ -2546,8 +3225,11 @@ public class DccAlarmContentsController {
         logger.info("############ fixedtimecontrol");
         
         if(request.getSession().getAttribute("USER_INFO") != null) {
-        	LocalDateTime lDtmS = LocalDateTime.of(2022, 12, 1, 14, 19, 42);
-            LocalDateTime lDtmE = LocalDateTime.of(2022, 12, 1, 14, 20, 44);
+        	
+        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	LocalDateTime lDtmS = LocalDateTime.now();
+            LocalDateTime lDtmE = LocalDateTime.now();
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));
             if( dccSearchAlarm.getStartDate() == null ) {
@@ -2560,21 +3242,19 @@ public class DccAlarmContentsController {
             	}
             }
         	
-        	if( dccSearchAlarm.getHogiHeader() != null ) {
-        		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi(dccSearchAlarm.getHogiHeader());
-        	} else {
-        		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi("3");
-        	}
-        	if( dccSearchAlarm.getXyHeader() != null ) {
-        		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyHeader());
-        	} else {
-        		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun("X");
-        	}
+            if( dccSearchAlarm.getsHogi() == null || dccSearchAlarm.getsXYGubun() == null) {
+        		userInfo.setHogi("3");
+        		userInfo.setXyGubun("X");
+        	}	
+        	
+        	dccSearchAlarm.setsHogi(userInfo.getHogi());
+        	dccSearchAlarm.setsXYGubun(userInfo.getXyGubun());
+        	
         	if( dccSearchAlarm.getIoType() == null || "".equals(dccSearchAlarm.getIoType()) ) dccSearchAlarm.setIoType("AI");
         	if( dccSearchAlarm.getIoBit() == null || "".equals(dccSearchAlarm.getIoBit()) ) dccSearchAlarm.setIoBit("0");
         	if( dccSearchAlarm.getSaveCore() == null ) dccSearchAlarm.setSaveCore("0");
         	if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
-        	if( dccSearchAlarm.getpType() == null ) dccSearchAlarm.setpType("114");
+        	if( dccSearchAlarm.getpType() == null ) dccSearchAlarm.setpType("000");
         	if( dccSearchAlarm.getAddress() == null ) dccSearchAlarm.setAddress("|");
         	String strPType = dccSearchAlarm.getpType();
         	String strAddress = dccSearchAlarm.getAddress();
@@ -2584,8 +3264,6 @@ public class DccAlarmContentsController {
         	String strSDate = dccSearchAlarm.getStartDate();
         	String strEDate = dccSearchAlarm.getEndDate();
         	String strTitle = dccSearchAlarm.getTitle();
-
-        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
 
         	List<Map> fixedAlarmList = new ArrayList<Map>();
         	
@@ -3030,7 +3708,7 @@ public class DccAlarmContentsController {
 	                        String dtSDate = "";
 	                        String dtEDate = "";
 	                        
-	                        for( int bi=0;bi<72;bi++ ) {
+	                        for( int bi=0;bi<84;bi++ ) {
 	                        	if( bi > 5 && "".equals(start118.get(bi)) ) {
 	                        		bigo118.put(bi,"");
 	                        	} else {
@@ -3120,13 +3798,13 @@ public class DccAlarmContentsController {
             					
 
         						if( bigo118.get(ti) != null && !"".equals(bigo118.get(ti).toString()) ) {
-	            					if( G1.contains(chk) ) {
+	            					if( G1.contains(chk) && ti < 84) {
 	            						if( Double.parseDouble(bigo118.get(ti).toString()) > 1.1 ) {
 	            							color = "red";
 	            						} else {
 	            							color = "blue";
 	            						}
-	            					} else if( G2.contains(chk) ) {
+	            					} else if( G2.contains(chk) && ti < 84 ) {
 	            						if( Double.parseDouble(bigo118.get(ti).toString()) > 1.15 ) {
 	            							color = "red";
 	            						} else {
@@ -3632,8 +4310,9 @@ public class DccAlarmContentsController {
         	
         	dccSearchAlarm.setMenuName(this.menuName);
         	
-        	userInfo.setHogi(dccSearchAlarm.getHogiHeader());
-        	userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
+        	//update hogi, xygubun은 session user info 사용으로 이후 수정 예정 : asj
+        	//userInfo.setHogi(dccSearchAlarm.getHogiHeader());
+        	//userInfo.setXyGubun(dccSearchAlarm.getXyHeader());
         	
         	mav.addObject("BaseSearch", dccSearchAlarm);
         	mav.addObject("UserInfo", userInfo);
@@ -3768,37 +4447,40 @@ public class DccAlarmContentsController {
 	@RequestMapping("fixedExcelExport")
 	public void fixedExcelExport(HttpServletRequest request, HttpServletResponse response, DccSearchAlarm dccSearchAlarm) throws Exception {
 		try{
-        	if( dccSearchAlarm.getHogiHeader() != null ) {
-        		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi(dccSearchAlarm.getHogiHeader());
-        	} else {
-        		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi("3");
-        	}
-        	if( dccSearchAlarm.getXyHeader() != null ) {
-        		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyHeader());
-        	} else {
-        		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun("X");
-        	}
-        	if( dccSearchAlarm.getIoType() == null || "".equals(dccSearchAlarm.getIoType()) ) dccSearchAlarm.setIoType("AI");
-        	if( dccSearchAlarm.getIoBit() == null || "".equals(dccSearchAlarm.getIoBit()) ) dccSearchAlarm.setIoBit("0");
-        	if( dccSearchAlarm.getSaveCore() == null ) dccSearchAlarm.setSaveCore("0");
-        	if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
-        	if( dccSearchAlarm.getpType() == null ) dccSearchAlarm.setpType("114");
-        	String CI114Init = "268,269,198,272,273,202,276,277,206,280,281,197,"
-							 + "284,285,201,288,736,205,739,740,200,743,744,204,"
-							 + "747,748,208,751,752,199,755,756,203,759,760,207";
-        	if( dccSearchAlarm.getAddress() == null ) dccSearchAlarm.setAddress(CI114Init);
-        	String strPType = dccSearchAlarm.getpType();
-        	String strAddress = dccSearchAlarm.getAddress();
-        	String strSDate = dccSearchAlarm.getStartDate();
-        	String strEDate = dccSearchAlarm.getEndDate();
-        	String strTitle = dccSearchAlarm.getTitle() == null ? "" : dccSearchAlarm.getTitle();
-        	String strLoop = dccSearchAlarm.getLoop() == null ? "" : dccSearchAlarm.getLoop();
-        	String strCI = dccSearchAlarm.getCi() == null ? "" : dccSearchAlarm.getCi();
-        	String[] lblTitles = strTitle.split(",");
-        	String[] lblLoops = strLoop.split(",");
-        	String[] lblCIs = strCI.split(",");
+			
 	        
 	        if(request.getSession().getAttribute("USER_INFO") != null) {
+	        	
+	        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+	        	
+	        	if( dccSearchAlarm.getsHogi() == null || dccSearchAlarm.getsXYGubun() == null) {
+	        		userInfo.setHogi("3");
+	        		userInfo.setXyGubun("X");
+	        	}	
+	        	
+	        	dccSearchAlarm.setsHogi(userInfo.getHogi());
+	        	dccSearchAlarm.setsXYGubun(userInfo.getXyGubun());
+	        	
+	        	if( dccSearchAlarm.getIoType() == null || "".equals(dccSearchAlarm.getIoType()) ) dccSearchAlarm.setIoType("AI");
+	        	if( dccSearchAlarm.getIoBit() == null || "".equals(dccSearchAlarm.getIoBit()) ) dccSearchAlarm.setIoBit("0");
+	        	if( dccSearchAlarm.getSaveCore() == null ) dccSearchAlarm.setSaveCore("0");
+	        	if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
+	        	if( dccSearchAlarm.getpType() == null ) dccSearchAlarm.setpType("114");
+	        	String CI114Init = "268,269,198,272,273,202,276,277,206,280,281,197,"
+								 + "284,285,201,288,736,205,739,740,200,743,744,204,"
+								 + "747,748,208,751,752,199,755,756,203,759,760,207";
+	        	if( dccSearchAlarm.getAddress() == null ) dccSearchAlarm.setAddress(CI114Init);
+	        	String strPType = dccSearchAlarm.getpType();
+	        	String strAddress = dccSearchAlarm.getAddress();
+	        	String strSDate = dccSearchAlarm.getStartDate();
+	        	String strEDate = dccSearchAlarm.getEndDate();
+	        	String strTitle = dccSearchAlarm.getTitle() == null ? "" : dccSearchAlarm.getTitle();
+	        	String strLoop = dccSearchAlarm.getLoop() == null ? "" : dccSearchAlarm.getLoop();
+	        	String strCI = dccSearchAlarm.getCi() == null ? "" : dccSearchAlarm.getCi();
+	        	String[] lblTitles = strTitle.split(",");
+	        	String[] lblLoops = strLoop.split(",");
+	        	String[] lblCIs = strCI.split(",");
+	        	
 	        	
 	        	List<Map> fixedAlarmList = new ArrayList<Map>();
 	        	
@@ -4252,7 +4934,7 @@ public class DccAlarmContentsController {
 		                        String dtSDate = "";
 		                        String dtEDate = "";
 		                        
-		                        for( int bi=0;bi<72;bi++ ) {
+		                        for( int bi=0;bi<84;bi++ ) {
 		                        	if( bi > 5 && "".equals(start118.get(bi)) ) {
 		                        		bigo118.put(bi,"");
 		                        	} else {
@@ -4342,13 +5024,13 @@ public class DccAlarmContentsController {
 	            					
 
 	        						if( bigo118.get(ti) != null && !"".equals(bigo118.get(ti).toString()) ) {
-		            					if( G1.contains(chk) ) {
+		            					if( G1.contains(chk) && ti < 84) {
 		            						if( Double.parseDouble(bigo118.get(ti).toString()) > 1.1 ) {
 		            							color = "red";
 		            						} else {
 		            							color = "blue";
 		            						}
-		            					} else if( G2.contains(chk) ) {
+		            					} else if( G2.contains(chk) && ti < 84 ) {
 		            						if( Double.parseDouble(bigo118.get(ti).toString()) > 1.15 ) {
 		            							color = "red";
 		            						} else {
@@ -4589,43 +5271,517 @@ public class DccAlarmContentsController {
         ModelAndView mav = new ModelAndView();
 
         logger.info("############ gaschromatography");
-        
-        LocalDateTime lDtmS = LocalDateTime.now();
-        LocalDateTime lDtmE = LocalDateTime.now();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        if( dccSearchAlarm.getStartDate() == null ) dccSearchAlarm.setStartDate(lDtmS.format(dtf));
-        if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));
-        if( dccSearchAlarm.getHogiHeader() != null ) {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi(dccSearchAlarm.getHogiHeader());
-    	} else {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi("3");
-    	}
-    	if( dccSearchAlarm.getXyHeader() != null ) {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyHeader());
-    	} else {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun("X");
-    	}
-    	if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
-    	if( dccSearchAlarm.getsMenuNo() == null ) dccSearchAlarm.setsMenuNo("12");
-    	//if( dccSearchAlarm.getsGrpID() == null ) dccSearchAlarm.setsGrpID("1");
-    	if( dccSearchAlarm.getsUGrpNo() == null ) dccSearchAlarm.setsUGrpNo("1");
     	
         if(request.getSession().getAttribute("USER_INFO") != null) {
         	
         	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
         	
+        	LocalDateTime lDtmS = LocalDateTime.now();
+            LocalDateTime lDtmE = LocalDateTime.now();
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            if( dccSearchAlarm.getStartDate() == null ) dccSearchAlarm.setStartDate(lDtmS.format(dtf));
+            if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));            
+            
+            if( dccSearchAlarm.getsHogi() == null || dccSearchAlarm.getsXYGubun() == null) {
+         		userInfo.setHogi("3");
+         		userInfo.setXyGubun("X");
+         	}	
+         	
+         	dccSearchAlarm.setsHogi(userInfo.getHogi());
+         	dccSearchAlarm.setsXYGubun(userInfo.getXyGubun());
+         	
+         	if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
+         	if( dccSearchAlarm.getsMenuNo() == null ) dccSearchAlarm.setsMenuNo("12");
+         	if( dccSearchAlarm.getsUGrpNo() == null ) dccSearchAlarm.setsUGrpNo("1");
+         	
+    		
+    		Map dccGrpTagSearchMap = new HashMap();
+    		dccGrpTagSearchMap.put("xyGubun",dccSearchAlarm.getsXYGubun()==null?  "X": dccSearchAlarm.getsXYGubun());
+    		dccGrpTagSearchMap.put("hogi",dccSearchAlarm.getsHogi()==null?  "3": dccSearchAlarm.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchAlarm.getsDive()==null?  "D": dccSearchAlarm.getsDive());
+    		dccGrpTagSearchMap.put("grpID", "mimic");
+    		dccGrpTagSearchMap.put("menuNo", dccSearchAlarm.getsMenuNo()==null?  "12": dccSearchAlarm.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchAlarm.getsUGrpNo()==null?  "1": dccSearchAlarm.getsUGrpNo());
+
+    		String sBit2 = "";
+    		String sBit3 = "";
+    		String sBit4 = "";
+    		String sBit5 = "";
+    		String sBit6 = "";
+    		
+    		String strLblTitle = "N/A";
+    		String[] sStream = new String[6];
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+    		
+    		mav.addObject("TagDccInfoList", tagDccInfoList);
+    		
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("lblDataList", dccVal.get("lblDataList"));
+    		
+    		String strLblDate =  dccVal.get("SearchTime").toString().substring(4);
+    		
+    		mav.addObject("SearchTime",dccVal.get("SearchTime"));
+    		mav.addObject("ForeColor",dccVal.get("ForeColor"));
+
+    		dccSearchAlarm.setEndDate(strLblDate);
+    		dccSearchAlarm.setpType("0");
+    		
+    		//-* 1.현재분석계통
+    		List<Map> historyInfoList = new ArrayList<Map>();
+    		System.out.println(dccSearchAlarm.getsXYGubun());
+    		if(dccSearchAlarm.getsXYGubun().equals("X")) {
+    		
+	    		if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {	    			
+	    			historyInfoList = dccAlarmService.selectGasInfo4Hogi(dccSearchAlarm);
+	    		}else {	    			
+	    			historyInfoList = dccAlarmService.selectGasInfo(dccSearchAlarm);
+	    		}
+    		}else {
+    			if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {    				
+    				historyInfoList = dccAlarmService.selectGasInfo4Hogi(dccSearchAlarm);
+	    		}else {    			
+	    			historyInfoList = dccAlarmService.selectGasInfo(dccSearchAlarm);
+	    		}
+    		}    		
+
+    		Map lblH2 = new HashMap();
+    		Map lblO2 = new HashMap();
+    		Map lblN2 = new HashMap();
+    		Map lblD2 = new HashMap();
+    		
+    		if( historyInfoList.size() > 0 ) {
+    			
+	        	sBit2 = basCommonService.GetBitVal(historyInfoList.get(0).get("TVALUE").toString(),"2");
+	        	sBit3 = basCommonService.GetBitVal(historyInfoList.get(0).get("TVALUE").toString(),"3");
+	        	sBit4 = basCommonService.GetBitVal(historyInfoList.get(0).get("TVALUE").toString(),"4");
+	        	sBit5 = basCommonService.GetBitVal(historyInfoList.get(0).get("TVALUE").toString(),"5");
+	        	sBit6 = basCommonService.GetBitVal(historyInfoList.get(0).get("TVALUE").toString(),"6");
+	        	        	
+	        	if( "1".equals(sBit2) && "0".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+	        		strLblTitle = "경수영역 제어계통 재결합기 전단";
+	        	} else if( "0".equals(sBit2) && "1".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+	        		strLblTitle = "경수영역 제어계통 재결합기 후단";
+	        	} else if( "1".equals(sBit2) && "1".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+	        		strLblTitle = "감속재 상층기체 재결합기 전단";
+	        	} else if( "0".equals(sBit2) && "0".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+	        		strLblTitle = "감속재 상층기체 재결합기 후단";
+	        	} else if( "1".equals(sBit2) && "0".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+	        		strLblTitle = "중수저장탱크 Vent. Condenser";
+	        	} else if( "0".equals(sBit2) && "1".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+	        		strLblTitle = "예비용";
+	        	} else if( "1".equals(sBit2) && "1".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+	        		strLblTitle = "중수저장탱크 상층 기체";
+	        	} else if( "0".equals(sBit2) && "0".equals(sBit3) && "0".equals(sBit4) && "1".equals(sBit5) && "1".equals(sBit6) ) {
+	        		strLblTitle = "교정 기체";
+	        	} else {
+	        		strLblTitle = "N/A";
+	        	}
+	        	System.out.println("strLblTitle=" +  strLblTitle);
+	        	String sEndDT = convDtm(strLblDate,false).format(dtf);
+	        	String sStartDT = convDtm(strLblDate,false).minusHours(1).format(dtf);
+	        	
+	        	dccSearchAlarm.setStartDate(sStartDT);
+	        	dccSearchAlarm.setEndDate(sEndDT);
+	    		dccSearchAlarm.setpType("1");
+	    		
+	    		//-* 2.직전분석값
+	    		List<Map> historyInfoListPre = new ArrayList<Map>();
+	    		
+	    		if(dccSearchAlarm.getsXYGubun().equals("X")) {
+	        		
+		    		if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {
+		    			historyInfoListPre = dccAlarmService.selectGasInfo4Hogi(dccSearchAlarm);
+		    		}else {
+		    			historyInfoListPre = dccAlarmService.selectGasInfo(dccSearchAlarm);
+		    		}
+	    		}else {
+	    			if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {
+	    				historyInfoListPre = dccAlarmService.selectGasInfo4Hogi(dccSearchAlarm);
+		    		}else {
+		    			historyInfoListPre = dccAlarmService.selectGasInfo(dccSearchAlarm);
+		    		}
+	    		}    	
+
+	    		for( int hi=0;hi<historyInfoListPre.size();hi++ ) {
+		    		sBit2 = basCommonService.GetBitVal(historyInfoListPre.get(hi).get("TVALUE").toString(),"2");
+		        	sBit3 = basCommonService.GetBitVal(historyInfoListPre.get(hi).get("TVALUE").toString(),"3");
+		        	sBit4 = basCommonService.GetBitVal(historyInfoListPre.get(hi).get("TVALUE").toString(),"4");
+		        	sBit5 = basCommonService.GetBitVal(historyInfoListPre.get(hi).get("TVALUE").toString(),"5");
+		        	sBit6 = basCommonService.GetBitVal(historyInfoListPre.get(hi).get("TVALUE").toString(),"6");        	
+		        	
+		        	String tmpScanTime = historyInfoListPre.get(hi).get("SCANTIME").toString();	
+		        	tmpScanTime = tmpScanTime.indexOf(".") == -1 ? tmpScanTime+".000" : tmpScanTime;       	
+		        	
+		        	if( "1".equals(sBit2) && "0".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+		        		sStream[0] = sStream[0] == null || "".equals(sStream[0]) ? tmpScanTime : sStream[0];
+		        	} else if( "0".equals(sBit2) && "1".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+		        		sStream[1] = sStream[1] == null || "".equals(sStream[1]) ? tmpScanTime : sStream[1];
+		        	} else if( "1".equals(sBit2) && "1".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+		        		sStream[2] = sStream[2] == null || "".equals(sStream[2]) ? tmpScanTime : sStream[2];
+		        	} else if( "0".equals(sBit2) && "0".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+		        		sStream[3] = sStream[3] == null || "".equals(sStream[3]) ? tmpScanTime : sStream[3];
+		        	} else if( "1".equals(sBit2) && "0".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+		        		sStream[4] = sStream[4] == null || "".equals(sStream[4]) ? tmpScanTime : sStream[4];
+		        	} else if( "1".equals(sBit2) && "1".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+		        		sStream[5] = sStream[5] == null || "".equals(sStream[5]) ? tmpScanTime : sStream[5];
+		        	}
+		        	
+		        	boolean bFlag = true;
+		        	for( int si=0;si<sStream.length;si++ ) {		        		
+		        		if( "".equals(sStream[si]) || sStream[si] == null ) {
+		        			bFlag = false;
+		        		} 
+		        	}
+		        	
+		        	if( bFlag) break;
+	    		} // end for historyInfoListPre
+	    		
+	    		//'-* STREAM에 해당하는 AI(2760, 2762, 2763, 2761)값을 가져온다.
+	    		for( int sa=0;sa<4;sa++ ) {
+	    			if( sa == 0 ) {
+	    				dccSearchAlarm.setAddress("2760");
+	    			} else if( sa == 1 ) {
+	    				dccSearchAlarm.setAddress("2762");
+	    			} else if( sa == 2 ) {
+	    				dccSearchAlarm.setAddress("2763");
+	    			} else if( sa == 3 ) {
+	    				dccSearchAlarm.setAddress("2761");
+	    			}
+	    			
+	    			List<Map> dccStreamAIInfo = dccAlarmService.selectStreamAIInfo(dccSearchAlarm);
+	    			
+	    			String sSEQ = dccStreamAIInfo.get(0).get("TBLNO").toString();
+	    			String sTVALUE = "TVALUE"+dccStreamAIInfo.get(0).get("FLDNO").toString();
+	    			String sBSCALE = dccStreamAIInfo.get(0).get("BSCAL").toString();
+	    			
+	    			if( (sSEQ != null && !sSEQ.isEmpty()) && (sTVALUE !=null && !sTVALUE.isEmpty())) {	    				
+	    				
+	    				for( int qi=0;qi<sStream.length;qi++ ) {
+	    					dccSearchAlarm.settValue(sTVALUE);
+	    					dccSearchAlarm.setSeq(sSEQ);
+	    					dccSearchAlarm.setEndDate(sStream[qi]);
+	    					dccSearchAlarm.setpType("2");
+	    					//System.out.println("* * STREAM에 해당하는 AI(2760, 2762, 2763, 2761)값을 가져온다.=========" + sa);
+	    					List<Map> historyInfoListDen = dccAlarmService.selectGasInfo(dccSearchAlarm);
+	    					
+	    					if( historyInfoListDen.size() > 0 ) {
+	    						String fValue = historyInfoListDen.get(0).get("TVALUE").toString();
+	    						
+	    						String sDataConv = "0";
+	    						if( sBSCALE != null && !sBSCALE.isEmpty() ) {	    							
+	    							sDataConv = (Double.parseDouble(fValue)>-32768)? String.format(gFormat[Integer.parseInt(sBSCALE)],Double.parseDouble(fValue)) : "***IRR";
+	    						} else {
+	    							sDataConv = Double.parseDouble(fValue)>-32768? fValue : "***IRR";
+	    						}
+	    						
+	    						if( sa == 0 ) {
+	    							lblH2.put("idx"+qi,sDataConv);
+	    						} else if( sa == 1 ) {
+	    							lblO2.put("idx"+qi,sDataConv);
+	    						} else if( sa == 2 ) {
+	    							lblN2.put("idx"+qi,sDataConv);
+	    						} else if( sa == 3 ) {
+	    							lblD2.put("idx"+qi,sDataConv);
+	    						}
+	    					}
+	    				}
+	    			}
+	    		}
+    		}
+
+        	mav.addObject("LblTitle", strLblTitle);
+        	mav.addObject("LblH2", lblH2);
+        	mav.addObject("LblO2", lblO2);
+        	mav.addObject("LblN2", lblN2);
+        	mav.addObject("LblD2", lblD2);
+    		
+        	dccSearchAlarm.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchAlarm);
+        	mav.addObject("UserInfo", userInfo);
+        }
+        
+
+        return mav;
+    }
+	
+	@RequestMapping(value="reloadGaschromatography", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadGaschromatography(DccSearchAlarm dccSearchAlarm, HttpServletRequest request, HttpServletResponse response) {
+        ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ reloadGaschromatography");
+    	
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	LocalDateTime lDtmS = LocalDateTime.now();
+            LocalDateTime lDtmE = LocalDateTime.now();
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            if( dccSearchAlarm.getStartDate() == null ) dccSearchAlarm.setStartDate(lDtmS.format(dtf));
+            if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));            
+            
+            if( dccSearchAlarm.getsHogi() == null || dccSearchAlarm.getsXYGubun() == null) {
+         		userInfo.setHogi("3");
+         		userInfo.setXyGubun("X");
+         	}	
+         	
+         	dccSearchAlarm.setsHogi(userInfo.getHogi());
+         	dccSearchAlarm.setsXYGubun(userInfo.getXyGubun());
+         	
+         	if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
+         	if( dccSearchAlarm.getsMenuNo() == null ) dccSearchAlarm.setsMenuNo("12");
+         	if( dccSearchAlarm.getsUGrpNo() == null ) dccSearchAlarm.setsUGrpNo("1");
+         	
+    		
+    		Map dccGrpTagSearchMap = new HashMap();
+    		dccGrpTagSearchMap.put("xyGubun",dccSearchAlarm.getsXYGubun()==null?  "X": dccSearchAlarm.getsXYGubun());
+    		dccGrpTagSearchMap.put("hogi",dccSearchAlarm.getsHogi()==null?  "3": dccSearchAlarm.getsHogi());
+    		dccGrpTagSearchMap.put("dive",dccSearchAlarm.getsDive()==null?  "D": dccSearchAlarm.getsDive());
+    		dccGrpTagSearchMap.put("grpID", "mimic");
+    		dccGrpTagSearchMap.put("menuNo", dccSearchAlarm.getsMenuNo()==null?  "12": dccSearchAlarm.getsMenuNo());
+    		dccGrpTagSearchMap.put("uGrpNo", dccSearchAlarm.getsUGrpNo()==null?  "1": dccSearchAlarm.getsUGrpNo());
+
+    		String sBit2 = "";
+    		String sBit3 = "";
+    		String sBit4 = "";
+    		String sBit5 = "";
+    		String sBit6 = "";
+    		
+    		String strLblTitle = "N/A";
+    		String[] sStream = new String[6];
+    		
+    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
+    		
+    		mav.addObject("TagDccInfoList", tagDccInfoList);
+    		
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
+    		
+    		mav.addObject("lblDataList", dccVal.get("lblDataList"));
+    		
+    		String strLblDate =  dccVal.get("SearchTime").toString().substring(4);
+    		
+    		mav.addObject("SearchTime",dccVal.get("SearchTime"));
+    		mav.addObject("ForeColor",dccVal.get("ForeColor"));
+
+    		dccSearchAlarm.setEndDate(strLblDate);
+    		dccSearchAlarm.setpType("0");
+    		
+    		//-* 1.현재분석계통
+    		List<Map> historyInfoList = new ArrayList<Map>();
+    		System.out.println(dccSearchAlarm.getsXYGubun());
+    		if(dccSearchAlarm.getsXYGubun().equals("X")) {
+    		
+	    		if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {	    			
+	    			historyInfoList = dccAlarmService.selectGasInfo4Hogi(dccSearchAlarm);
+	    		}else {	    			
+	    			historyInfoList = dccAlarmService.selectGasInfo(dccSearchAlarm);
+	    		}
+    		}else {
+    			if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {    				
+    				historyInfoList = dccAlarmService.selectGasInfo4Hogi(dccSearchAlarm);
+	    		}else {    			
+	    			historyInfoList = dccAlarmService.selectGasInfo(dccSearchAlarm);
+	    		}
+    		}    		
+
+    		Map lblH2 = new HashMap();
+    		Map lblO2 = new HashMap();
+    		Map lblN2 = new HashMap();
+    		Map lblD2 = new HashMap();
+    		
+    		if( historyInfoList.size() > 0 ) {
+    			
+	        	sBit2 = basCommonService.GetBitVal(historyInfoList.get(0).get("TVALUE").toString(),"2");
+	        	sBit3 = basCommonService.GetBitVal(historyInfoList.get(0).get("TVALUE").toString(),"3");
+	        	sBit4 = basCommonService.GetBitVal(historyInfoList.get(0).get("TVALUE").toString(),"4");
+	        	sBit5 = basCommonService.GetBitVal(historyInfoList.get(0).get("TVALUE").toString(),"5");
+	        	sBit6 = basCommonService.GetBitVal(historyInfoList.get(0).get("TVALUE").toString(),"6");
+	        	        	
+	        	if( "1".equals(sBit2) && "0".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+	        		strLblTitle = "경수영역 제어계통 재결합기 전단";
+	        	} else if( "0".equals(sBit2) && "1".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+	        		strLblTitle = "경수영역 제어계통 재결합기 후단";
+	        	} else if( "1".equals(sBit2) && "1".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+	        		strLblTitle = "감속재 상층기체 재결합기 전단";
+	        	} else if( "0".equals(sBit2) && "0".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+	        		strLblTitle = "감속재 상층기체 재결합기 후단";
+	        	} else if( "1".equals(sBit2) && "0".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+	        		strLblTitle = "중수저장탱크 Vent. Condenser";
+	        	} else if( "0".equals(sBit2) && "1".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+	        		strLblTitle = "예비용";
+	        	} else if( "1".equals(sBit2) && "1".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+	        		strLblTitle = "중수저장탱크 상층 기체";
+	        	} else if( "0".equals(sBit2) && "0".equals(sBit3) && "0".equals(sBit4) && "1".equals(sBit5) && "1".equals(sBit6) ) {
+	        		strLblTitle = "교정 기체";
+	        	} else {
+	        		strLblTitle = "N/A";
+	        	}
+	        	System.out.println("strLblTitle=" +  strLblTitle);
+	        	String sEndDT = convDtm(strLblDate,false).format(dtf);
+	        	String sStartDT = convDtm(strLblDate,false).minusHours(1).format(dtf);
+	        	
+	        	dccSearchAlarm.setStartDate(sStartDT);
+	        	dccSearchAlarm.setEndDate(sEndDT);
+	    		dccSearchAlarm.setpType("1");
+	    		
+	    		//-* 2.직전분석값
+	    		List<Map> historyInfoListPre = new ArrayList<Map>();
+	    		
+	    		if(dccSearchAlarm.getsXYGubun().equals("X")) {
+	        		
+		    		if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {
+		    			historyInfoListPre = dccAlarmService.selectGasInfo4Hogi(dccSearchAlarm);
+		    		}else {
+		    			historyInfoListPre = dccAlarmService.selectGasInfo(dccSearchAlarm);
+		    		}
+	    		}else {
+	    			if(commonConstant.getUrl().indexOf("10.135.101.222") > -1) {
+	    				historyInfoListPre = dccAlarmService.selectGasInfo4Hogi(dccSearchAlarm);
+		    		}else {
+		    			historyInfoListPre = dccAlarmService.selectGasInfo(dccSearchAlarm);
+		    		}
+	    		}    	
+
+	    		for( int hi=0;hi<historyInfoListPre.size();hi++ ) {
+		    		sBit2 = basCommonService.GetBitVal(historyInfoListPre.get(hi).get("TVALUE").toString(),"2");
+		        	sBit3 = basCommonService.GetBitVal(historyInfoListPre.get(hi).get("TVALUE").toString(),"3");
+		        	sBit4 = basCommonService.GetBitVal(historyInfoListPre.get(hi).get("TVALUE").toString(),"4");
+		        	sBit5 = basCommonService.GetBitVal(historyInfoListPre.get(hi).get("TVALUE").toString(),"5");
+		        	sBit6 = basCommonService.GetBitVal(historyInfoListPre.get(hi).get("TVALUE").toString(),"6");        	
+		        	
+		        	String tmpScanTime = historyInfoListPre.get(hi).get("SCANTIME").toString();	
+		        	tmpScanTime = tmpScanTime.indexOf(".") == -1 ? tmpScanTime+".000" : tmpScanTime;       	
+		        	
+		        	if( "1".equals(sBit2) && "0".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+		        		sStream[0] = sStream[0] == null || "".equals(sStream[0]) ? tmpScanTime : sStream[0];
+		        	} else if( "0".equals(sBit2) && "1".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+		        		sStream[1] = sStream[1] == null || "".equals(sStream[1]) ? tmpScanTime : sStream[1];
+		        	} else if( "1".equals(sBit2) && "1".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+		        		sStream[2] = sStream[2] == null || "".equals(sStream[2]) ? tmpScanTime : sStream[2];
+		        	} else if( "0".equals(sBit2) && "0".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+		        		sStream[3] = sStream[3] == null || "".equals(sStream[3]) ? tmpScanTime : sStream[3];
+		        	} else if( "1".equals(sBit2) && "0".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+		        		sStream[4] = sStream[4] == null || "".equals(sStream[4]) ? tmpScanTime : sStream[4];
+		        	} else if( "1".equals(sBit2) && "1".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
+		        		sStream[5] = sStream[5] == null || "".equals(sStream[5]) ? tmpScanTime : sStream[5];
+		        	}
+		        	
+		        	boolean bFlag = true;
+		        	for( int si=0;si<sStream.length;si++ ) {		        		
+		        		if( "".equals(sStream[si]) || sStream[si] == null ) {
+		        			bFlag = false;
+		        		} 
+		        	}
+		        	
+		        	if( bFlag) break;
+	    		} // end for historyInfoListPre
+	    		
+	    		//'-* STREAM에 해당하는 AI(2760, 2762, 2763, 2761)값을 가져온다.
+	    		for( int sa=0;sa<4;sa++ ) {
+	    			if( sa == 0 ) {
+	    				dccSearchAlarm.setAddress("2760");
+	    			} else if( sa == 1 ) {
+	    				dccSearchAlarm.setAddress("2762");
+	    			} else if( sa == 2 ) {
+	    				dccSearchAlarm.setAddress("2763");
+	    			} else if( sa == 3 ) {
+	    				dccSearchAlarm.setAddress("2761");
+	    			}
+	    			
+	    			List<Map> dccStreamAIInfo = dccAlarmService.selectStreamAIInfo(dccSearchAlarm);
+	    			
+	    			String sSEQ = dccStreamAIInfo.get(0).get("TBLNO").toString();
+	    			String sTVALUE = "TVALUE"+dccStreamAIInfo.get(0).get("FLDNO").toString();
+	    			String sBSCALE = dccStreamAIInfo.get(0).get("BSCAL").toString();
+	    			
+	    			if( (sSEQ != null && !sSEQ.isEmpty()) && (sTVALUE !=null && !sTVALUE.isEmpty())) {	    				
+	    				
+	    				for( int qi=0;qi<sStream.length;qi++ ) {
+	    					dccSearchAlarm.settValue(sTVALUE);
+	    					dccSearchAlarm.setSeq(sSEQ);
+	    					dccSearchAlarm.setEndDate(sStream[qi]);
+	    					dccSearchAlarm.setpType("2");
+	    					//System.out.println("* * STREAM에 해당하는 AI(2760, 2762, 2763, 2761)값을 가져온다.=========" + sa);
+	    					List<Map> historyInfoListDen = dccAlarmService.selectGasInfo(dccSearchAlarm);
+	    					
+	    					if( historyInfoListDen.size() > 0 ) {
+	    						String fValue = historyInfoListDen.get(0).get("TVALUE").toString();
+	    						
+	    						String sDataConv = "0";
+	    						if( sBSCALE != null && !sBSCALE.isEmpty() ) {	    							
+	    							sDataConv = (Double.parseDouble(fValue)>-32768)? String.format(gFormat[Integer.parseInt(sBSCALE)],Double.parseDouble(fValue)) : "***IRR";
+	    						} else {
+	    							sDataConv = Double.parseDouble(fValue)>-32768? fValue : "***IRR";
+	    						}
+	    						
+	    						if( sa == 0 ) {
+	    							lblH2.put("idx"+qi,sDataConv);
+	    						} else if( sa == 1 ) {
+	    							lblO2.put("idx"+qi,sDataConv);
+	    						} else if( sa == 2 ) {
+	    							lblN2.put("idx"+qi,sDataConv);
+	    						} else if( sa == 3 ) {
+	    							lblD2.put("idx"+qi,sDataConv);
+	    						}
+	    					}
+	    				}
+	    			}
+	    		}
+    		}
+
+        	mav.addObject("LblTitle", strLblTitle);
+        	mav.addObject("LblH2", lblH2);
+        	mav.addObject("LblO2", lblO2);
+        	mav.addObject("LblN2", lblN2);
+        	mav.addObject("LblD2", lblD2);
+    		
+        	dccSearchAlarm.setMenuName(this.menuName);
+        	
+        	mav.addObject("BaseSearch", dccSearchAlarm);
+        	mav.addObject("UserInfo", userInfo);
+        }
+        
+
+        return mav;
+    }
+	
+	@RequestMapping(value = "runtimerGC", method = { RequestMethod.POST })
+	@ResponseBody
+	public ModelAndView runtimerGC(DccSearchAlarm dccSearchAlarm, HttpServletRequest request) {
+        ModelAndView mav = new ModelAndView("jsonView");
+
+        logger.info("############ runtimeGC");       
+    	
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	
+        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
+        	
+        	LocalDateTime lDtmS = LocalDateTime.now();
+            LocalDateTime lDtmE = LocalDateTime.now();
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            if( dccSearchAlarm.getStartDate() == null ) dccSearchAlarm.setStartDate(lDtmS.format(dtf));
+            if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));        	
+         	
+            if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
+         	if( dccSearchAlarm.getsMenuNo() == null ) dccSearchAlarm.setsMenuNo("12");
+         	if( dccSearchAlarm.getsUGrpNo() == null ) dccSearchAlarm.setsUGrpNo("1");
+        	
     		if(dccSearchAlarm.getsMenuNo() == null || dccSearchAlarm.getsMenuNo().isEmpty()) {
         	
 				dccSearchAlarm.setsDive("D");
 				dccSearchAlarm.setsMenuNo("12");
-				dccSearchAlarm.setsGrpID("Alarm");;
+				dccSearchAlarm.setsGrpID("mimic");;
 	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchAlarm.setsHogi(member.getHogi());
-	        	dccSearchAlarm.setsXYGubun(member.getXyGubun());
-	        	
-	        	//dccSearchAlarm.setsGrpID(member.getId());
+				userInfo.setHogi("3");
+        		userInfo.setXyGubun("X");
 	    	}
+    		
+    		dccSearchAlarm.setsHogi(userInfo.getHogi());
+        	dccSearchAlarm.setsXYGubun(userInfo.getXyGubun());
     		
     		Map dccGrpTagSearchMap = new HashMap();
     		dccGrpTagSearchMap.put("xyGubun",dccSearchAlarm.getsXYGubun()==null?  "X": dccSearchAlarm.getsXYGubun());
@@ -4650,363 +5806,12 @@ public class DccAlarmContentsController {
     		
     		mav.addObject("TagDccInfoList", tagDccInfoList);
     		
-    		String[] varValue =  basDccOsmsService.getDccValueReturn(dccGrpTagSearchMap);
-    		//System.out.println("varValue=" + varValue.length);
-    		List<Map> dccTagList = new ArrayList<Map>();
-        	
-    		int iRow = 0;
-    		for(ComTagDccInfo tagDccInfo:tagDccInfoList) {
-    			
-    			Map rtnMap = new HashMap();
-
-    			rtnMap.put("SCANTIME", varValue[0]);
-    			rtnMap.put("IOTYPE", tagDccInfo.getIOTYPE());
-    			
-    			if(tagDccInfo.getIOTYPE().equals("DI") || tagDccInfo.getIOTYPE().equals("DO")) {
-    				rtnMap.put("ADDRESS", tagDccInfo.getADDRESS()  + "-" +  tagDccInfo.getIOTYPE());
-    			}else {
-    				rtnMap.put("ADDRESS", tagDccInfo.getADDRESS());    				
-    			}
-    			
-    			rtnMap.put("DataLoop", tagDccInfo.getDataLoop());
-    			rtnMap.put("Descr", tagDccInfo.getDescr());
-    			rtnMap.put("MinVal", tagDccInfo.getMinVal());
-    			rtnMap.put("MaxVal", tagDccInfo.getMaxVal());
-    			rtnMap.put("ELow", tagDccInfo.getELOW());
-    			rtnMap.put("EHigh", tagDccInfo.getEHIGH());
-    			
-    			if(varValue.length > 1) {
-    				
-//    				if(StringUtil.isNumeric(varValue[iRow + 1])){
-//    					
-//    					if(tagDccInfo.getIOTYPE().equals("DI") || tagDccInfo.getIOTYPE().equals("DO")) {
-//    	    				rtnMap.put("Value", GetBitVal(varValue[iRow + 1], ""+tagDccInfo.getIOBIT()));
-//    					}else if(tagDccInfo.getIOTYPE().equals("DI")){
-//    						rtnMap.put("Value", varValue[iRow + 1]);
-//    					}else {
-//    	    				rtnMap.put("Value", String.format(gFormat[tagDccInfo.getBScale()], varValue[iRow + 1])); 		
-//    	    			}
-//    				}
-					rtnMap.put("Value", varValue[iRow + 1]);
-					//System.out.println("Value=" + rtnMap.get("Value"));
-					if(StringUtil.isNumeric(varValue[iRow + 1])){
-        				if( Double.parseDouble(varValue[iRow + 1]) < tagDccInfo.getELOW() ) {
-        					rtnMap.put("BackColor", "#fdf3c0");
-        				} else if( Double.parseDouble(varValue[iRow + 1]) < tagDccInfo.getEHIGH() ){
-        					rtnMap.put("BackColor", "#ff5f1f");
-        				} else {
-        					rtnMap.put("BackColor", "#ffffff");
-        				}
-    				} else {
-    					rtnMap.put("BackColor", "#ffffff");
-    				}
-    			}
-    			
-    			rtnMap.put("Unit", tagDccInfo.getUnit());
-    			rtnMap.put("rowNum", iRow+1);
-    			
-    			dccTagList.add(rtnMap);
-    			iRow++;
-    		}
+    		Map dccVal = basDccOsmsService.getDccValue(dccGrpTagSearchMap, tagDccInfoList);
     		
-    		mav.addObject("DccTagList", dccTagList);
+    		mav.addObject("lblDataList", dccVal.get("lblDataList"));
+    		mav.addObject("SearchTime", dccVal.get("SearchTime"));
     		
-    		String strLblDate = varValue[0];
-    		
-    		dccSearchAlarm.setEndDate(strLblDate);
-    		dccSearchAlarm.setpType("0");
-    		List<Map> historyInfoList = dccAlarmService.selectGasInfo(dccSearchAlarm);
-    		
-    		Map lblH2 = new HashMap();
-    		Map lblO2 = new HashMap();
-    		Map lblN2 = new HashMap();
-    		Map lblD2 = new HashMap();
-    		
-    		if( historyInfoList.size() > 0 ) {
-	        	sBit2 = basCommonService.GetBitVal(historyInfoList.get(0).get("TVALUE").toString(),"2");
-	        	sBit3 = basCommonService.GetBitVal(historyInfoList.get(0).get("TVALUE").toString(),"3");
-	        	sBit4 = basCommonService.GetBitVal(historyInfoList.get(0).get("TVALUE").toString(),"4");
-	        	sBit5 = basCommonService.GetBitVal(historyInfoList.get(0).get("TVALUE").toString(),"5");
-	        	sBit6 = basCommonService.GetBitVal(historyInfoList.get(0).get("TVALUE").toString(),"6");
-	        	
-	        	if( "1".equals(sBit2) && "0".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
-	        		strLblTitle = "경수영역 제어계통 재결합기 전단";
-	        	} else if( "0".equals(sBit2) && "1".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
-	        		strLblTitle = "경수영역 제어계통 재결합기 후단";
-	        	} else if( "1".equals(sBit2) && "1".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
-	        		strLblTitle = "감속재 상층기체 재결합기 전단";
-	        	} else if( "0".equals(sBit2) && "0".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
-	        		strLblTitle = "감속재 상층기체 재결합기 후단";
-	        	} else if( "1".equals(sBit2) && "0".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
-	        		strLblTitle = "중수저장탱크 Vent. Condenser";
-	        	} else if( "0".equals(sBit2) && "1".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
-	        		strLblTitle = "예비용";
-	        	} else if( "1".equals(sBit2) && "1".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
-	        		strLblTitle = "중수저장탱크 상층 기체";
-	        	} else if( "0".equals(sBit2) && "0".equals(sBit3) && "0".equals(sBit4) && "1".equals(sBit5) && "1".equals(sBit6) ) {
-	        		strLblTitle = "교정 기체";
-	        	} else {
-	        		strLblTitle = "N/A";
-	        	}
-	        	
-	        	String sEndDT = convDtm(strLblDate,false).format(dtf);
-	        	String sStartDT = convDtm(strLblDate,false).minusHours(1).format(dtf);
-	        	
-	        	dccSearchAlarm.setStartDate(sStartDT);
-	        	dccSearchAlarm.setEndDate(sEndDT);
-	    		dccSearchAlarm.setpType("1");
-	    		List<Map> historyInfoListPre = dccAlarmService.selectGasInfo(dccSearchAlarm);
-	    		
-	    		for( int hi=0;hi<historyInfoListPre.size();hi++ ) {
-		    		sBit2 = basCommonService.GetBitVal(historyInfoListPre.get(hi).get("TVALUE").toString(),"2");
-		        	sBit3 = basCommonService.GetBitVal(historyInfoListPre.get(hi).get("TVALUE").toString(),"3");
-		        	sBit4 = basCommonService.GetBitVal(historyInfoListPre.get(hi).get("TVALUE").toString(),"4");
-		        	sBit5 = basCommonService.GetBitVal(historyInfoListPre.get(hi).get("TVALUE").toString(),"5");
-		        	sBit6 = basCommonService.GetBitVal(historyInfoListPre.get(hi).get("TVALUE").toString(),"6");
-		        	
-		        	/*
-		        	System.out.println("sBit2=" + sBit2);
-		        	System.out.println("sBit3=" + sBit3);
-		        	System.out.println("sBit4=" + sBit4);
-		        	System.out.println("sBit5=" + sBit5);
-		        	System.out.println("sBit6=" + sBit6);
-		        	
-		        	System.exit(0);
-		        	*/
-		        	
-		        	String tmpScanTime = historyInfoListPre.get(hi).get("SCANTIME").toString();	
-		        	tmpScanTime = tmpScanTime.indexOf(".") == -1 ? tmpScanTime+".000" : tmpScanTime;
-		        	
-		        	//System.out.println("tmpScanTime=" + tmpScanTime);		        	
-		        	
-		        	if( "1".equals(sBit2) && "0".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
-		        		sStream[0] = sStream[0] == null || "".equals(sStream[0]) ? tmpScanTime : sStream[0];
-		        	} else if( "0".equals(sBit2) && "1".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
-		        		sStream[1] = sStream[1] == null || "".equals(sStream[1]) ? tmpScanTime : sStream[1];
-		        	} else if( "1".equals(sBit2) && "1".equals(sBit3) && "0".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
-		        		sStream[2] = sStream[2] == null || "".equals(sStream[2]) ? tmpScanTime : sStream[2];
-		        	} else if( "0".equals(sBit2) && "0".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
-		        		sStream[3] = sStream[3] == null || "".equals(sStream[3]) ? tmpScanTime : sStream[3];
-		        	} else if( "1".equals(sBit2) && "0".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
-		        		sStream[4] = sStream[4] == null || "".equals(sStream[4]) ? tmpScanTime : sStream[4];
-		        	} else if( "1".equals(sBit2) && "1".equals(sBit3) && "1".equals(sBit4) && "0".equals(sBit5) && "1".equals(sBit6) ) {
-		        		sStream[5] = sStream[5] == null || "".equals(sStream[5]) ? tmpScanTime : sStream[5];
-		        	}
-		        	
-		        	int checker = 0;
-		        	for( int si=0;si<sStream.length;si++ ) {
-		        		if( !"".equals(sStream[si]) && sStream[si] != null ) {
-		        			checker++;
-		        		}
-		        		
-		        		if( checker > 5 ) hi = historyInfoListPre.size();
-		        	}
-	    		}
-	    		
-	    		for( int sa=0;sa<4;sa++ ) {
-	    			if( sa == 0 ) {
-	    				dccSearchAlarm.setAddress("2760");
-	    			} else if( sa == 1 ) {
-	    				dccSearchAlarm.setAddress("2762");
-	    			} else if( sa == 2 ) {
-	    				dccSearchAlarm.setAddress("2763");
-	    			} else if( sa == 3 ) {
-	    				dccSearchAlarm.setAddress("2761");
-	    			}
-	    			
-	    			List<Map> dccStreamAIInfo = dccAlarmService.selectStreamAIInfo(dccSearchAlarm);
-	    			
-	    			String sSEQ = dccStreamAIInfo.get(0).get("TBLNO").toString();
-	    			String sTVALUE = "TVALUE"+dccStreamAIInfo.get(0).get("FLDNO").toString();
-	    			String sBSCALE = dccStreamAIInfo.get(0).get("BSCAL").toString();
-	    			
-	    			if( !"".equals(sSEQ) && !"".equals(sTVALUE) ) {	    				
-	    				
-	    				for( int qi=0;qi<sStream.length;qi++ ) {
-	    					dccSearchAlarm.settValue(sTVALUE);
-	    					dccSearchAlarm.setSeq(sSEQ);
-	    					dccSearchAlarm.setEndDate(sStream[qi]);
-	    					dccSearchAlarm.setpType("2");
-	    					
-	    					List<Map> historyInfoListDen = dccAlarmService.selectGasInfo(dccSearchAlarm);
-	    					
-	    					if( historyInfoListDen.size() > 0 ) {
-	    						String fValue = historyInfoListDen.get(0).get("TVALUE").toString();
-	    						
-	    						String sDataConv = "";
-	    						if( !"".equals(sBSCALE) ) {
-	    							
-	    							//System.out.println("fValue=" + fValue + "::::" + sBSCALE);
-	    							
-	    							//sDataConv = fValue.compareTo("-32768") > 0 ? String.format(gFormat[Integer.parseInt(sBSCALE)],fValue) : "***IRR";
-	    							sDataConv = Double.parseDouble(fValue) > Double.parseDouble("-32768") ? fValue : "***IRR";
-	    						} else {
-	    							sDataConv = Double.parseDouble(fValue) > Double.parseDouble("-32768") ? fValue : "***IRR";
-	    						}
-	    						
-	    						if( sa == 0 ) {
-	    							lblH2.put("idx"+qi,sDataConv);
-	    							//System.out.println("idx0"+lblH2.get("idx0"));
-	    						} else if( sa == 1 ) {
-	    							lblO2.put("idx"+qi,sDataConv);
-	    						} else if( sa == 2 ) {
-	    							lblN2.put("idx"+qi,sDataConv);
-	    						} else if( sa == 3 ) {
-	    							lblD2.put("idx"+qi,sDataConv);
-	    						}
-	    					}
-	    				}
-	    			}
-	    		}
-    		}
-
-        	mav.addObject("LblTitle", strLblTitle);
-        	mav.addObject("LblH2", lblH2);
-        	mav.addObject("LblO2", lblO2);
-        	mav.addObject("LblN2", lblN2);
-        	mav.addObject("LblD2", lblD2);
-    		
-        	dccSearchAlarm.setMenuName(this.menuName);
-
-        	userInfo.setHogi(dccSearchAlarm.getsHogi());
-        	userInfo.setXyGubun(dccSearchAlarm.getsXYGubun());
-        	
-        	mav.addObject("BaseSearch", dccSearchAlarm);
-        	mav.addObject("UserInfo", userInfo);
-        }
-        
-
-        return mav;
-    }
-	
-	@RequestMapping(value = "runtimerGC", method = { RequestMethod.POST })
-	@ResponseBody
-	public ModelAndView runtimerGC(DccSearchAlarm dccSearchAlarm, HttpServletRequest request) {
-        ModelAndView mav = new ModelAndView("jsonView");
-
-        logger.info("############ runtimeGC");
-        
-        LocalDateTime lDtmS = LocalDateTime.now();
-        LocalDateTime lDtmE = LocalDateTime.now();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        if( dccSearchAlarm.getStartDate() == null ) dccSearchAlarm.setStartDate(lDtmS.format(dtf));
-        if( dccSearchAlarm.getEndDate() == null ) dccSearchAlarm.setEndDate(lDtmE.format(dtf));
-        if( dccSearchAlarm.getHogiHeader() != null ) {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi(dccSearchAlarm.getHogiHeader());
-    	} else {
-    		if( dccSearchAlarm.getHogi() == null ) dccSearchAlarm.setsHogi("3");
-    	}
-    	if( dccSearchAlarm.getXyHeader() != null ) {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun(dccSearchAlarm.getXyHeader());
-    	} else {
-    		if( dccSearchAlarm.getXyGubun() == null ) dccSearchAlarm.setsXYGubun("X");
-    	}
-    	if( dccSearchAlarm.getsDive() == null ) dccSearchAlarm.setsDive("D");
-    	if( dccSearchAlarm.getsMenuNo() == null ) dccSearchAlarm.setsMenuNo("12");
-    	//if( dccSearchAlarm.getsGrpID() == null ) dccSearchAlarm.setsGrpID("1");
-    	if( dccSearchAlarm.getsUGrpNo() == null ) dccSearchAlarm.setsUGrpNo("1");
-    	
-        if(request.getSession().getAttribute("USER_INFO") != null) {
-        	
-        	MemberInfo userInfo = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-        	
-    		if(dccSearchAlarm.getsMenuNo() == null || dccSearchAlarm.getsMenuNo().isEmpty()) {
-        	
-				dccSearchAlarm.setsDive("D");
-				dccSearchAlarm.setsMenuNo("12");
-				dccSearchAlarm.setsGrpID("mimic");;
-	        	
-	        	MemberInfo member = (MemberInfo)(request.getSession().getAttribute("USER_INFO"));
-	        	dccSearchAlarm.setsHogi(member.getHogi());
-	        	dccSearchAlarm.setsXYGubun(member.getXyGubun());
-	        	
-	        	//dccSearchAlarm.setsGrpID(member.getId());
-	    	}
-    		
-    		Map dccGrpTagSearchMap = new HashMap();
-    		dccGrpTagSearchMap.put("xyGubun",dccSearchAlarm.getsXYGubun()==null?  "X": dccSearchAlarm.getsXYGubun());
-    		dccGrpTagSearchMap.put("hogi",dccSearchAlarm.getsHogi()==null?  "3": dccSearchAlarm.getsHogi());
-    		dccGrpTagSearchMap.put("dive",dccSearchAlarm.getsDive()==null?  "D": dccSearchAlarm.getsDive());
-    		//dccGrpTagSearchMap.put("grpID", dccSearchAlarm.getsGrpID()==null?  "": dccSearchAlarm.getsGrpID());
-    		dccGrpTagSearchMap.put("grpID", "Alarm");
-    		dccGrpTagSearchMap.put("menuNo", dccSearchAlarm.getsMenuNo()==null?  "12": dccSearchAlarm.getsMenuNo());
-    		dccGrpTagSearchMap.put("uGrpNo", dccSearchAlarm.getsUGrpNo()==null?  "1": dccSearchAlarm.getsUGrpNo());
-    		//dccGrpTagSearchMap.put("pSCanTime", dccSearchAlarm.getStartDate()==null?  "2022-12-01 14:52:01.000": dccSearchAlarm.getStartDate());
-
-    		String sBit2 = "";
-    		String sBit3 = "";
-    		String sBit4 = "";
-    		String sBit5 = "";
-    		String sBit6 = "";
-    		
-    		String strLblTitle = "N/A";
-    		String[] sStream = new String[6];
-    		
-    		List<ComTagDccInfo> tagDccInfoList = basDccOsmsService.getDccGrpTagList(dccGrpTagSearchMap);
-    		
-    		mav.addObject("TagDccInfoList", tagDccInfoList);
-    		
-    		String[] varValue =  basDccOsmsService.getDccValueReturn(dccGrpTagSearchMap);
-    		
-    		List<Map> dccTagList = new ArrayList<Map>();
-        	
-    		int iRow = 0;
-    		for(ComTagDccInfo tagDccInfo:tagDccInfoList) {
-    			
-    			Map rtnMap = new HashMap();
-
-    			rtnMap.put("SCANTIME", varValue[0]);
-    			rtnMap.put("IOTYPE", tagDccInfo.getIOTYPE());
-    			
-    			if(tagDccInfo.getIOTYPE().equals("DI") || tagDccInfo.getIOTYPE().equals("DO")) {
-    				rtnMap.put("ADDRESS", tagDccInfo.getADDRESS()  + "-" +  tagDccInfo.getIOTYPE());
-    			}else {
-    				rtnMap.put("ADDRESS", tagDccInfo.getADDRESS());    				
-    			}
-    			
-    			rtnMap.put("DataLoop", tagDccInfo.getDataLoop());
-    			rtnMap.put("Descr", tagDccInfo.getDescr());
-    			rtnMap.put("MinVal", tagDccInfo.getMinVal());
-    			rtnMap.put("MaxVal", tagDccInfo.getMaxVal());
-    			rtnMap.put("ELow", tagDccInfo.getELOW());
-    			rtnMap.put("EHigh", tagDccInfo.getEHIGH());
-    			
-    			if(varValue.length > 1) {
-    				
-//    				if(StringUtil.isNumeric(varValue[iRow + 1])){
-//    					
-//    					if(tagDccInfo.getIOTYPE().equals("DI") || tagDccInfo.getIOTYPE().equals("DO")) {
-//    	    				rtnMap.put("Value", GetBitVal(varValue[iRow + 1], ""+tagDccInfo.getIOBIT()));
-//    					}else if(tagDccInfo.getIOTYPE().equals("DI")){
-//    						rtnMap.put("Value", varValue[iRow + 1]);
-//    					}else {
-//    	    				rtnMap.put("Value", String.format(gFormat[tagDccInfo.getBScale()], varValue[iRow + 1])); 		
-//    	    			}
-//    				}
-					rtnMap.put("Value", varValue[iRow + 1]);
-					if(StringUtil.isNumeric(varValue[iRow + 1])){
-        				if( Double.parseDouble(varValue[iRow + 1]) < tagDccInfo.getELOW() ) {
-        					rtnMap.put("BackColor", "#fdf3c0");
-        				} else if( Double.parseDouble(varValue[iRow + 1]) < tagDccInfo.getEHIGH() ){
-        					rtnMap.put("BackColor", "#ff5f1f");
-        				} else {
-        					rtnMap.put("BackColor", "#ffffff");
-        				}
-    				} else {
-    					rtnMap.put("BackColor", "#ffffff");
-    				}
-    			}
-    			
-    			rtnMap.put("Unit", tagDccInfo.getUnit());
-    			rtnMap.put("rowNum", iRow+1);
-    			
-    			dccTagList.add(rtnMap);
-    			iRow++;
-    		}
-    		
-    		mav.addObject("DccTagList", dccTagList);
-    		
-    		String strLblDate = varValue[0];
+    		String strLblDate =  dccVal.get("SearchTime").toString().substring(4);
     		
     		dccSearchAlarm.setEndDate(strLblDate);
     		dccSearchAlarm.setpType("0");
@@ -5114,10 +5919,11 @@ public class DccAlarmContentsController {
 	    						String fValue = historyInfoListDen.get(0).get("TVALUE").toString();
 	    						
 	    						String sDataConv = "";
-	    						if( !"".equals(sBSCALE) ) {
-	    							sDataConv = Integer.parseInt(fValue) > -32768 ? String.format(gFormat[Integer.parseInt(sBSCALE)],fValue) : "***IRR";
+	    						if( !sBSCALE.isEmpty() ) {
+	    							//sDataConv = Double.parseDouble(fValue)>-32768? String.format("%.3f",fValue):"***IRR";
+	    							sDataConv = Double.parseDouble(fValue)>-32768? fValue : "***IRR";
 	    						} else {
-	    							sDataConv = Integer.parseInt(fValue) > -32768 ? fValue : "***IRR";
+	    							sDataConv = Double.parseDouble(fValue)>-32768? fValue : "***IRR";
 	    						}
 	    						
 	    						if( sa == 0 ) {
@@ -5143,9 +5949,6 @@ public class DccAlarmContentsController {
         	mav.addObject("LblD2", lblD2);
     		
         	dccSearchAlarm.setMenuName(this.menuName);
-
-        	userInfo.setHogi(dccSearchAlarm.getsHogi());
-        	userInfo.setXyGubun(dccSearchAlarm.getsXYGubun());
         	
         	mav.addObject("BaseSearch", dccSearchAlarm);
         	mav.addObject("UserInfo", userInfo);

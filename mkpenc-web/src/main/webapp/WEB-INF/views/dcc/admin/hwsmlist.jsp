@@ -92,7 +92,7 @@
 				}else {
 					alert("데이터 삭제를 취소 합니다..!!");
 				}		
-			});				
+			});
 
 			$("#hwsmUpdate").click(function(){
 	

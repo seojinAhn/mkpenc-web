@@ -207,7 +207,7 @@ public class DccAdminServiceImpl  implements DccAdminService {
 	    
 	    @Override
 	    public List<EquipInfo> selectEquipListForExcel(DccSearchAdmin dccSearchAdmin){
-	    	return dccAdminMapper.selectEquipList(dccSearchAdmin);
+	    	return dccAdminMapper.selectEquipListForExcel(dccSearchAdmin);
 	    }
 	    
 	    @Override

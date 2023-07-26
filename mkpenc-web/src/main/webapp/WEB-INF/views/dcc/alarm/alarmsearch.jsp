@@ -24,8 +24,18 @@
 	var startAlarmDate,endAlarmDate;
 	var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
 	var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
+	var sPageSize = 20;
+	var timerOn = false;
 
 	$(function () {
+		$("#lblDate").text('${UserInfo.hogi} ' + ' ${UserInfo.xyGubun}' + ' ${BaseSearch.endDate}' );
+		var diff = new Date().getTime() - new Date('${BaseSearch.endDate}').getTime();
+		if( diff / 1800000 > 1 ) {
+			$("#lblDate").css('color','#e85516');
+		} else {
+			$("#lblDate").css('color','#05c8be');
+		}
+		
 		if( $("input:radio[id='4']").is(":checked") ) {
 			hogiHeader = "4";
 		} else {
@@ -96,19 +106,21 @@
 		});
 		
 		$("#alarmDetail").click(function() {
-			var sDate,eDate,sHour,eHour,sMin,eMin;
-			var fDate = new Date();
-			fDate = new Date(fDate.setDate(fDate.getDate()-3));
-			if($("#selectSDate").val() != null && $("#selectSDate").val() != "") {
-				sDate = $("#selectEDate").val();
-			} else {
-				sDate = fDate.getFullYear()+'-'+convNum(fDate.getMonth()+1,2)+'-'+convNum(fDate.getDate(),3)+' '+convNum(fDate.getHours(),0)+':'+convNum(fDate.getMinutes(),1);
+			if( confirm('페이지별 알람검색 화면으로 이동하시겠습니까?') ) {
+				var sDate,eDate,sHour,eHour,sMin,eMin;
+				var fDate = new Date();
+				fDate = new Date(fDate.setDate(fDate.getDate()-3));
+				if($("#selectSDate").val() != null && $("#selectSDate").val() != "") {
+					sDate = $("#selectEDate").val();
+				} else {
+					sDate = fDate.getFullYear()+'-'+convNum(fDate.getMonth()+1,2)+'-'+convNum(fDate.getDate(),3)+' '+convNum(fDate.getHours(),0)+':'+convNum(fDate.getMinutes(),1);
+				}
+				
+				var comSubmit = new ComSubmit("searchForm");
+				comSubmit.setUrl("/dcc/alarm/alarm");
+				comSubmit.addParam("startDate",sDate+':00.000');
+				comSubmit.submit();
 			}
-			
-			var comSubmit = new ComSubmit("searchForm");
-			comSubmit.setUrl("/dcc/alarm/alarm");
-			comSubmit.addParam("startDate",sDate+':00.000');
-			comSubmit.submit();
 		});
 		
 		$("#alarmSave").click(function() {
@@ -217,6 +229,7 @@
 		} else {
 			comSubmit.addParam("pageNum", pageNum);
 		}
+		comSubmit.addParam("sPageSize", sPageSize);
 		comSubmit.addParam("hogiHeader", hogiHeader);
 		comSubmit.addParam("xyHeader", xyHeader);
 		comSubmit.submit();
@@ -359,7 +372,7 @@
 			<!-- page_title -->
 			<div class="page_title">
 				<h3>ALARM(검색)</h3>
-				<div class="bc"><span>DCC</span><span>Alarm</span><strong>Alarm(검색)</strong></div>
+				<div class="bc"><span>DCC</span><span>Alarm</span><strong>ALARM(검색)</strong></div>
 			</div>
 			<!-- //page_title -->
 			<!-- fx_srch_wrap -->

@@ -7,37 +7,48 @@
          <h1 onclick="location.href='/main/dashboard'" title="월성 3,4 호기 원격감시시스템"></h1>            
          <!-- fnc_menu_wrap -->            
          <div class="fnc_menu_wrap">           
-             <a href="#none" target="_blank" class="link_site">EOF</a>         
+             <!--<a href="#none" target="_blank" class="link_site">EOF</a> -->        
              <!-- fnc_menu -->         
-             <div class="fnc_menu">            
-                 <ul>          
-                     <li class="fnc_notice" onclick="location.href='/main/noticelist'" title="Topic"></li>            
-                     <li class="fnc_data" title="Data"></li>           
-                     <li class="fnc_sitemap" title="Site Map"></li>            
-                     <li class="fnc_help" title="Help"></li>           
-                     <li class="fnc_user">         
-                         <div class="fnc_user_detail">         
-<c:if test="${UserInfo eq null}">                         
-	                             <a class="btn_list" onclick="openLayer('modal_login');">Log In</a>
+			<div class="fnc_menu">
+				<ul>
+				<c:if test="${UserInfo ne null}">
+					<li class="fnc_notice" onclick="location.href='/main/noticelist'" title="Topic"></li>
+				</c:if>
+				</ul>
+			</div>
+                     <!-- <li class="fnc_data" title="Data"></li>      -->      
+                     <!-- <li class="fnc_sitemap" title="Site Map"></li>      -->       
+                     <!-- <li class="fnc_help" title="Help"></li>       -->
+                     <!-- <li class="fnc_coll"></li> -->
+                     <!-- <li class="fnc_user">         
+                         <div class="fnc_user_detail">    -->     
+<c:if test="${UserInfo eq null}">
+				<a href="#none" class="link_site" id="modalMemberIns" style="background:#ffffff;border:1px solid #565656;color:#565656">회원등록 요청</a>
+				<a href="#none" class="link_site" id="modalLogin">LogIn</a>
+	                             <!-- <a class="btn_list" href="#none" id="modalLogin">Log In</a>
+	                             <a class="btn_list" href="#none" id="modalMemberIns">회원등록 요청</a> -->
 </c:if>	                                       
 <c:if test="${UserInfo ne null}">
-	                             <span>${UserInfo.userName}</span>            
-	                             <a class="btn_list" href="#none">비밀번호 변경</a>            
-	                             <a class="btn_list" href="#none" id="logoutCheck">Log Out</a>
+	                             <span style="margin-right:5px;color:#2e5ce0">${UserInfo.userName}</span> 님, 반갑습니다!
+				<a href="#none" class="link_site" id="modalMemberUpdate" style="background:#ffffff;border:1px solid #565656;color:#565656;margin-left:10px">비밀번호 변경</a>
+				<a href="#none" class="link_site" id="logoutCheck">LogOut</a>
+	                            <!-- <span>${UserInfo.userName}</span>            
+	                             <a class="btn_list" href="#none" id="modalMemberUpdate">비밀번호 변경</a>
+	                             <a class="btn_list" href="#none" id="logoutCheck">Log Out</a> --> 
 </c:if>
-                         </div>            
+                         <!-- </div>            
                      </li>         
                  </ul>         
-             </div>            
+             </div>     -->        
              <!-- //fnc_menu -->           
-         </div>            
-         <!-- //fnc_menu_wrap -->          
+         </div>
+         <!-- //fnc_menu_wrap -->
      </div>            
      <!-- lnb_menu -->         
      <div class="lnb_wrap">            
          <div class="lnb_tab">         
              <a href="/dcc/mimic/lzc_1" >DCC</a>           
-             <a href="/markv/mimic/bearingdata" class="current">MARK_V</a>           
+             <a href="/markv/mimic/bearingdata" class="current">MARK_V</a>
          </div>            
          <div class="lnb_menu">            
              <ul>
@@ -86,7 +97,7 @@
                                           <li><a href="/markv/mimic/tbnstemsealsys">TBN STEAM SEAL SYS</a></li>          
                                           <li><a href="/markv/mimic/lubeoilsys">LUBE OIL SYS</a></li>          
                                           <li><a href="/markv/mimic/hydraulicpower">HYDRAULIC POWER</a></li>          
-                                          <li><a href="/markv/mimic/drainvalvepos">DRAIN VALVES POS</a></li>          
+                                          <li><a href="/markv/mimic/drainvalvespos">DRAIN VALVES POS</a></li>          
                                           <li><a href="/markv/mimic/sealoilsys">SEAL OIL SYS</a></li>          
                                           <li><a href="/markv/mimic/statorwatersys">STATOR WATER SYS</a></li>          
                                           <li><a href="/markv/mimic/coolinggassys">COOLING GAS SYS</a></li>          
@@ -202,8 +213,11 @@
                   </li>         
 </c:if>
              </ul>         
-         </div>            
-         <div class="lnb_status">    
+         </div>
+         <div class="lnb_status">
+			<div class="lnb_dp">
+				<label id="lblDate"></label>
+			</div>
           	<div class="toggle_reactor">          	
           	    <c:if test="${(UserInfo eq null) || (UserInfo ne null &&  UserInfo.hogi eq '3') }">  
 					<input id="3" name="view_reactor" type="radio" value="3" checked>
@@ -221,46 +235,200 @@
 				<label for="4">4</label>
 				<span class="button"></span>
 			</div>
-			<div class="toggle_xy">
-				  <c:if test="${(UserInfo eq null) || (UserInfo ne null &&  UserInfo.xyGubun eq 'X') }">       
-					<input id="X" name="view" type="radio" value="X" checked>
-				</c:if>
-				<c:if test="${UserInfo ne null &&  UserInfo.xyGubun ne 'X' }">
-					<input id="X" name="view" type="radio" value="X">     
-				</c:if>
-				<label for="X">X</label>
-				<c:if test="${UserInfo ne null &&  UserInfo.xyGubun eq 'Y' }">
-					<input id="Y" name="view" type="radio" value="Y" checked>        
-				</c:if>
-				<c:if test="${(UserInfo eq null) || (UserInfo ne null &&  UserInfo.xyGubun ne 'Y')}">        
-					<input id="Y" name="view" type="radio" value="Y">
-				</c:if>
-				<label for="Y">Y</label>
-				<span class="button"></span>
-				 </div>
-         </div>            
+         </div>
      </div>            
      <!-- //lnb_menu -->           
  </div>            
    <!-- //header_wrap -->           
-   <!-- layer_pop_wrap -->           
-   <div class="layer_pop_wrap login" id="modal_login">           
-       <!-- header_wrap -->           
-   	<div class="pop_header">           
-   	    <h3>Log In</h3>           
-           <a onclick="closeLayer('modal_login');" title="Close"></a>           
-       </div>           
-   	<!-- //header_wrap -->           
-   	<!-- pop_contents -->           
-   	<div class="pop_contents">           
-           <!-- login_wrap -->           
-           <div class="login_wrap">           
-               <input type="text" id="userId" name="userId" value="toasj" placeholder="아이디">           
-               <input type="password" id="userPwd" name="userPwd"  value="pwd123" placeholder="비밀번호">           
-               <a href="#" class="login_btn" id="loginCheck">로그인</a>           
-           </div>           
-           <!-- //login_wrap -->           
-   	</div>           
-   	<!-- pop_contents -->           
-   </div>           
-   <!-- //layer_pop_wrap -->           
+ <!-- layer_pop_wrap -->           
+ <div class="layer_pop_wrap login" id="modal_login">           
+    <!-- header_wrap -->           
+	<div class="pop_header">           
+	    <h3>Log In</h3>           
+        <a id="closeLogin" onclick="closeLayer('modal_login');" title="Close"></a>           
+    </div>           
+	<!-- //header_wrap -->           
+	<!-- pop_contents -->           
+	<div class="pop_contents">           
+        <!-- login_wrap -->           
+        <div class="login_wrap">           
+            <input type="text" id="userId" name="userId" placeholder="아이디">           
+            <input type="password" id="userPwd" name="userPwd" placeholder="비밀번호">
+            <a href="#" class="login_btn" id="loginCheck">로그인</a>
+        </div>
+        <!-- //login_wrap -->           
+	</div>           
+	<!-- pop_contents -->           
+  </div>           
+  
+  <div class="layer_pop_wrap medium" id="modal_memberIns">
+    <!-- header_wrap -->
+	<div class="pop_header">
+	    <h3>사용자 등록</h3>
+        <a onclick="closeLayer('modal_memberIns');" title="Close"></a>
+    </div>
+	<!-- //header_wrap -->
+	<!-- pop_contents -->
+	<div class="pop_contents">
+		<!-- form_wrap -->
+		<div class="form_wrap">
+		<form id="memberInsertForm" name="memberInsertForm">
+			<!-- form_table -->
+            <table class="form_table">
+                <colgroup>
+                    <col width="120px"/>
+                    <col />
+                </colgroup>
+                <tr>
+                    <th>성명 *</th>
+                    <td><input type="text"  id="iUserName" name="iUserName" value="${UserInfo.userName}"></td>
+                </tr>
+                <tr>
+                    <th>아이디 *</th>
+                    <td><input type="text"  id="iId" name="iId" value="${UserInfo.id}"></td>
+                </tr>
+                <tr>
+                    <th>암호 *</th>
+                    <td>
+                        <div class="fx_form">
+                            <input type="password" class="fx_none" style="width:140px;"  id="iPwd" name="iPwd" value="${UserInfo.pwd}">
+                            <label class="description">* 영문/숫자 혼용 6자리 ~ 10자리 이내</label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>부서 *</th>
+                    <td>
+                        <select id="iGroupCode" name="iGroupCode">
+                            <option value="">없음</option>
+                            <c:forEach var="groupComboInfo" items="${GroupComboList}">
+									<option value="${groupComboInfo.groupCode}"> ${groupComboInfo.groupName}</option>
+							</c:forEach>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>권한 *</th>
+                    <td>
+                        <select id="iGrade" name="iGrade">
+                            <option value="1">슈퍼관리자</option>
+                            <option value="2">DCC관리자</option>
+                            <option value="3">MARK-V관리자</option>
+                            <option value="9" selected>일반사용자</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>호기 *</th>
+                    <td>
+                        <select id="iLoginHogi" name="iLoginHogi">
+                            <option  value="3">3호기</option>
+                            <option  value="4">4호기</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>이메일 *</th>
+                    <td><input type="text"  id="iEmail" name="iEmail" value="${UserInfo.email}"></td>
+                </tr>                
+            </table>
+			<!-- //form_table -->
+		</form>
+		</div>
+		<!-- //form_wrap -->
+	</div>
+	<!-- pop_contents -->
+    <!-- pop_footer -->
+    <div class="pop_footer">
+        <a href="#none" class="btn_page primary"  id="userSave" name="userSave">저장</a>
+        <a href="#none" class="btn_page" onclick="closeLayer('modal_memberIns');">닫기</a>
+    </div>
+    <!-- //pop_footer -->
+	</div>
+	
+	<div class="layer_pop_wrap medium" id="modal_memberUpdate">
+    <!-- header_wrap -->
+	<div class="pop_header">
+	    <h3>비밀번호 변경</h3>
+        <a onclick="closeLayer('modal_memberUpdate');" title="Close"></a>
+    </div>
+	<!-- //header_wrap -->
+	<!-- pop_contents -->
+	<div class="pop_contents">
+		<!-- form_wrap -->
+		<div class="form_wrap">
+		<form id="memberUpdateForm" name="memberUpdateForm">
+			<!-- form_table -->
+            <table class="form_table">
+                <colgroup>
+                    <col width="120px"/>
+                    <col />
+                </colgroup>
+                <tr>
+                    <th>성명 *</th>
+                    <td><input type="text"  id="uUserName" name="uUserName" value="${UserInfo.userName}"></td>
+                </tr>
+                <tr>
+                    <th>아이디 *</th>
+                    <td>${UserInfo.id}<input type="hidden"  id="uId" name="uId" value="${UserInfo.id}"></td>
+                </tr>
+                <tr>
+                    <th>암호 *</th>
+                    <td>
+                        <div class="fx_form">
+                            <input type="password" class="fx_none" style="width:140px;"  id="uPwd" name="uPwd" value="${UserInfo.pwd}">
+                            <label class="description">* 영문/숫자 혼용 6자리 ~ 10자리 이내</label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>부서 *</th>
+					<td>
+						${UserInfo.groupCode}
+					</td>
+                </tr>
+                <tr>
+                    <th>권한 *</th>
+                    <td><c:choose>
+					      <c:when test="${UserInfo.grade eq 1 }"> 
+					      		슈퍼관리자
+					      </c:when> 
+					      <c:when test="${UserInfo.grade eq 2 }">
+					      		DCC 관리자
+					      </c:when> 
+					      <c:when test="${UserInfo.grade eq 3 }">
+					      		Mark-V 관리자
+					      </c:when> 
+					      <c:when test="${UserInfo.grade eq 4 }">
+					      		Aux PLC 관리자
+					      </c:when> 
+					      <c:otherwise>
+					      		일반사용자
+					      </c:otherwise>
+					</c:choose>                      
+                    </td>
+                </tr>
+                <tr>
+                    <th>호기 *</th>
+                    <td>${UserInfo.loginHogi} 호기
+                    </td>
+                </tr>
+                <tr>
+                    <th>이메일 *</th>
+                    <td><input type="text"  id="uEmail" name="uEmail"></td>
+                </tr>                
+            </table>
+			<!-- //form_table -->
+		</form>
+		</div>
+		<!-- //form_wrap -->
+	</div>
+	<!-- pop_contents -->
+    <!-- pop_footer -->
+    <div class="pop_footer">
+        <a href="#none" class="btn_page primary"  id="userUpdate" name="userUpdate">수정</a>
+        <a href="#none" class="btn_page" onclick="closeLayer('modal_memberUpdate');">닫기</a>
+    </div>
+    <!-- //pop_footer -->
+	</div>		
+<!-- //layer_pop_wrap -->

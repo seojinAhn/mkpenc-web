@@ -21,9 +21,11 @@
 <link rel="stylesheet" type="text/css" href="<c:url value="/resources/datetimepicker/jquery.datetimepicker.css" />">
 <script type="text/javascript" src="<c:url value="/resources/datetimepicker/jquery.datetimepicker.full.min.js" />" charset="utf-8"></script>
 
+<script src="/resources/html2canvas/html2canvas.min.js"></script>
+
 <script type="text/javascript">
-	var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
-	var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
+	var timerOn = false;
+
 	var lblCI003Set = [
 		'0083','0081','0562','0084','0086','0128','0099','0097','0101','0100','0102','0129','0114','0112','0116','0115','0117','0130',
 		'0083','0081','0562','0084','0086','0119','0099','0097','0101','0100','0102','0122','0114','0112','0116','0115','0117','0125'
@@ -42,14 +44,16 @@
 		'0223','0224','0225','0220','0221','0222','0231','0232','0233','0234','0235','0236','0237','0238','0239','0240','0241','0242',
 		'0243','0244','0245','0246','0247','0248','0249','0250','0251','0252','0253','0254','0255','0256','0257','0258','0259','0260',
 		'0261','0262','0577','0578','0579','0580','0581','0582','0583','0584','0585','0847','0848','0849','0861','0862','0890','0864',
-		'0865','0866','0867','0868','0869','0870','0871','0872','0873','0874','0875','0876','0877','0878','0879','0880','0881','0882'
+		'0865','0866','0867','0868','0869','0870','0871','0872','0873','0874','0875','0876','0877','0878','0879','0880','0881','0882',
+		'1482','1496','1690','1692','1499','1500','1787','1791','1551','1678','1830','1839'
 	];
 
 	var lblTitle118Set = [
 		'-','-','-','-','-','-','1','2','3','4','5','6','7','8','9','10','11','12',
 		'13','14','15','16','17','18','19','20','21','22','24','29','30','31','32','33','34','35',
 		'36','37','38','39','40','41','42','43','44','45','46','47','48','49','54','55','56','57',
-		'58','59','60','61','62','63','64','65','66','67','68','69','70','71','72','73','74','75'
+		'58','59','60','61','62','63','64','65','66','67','68','69','70','71','72','73','74','75',
+		'81','82','83','84','85','86','87','88','91','92','93','94'
 	];
 	
 	var lblBigo118Const = ['CH N Actv HI','CH P Actv HI','CH Q Actv HI','CH N Prs HI','CH P Prs HI','CH Q Prs HI'];
@@ -73,8 +77,10 @@
 	
 	var lblMOISet = ['2418','2419','2420'];
 	var lblLRFSet = ['2421','2422','2423','2424','2425','2426'];
-	var lblRelay3Set = ['설비번호:10368812','설비번호:10368814','설비번호:10368805','설비번호:10368807','설비번호:10368813','설비번호:10368815'];
-	var lblRelay4Set = ['설비번호:10419230','설비번호:10419232','설비번호:10419223','설비번호:10419225','설비번호:10419231','설비번호:10419233'];
+	//var lblRelay3Set = ['설비번호:10368812','설비번호:10368814','설비번호:10368805','설비번호:10368807','설비번호:10368813','설비번호:10368815'];
+	//var lblRelay4Set = ['설비번호:10419230','설비번호:10419232','설비번호:10419223','설비번호:10419225','설비번호:10419231','설비번호:10419233'];
+	var lblRelay3Set = ['63432-RL-514K','63432-RL-515K','63432-RL-511L','63432-RL-512L','63432-RL-514M','63432-RL-515M'];
+	var lblRelay4Set = ['63432-RL-514K','63432-RL-515K','63432-RL-511L','63432-RL-512L','63432-RL-514M','63432-RL-515M'];
 	
 	var lblTitle550Set = [];
 	var mValue = [];
@@ -108,8 +114,11 @@
 						$("#"+ti+"lblTitle118").text("7314-PV "+lblTitle118Set[ti]);
 					}
 				}
+				for( var ti=72;ti<84;ti++ ) {
+					$("#"+ti+"lblTitle118").text("SV"+lblTitle118Set[ti]);
+				}
 
-				for( var ti=0;ti<72;ti++ ) {
+				for( var ti=0;ti<84;ti++ ) {
 					$("#"+ti+"lblCI118").text("CI "+lblCI118Set[ti]);
 				}
 
@@ -163,7 +172,7 @@
 			mValue.splice(0,0,'A-197','A-281','A-280','A-281','N-280','N-197');
 		} else if( valVal == '3431-PV2' ) {
     		lblTitle550Set.splice(0,0,'198(A)','269(A)','268(A)','269(A)','268(N)','198(A)','CI 268(A) 발생시간','CI 269(A) 발생시간','CI 268(N) 발생시간','CI 198(N) 발생시간');
-	        mValue.splice(0,0,'A-198','A-269','A-268','A-269','A-268','A-198');
+	        mValue.splice(0,0,'A-198','A-269','A-268','A-269','N-268','N-198');
 		} else if( valVal == '3431-PV3' ) {
 			lblTitle550Set.splice(0,0,'199(A)','752(A)','751(A)','752(A)','751(N)','199(N)','CI 751(A) 발생시간','CI 752(A) 발생시간','CI 751(N) 발생시간','CI 199(N) 발생시간');
 			mValue.splice(0,0,'A-199','A-752','A-751','A-752','N-751','N-199');
@@ -198,6 +207,15 @@
 	}
 	
 	$(function() {
+		
+		$("#lblDate").text('${UserInfo.hogi} ' + ' ${UserInfo.xyGubun}' + ' ${BaseSearch.endDate}' );
+		var diff = new Date().getTime() - new Date('${BaseSearch.endDate}').getTime();
+		if( diff / 1800000 > 1 ) {
+			$("#lblDate").css('color','#e85516');
+		} else {
+			$("#lblDate").css('color','#05c8be');
+		}
+		
 		var sDtm,eDtm,eDate,eHour,eMin;
 		if( isNull('${BaseSearch.startDate}') && !isNull('${BaseSearch.endDate}') ) {
 			eDate = '${BaseSearch.endDate}'.split(' ')[0];
@@ -237,18 +255,7 @@
 		$("#cboUGrpName").val('0');
 		
 		setConst('003,032,114,118,276,550,cor,285');
-		setValveVal(typeof $("#selectValveOpt option:selected").val() == 'undefined' ? "3431-PV1" : $("#selectValveOpt option:selected").val());
-		
-		if( $("input:radio[id='4']").is(":checked") ) {
-			hogiHeader = "4";
-		} else {
-			hogiHeader = "3";
-		}
-		if( $("input:radio[id='Y']").is(":checked") ) {
-			xyHeader = "Y";
-		} else {
-			xyHeader = "X";
-		}
+		setValveVal(typeof $("#selectValveOpt option:selected").val() == 'undefined' ? "3431-PV2" : $("#selectValveOpt option:selected").val());
 
 		jQuery.datetimepicker.setLocale('ko');
 		
@@ -256,7 +263,17 @@
 		$('#selectEDate').datetimepicker(DatetimepickerDefaults({}));
 		
 		$(document.body).delegate('#fixedSearch', 'click', function() {
-			callBody($("#cboUGrpName option:selected").val());
+			for( var i=1;i<21;i++ ) {
+				$("#loading"+i).css("backgroundColor","rgb(255, 255, 255)");
+			}
+			openModal('modal_loading');
+			
+			sleep(100).then(() => callBody($("#cboUGrpName option:selected").val()));
+		});
+		
+		$(document.body).delegate('#fixedSearch', 'blur', function() {
+			//closeModal('modal_loading');
+			//callBody($("#cboUGrpName option:selected").val());
 		});
 		
 		$("#selectValveOpt").change(function() {
@@ -266,35 +283,9 @@
 			setConst('550');
 		});
 		
-		$(document.body).delegate('#3', 'click', function() {
-			var uGrpName = $("#cboUGrpName option:selected").val();
-			hogiHeader = '3';
-			
-			callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
-		});
-		
-		$(document.body).delegate('#4', 'click', function() {
-			var uGrpName = $("#cboUGrpName option:selected").val();
-			hogiHeader = '4';
-			
-			callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
-		});
-		
-		$(document.body).delegate('#X', 'click', function() {
-			var uGrpName = $("#cboUGrpName option:selected").val();
-			xyHeader = 'X';
-			
-			callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
-		});
-		
-		$(document.body).delegate('#Y', 'click', function() {
-			var uGrpName = $("#cboUGrpName option:selected").val();
-			xyHeader = 'Y';
-			
-			callBody(typeof uGrpName == 'undefined' ? '2' : uGrpName);
-		});
-		
 		$("#cboUGrpName").change(function () {
+			//alert($("#cboUGrpName option:selected").val());
+			
 			var uGrpName = $("#cboUGrpName option:selected").val();
 			
 			if( uGrpName == '0' ) {
@@ -364,7 +355,7 @@
 				$("#selectValveOpt").css("display","");
 				$("#selectValveOptBuffer").css("display","none");
 				
-				if( typeof $("#selectValveOpt option:selected").val() == 'undefined' ) $("#selectValveOpt").val("3431-PV1");
+				if( typeof $("#selectValveOpt option:selected").val() == 'undefined' ) $("#selectValveOpt").val("3431-PV2");
 				
 				setValveVal($("#selectValveOpt option:selected").val());
 				setConst('550');
@@ -394,6 +385,13 @@
 		});
 
 	});
+	
+	function setTimer(num){
+		var uGrpName = $("#cboUGrpName option:selected").val();
+		
+		callBody(typeof uGrpName == 'undefined' ? '0' : uGrpName);
+	}
+	
 
 	function DatetimepickerDefaults(opts) {
 	    return $.extend({},{
@@ -442,126 +440,141 @@
 	}
 	
 	function callBody(uGrpName) {
-		console.log(hogiHeader);
-		console.log(xyHeader);
-		var startDate = $("#selectSDate").val()+':00.000';
-		var endDate = $("#selectEDate").val()+':00.000';
-		
-		var pType = '';
-		var address = '';
-		var alarmGubun = '';
-		var title = '';
-		
-		var comAjax = new ComAjax("reloadForm");
-		comAjax.setUrl("/dcc/alarm/reloadFTC");
-		comAjax.addParam("hogiHeader", hogiHeader);
-		comAjax.addParam("xyHeader", xyHeader);
-		comAjax.addParam("startDate", startDate);
-		comAjax.addParam("endDate", endDate);
-		
-		if( uGrpName == '0' ) {
-			pType = '003';
-			
-			for( var oi=0;oi<36;oi++ ) {
-				if( oi == 0 ) {
-					address += $.trim($("#"+oi+"lblCI003").text().substr(-3));
-				} else {
-					address = address+','+$.trim($("#"+oi+"lblCI003").text().substr(-3));
-				}
-			}
-		} else if( uGrpName == '1' ) {
-			pType = '032';
-			
-			for( var tti=0;tti<12;tti++ ) {
-				if( tti == 0 ) {
-					address += $.trim($("#"+tti+"lblCI032").text().substr(-3));
-				} else {
-					address = address+','+$.trim($("#"+tti+"lblCI032").text().substr(-3));
-				}
-			}
-		} else if( uGrpName == '2' ) {
-			pType = '114';
+		$("#reloadForm").empty();
+//alert(uGrpName);
 
-			for( var fi=0;fi<36;fi++ ) {
-				if( fi == 0 ) {
-					address += $.trim($("#"+fi+"lblCI").text().substr(-3));
-				} else {
-					address = address+','+$.trim($("#"+fi+"lblCI").text().substr(-3));
+		function callPart() {
+			return new Promise(function(resolve,reject) {
+				var startDate = $("#selectSDate").val()+':00.000';
+				var endDate = $("#selectEDate").val()+':00.000';
+				
+				var pType = '';
+				var address = '';
+				var alarmGubun = '';
+				var title = '';
+				
+				var comAjax = new ComAjax("reloadForm");
+				comAjax.setUrl("/dcc/alarm/reloadFTC");
+				comAjax.addParam("startDate", startDate);
+				comAjax.addParam("endDate", endDate);
+				
+				if( uGrpName == '0' ) {
+					pType = '003';
+					
+					for( var oi=0;oi<36;oi++ ) {
+						if( oi == 0 ) {
+							address += $.trim($("#"+oi+"lblCI003").text().substr(-3));
+						} else {
+							address = address+','+$.trim($("#"+oi+"lblCI003").text().substr(-3));
+						}
+					}
+				} else if( uGrpName == '1' ) {
+					pType = '032';
+					
+					for( var tti=0;tti<12;tti++ ) {
+						if( tti == 0 ) {
+							address += $.trim($("#"+tti+"lblCI032").text().substr(-3));
+						} else {
+							address = address+','+$.trim($("#"+tti+"lblCI032").text().substr(-3));
+						}
+					}
+				} else if( uGrpName == '2' ) {
+					pType = '114';
+		
+					for( var fi=0;fi<36;fi++ ) {
+						if( fi == 0 ) {
+							address += $.trim($("#"+fi+"lblCI").text().substr(-3));
+						} else {
+							address = address+','+$.trim($("#"+fi+"lblCI").text().substr(-3));
+						}
+					}
+				} else if( uGrpName == '3' ) {
+					pType = '118';
+					
+					for( var ei=0;ei<84;ei++ ) {
+						if( ei == 0 ) {
+							title += $.trim($("#"+ei+"lblTitle118").text());
+							address += $.trim($("#"+ei+"lblCI118").text().substr(-3));
+						} else if( ei < 72 ) {
+							title = title+','+$.trim($("#"+ei+"lblTitle118").text());
+							address = address+','+$.trim($("#"+ei+"lblCI118").text().substr(-3));
+						} else {
+							title = title+','+$.trim($("#"+ei+"lblTitle118").text());
+							address = address+','+$.trim($("#"+ei+"lblCI118").text().substr(-4));
+						}
+					}
+					comAjax.addParam("title", title);
+				} else if( uGrpName == '4' ) {
+					pType = '276';
+		
+					for( var ai=0;ai<24;ai++ ) {
+						if( ai == 0 ) {
+							address += $.trim($("#"+ai+"lblCI276").text().substr(-3));
+						} else {
+							address = address+','+$.trim($("#"+ai+"lblCI276").text().substr(-3));
+						}
+					}
+				} else if( uGrpName == '5' ) {
+					pType = '550';
+					
+					for( var m=0;m<mValue.length;m++ ) {
+						if( m == 0 ) {
+							alarmGubun += $.trim(mValue[m].split('-')[0]);
+							address += $.trim(mValue[m].split('-')[1]);
+						} else {
+							alarmGubun = alarmGubun+','+$.trim(mValue[m].split('-')[0]);
+							address = address+','+$.trim(mValue[m].split('-')[1]);
+						}
+					}
+					comAjax.addParam("alarmGubun", alarmGubun);
+				} else if( uGrpName == '6' ) {
+					pType = 'cor';
+		
+					for( var si=0;si<24;si++ ) {
+						if( si == 0 ) {
+							address += $.trim($("#"+si+"lblCICh").text().substr(-4));
+						} else {
+							address = address+','+$.trim($("#"+si+"lblCICh").text().substr(-4));
+						}
+					}
+				} else if( uGrpName == '7' ) {
+					pType = '285';
+					
+					var moi = ''
+					var lrf = '';
+					for( var ssi=0;ssi<3;ssi++ ) {
+						moi += $("#"+ssi+"lblMOI").text().substr(-4);
+						if( ssi < 2 ) moi += ',';
+					}
+					for( var l=0;l<6;l++ ) {
+						lrf += $("#"+l+"lblLRF").text().substr(-4);
+						if( l < 5 ) lrf += ',';
+					}
+					
+					address = moi+"|"+lrf;
 				}
-			}
-		} else if( uGrpName == '3' ) {
-			pType = '118';
-			
-			for( var ei=0;ei<72;ei++ ) {
-				if( ei == 0 ) {
-					title += $.trim($("#"+ei+"lblTitle118").text());
-					address += $.trim($("#"+ei+"lblCI118").text().substr(-3));
-				} else {
-					title = title+','+$.trim($("#"+ei+"lblTitle118").text());
-					address = address+','+$.trim($("#"+ei+"lblCI118").text().substr(-3));
-				}
-			}
-			comAjax.addParam("title", title);
-		} else if( uGrpName == '4' ) {
-			pType = '276';
-
-			for( var ai=0;ai<24;ai++ ) {
-				if( ai == 0 ) {
-					address += $.trim($("#"+ai+"lblCI276").text().substr(-3));
-				} else {
-					address = address+','+$.trim($("#"+ai+"lblCI276").text().substr(-3));
-				}
-			}
-		} else if( uGrpName == '5' ) {
-			pType = '550';
-			
-			for( var m=0;m<mValue.length;m++ ) {
-				if( m == 0 ) {
-					alarmGubun += $.trim(mValue[m].split('-')[0]);
-					address += $.trim(mValue[m].split('-')[1]);
-				} else {
-					alarmGubun = alarmGubun+','+$.trim(mValue[m].split('-')[0]);
-					address = address+','+$.trim(mValue[m].split('-')[1]);
-				}
-			}
-			comAjax.addParam("alarmGubun", alarmGubun);
-		} else if( uGrpName == '6' ) {
-			pType = 'cor';
-
-			for( var si=0;si<24;si++ ) {
-				if( si == 0 ) {
-					address += $.trim($("#"+si+"lblCICh").text().substr(-4));
-				} else {
-					address = address+','+$.trim($("#"+si+"lblCICh").text().substr(-4));
-				}
-			}
-		} else if( uGrpName == '7' ) {
-			pType = '285';
-			
-			var moi = ''
-			var lrf = '';
-			for( var ssi=0;ssi<3;ssi++ ) {
-				moi += $("#"+ssi+"lblMOI").text().substr(-4);
-				if( ssi < 2 ) moi += ',';
-			}
-			for( var l=0;l<6;l++ ) {
-				lrf += $("#"+l+"lblLRF").text().substr(-4);
-				if( l < 5 ) lrf += ',';
-			}
-			
-			address = moi+"|"+lrf;
+				comAjax.addParam("address", address);
+				comAjax.addParam("pType", pType);
+				comAjax.setCallback("mbr_FixedTimeControlCallback");
+				comAjax.ajax();
+				
+				setConst(pType);
+				
+				setTimeout(function() {
+					resolve();
+				},500);
+			});
 		}
-		comAjax.addParam("address", address);
-		comAjax.addParam("pType", pType);
-		comAjax.setCallback("mbr_FixedTimeControlCallback");
-		comAjax.ajax();
 		
-		setConst(pType);
+		callPart().then(function() {
+			closeModal('modal_loading');
+		});
 	}
 	
 	function toCSV() {
+		$("#reloadForm").empty();
 		var uGrpName = $("#cboUGrpName option:selected").val();
-		if( typeof uGrpName == 'undefined' ) uGrpName = '2';
+		if( typeof uGrpName == 'undefined' ) uGrpName = '0';
 		
 		var startDate = $("#selectSDate").val()+':00.000';
 		var endDate = $("#selectEDate").val()+':00.000';
@@ -575,8 +588,6 @@
 		
 		var comSubmit = new ComSubmit("reloadForm");
 		comSubmit.setUrl("/dcc/alarm/fixedExcelExport");
-		comSubmit.addParam("hogiHeader", hogiHeader);
-		comSubmit.addParam("xyHeader", xyHeader);
 		comSubmit.addParam("startDate", startDate);
 		comSubmit.addParam("endDate", endDate);
 		
@@ -631,14 +642,18 @@
 		} else if( uGrpName == '3' ) {
 			pType = '118';
 			
-			for( var ei=0;ei<72;ei++ ) {
+			for( var ei=0;ei<84;ei++ ) {
 				if( ei == 0 ) {
 					title += $.trim($("#"+ei+"lblTitle118").text());
 					address += $.trim($("#"+ei+"lblCI118").text().substr(-3));
 					ci += $.trim($("#"+ei+"lblCI118").text());
-				} else {
+				} else if( ei < 72 ) {
 					title = title+','+$.trim($("#"+ei+"lblTitle118").text());
 					address = address+','+$.trim($("#"+ei+"lblCI118").text().substr(-3));
+					ci = ci+','+$.trim($("#"+ei+"lblCI118").text());
+				} else {
+					title = title+','+$.trim($("#"+ei+"lblTitle118").text());
+					address = address+','+$.trim($("#"+ei+"lblCI118").text().substr(-4));
 					ci = ci+','+$.trim($("#"+ei+"lblCI118").text());
 				}
 			}
@@ -689,7 +704,81 @@
 		comSubmit.addParam("title", title);
 		comSubmit.addParam("ci", ci);
 		comSubmit.addParam("pType", pType);
-		comSubmit.submit();
+		if( uGrpName != '5' && uGrpName != '7' ) {
+			comSubmit.submit();
+		} else {
+			//alert($("#cboUGrpName option:selected").text()+' 은(는) 엑셀 다운로드를 지원하지 않습니다.');
+		}
+	}
+	
+	function toIMG() {
+	 	//timerOn = false;
+		
+		function doModal() {
+			return new Promise(function(resolve,reject) {
+				openModal('modal_loading');
+				closeLayer('mouse_area');
+				
+				setTimeout(function() {
+					resolve();
+				},500);
+			});
+		}
+		
+		var filename = '정주기시험보조자료 ('+$("#cboUGrpName option:selected").text()+').jpg';
+		
+		doModal().then(function() {
+			html2canvas($("#captureArea")[0]).then(canvas => {
+				//saveAs(canvas.toDataURL('image/jpg'),"lime.jpg"); //다운로드 되는 이미지 파일 이름 지정
+				saveAs(canvas.toDataURL(),filename); //다운로드 되는 이미지 파일 이름 지정
+			});
+			//timerOn = true;
+		});
+	}
+	
+	function saveAs(uri, filename) {
+		// 캡처된 파일을 이미지 파일로 내보냄
+		var link = document.createElement('a');
+		if (typeof link.download === 'string') {
+			link.href = uri;
+			link.download = filename;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			closeModal('modal_loading');
+		} else {
+			window.open(uri);
+		}
+	}
+	
+	function openModal(str) {
+		//if( str == 'modal_loading' ) {
+			/*openLayer(str);
+			
+			progressPos = Math.floor(Math.random()*3)+6;
+			//sleep(200).then(function() {
+				fillProgress(1,progressPos);
+			//});
+			sleep(100).then(() => fillProgress(progressPos,progressPos+4));
+			sleep(100).then(() => fillProgress(progressPos+4,progressPos+7));
+			sleep(100).then(() => fillProgress(progressPos+7,21));*/
+			$("#modal_loading").css("display","");
+		//}
+	}
+	
+	function closeModal(str) {
+		$("#"+str).css("display","none");
+	}
+	
+	function sleep(ms) {
+		return new Promise((r) => setTimeout(r,ms));
+	}
+	
+	function fillProgress(i,limit) {
+		while( i < limit ) {
+			$("#loading"+i).css("background-color","#2e5ce0");
+			i++;
+		}
 	}
 </script>
 
@@ -702,7 +791,7 @@
 	<!-- container -->
 	<div class="container">
 		<!-- contents -->
-		<div class="contents">
+		<div id="captureArea" class="contents">
 			<!-- page_title -->
 			<div class="page_title">
 				<h3>정주기 시험 보조자료</h3>
@@ -731,7 +820,7 @@
 							<label>관련밸브</label>
 							<select id="cboValve">			
 								<option value="3431-PV1">3431-PV1</option>
-								<option value="3431-PV2">3431-PV2</option>
+								<option value="3431-PV2" selected>3431-PV2</option>
 								<option value="3431-PV3">3431-PV3</option>
 								<option value="3431-PV4">3431-PV4</option>
 								<option value="3431-PV5">3431-PV5</option>
@@ -771,8 +860,8 @@
 				<div class="list_head">
 					<!-- button -->
 					<div class="button">
-						<a class="btn_list primary" href="#none">저장</a>
-						<a class="btn_list" href="#none" onclick="javascript:toCSV();">화면저장</a>
+						<a class="btn_list primary" href="#none" onclick="javascript:toCSV();">저장</a>
+						<a class="btn_list" href="#none" onclick="javascript:toIMG();">화면저장</a>
 					</div>
 					<!-- button -->
 				</div>
@@ -780,7 +869,7 @@
             </div>
              <!-- //list_wrap -->
             <!-- fx_layout -->
-            <div id="jung003" class="fx_layout" style="display:none">
+            <div id="jung003" class="fx_layout">
                 <div class="fx_block">
                     <!-- list_wrap -->
                     <div class="list_wrap">
@@ -1174,7 +1263,7 @@
                     <!-- //list_wrap -->
                 </div>
             </div>
-            <div id="jung114" class="fx_layout">
+            <div id="jung114" class="fx_layout" style="display:none">
                 <div class="fx_block">
                     <!-- list_wrap -->
                     <div class="list_wrap">
@@ -1626,6 +1715,32 @@
                                     <td id="23lblBigo118" class="tc"></td>
                                 </tr>
                             </tbody>
+                            <tbody id="118Body4">
+                                <tr>
+                                    <td id="72lblTitle118" class="tc"></td>
+                                    <td id="72lblCI118" class="tc"></td>
+                                    <td id="72lblStart118" class="tc"></td>
+                                    <td id="72lblBigo118" class="tc"></td>
+                                </tr>
+                                <tr>
+                                    <td id="73lblTitle118" class="tc"></td>
+                                    <td id="73lblCI118" class="tc"></td>
+                                    <td id="73lblStart118" class="tc"></td>
+                                    <td id="73lblBigo118" class="tc"></td>
+                                </tr>
+                                <tr>
+                                    <td id="74lblTitle118" class="tc"></td>
+                                    <td id="74lblCI118" class="tc"></td>
+                                    <td id="74lblStart118" class="tc"></td>
+                                    <td id="74lblBigo118" class="tc"></td>
+                                </tr>
+                                <tr>
+                                    <td id="75lblTitle118" class="tc"></td>
+                                    <td id="75lblCI118" class="tc"></td>
+                                    <td id="75lblStart118" class="tc"></td>
+                                    <td id="75lblBigo118" class="tc"></td>
+                                </tr>
+                            </tbody>
                         </table>
                         <!-- //list_table -->
                     </div>
@@ -1796,6 +1911,32 @@
                                     <td id="47lblBigo118" class="tc"></td>
                                 </tr>
                             </tbody>
+                            <tbody id="118Body5">
+                                <tr>
+                                    <td id="76lblTitle118" class="tc"></td>
+                                    <td id="76lblCI118" class="tc"></td>
+                                    <td id="76lblStart118" class="tc"></td>
+                                    <td id="76lblBigo118" class="tc"></td>
+                                </tr>
+                                <tr>
+                                    <td id="77lblTitle118" class="tc"></td>
+                                    <td id="77lblCI118" class="tc"></td>
+                                    <td id="77lblStart118" class="tc"></td>
+                                    <td id="77lblBigo118" class="tc"></td>
+                                </tr>
+                                <tr>
+                                    <td id="78lblTitle118" class="tc"></td>
+                                    <td id="78lblCI118" class="tc"></td>
+                                    <td id="78lblStart118" class="tc"></td>
+                                    <td id="78lblBigo118" class="tc"></td>
+                                </tr>
+                                <tr>
+                                    <td id="79lblTitle118" class="tc"></td>
+                                    <td id="79lblCI118" class="tc"></td>
+                                    <td id="79lblStart118" class="tc"></td>
+                                    <td id="79lblBigo118" class="tc"></td>
+                                </tr>
+                            </tbody>
                         </table>
                         <!-- //list_table -->
                     </div>
@@ -1964,6 +2105,32 @@
                                     <td id="71lblCI118" class="tc"></td>
                                     <td id="71lblStart118" class="tc"></td>
                                     <td id="71lblBigo118" class="tc"></td>
+                                </tr>
+                            </tbody>
+                            <tbody id="118Body6">
+                                <tr>
+                                    <td id="80lblTitle118" class="tc"></td>
+                                    <td id="80lblCI118" class="tc"></td>
+                                    <td id="80lblStart118" class="tc"></td>
+                                    <td id="80lblBigo118" class="tc"></td>
+                                </tr>
+                                <tr>
+                                    <td id="81lblTitle118" class="tc"></td>
+                                    <td id="81lblCI118" class="tc"></td>
+                                    <td id="81lblStart118" class="tc"></td>
+                                    <td id="81lblBigo118" class="tc"></td>
+                                </tr>
+                                <tr>
+                                    <td id="82lblTitle118" class="tc"></td>
+                                    <td id="82lblCI118" class="tc"></td>
+                                    <td id="82lblStart118" class="tc"></td>
+                                    <td id="82lblBigo118" class="tc"></td>
+                                </tr>
+                                <tr>
+                                    <td id="83lblTitle118" class="tc"></td>
+                                    <td id="83lblCI118" class="tc"></td>
+                                    <td id="83lblStart118" class="tc"></td>
+                                    <td id="83lblBigo118" class="tc"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -2874,6 +3041,14 @@
             <!-- //fx_layout -->
 		</div>
 		<!-- //contents -->
+                <!-- Loading -->
+                <div class="loader_wrap" id="modal_loading" style="display:none">
+                	<div class="loader_circle"></div>
+                	<div class="loader_line_mask">
+                		<div class="loader_line"></div>
+                	</div>
+               	</div>
+               	<!-- //Loading -->
 	</div>
 	<!-- //container -->
 	<!-- footer -->
@@ -3269,6 +3444,24 @@
         <a href="#none" class="btn_page" onclick="closeLayer('modal_2');">닫기</a>
     </div>
     <!-- //pop_footer -->
+</div>
+<!-- //layer_pop_wrap -->
+
+<!-- layer_pop_wrap -->
+<div class="layer_pop_wrap big" id="modal_loading2" align="center">
+<!-- pop_contents -->
+<div class="pop_contents" style="max-height:460px;max-width:800px;">
+<table style="display:table;width:100%;table-layout:fixed;border:1px solid rgba(0,0,0,0.1);height:50px">
+	<tbody>
+		<tr>
+		<c:forEach var="i" begin="1" end="20" step="1">
+			<td id="loading${i}" style="border:1px solid rgba(0,0,0,0.1);background-color:#ffffff;display:table-cell"></td>
+		</c:forEach>
+		</tr>
+	</tbody>
+</table>
+</div>
+<!-- pop_contents -->
 </div>
 <!-- //layer_pop_wrap -->
 

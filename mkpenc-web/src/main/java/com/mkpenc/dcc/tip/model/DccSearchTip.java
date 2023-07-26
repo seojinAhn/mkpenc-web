@@ -16,6 +16,9 @@ public class DccSearchTip  extends BaseSearch {
 	private String searchWord_2;
 	private String searchWord_3;
 	
+	private String[] searchKeys;
+	private String[] searchWords;
+	
 	private String addressType;
 	private String address2;
 
@@ -85,6 +88,8 @@ public class DccSearchTip  extends BaseSearch {
 	private String zText1;
 	private String zText2;
 	private String zText3;
+	
+	private String addrRange;
 
 	/**
 	 * @return the hogiHeader
@@ -1109,6 +1114,34 @@ public class DccSearchTip  extends BaseSearch {
 	}
 
 	/**
+	 * @return the searchKeys
+	 */
+	public String[] getSearchKeys() {
+		return searchKeys;
+	}
+
+	/**
+	 * @param searchKeys the searchKeys to set
+	 */
+	public void setSearchKeys(String[] searchKeys) {
+		this.searchKeys = searchKeys;
+	}
+
+	/**
+	 * @return the searchWords
+	 */
+	public String[] getSearchWords() {
+		return searchWords;
+	}
+
+	/**
+	 * @param searchWords the searchWords to set
+	 */
+	public void setSearchWords(String[] searchWords) {
+		this.searchWords = searchWords;
+	}
+
+	/**
 	 * @return the addressType
 	 */
 	public String getAddressType() {
@@ -1134,6 +1167,20 @@ public class DccSearchTip  extends BaseSearch {
 	 */
 	public void setAddress2(String address2) {
 		this.address2 = address2;
+	}
+
+	/**
+	 * @return the addrRange
+	 */
+	public String getAddrRange() {
+		return addrRange;
+	}
+
+	/**
+	 * @param addrRange the addrRange to set
+	 */
+	public void setAddrRange(String addrRange) {
+		this.addrRange = addrRange;
 	}
 	
 }

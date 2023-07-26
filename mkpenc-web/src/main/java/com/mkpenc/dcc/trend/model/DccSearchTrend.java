@@ -1,5 +1,7 @@
 package com.mkpenc.dcc.trend.model;
 
+import java.util.List;
+
 import com.mkpenc.common.annotaion.Model;
 import com.mkpenc.common.base.BaseSearch;
 
@@ -21,9 +23,11 @@ public class DccSearchTrend  extends BaseSearch {
 	private String gUseGap;
 	private String txtTimeGap;
 	private String sUGrpNo;
+	private String sUGrpName;
 	private String fixed;
 	private String sGrpID;
 	private String sMenuNo;
+	private String gStrFast;
 	
 	private String hogi;
 	private String xyGubun;
@@ -31,6 +35,7 @@ public class DccSearchTrend  extends BaseSearch {
 	private String ioType;
 	private String ioBit;
 	private String SaveCore;
+	private String address;
 	
 	private String iSeqMod;
 	private String gubunMod;
@@ -44,6 +49,29 @@ public class DccSearchTrend  extends BaseSearch {
 	private String maxValMod;
 	private String saveCoreMod;
 	private String chkHogi;
+	
+	private String gID;
+	private String type;
+	
+	private String cboHogi;
+	private String cboXY;
+	
+	private String tagHogi;
+	private String tagIOType;
+	private String findData;
+	private String bAll;
+	private String chkOpt1;
+	private String chkOpt2;
+	
+	private String rangeList;
+	
+	private String groupNameList;
+	private String groupNoList;
+	private String refID;
+	
+	private String isRealtime;
+	
+	private String fileName;
 	
 	/**
 	 * @return the startDate
@@ -116,6 +144,18 @@ public class DccSearchTrend  extends BaseSearch {
 	 */
 	public void setsUGrpNo(String sUGrpNo) {
 		this.sUGrpNo = sUGrpNo;
+	}
+	/**
+	 * @return the sUGrpName
+	 */
+	public String getsUGrpName() {
+		return sUGrpName;
+	}
+	/**
+	 * @param sUGrpName the sUGrpName to set
+	 */
+	public void setsUGrpName(String sUGrpName) {
+		this.sUGrpName = sUGrpName;
 	}
 	/**
 	 * @return the hogiHeader
@@ -214,6 +254,18 @@ public class DccSearchTrend  extends BaseSearch {
 		this.sMenuNo = sMenuNo;
 	}
 	/**
+	 * @return the gStrFast
+	 */
+	public String getgStrFast() {
+		return gStrFast;
+	}
+	/**
+	 * @param gStrFast the gStrFast to set
+	 */
+	public void setgStrFast(String gStrFast) {
+		this.gStrFast = gStrFast;
+	}
+	/**
 	 * @return the hogi
 	 */
 	public String getHogi() {
@@ -272,6 +324,18 @@ public class DccSearchTrend  extends BaseSearch {
 	 */
 	public void setSaveCore(String saveCore) {
 		SaveCore = saveCore;
+	}
+	/**
+	 * @return the address
+	 */
+	public String getAddress() {
+		return address;
+	}
+	/**
+	 * @param address the address to set
+	 */
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	/**
 	 * @return the iSeqMod
@@ -416,5 +480,197 @@ public class DccSearchTrend  extends BaseSearch {
 	 */
 	public void setChkHogi(String chkHogi) {
 		this.chkHogi = chkHogi;
+	}
+	/**
+	 * @return the gID
+	 */
+	public String getgID() {
+		return gID;
+	}
+	/**
+	 * @param gID the gID to set
+	 */
+	public void setgID(String gID) {
+		this.gID = gID;
+	}
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+	/**
+	 * @return the cboHogi
+	 */
+	public String getCboHogi() {
+		return cboHogi;
+	}
+	/**
+	 * @param cboHogi the cboHogi to set
+	 */
+	public void setCboHogi(String cboHogi) {
+		this.cboHogi = cboHogi;
+	}
+	/**
+	 * @return the cboXY
+	 */
+	public String getCboXY() {
+		return cboXY;
+	}
+	/**
+	 * @param cboXY the cboXY to set
+	 */
+	public void setCboXY(String cboXY) {
+		this.cboXY = cboXY;
+	}
+	/**
+	 * @return the tagHogi
+	 */
+	public String getTagHogi() {
+		return tagHogi;
+	}
+	/**
+	 * @param tagHogi the tagHogi to set
+	 */
+	public void setTagHogi(String tagHogi) {
+		this.tagHogi = tagHogi;
+	}
+	/**
+	 * @return the tagIOType
+	 */
+	public String getTagIOType() {
+		return tagIOType;
+	}
+	/**
+	 * @param tagIOType the tagIOType to set
+	 */
+	public void setTagIOType(String tagIOType) {
+		this.tagIOType = tagIOType;
+	}
+	/**
+	 * @return the findData
+	 */
+	public String getFindData() {
+		return findData;
+	}
+	/**
+	 * @param findData the findData to set
+	 */
+	public void setFindData(String findData) {
+		this.findData = findData;
+	}
+	/**
+	 * @return the bAll
+	 */
+	public String getbAll() {
+		return bAll;
+	}
+	/**
+	 * @param bAll the bAll to set
+	 */
+	public void setbAll(String bAll) {
+		this.bAll = bAll;
+	}
+	/**
+	 * @return the chkOpt1
+	 */
+	public String getChkOpt1() {
+		return chkOpt1;
+	}
+	/**
+	 * @param chkOpt1 the chkOpt1 to set
+	 */
+	public void setChkOpt1(String chkOpt1) {
+		this.chkOpt1 = chkOpt1;
+	}
+	/**
+	 * @return the chkOpt2
+	 */
+	public String getChkOpt2() {
+		return chkOpt2;
+	}
+	/**
+	 * @param chkOpt2 the chkOpt2 to set
+	 */
+	public void setChkOpt2(String chkOpt2) {
+		this.chkOpt2 = chkOpt2;
+	}
+	/**
+	 * @return the rangeList
+	 */
+	public String getRangeList() {
+		return rangeList;
+	}
+	/**
+	 * @param rangeList the rangeList to set
+	 */
+	public void setRangeList(String rangeList) {
+		this.rangeList = rangeList;
+	}
+	/**
+	 * @return the groupNameList
+	 */
+	public String getGroupNameList() {
+		return groupNameList;
+	}
+	/**
+	 * @param groupNameList the groupNameList to set
+	 */
+	public void setGroupNameList(String groupNameList) {
+		this.groupNameList = groupNameList;
+	}
+	/**
+	 * @return the groupNoList
+	 */
+	public String getGroupNoList() {
+		return groupNoList;
+	}
+	/**
+	 * @param groupNoList the groupNoList to set
+	 */
+	public void setGroupNoList(String groupNoList) {
+		this.groupNoList = groupNoList;
+	}
+	/**
+	 * @return the refID
+	 */
+	public String getRefID() {
+		return refID;
+	}
+	/**
+	 * @param refID the refID to set
+	 */
+	public void setRefID(String refID) {
+		this.refID = refID;
+	}
+	/**
+	 * @return the isRealtime
+	 */
+	public String getIsRealtime() {
+		return isRealtime;
+	}
+	/**
+	 * @param isRealtime the isRealtime to set
+	 */
+	public void setIsRealtime(String isRealtime) {
+		this.isRealtime = isRealtime;
+	}
+	/**
+	 * @return the fileName
+	 */
+	public String getFileName() {
+		return fileName;
+	}
+	/**
+	 * @param fileName the fileName to set
+	 */
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 }

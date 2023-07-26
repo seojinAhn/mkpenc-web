@@ -43,6 +43,9 @@
 		,"${DccTagInfoList[15].toolTip}"		,"${DccTagInfoList[16].toolTip}"		,"${DccTagInfoList[17].toolTip}"		,"${DccTagInfoList[18].toolTip}"		,"${DccTagInfoList[19].toolTip}"
 	];
 	
+	var lblDataListAjax = {};
+	var DccTagInfoListAjax = {};
+	
 	var selectTag = [{name:"hogi",value:""},{name:"xyGubun",value:""},{name:"loopName",value:""},{name:"ioType",value:""}
 					,{name:"address",value:""},{name:"ioBit",value:""},{name:"descr",value:""}];
 	
@@ -74,7 +77,7 @@
 		}
 	}	
 	
-	function showTooltip(id) {
+	/*function showTooltip(id) {
 		var tooltipText;
 
 		tooltipText = tToolTipText[id*1];
@@ -83,7 +86,7 @@
 			tooltipText = tooltipText.replace(":]","]");
 		}
 		$("#"+id).attr("title",tooltipText);
-	}
+	}*/
 	
 	function toCSV() {
 		var	comSubmit = new ComSubmit("reloadFrm");
@@ -92,45 +95,19 @@
 	}
 
 	$(function(){
-		if( $("#hogiHeader4").attr("class") == 'current' && $("#hogiHeader4").attr("class") != 'undefined' && $("#hogiHeader4").attr("class") != '') {
-			hogiHeader = "4";
-		} else {
-			hogiHeader = "3";
-		}
-		
-		if( $("input:checkbox[id='xy']").is(":checked") ) {
-			xyHeader = "Y";
-		} else {
-			xyHeader = "X";
-		}
-		
-		var lblDateVal = '${BaseSearch.hogi}'+'${BaseSearch.xyGubun}'+' '+'${DccLogTrendInfoList[0].SCANTIME}';
-		$("#lblDate").text(lblDateVal);
-		
-		$(document.body).delegate('#hogiHeader3', 'click', function() {
-			setTimer('3',xyHeader,0);
-		});
-		$(document.body).delegate('#hogiHeader4', 'click', function() {
-			setTimer('4',xyHeader,0);
-		});
-		$(document.body).delegate('#xy', 'click', function() {
-			if( $("input:checkbox[id='xy']").is(":checked") ) {
-				xyHeader = "Y";
-			} else {
-				xyHeader = "X";
-			}
-			setTimer(hogiHeader,xyHeader,0);
-		});
+
+		$("#lblDate").text('${SearchTime}');
+		$("#lblDate").css('color','${ForeColor}');
 		
 		$(document.body).delegate('#dccStatusSGP label', 'dblclick', function() {
 			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
 			if( cId != null && cId != '' && cId != 'undefined' ) {
-				showTag(cId,tDccTagSeq[cId]);
+				//showTag(cId,tDccTagSeq[cId]);
 			}
 		});
 		$(document.body).delegate('#dccStatusSGP label', 'mouseover focus', function() {
 			var cId = this.id.indexOf('unit') > -1 ? this.id.substring(4) : this.id;
-			showTooltip(cId);
+			//showTooltip(cId);
 		});
 		
 		$(document.body).delegate('#tagSearchTable tr', 'click', function() {
@@ -195,27 +172,115 @@
 			tagSelect();
 		});
 		
-		setTimer(hogiHeader,xyHeader,5000);
+		setTimer(5000);
 
 	});
 	
-	function setTimer(hogiHeader,xyHeader,interval) {
+	function setTimer(interval) {
 		if( interval > 0 ) {
-			setTimeout(function() {
+			setTimeout(function run() {
 				if( timerOn ) {
-					var	comSubmit	=	new ComSubmit("reloadFrm");
-					comSubmit.setUrl("/dcc/status/sgp");
-					comSubmit.addParam("hogiHeader",hogiHeader);
-					comSubmit.addParam("xyHeader",xyHeader);
-					comSubmit.submit();
+					//var	comSubmit	=	new ComSubmit("reloadFrm");
+					//comSubmit.setUrl("/dcc/status/sgp");
+					//comSubmit.submit();
+					var comAjax = new ComAjax("reloadFrm");
+					comAjax.setUrl('/dcc/status/reloadSgp');
+					//comAjax.addParam("sHogi",hogiHeader);
+					//comAjax.addParam("sXYGubun",xyHeader);
+					comAjax.setCallback('statusCallback');
+					comAjax.ajax();
 				}
+				
+				setTimeout(run, interval);
 			},interval);
 		} else {
-			var	comSubmit	=	new ComSubmit("reloadFrm");
-			comSubmit.setUrl("/dcc/status/sgp");
-			comSubmit.addParam("hogiHeader",hogiHeader);
-			comSubmit.addParam("xyHeader",xyHeader);
-			comSubmit.submit();
+			setTimeout(function run() {
+				if( timerOn ) {
+					//var	comSubmit	=	new ComSubmit("reloadFrm");
+					//comSubmit.setUrl("/dcc/status/sgp");
+					//comSubmit.submit();
+					var comAjax = new ComAjax("reloadFrm");
+					comAjax.setUrl('/dcc/status/reloadSgp');
+					//comAjax.addParam("sHogi",hogiHeader);
+					//comAjax.addParam("sXYGubun",xyHeader);
+					comAjax.setCallback('statusCallback');
+					comAjax.ajax();
+				}
+				
+				setTimeout(run, 5000);
+			},5000);
+		}
+	}
+
+	function setDate(time,color) {
+		$("#lblDate").text(time);
+		$("#lblDate").css('color',color);
+	}
+
+	function setData() {
+		for( var i=0;i<lblDataListAjax.length;i++ ) {
+			if( i == 0 ) {
+				if( lblDataListAjax[i].fValue*1 == 0 ) {
+					$("#lblData"+i).text('ALTERNATE');
+				} else {
+					$("#lblData"+i).text('NORMAL');
+				}
+			} else if( i == 4 ) {
+				if( lblDataListAjax[i].fValue*1 == 0 ) {
+					$("#lblData"+i).text('YES');
+				} else {
+					$("#lblData"+i).text('NO');
+				}
+			} else if( i == 5 ) {
+				if( lblDataListAjax[i].fValue*1 == 0 ) {
+					$("#lblData"+i).text('NO');
+				} else {
+					$("#lblData"+i).text('YES');
+				}
+			} else if( i == 6 ) {
+				if( lblDataListAjax[i].fValue*1 == 0 ) {
+					$("#lblData"+i).text('LOCAL');
+				} else {
+					$("#lblData"+i).text('REMOTE');
+				}
+			} else if( i == 15 ) {
+				if( lblDataListAjax[i].fValue*1 == 0 ) {
+					$("#lblData"+i).text('OFF');
+				} else {
+					$("#lblData"+i).text('ON');
+				}
+			} else if( i == 16 || i == 18 ) {
+				//fValueTemp = lblDataListAjax[i].fValue*1;
+			} else if( i == 17 ) {
+				var fResult = lblDataListAjax[i-1].fValue*1 + lblDataListAjax[i].fValue*1;
+				if( fResult == 0 ) {
+					$("#lblData"+i).text('HOLD');
+				} else if( fResult == 1 ) {
+					$("#lblData"+i).text('WARN');
+				} else {
+					$("#lblData"+i).text('COOL');
+				}
+			} else if( i == 19 ) {
+				var fResult = lblDataListAjax[i-1].fValue*1 + lblDataListAjax[i].fValue*1;
+				if( fResult == 0 ) {
+					$("#lblData"+i).text('0.0');
+				} else if( fResult == 1 ) {
+					$("#lblData"+i).text('0.6');
+				} else if( fResult == 2 ) {
+					$("#lblData"+i).text('1.8');
+				} else {
+					$("#lblData"+i).text('2.76');
+				}
+			} else {
+				$("#lblData"+i).text(lblDataListAjax[i].fValue);
+			}
+			
+			if( i == 14 || i == 19 ) {
+				$("#lblUnit"+i).text('DEGS/MIN');
+			} else {
+				$("#lblUnit"+i).text(DccTagInfoListAjax[i].unit);
+			}
+			$("#lblData"+i).prop('title',DccTagInfoListAjax[i].toolTip);
 		}
 	}
 	
@@ -246,8 +311,6 @@
 		}
 		
 		comSubmit.setUrl("/dcc/status/sgpSaveTag");
-		comSubmit.addParam("hogiHeader",hogiHeader);
-		comSubmit.addParam("xyHeader",xyHeader);
 		comSubmit.submit();
 	}
 	
@@ -342,7 +405,12 @@
                 </div>
                 <!-- //마우스 우클릭 메뉴 -->
                 <!-- form_table -->
-                <form id="reloadFrm" style="display:none"></form>
+                <form id="reloadFrm" style="display:none">
+				<input type="hidden" id="gubun" name="gubun" value="${BaseSearch.gubun}">
+				<input type="hidden" id="menuNo" name="menuNo" value="${BaseSearch.menuNo}">
+				<input type="hidden" id="grpId" name="grpId" value="${BaseSearch.grpId}">
+				<input type="hidden" id="grpNo" name="grpNo" value="${BaseSearch.grpNo}">
+				</form>
                 <table id="dccStatusSGP" class="form_table">
                     <colgroup>
                         <col />
@@ -351,7 +419,8 @@
                     <thead>
                         <tr>
                             <th>UNIT CONTROL MODE</th>
-                            <th>ALTERNATE</th>
+                            <th><label id="lblData0" title="${DccTagInfoList[0].toolTip}"><c:if test="${lblDataList[0].fValue eq 0}">ALTERNATE</c:if>
+                                <c:if test="${lblDataList[0].fValue ne 0}">NORMAL</c:if></label></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -359,8 +428,8 @@
                             <th>SG PRESSURE SETPOINT</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="1" class="full flex_end">${lblDataList[1].fValue}</label>
-                                    <label id="unit1" class="full">${DccTagInfoList[1].unit}</label>
+                                    <label id="lblData1" title="${DccTagInfoList[1].toolTip}" class="full flex_end">${lblDataList[1].fValue}</label>
+                                    <label id="lblUnit1" class="full">${DccTagInfoList[1].unit}</label>
                                 </div>
                             </td>
                         </tr>
@@ -368,8 +437,8 @@
                             <th>SG PRESSURE SETPOINT</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="2" class="full flex_end">${lblDataList[2].fValue}</label>
-                                    <label id="unit2" class="full">${DccTagInfoList[2].unit}</label>
+                                    <label id="lblData2" title="${DccTagInfoList[2].toolTip}" class="full flex_end">${lblDataList[2].fValue}</label>
+                                    <label id="lblUnit2" class="full">${DccTagInfoList[2].unit}</label>
                                 </div>
                             </td>
                         </tr>
@@ -377,8 +446,8 @@
                             <th>SG PRESSURE ERROR</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="3" class="full flex_end">${lblDataList[3].fValue}</label>
-                                    <label id="unit3" class="full">${DccTagInfoList[3].unit}</label>
+                                    <label id="lblData3" title="${DccTagInfoList[3].toolTip}" class="full flex_end">${lblDataList[3].fValue}</label>
+                                    <label id="lblUnit3" class="full">${DccTagInfoList[3].unit}</label>
                                 </div>
                             </td>
                         </tr>
@@ -386,19 +455,23 @@
                             <th>SGP CONTROL TURBINE</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="4" class="full flex_end">${lblDataList[4].fValue}</label>
-                                    <label id="unit4" class="full">${DccTagInfoList[4].unit}</label>
+                                    <label id="lblData4" title="${DccTagInfoList[4].toolTip}" class="full flex_end"><c:if test="${lblDataList[4].fValue eq 0}">YES</c:if>
+                                <c:if test="${lblDataList[4].fValue ne 0}">NO</c:if></label>
+                                    <label id="lblUnit4" class="full">${DccTagInfoList[4].unit}</label>
+                                    <label id="lblUnit6" ></label> 
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <th>MK-V:AVAIL FOR DCC/MODE</th>
                             <td class="tc">
-                                <div class="fx_form">
-                                    <label id="5" class="full flex_end">${lblDataList[5].fValue}</label>
-                                    <label id="unit5" class="full">${DccTagInfoList[5].unit}</label>
-                                    <label id="6" class="full flex_end">${lblDataList[6].fValue}</label>
-                                    <label id="unit6" class="full">${DccTagInfoList[6].unit}</label>
+                                <div class="fx_form">     
+                                	<label id="lblData5" title="${DccTagInfoList[5].toolTip}" class="full flex_end"><c:if test="${lblDataList[5].fValue eq '1.00000'}">YES</c:if>
+                                	<c:if test="${lblDataList[5].fValue ne '1.00000'}">NO</c:if></label>
+                                    <label id="lblUnit5" ></label>
+                                    <label id="lblData6" title="${DccTagInfoList[6].toolTip}" class="full "><c:if test="${lblDataList[6].fValue eq '1.00000'}">REMOTE</c:if>
+                                	<c:if test="${lblDataList[6].fValue ne '1.00000'}">LOCAL</c:if></label>  
+                                    <label id="lblUnit6" ></label>                           
                                 </div>
                             </td>
                         </tr>
@@ -406,8 +479,8 @@
                             <th>REACTOR POWER SETPOINT</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="7" class="full flex_end">${lblDataList[7].fValue}</label>
-                                    <label id="unit7" class="full">${DccTagInfoList[7].unit}</label>
+                                    <label id="lblData7" title="${DccTagInfoList[7].toolTip}" class="full flex_end">${lblDataList[7].fValue}</label>
+                                    <label id="lblUnit7" class="full">${DccTagInfoList[7].unit}</label>
                                 </div>
                             </td>
                         </tr>
@@ -415,8 +488,8 @@
                             <th>SETPOINT INTEGRAL</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="8" class="full flex_end">${lblDataList[8].fValue}</label>
-                                    <label id="unit8" class="full">${DccTagInfoList[8].unit}</label>
+                                    <label id="lblData8" title="${DccTagInfoList[8].toolTip}" class="full flex_end">${lblDataList[8].fValue}</label>
+                                    <label id="lblUnit8" class="full">${DccTagInfoList[8].unit}</label>
                                 </div>
                             </td>
                         </tr>
@@ -424,8 +497,8 @@
                             <th>REACTOR POWER</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="9" class="full flex_end">${lblDataList[9].fValue}</label>
-                                    <label id="unit9" class="full">${DccTagInfoList[9].unit}</label>
+                                    <label id="lblData9" title="${DccTagInfoList[9].toolTip}" class="full flex_end">${lblDataList[9].fValue}</label>
+                                    <label id="lblUnit9" class="full">${DccTagInfoList[9].unit}</label>
                                 </div>
                             </td>
                         </tr>
@@ -433,8 +506,8 @@
                             <th>TURBINE LOAD</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="10" class="full flex_end">${lblDataList[10].fValue}</label>
-                                    <label id="unit10" class="full">${DccTagInfoList[10].unit}</label>
+                                    <label id="lblData10" title="${DccTagInfoList[10].toolTip}" class="full flex_end">${lblDataList[10].fValue}</label>
+                                    <label id="lblUnit10" class="full">${DccTagInfoList[10].unit}</label>
                                 </div>
                             </td>
                         </tr>
@@ -442,8 +515,8 @@
                             <th>SDV TOTAL LOAD</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="11" class="full flex_end">${lblDataList[11].fValue}</label>
-                                    <label id="unit11" class="full">${DccTagInfoList[11].unit}</label>
+                                    <label id="lblData11" title="${DccTagInfoList[11].toolTip}" class="full flex_end">${lblDataList[11].fValue}</label>
+                                    <label id="lblUnit11" class="full">${DccTagInfoList[11].unit}</label>
                                 </div>
                             </td>
                         </tr>
@@ -451,8 +524,8 @@
                             <th>CSDV OPENING</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="12" class="full flex_end">${lblDataList[12].fValue}</label>
-                                    <label id="unit12" class="full">${DccTagInfoList[12].unit}</label>
+                                    <label id="lblData12" title="${DccTagInfoList[12].toolTip}" class="full flex_end">${lblDataList[12].fValue}</label>
+                                    <label id="lblUnit12" class="full">${DccTagInfoList[12].unit}</label>
                                 </div>
                             </td>
                         </tr>
@@ -460,8 +533,8 @@
                             <th>ASDV OPENING</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="13" class="full flex_end">${lblDataList[13].fValue}</label>
-                                    <label id="unit13" class="full">${DccTagInfoList[13].unit}</label>
+                                    <label id="lblData13" title="${DccTagInfoList[13].toolTip}" class="full flex_end">${lblDataList[13].fValue}</label>
+                                    <label id="lblUnit13" class="full">${DccTagInfoList[13].unit}</label>
                                 </div>
                             </td>
                         </tr>
@@ -469,8 +542,8 @@
                             <th># OF VALVES ON MANUAL</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="14" class="full flex_end">${lblDataList[14].fValue}</label>
-                                    <label id="unit14" class="full">${DccTagInfoList[14].unit}</label>
+                                    <label id="lblData14" title="${DccTagInfoList[14].toolTip}" class="full flex_end">${lblDataList[14].fValue}</label>
+                                    <label id="lblUnit14" class="full">${DccTagInfoList[14].unit}</label>
                                 </div>
                             </td>
                         </tr>
@@ -478,10 +551,9 @@
                             <th>POISON PREVENT MODE</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="15" class="full flex_end">${lblDataList[15].fValue}</label>
-                                    <label id="unit15" class="full">${DccTagInfoList[15].unit}</label>
-                                    <label id="16" class="full flex_end">${lblDataList[16].fValue}</label>
-                                    <label id="unit16" class="full">${DccTagInfoList[16].unit}</label>
+                                    <label id="lblData15" title="${DccTagInfoList[15].toolTip}" class="full flex_end"><c:if test="${lblDataList[15].fValue eq '1.00000'}">ON</c:if>
+                                	<c:if test="${lblDataList[15].fValue ne '1.00000'}">OFF</c:if></label>
+                                    <label id="lblUnit15" class="full">${DccTagInfoList[15].unit}</label>
                                 </div>
                             </td>
                         </tr>
@@ -489,10 +561,10 @@
                             <th>PRESSURE SETPOINT MODE</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="17" class="full flex_end">${lblDataList[17].fValue}</label>
-                                    <label id="unit17" class="full">${DccTagInfoList[17].unit}</label>
-                                    <label id="18" class="full flex_end">${lblDataList[18].fValue}</label>
-                                    <label id="unit18" class="full">${DccTagInfoList[18].unit}</label>
+                                    <label id="lblData17" title="${DccTagInfoList[17].toolTip}" class="full flex_end"><c:if test="${(lblDataList[17].fValue + lblDataList[16].fValue) eq 0}">HOLD</c:if>
+                                	<c:if test="${(lblDataList[17].fValue + lblDataList[16].fValue) eq 1}">WARM</c:if></label>
+                                	<c:if test="${(lblDataList[17].fValue + lblDataList[16].fValue) ne 1 and (lblDataList[17].fValue + lblDataList[16].fValue) ne 0}">COOL</c:if></label>
+                                    <label id="lblUnit17" class="full">${DccTagInfoList[17].unit}</label>
                                 </div>
                             </td>
                         </tr>
@@ -500,8 +572,13 @@
                             <th>RATE OF SETPOINT CHANGE</th>
                             <td class="tc">
                                 <div class="fx_form">
-                                    <label id="19" class="full flex_end">${lblDataList[19].fValue}</label>
-                                    <label id="unit19" class="full">${DccTagInfoList[19].unit}</label>
+                                    <label id="lblData19" title="${DccTagInfoList[19].toolTip}" class="full flex_end"><c:if test="${(lblDataList[18].fValue + lblDataList[19].fValue) eq 0}">0.0</c:if>
+                                	<c:if test="${(lblDataList[18].fValue + lblDataList[19].fValue) eq 1}">0.6</c:if></label>
+                                	<c:if test="${(lblDataList[18].fValue + lblDataList[19].fValue) eq 2}">1.8</c:if></label>
+                                	<c:if test="${(lblDataList[18].fValue + lblDataList[19].fValue) ne 0 and 
+                                	              (lblDataList[18].fValue + lblDataList[19].fValue) ne 1 and
+                                	              (lblDataList[18].fValue + lblDataList[19].fValue) ne 2}">2.76</c:if></label></label>
+                                    <label id="lblUnit19" class="full">DEGS/MIN</label>
                                 </div>
                             </td>
                         </tr>

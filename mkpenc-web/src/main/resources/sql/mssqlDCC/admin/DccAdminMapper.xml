@@ -108,6 +108,9 @@
     		   PWD = #{uPwd}
     		   , PWCHTIME = GETDATE() 
     		</if>
+    		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(uEmail)">
+    		   EMAIL = #{uEmail}
+    		</if>
     		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(uLogin)">
     		 	 LOGIN = #{uLogin}
     		 	 , USERIP = #{uUserIp}
@@ -174,217 +177,153 @@
     
     <select id="selectIOListInfoTotalCnt" parameterType="IOListInfo" resultType="int">
     			SELECT COUNT(*) AS CNT
+    			<if test="@org.apache.commons.lang3.StringUtils@equalsIgnoreCase('FTAI',iotype) or @org.apache.commons.lang3.StringUtils@equalsIgnoreCase('FTDT',iotype)">
+				  FROM MST_TAG_DCC a, MST_TAG_DCC b
+			  </if>
+			  <if test="!@org.apache.commons.lang3.StringUtils@equalsIgnoreCase('FTAI',iotype) and !@org.apache.commons.lang3.StringUtils@equalsIgnoreCase('FTDT',iotype)">
 				  FROM MST_TAG_DCC
+			  </if>
 				  <trim prefix="WHERE" prefixOverrides="AND | OR">
-				         <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ihogi)">
-				            AND IHOGI = #{ihogi}
-				         </if>
-				         <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(xygubun)">
-				            AND XYGUBUN = #{xygubun}
-				         </if>
-				         <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(iotype)">
-			           		AND IOTYPE =#{iotype}
-				         </if>
-				          <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(address)">
-				           		 AND ADDRESS LIKE '%' + #{address} + '%'
-				        </if>  
+				  <if test="@org.apache.commons.lang3.StringUtils@equalsIgnoreCase('FTAI',iotype) or @org.apache.commons.lang3.StringUtils@equalsIgnoreCase('FTDT',iotype)">
+				  	AND a.IOTYPE = #{iotype}
+				  	AND b.IOTYPE = REPLACE(#{iotype},'FT','')
+				  	AND b.IHOGI = a.IHOGI
+				  	AND b.XYGUBUN = a.XYGUBUN
+				  	AND b.ADDRESS = a.ADDRESS
+				  	<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ihogi)">
+			            AND a.IHOGI = #{ihogi}
+			         </if>
+			         <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(xygubun) and !@org.apache.commons.lang3.StringUtils@equalsIgnoreCase('CI',iotype)">
+			            AND a.XYGUBUN = #{xygubun}
+			         </if>
+			          <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(address)">
+			           	AND CONVERT(INT,a.ADDRESS)  ${address}
+		        	</if>  
 				        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(descr)">
-						        AND  DESCR LIKE '%' + #{descr} + '%'
+						        AND  b.DESCR LIKE '%' + #{descr} + '%'
 						</if>						
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(message)">						        
-								AND MESSAGE LIKE '%' + #{message} + '%'
+								AND b.MESSAGE LIKE '%' + #{message} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(rev)">		
-								AND REV LIKE '%' + #{rev} + '%'
+								AND b.REV LIKE '%' + #{rev} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(drawing)">		
-								AND DRAWING LIKE '%' + #{drawing} + '%'
+								AND b.DRAWING LIKE '%' + #{drawing} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(loopname)">		
-								AND LOOPNAME LIKE '%' + #{loopname} + '%'
+								AND b.LOOPNAME LIKE '%' + #{loopname} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(device)">		
-								AND DEVICE LIKE '%' + #{device} + '%'
+								AND b.DEVICE LIKE '%' + #{device} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(purpose)">		
-								AND PURPOSE LIKE '%' + #{purpose} + '%'
+								AND b.PURPOSE LIKE '%' + #{purpose} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(program)">		
-								AND PROGRAM LIKE '%' + #{program} + '%'
+								AND b.PROGRAM LIKE '%' + #{program} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(vlow)">		
-								AND VLOW LIKE '%' + #{vlow} + '%'
+								AND b.VLOW LIKE '%' + #{vlow} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(vhigh)">	
-								AND VHIGH LIKE '%' + #{vhigh} + '%'
+								AND b.VHIGH LIKE '%' + #{vhigh} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(elow)">		
-								AND ELOW LIKE '%' + #{elow} + '%'
+								AND b.ELOW LIKE '%' + #{elow} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ehigh)">		
-								AND EHIGH LIKE '%' + #{ehigh} + '%'
+								AND b.EHIGH LIKE '%' + #{ehigh} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(unit)">		
-								AND UNIT LIKE '%' + #{unit} + '%'
+								AND b.UNIT LIKE '%' + #{unit} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(conv)">		
-								AND CONV LIKE '%' + #{conv} + '%'
+								AND b.CONV LIKE '%' + #{conv} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(rtd)">		
-								AND RTD LIKE '%' + #{rtd} + '%'
+								AND b.RTD LIKE '%' + #{rtd} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(type)">	
-								AND TYPE LIKE '%' + #{type} + '%'
+								AND b.TYPE LIKE '%' + #{type} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(iogroup)">		
-								AND IOGROUP LIKE '%' + #{iogroup} + '%'
+								AND b.IOGROUP LIKE '%' + #{iogroup} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(window)">		
-								AND WINDOW LIKE '%' + #{window} + '%'
+								AND b.WINDOW LIKE '%' + #{window} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(priority)">	
-								AND PRIORITY LIKE '%' + #{priority} + '%'
+								AND b.PRIORITY LIKE '%' + #{priority} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(cr)">	
-								AND CR LIKE '%' + #{cr} + '%'
+								AND b.CR LIKE '%' + #{cr} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(limit1)">	
-								AND LIMIT1 LIKE '%' + #{limit1} + '%'
+								AND b.LIMIT1 LIKE '%' + #{limit1} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(limit2)">	
-								AND LIMIT2 LIKE '%' + #{limit2} + '%'
+								AND b.LIMIT2 LIKE '%' + #{limit2} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(j)">		
-								AND J LIKE '%' + #{j} + '%'
+								AND b.J LIKE '%' + #{j} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(n)">		
-								AND N LIKE '%' + #{n} + '%'
-						</if>   
+								AND b.N LIKE '%' + #{n} + '%'
+						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(equ)">		
-								AND EQU# LIKE '%' + #{equ} + '%'
+								AND b.EQU# LIKE '%' + #{equ} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(bscal)">		
-								AND BSCAL LIKE '%' + #{bscal} + '%'
+								AND b.BSCAL LIKE '%' + #{bscal} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(wiba)">		
-								AND WIBA LIKE '%' + #{wiba} + '%'
+								AND b.WIBA LIKE '%' + #{wiba} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(wb)">		
-								AND WB# LIKE '%' + #{wb} + '%'
+								AND b.WB# LIKE '%' + #{wb} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ctrlname)">	
-								AND CTRLNAME LIKE '%' + #{ctrlname} + '%'
+								AND b.CTRLNAME LIKE '%' + #{ctrlname} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(interlock)">		
-								AND INTERLOCK LIKE '%' + #{interlock} + '%'
+								AND b.INTERLOCK LIKE '%' + #{interlock} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(feedback)">		
-								AND FEEDBACK LIKE '%' + #{feedback} + '%'
+								AND b.FEEDBACK LIKE '%' + #{feedback} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(com1)">		
-								AND COM1 LIKE '%' + #{com1} + '%'
+								AND b.COM1 LIKE '%' + #{com1} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(com2)">		
-								AND COM2 LIKE '%' + #{com2} + '%'
+								AND b.COM2 LIKE '%' + #{com2} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(condition)">		
-								AND CONDITION LIKE '%' + #{condition} + '%'
+								AND b.CONDITION LIKE '%' + #{condition} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(tr)">		
-								AND TR LIKE '%' + #{tr} + '%'
+								AND b.TR LIKE '%' + #{tr} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(iobit)">		
-								AND IOBIT LIKE '%' + #{iobit} + '%'
+								AND b.IOBIT LIKE '%' + #{iobit} + '%'
 						</if>   		
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(alarmcond)">		
-								AND ALARMCOND LIKE '%' + #{alarmcond} + '%'
+								AND b.ALARMCOND LIKE '%' + #{alarmcond} + '%'
 						</if>   
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(indicate)">		
-								AND INDICATE LIKE '%' + #{indicate} + '%'
-				        </if>								
-				</trim>        
-	</select>
-	
-	<select id="selectIOListInfoList" parameterType="DccSearchAdmin" resultType="IOListInfo">
-	
-				SELECT IHOGI
-				      , ISEQ
-				      , IOTYPE
-				      , ADDRESS
-				      , IOBIT
-				      , XYGUBUN
-				      , LOOPNAME
-				      , TBLNO
-				      , FLDNO
-				      , FILEPOSITION
-				      , FASTIOCHK
-				      , FEEDBACK
-				      , REV
-				      , DESCR
-				      , PURPOSE
-				      , VLOW
-				      , VHIGH
-				      , ELOW
-				      , EHIGH
-				      , UNIT
-				      , CONV
-				      , RTD
-				      , REQUEST
-				      , TYPE
-				      , IOGROUP
-				      , WINDOW
-				      , PRIORITY
-				      , TR
-				      , CR
-				      , LIMIT1
-				      , LIMIT2
-				      , J
-				      , N
-				      , MESSAGE
-				      , EQU#
-				      , BSCAL
-				      , CAST(WIBA AS int) AS WIBA
-				      , WB#
-				      , AA#
-				      , IOINDEX
-				      , PROGRAM
-				      , REVISION
-				      , DEVICE
-				      , CTRLNAME
-				      , INTERLOCK
-				      , ALARMCOND
-				      , INDICATE
-				      , COM1
-				      , COM2
-				      , DRAWING
-				      , CONDITION
-				      , IODATE
-				      , MEASURENO
-				      , OPERATIONVAR
-				      , DRAWINGPOS
-				      , RIGHTVAL
-				      , NORMALVAL
-				      , REQNO
-				      , REQNAME
-				      , REQDATE
-				      , REQDEPT
-				      , REQBIGO
-				      , ZTEXT1
-				      , ZTEXT2
-				      , ZTEXT3
-				  FROM MST_TAG_DCC 
-				  <trim prefix="WHERE" prefixOverrides="AND | OR">
+								AND b.INDICATE LIKE '%' + #{indicate} + '%'
+				        </if>  
+				  </if>
+				  <if test="!@org.apache.commons.lang3.StringUtils@equalsIgnoreCase('FTAI',iotype) and !@org.apache.commons.lang3.StringUtils@equalsIgnoreCase('FTDT',iotype)">
+				  		AND IOTYPE = #{iotype}
 				         <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ihogi)">
 				            AND IHOGI = #{ihogi}
 				         </if>
-				         <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(xygubun)">
+				         <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(xygubun) and !@org.apache.commons.lang3.StringUtils@equalsIgnoreCase('CI',iotype)">
 				            AND XYGUBUN = #{xygubun}
 				         </if>
-				         <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(iotype)">
-			           		AND IOTYPE =#{iotype}
-				         </if>
 				          <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(address)">
-				           		 AND ADDRESS LIKE '%' + #{address} + '%'
+				           		 AND CONVERT(INT,ADDRESS)  ${address}
 				        </if>  
 				        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(descr)">
 						        AND  DESCR LIKE '%' + #{descr} + '%'
@@ -500,8 +439,413 @@
 						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(indicate)">		
 								AND INDICATE LIKE '%' + #{indicate} + '%'
 				        </if>
-			       </trim>        
-				    ORDER BY IHOGI desc, ISEQ desc	
+				      </if>
+			       </trim>
+	</select>
+	
+	<select id="selectIOListInfoList" parameterType="DccSearchAdmin" resultType="IOListInfo">
+	
+				SELECT
+				<if test="!@org.apache.commons.lang3.StringUtils@equalsIgnoreCase('FTAI',iotype) and !@org.apache.commons.lang3.StringUtils@equalsIgnoreCase('FTDT',iotype)">
+						IHOGI
+				      , ISEQ
+				      , IOTYPE
+				      , ADDRESS
+				      , IOBIT
+				      , XYGUBUN
+				      , LOOPNAME
+				      , TBLNO
+				      , FLDNO
+				      , FILEPOSITION
+				      , FASTIOCHK
+				      , FEEDBACK
+				      , REV
+				      , DESCR
+				      , PURPOSE
+				      , VLOW
+				      , VHIGH
+				      , ELOW
+				      , EHIGH
+				      , UNIT
+				      , CONV
+				      , RTD
+				      , REQUEST
+				      , TYPE
+				      , IOGROUP
+				      , WINDOW
+				      , PRIORITY
+				      , TR
+				      , CR
+				      , LIMIT1
+				      , LIMIT2
+				      , J
+				      , N
+				      , MESSAGE
+				      , EQU#
+				      , BSCAL
+				      , CAST(WIBA AS int) AS WIBA
+				      , WB#
+				      , AA#
+				      , IOINDEX
+				      , PROGRAM
+				      , REVISION
+				      , DEVICE
+				      , CTRLNAME
+				      , INTERLOCK
+				      , ALARMCOND
+				      , INDICATE
+				      , COM1
+				      , COM2
+				      , DRAWING
+				      , CONDITION
+				      , IODATE
+				      , MEASURENO
+				      , OPERATIONVAR
+				      , DRAWINGPOS
+				      , RIGHTVAL
+				      , NORMALVAL
+				      , REQNO
+				      , REQNAME
+				      , REQDATE
+				      , REQDEPT
+				      , REQBIGO
+				      , ZTEXT1
+				      , ZTEXT2
+				      , ZTEXT3
+				  FROM MST_TAG_DCC 
+				  </if>
+				<if test="@org.apache.commons.lang3.StringUtils@equalsIgnoreCase('FTAI',iotype) or @org.apache.commons.lang3.StringUtils@equalsIgnoreCase('FTDT',iotype)">
+					b.IHOGI
+				      , b.ISEQ
+				      , b.IOTYPE
+				      , a.ADDRESS
+				      , b.IOBIT
+				      , b.XYGUBUN
+				      , b.LOOPNAME
+				      , b.TBLNO
+				      , a.FLDNO
+				      , b.FILEPOSITION
+				      , b.FASTIOCHK
+				      , b.FEEDBACK
+				      , b.REV
+				      , b.DESCR
+				      , b.PURPOSE
+				      , b.VLOW
+				      , b.VHIGH
+				      , b.ELOW
+				      , b.EHIGH
+				      , b.UNIT
+				      , b.CONV
+				      , b.RTD
+				      , b.REQUEST
+				      , b.TYPE
+				      , b.IOGROUP
+				      , b.WINDOW
+				      , b.PRIORITY
+				      , b.TR
+				      , b.CR
+				      , b.LIMIT1
+				      , b.LIMIT2
+				      , b.J
+				      , b.N
+				      , b.MESSAGE
+				      , b.EQU#
+				      , b.BSCAL
+				      , CAST(b.WIBA AS int) AS WIBA
+				      , b.WB#
+				      , b.AA#
+				      , b.IOINDEX
+				      , b.PROGRAM
+				      , b.REVISION
+				      , b.DEVICE
+				      , b.CTRLNAME
+				      , b.INTERLOCK
+				      , b.ALARMCOND
+				      , b.INDICATE
+				      , b.COM1
+				      , b.COM2
+				      , b.DRAWING
+				      , b.CONDITION
+				      , b.IODATE
+				      , b.MEASURENO
+				      , b.OPERATIONVAR
+				      , b.DRAWINGPOS
+				      , b.RIGHTVAL
+				      , b.NORMALVAL
+				      , b.REQNO
+				      , b.REQNAME
+				      , b.REQDATE
+				      , b.REQDEPT
+				      , b.REQBIGO
+				      , b.ZTEXT1
+				      , b.ZTEXT2
+				      , b.ZTEXT3
+				  FROM MST_TAG_DCC a, MST_TAG_DCC b
+				</if>
+				  <trim prefix="WHERE" prefixOverrides="AND | OR">
+				  <if test="@org.apache.commons.lang3.StringUtils@equalsIgnoreCase('FTAI',iotype) or @org.apache.commons.lang3.StringUtils@equalsIgnoreCase('FTDT',iotype)">
+				  	AND a.IOTYPE = #{iotype}
+				  	AND b.IOTYPE = REPLACE(#{iotype},'FT','')
+				  	AND b.IHOGI = a.IHOGI
+				  	AND b.XYGUBUN = a.XYGUBUN
+				  	AND b.ADDRESS = a.ADDRESS
+				  	<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ihogi)">
+			            AND a.IHOGI = #{ihogi}
+			         </if>
+			         <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(xygubun) and !@org.apache.commons.lang3.StringUtils@equalsIgnoreCase('CI',iotype)">
+			            AND a.XYGUBUN = #{xygubun}
+			         </if>
+			          <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(address)">
+			           	AND CONVERT(INT,a.ADDRESS)  ${address}
+		        	</if>
+				        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(descr)">
+						        AND  b.DESCR LIKE '%' + #{descr} + '%'
+						</if>
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(message)">						        
+								AND b.MESSAGE LIKE '%' + #{message} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(rev)">		
+								AND b.REV LIKE '%' + #{rev} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(drawing)">		
+								AND b.DRAWING LIKE '%' + #{drawing} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(loopname)">		
+								AND b.LOOPNAME LIKE '%' + #{loopname} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(device)">		
+								AND b.DEVICE LIKE '%' + #{device} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(purpose)">		
+								AND b.PURPOSE LIKE '%' + #{purpose} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(program)">		
+								AND b.PROGRAM LIKE '%' + #{program} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(vlow)">		
+								AND b.VLOW LIKE '%' + #{vlow} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(vhigh)">	
+								AND b.VHIGH LIKE '%' + #{vhigh} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(elow)">		
+								AND b.ELOW LIKE '%' + #{elow} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ehigh)">		
+								AND b.EHIGH LIKE '%' + #{ehigh} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(unit)">		
+								AND b.UNIT LIKE '%' + #{unit} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(conv)">		
+								AND b.CONV LIKE '%' + #{conv} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(rtd)">		
+								AND b.RTD LIKE '%' + #{rtd} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(type)">	
+								AND b.TYPE LIKE '%' + #{type} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(iogroup)">		
+								AND b.IOGROUP LIKE '%' + #{iogroup} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(window)">		
+								AND b.WINDOW LIKE '%' + #{window} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(priority)">	
+								AND b.PRIORITY LIKE '%' + #{priority} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(cr)">	
+								AND b.CR LIKE '%' + #{cr} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(limit1)">	
+								AND b.LIMIT1 LIKE '%' + #{limit1} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(limit2)">	
+								AND b.LIMIT2 LIKE '%' + #{limit2} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(j)">		
+								AND b.J LIKE '%' + #{j} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(n)">		
+								AND b.N LIKE '%' + #{n} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(equ)">		
+								AND b.EQU# LIKE '%' + #{equ} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(bscal)">		
+								AND b.BSCAL LIKE '%' + #{bscal} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(wiba)">		
+								AND b.WIBA LIKE '%' + #{wiba} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(wb)">		
+								AND b.WB# LIKE '%' + #{wb} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ctrlname)">	
+								AND b.CTRLNAME LIKE '%' + #{ctrlname} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(interlock)">		
+								AND b.INTERLOCK LIKE '%' + #{interlock} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(feedback)">		
+								AND b.FEEDBACK LIKE '%' + #{feedback} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(com1)">		
+								AND b.COM1 LIKE '%' + #{com1} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(com2)">		
+								AND b.COM2 LIKE '%' + #{com2} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(condition)">		
+								AND b.CONDITION LIKE '%' + #{condition} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(tr)">		
+								AND b.TR LIKE '%' + #{tr} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(iobit)">		
+								AND b.IOBIT LIKE '%' + #{iobit} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(alarmcond)">		
+								AND b.ALARMCOND LIKE '%' + #{alarmcond} + '%'
+						</if>   
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(indicate)">		
+								AND b.INDICATE LIKE '%' + #{indicate} + '%'
+				        </if>  
+				  </if>
+				  <if test="!@org.apache.commons.lang3.StringUtils@equalsIgnoreCase('FTAI',iotype) and !@org.apache.commons.lang3.StringUtils@equalsIgnoreCase('FTDT',iotype)">
+				  		AND IOTYPE = #{iotype}
+				         <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ihogi)">
+				            AND IHOGI = #{ihogi}
+				         </if>
+				         <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(xygubun) and !@org.apache.commons.lang3.StringUtils@equalsIgnoreCase('CI',iotype)">
+				            AND XYGUBUN = #{xygubun}
+				         </if>
+				          <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(address)">
+				           		 AND CONVERT(INT,ADDRESS)  ${address}
+				        </if>  
+				        <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(descr)">
+						        AND  DESCR LIKE '%' + #{descr} + '%'
+						</if>						
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(message)">						        
+								AND MESSAGE LIKE '%' + #{message} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(rev)">		
+								AND REV LIKE '%' + #{rev} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(drawing)">		
+								AND DRAWING LIKE '%' + #{drawing} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(loopname)">		
+								AND LOOPNAME LIKE '%' + #{loopname} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(device)">		
+								AND DEVICE LIKE '%' + #{device} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(purpose)">		
+								AND PURPOSE LIKE '%' + #{purpose} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(program)">		
+								AND PROGRAM LIKE '%' + #{program} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(vlow)">		
+								AND VLOW LIKE '%' + #{vlow} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(vhigh)">	
+								AND VHIGH LIKE '%' + #{vhigh} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(elow)">		
+								AND ELOW LIKE '%' + #{elow} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ehigh)">		
+								AND EHIGH LIKE '%' + #{ehigh} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(unit)">		
+								AND UNIT LIKE '%' + #{unit} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(conv)">		
+								AND CONV LIKE '%' + #{conv} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(rtd)">		
+								AND RTD LIKE '%' + #{rtd} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(type)">	
+								AND TYPE LIKE '%' + #{type} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(iogroup)">		
+								AND IOGROUP LIKE '%' + #{iogroup} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(window)">		
+								AND WINDOW LIKE '%' + #{window} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(priority)">	
+								AND PRIORITY LIKE '%' + #{priority} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(cr)">	
+								AND CR LIKE '%' + #{cr} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(limit1)">	
+								AND LIMIT1 LIKE '%' + #{limit1} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(limit2)">	
+								AND LIMIT2 LIKE '%' + #{limit2} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(j)">		
+								AND J LIKE '%' + #{j} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(n)">		
+								AND N LIKE '%' + #{n} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(equ)">		
+								AND EQU# LIKE '%' + #{equ} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(bscal)">		
+								AND BSCAL LIKE '%' + #{bscal} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(wiba)">		
+								AND WIBA LIKE '%' + #{wiba} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(wb)">		
+								AND WB# LIKE '%' + #{wb} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(ctrlname)">	
+								AND CTRLNAME LIKE '%' + #{ctrlname} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(interlock)">		
+								AND INTERLOCK LIKE '%' + #{interlock} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(feedback)">		
+								AND FEEDBACK LIKE '%' + #{feedback} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(com1)">		
+								AND COM1 LIKE '%' + #{com1} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(com2)">		
+								AND COM2 LIKE '%' + #{com2} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(condition)">		
+								AND CONDITION LIKE '%' + #{condition} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(tr)">		
+								AND TR LIKE '%' + #{tr} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(iobit)">		
+								AND IOBIT LIKE '%' + #{iobit} + '%'
+						</if>   		
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(alarmcond)">		
+								AND ALARMCOND LIKE '%' + #{alarmcond} + '%'
+						</if>   
+						<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(indicate)">		
+								AND INDICATE LIKE '%' + #{indicate} + '%'
+				        </if>
+				      </if>
+			       </trim>
+			       <if test="@org.apache.commons.lang3.StringUtils@equals('FTAI',iotype) or @org.apache.commons.lang3.StringUtils@equals('FTDT',iotype)">
+				    ORDER BY FLDNO
+				    </if>
+				    <if test="!@org.apache.commons.lang3.StringUtils@equals('FTAI',iotype) and !@org.apache.commons.lang3.StringUtils@equals('FTDT',iotype)">
+				    ORDER BY CONVERT(INT, ADDRESS)
+				    </if>
 	</select>
 	
 	<select id="selectIOListListInfo" parameterType="DccSearchAdmin" resultType="IOListInfo">
@@ -1053,7 +1397,7 @@
 				     )
 	    </insert>
    
-   		<delete id="deleteSwSmList" parameterType="DccSearchAdmin" >
+   		<delete id="deleteSwSmInfo" parameterType="DccSearchAdmin" >
 		        DELETE FROM MST_SW_SM
 		        WHERE SEQNO = #{seqNo}
 	    </delete>
@@ -1249,7 +1593,7 @@
 			            AND EQUIPNM LIKE '%' + #{equipNm} + '%'
 			        </if>                      
 		        </trim>        
-				ORDER BY SEQNO desc
+				ORDER BY SEQNO asc
 		    	OFFSET (#{pageNum} - 1)  *  #{pageSize} ROWS
 		    	FETCH NEXT #{pageSize} ROWS ONLY
     </select>
@@ -1338,7 +1682,7 @@
 			            AND EQUIPNM LIKE '%' + #{equipNm} + '%'
 			        </if>                      
 		        </trim>        
-				ORDER BY SEQNO desc
+				ORDER BY SEQNO asc
     </select>
     
     <select id="selectEquipInfo" parameterType="DccSearchAdmin" resultType="equipInfo">

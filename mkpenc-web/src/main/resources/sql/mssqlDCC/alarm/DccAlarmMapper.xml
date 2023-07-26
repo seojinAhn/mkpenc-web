@@ -182,6 +182,47 @@
 		FETCH NEXT #{pageSize} ROWS ONLY
     </select>
     
+    <select id="selectAlarmToRecordSearch" parameterType="DccSearchAlarm" resultType="DccAlarmInfo">
+    	SELECT
+			ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS rowNum,
+			ALMGUBUN,
+			ALMCODE,
+			ALMADDRESS,
+			CONVERT(VARCHAR(23), ALMDATE, 21) AS ALMDATE,
+			ALMMESG,
+			ALMMSECCHK,
+			SEQ,
+			ALMHOGI,
+			ALMXYGUBUN,
+			ALMMESGLINE,
+			PAGNO,
+			PAGLINE,
+			'' AS ALMYEAR
+		FROM LOG_${hogi}DCC_ALARM
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			AND SEQ >= Replace(Left(#{startDate},7),'-','')
+			AND ALMHOGI = #{hogi}
+			AND ALMXYGUBUN = #{xyGubun}
+			AND CONVERT(VARCHAR(16), ALMDATE, 120) BETWEEN #{startDate} AND #{endDate}
+			<if test='!(@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(alarmGubun,"none"))'>
+				AND ALMGUBUN = #{alarmGubun}
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(alarmCode) and !(@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(alarmCode,"bsi"))'>
+				AND ALMCODE = #{alarmCode}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(address)">
+				AND ISNUMERIC(ALMADDRESS) = 1
+				AND CONVERT(INT, ALMADDRESS) IN ( #{address} )
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(alarmMsg)">
+				AND ALMMESG LIKE '%${alarmMsg}%'
+			</if>
+		</trim>
+		ORDER BY ALMDATE DESC, PAGLINE DESC
+		OFFSET (#{alarmPageNum} - 1)  *  #{alarmPageSize} ROWS
+		FETCH NEXT #{alarmPageSize} ROWS ONLY
+    </select>
+    
     <select id="selectAlarmToExport" parameterType="DccSearchAlarm" resultType="DccAlarmInfo">
 		SELECT
 			ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS rowNum,
@@ -377,7 +418,7 @@
 	
 	<select id="selectFixedAlarm" parameterType="DccSearchAlarm" resultType="DccAlarmInfo">
 		SELECT
-		<if test='!@org.apache.commons.lang3.StringUtils@equals(pType,"1140") and !@org.apache.commons.lang3.StringUtils@equals(pType,"1180") and !@org.apache.commons.lang3.StringUtils@equals(pType,"2760") and !@org.apache.commons.lang3.StringUtils@equals(pType,"5500") and !@org.apache.commons.lang3.StringUtils@equals(pType,"2850")'>
+		<if test='!@org.apache.commons.lang3.StringUtils@equals(pType,"1140") and !@org.apache.commons.lang3.StringUtils@equals(pType,"1180") and !@org.apache.commons.lang3.StringUtils@equals(pType,"2760") and !@org.apache.commons.lang3.StringUtils@equals(pType,"5500") and !@org.apache.commons.lang3.StringUtils@equals(pType,"5501") and !@org.apache.commons.lang3.StringUtils@equals(pType,"2850")'>
 			TOP 2 
 		</if>
 		<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"5500")'>
@@ -388,7 +429,7 @@
 			ALMGUBUN
 		FROM LOG_${sHogi}DCC_ALARM
 		<trim prefix="WHERE" prefixOverrides="AND | OR">
-			<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"0030") or @org.apache.commons.lang3.StringUtils@equals(pType,"0320") or @org.apache.commons.lang3.StringUtils@equals(pType,"1140") or @org.apache.commons.lang3.StringUtils@equals(pType,"1180") or @org.apache.commons.lang3.StringUtils@equals(pType,"2760")'>
+			<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"0030") or @org.apache.commons.lang3.StringUtils@equals(pType,"0320") or @org.apache.commons.lang3.StringUtils@equals(pType,"1140") or @org.apache.commons.lang3.StringUtils@equals(pType,"1180") or @org.apache.commons.lang3.StringUtils@equals(pType,"2760") or @org.apache.commons.lang3.StringUtils@equals(pType,"5500") or @org.apache.commons.lang3.StringUtils@equals(pType,"5501")'>
 				AND SEQ <![CDATA[>=]]> Replace(Left(#{startDate},7),'-','')
 			</if>
 			<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"core1")'>
@@ -399,7 +440,7 @@
 			</if>
 				AND ALMHOGI = #{sHogi}
 				AND ALMXYGUBUN = #{sXYGubun}
-			<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"5500")'>
+			<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"5500") or @org.apache.commons.lang3.StringUtils@equals(pType,"5501")'>
 				AND ALMGUBUN = #{alarmGubun}
 			</if>
 				AND ALMCODE = 'CI'
@@ -420,45 +461,81 @@
 	</select>
 	
 	<select id="selectGasInfo" parameterType="DccSearchAlarm" resultType="java.util.Map">
-		SELECT
-		<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"0")'>
-			TOP 1
+		  <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(pType) and "0".equals(pType)'>
+		   <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and "X".equals(sXYGubun)'>
+				SELECT TOP 1	SCANTIME, TVALUE13 AS TVALUE
+				  FROM LOG_${sHogi}DCC_TREND
+				 WHERE SEQ = 60
+				   AND SCANTIME = #{endDate}
+				 ORDER BY SCANTIME DESC
+			</if>
+			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and "Y".equals(sXYGubun)'>
+				SELECT TOP 1	SCANTIME, TVALUE14 AS TVALUE
+				  FROM LOG_${sHogi}DCC_TREND
+				 WHERE SEQ = 70
+				   AND SCANTIME = #{endDate}
+				 ORDER BY SCANTIME DESC
+			</if>
 		</if>
-			SCANTIME,
-		<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"2")'>
-			${tValue} AS TVALUE
-		</if>
-		<if test='!@org.apache.commons.lang3.StringUtils@equals(pType,"2")'>
+		<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(pType) and "1".equals(pType)'>
 			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and "X".equals(sXYGubun)'>
-				TVALUE13 AS TVALUE
+				SELECT SCANTIME, TVALUE13 AS TVALUE
+				  FROM LOG_${sHogi}DCC_TREND
+				 WHERE SEQ = 60
+				   AND  SCANTIME BETWEEN #{startDate} AND #{endDate}
+				 ORDER BY SCANTIME DESC
 			</if>
-			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and !"X".equals(sXYGubun)'>
-				TVALUE14 AS TVALUE
+			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and "Y".equals(sXYGubun)'>
+				SELECT SCANTIME, TVALUE14 AS TVALUE
+				  FROM LOG_${sHogi}DCC_TREND
+				 WHERE SEQ = 70
+				    AND  SCANTIME BETWEEN #{startDate} AND #{endDate}
+				 ORDER BY SCANTIME DESC
 			</if>
 		</if>
-			FROM LOG_${sHogi}DCC_TREND
-		<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"2")'>
-			WHERE SEQ = #{seq}
+		<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(pType) and "2".equals(pType)'>
+				SELECT SCANTIME, ${tValue} AS TVALUE
+				  FROM LOG_${sHogi}DCC_TREND
+				 WHERE SEQ = #{seq}
+				  AND SCANTIME = #{endDate}
+				   ORDER BY SCANTIME ASC
 		</if>
-		<if test='!@org.apache.commons.lang3.StringUtils@equals(pType,"2")'>
+	</select>
+	
+	<select id="selectGasInfo4Hogi" parameterType="DccSearchAlarm" resultType="java.util.Map">
+		<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(pType) and "0".equals(pType)'>
 			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and "X".equals(sXYGubun)'>
-				WHERE SEQ = 60
+				SELECT TOP 1	SCANTIME, TVALUE13 AS TVALUE
+				  FROM LOG_${sHogi}DCC_TREND60
+				 WHERE SCANTIME = #{endDate}
+				 ORDER BY SCANTIME DESC
+				</if>
+			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and "Y".equals(sXYGubun)'>
+				 SELECT TOP 1	SCANTIME, TVALUE14 AS TVALUE
+				  FROM LOG_${sHogi}DCC_TREND70
+				 WHERE SCANTIME = #{endDate}
+				 ORDER BY SCANTIME DESC
 			</if>
-			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and !"X".equals(sXYGubun)'>
-				WHERE SEQ = 70
+		</if>
+		<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(pType) and "1".equals(pType)'>
+			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and "X".equals(sXYGubun)'>
+				SELECT SCANTIME, TVALUE13 AS TVALUE
+				  FROM LOG_${sHogi}DCC_TREND60
+				 WHERE SCANTIME BETWEEN #{startDate} AND #{endDate}
+				 ORDER BY SCANTIME DESC
+				</if>
+			<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(sXYGubun) and "Y".equals(sXYGubun)'>
+				 SELECT SCANTIME, TVALUE14 AS TVALUE
+				  FROM LOG_${sHogi}DCC_TREND70
+				 WHERE  SCANTIME BETWEEN #{startDate} AND #{endDate}
+				 ORDER BY SCANTIME DESC
 			</if>
 		</if>
-		<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"0") or @org.apache.commons.lang3.StringUtils@equals(pType,"2")'>
-			AND SCANTIME = #{endDate}
-		</if>
-		<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"1")'>
-			AND SCANTIME between #{startDate} AND #{endDate}
-		</if>
-		<if test='!@org.apache.commons.lang3.StringUtils@equals(pType,"2")'>
-			ORDER BY SCANTIME DESC
-		</if>
-		<if test='@org.apache.commons.lang3.StringUtils@equals(pType,"2")'>
-			ORDER BY SCANTIME ASC
+		<if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(pType) and "2".equals(pType)'>
+				SELECT SCANTIME, ${tValue} AS TVALUE
+				  FROM LOG_${sHogi}DCC_TREND${seq}
+				 WHERE SCANTIME = #{endDate}
+				   ORDER BY SCANTIME ASC
 		</if>
 	</select>
 	

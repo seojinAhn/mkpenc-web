@@ -20,7 +20,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/**") 								// 해당 경로에 접근하기 전에 인터셉터가 가로챈다.
                 .excludePathPatterns("/resources/**")
-                .excludePathPatterns("/main/dashboard"); // 해당 경로는 인터셉터가 가로채지 않는다.
+                .excludePathPatterns("/main/dashboard")
+                .excludePathPatterns("/main/memberInsert");             // 해당 경로는 인터셉터가 가로채지 않는다.
     }
     
     @Bean

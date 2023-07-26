@@ -4,7 +4,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page trimDirectiveWhitespaces="true" %>
 
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,81 +17,105 @@
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/tip.js" />" charset="utf-8"></script>
 <script type="text/javascript">
-
-$(function () {
-
-	$("#sds1Search").click(function(){
+var timerOn = false;
+	var gfReactorValue = 100;
+	var gbOutput = 1;
+	var gbPumpMode = 1;
+	var gbOddEven = 1;
+	var gfConditionOut = 0;
+	var gfPLL4 = 0;
+	var gfSGLL2 = 0;
+	var gfPHTLP2O = 0;
+	var gfPHTLP2E = 0;
+	var gfPHTLP4 = 0;
+	
+	var gGraphNo = 0;
+	var gbGraph = false;
+	
+	$(function () {
+		$("#txtReactor").val(gfReactorValue);
+		if( gbOutput == 0 ) {
+			$("#optOutput0").prop("checked",true);
+			$("#optOutput1").prop("checked",false);
+		} else {
+			$("#optOutput0").prop("checked",false);
+			$("#optOutput1").prop("checked",true);
+		}
+		$("#cboPumpMode").val(gbPumpMode);
+		if( gbOddEven == 0 ) {
+			$("#optPumpMode0").prop("checked",true);
+			$("#optPumpMode1").prop("checked",false);
+		} else {
+			$("#optPumpMode0").prop("checked",false);
+			$("#optPumpMode1").prop("checked",true);
+		}
+		
 		txtReactor_Change();
-		
-	});
-	
-	$(document.body).delegate('#lblPHTHP', 'mouseover', function() {
-		$('#lblPHTHPExcep' ).css("display", "block");
-	});
-	$(document.body).delegate('#lblPHTHPExcep', 'click', function() {
-		gGraphNo = 0;
-		if (gbGraph) {
-			
-		}
-		
-	});
-	
-	$(document.body).delegate('#lblTripPara1', 'mouseover', function() {
-		 $('#lblTripPara1' ).css("display", "block");	
-	});
-	$(document.body).delegate('#lblTripPara2', 'mouseover', function() {
-		 $('#lblTripPara2' ).css("display", "block");	
-	});
-	$(document.body).delegate('#lblTripPara5', 'mouseover', function() {
-		 $('#lblTripPara5' ).css("display", "block");	
-	});
-	
-	$(document.body).delegate('#lblTripParaSel', 'click', function(idx) {
-		
-		if (gbGraph) {
-			
-		}
-		switch (idx) {
-    		case 1: gGraphNo = 2;
-    				break;
-    		case 2: gGraphNo = 1;
-    				break;
-    		case 5: gGraphNo = 3;
-    				break;
-    	}    	
-		
-	});
-});
 
-	var gfReactorValue;
-	var gbOutput;
-	var gbPumpMode;
-	var gbOddEven;
-	var gfConditionOut;
-	var gfPLL4;
-	var gfSGLL2;
-	var gfPHTLP2O;
-	var gfPHTLP2E;
-	var gfPHTLP4;
-	
-	var gGraphNo;
-	var gbGraph;
+		
+		$(document.body).delegate('#txtReactor', 'keyup', function() {
+			txtReactor_Change();
+		});
+		
+		$(document.body).delegate('#optOutput0', 'click', function() {
+			$("#optOutput0").prop("checked",true);
+			$("#optOutput1").prop("checked",false);
+			optOutput_Click(0);
+		});
+		
+		$(document.body).delegate('#optOutput1', 'click', function() {
+			$("#optOutput0").prop("checked",false);
+			$("#optOutput1").prop("checked",true);
+			optOutput_Click(1);
+		});
+		
+		$(document.body).delegate('#optPumpMode0', 'click', function() {
+			$("#optPumpMode0").prop("checked",true);
+			$("#optPumpMode1").prop("checked",false);
+			optPumpMode_Click(0);
+		});
+		
+		$(document.body).delegate('#optPumpMode1', 'click', function() {
+			$("#optPumpMode0").prop("checked",false);
+			$("#optPumpMode1").prop("checked",true);
+			optPumpMode_Click(1);
+		});
+		
+		$(document.body).delegate('#cboPumpMode', 'change', function() {
+			cboPumpMode_Click();
+		});
+		
+		$(document.body).delegate('#lblPHTHPExcep', 'click', function() {
+			openLayer('modal_1');
+		});
+		
+		$(document.body).delegate('#lblTripPara1', 'click', function() {
+			openLayer('modal_1');
+		});
+		
+		$(document.body).delegate('#lblTripPara2', 'click', function() {
+			openLayer('modal_1');
+		});
+		
+		$(document.body).delegate('#lblTripPara5', 'click', function() {
+			openLayer('modal_1');
+		});
+	});
 	
 	function CalcLinear(fValue, pllMin, pllMax, vMin, vMax, mMin, mMax) {
-		var calcLinear = ((mMax - mMin) * (fValue - pllMin) / (pllMax - pllMin) + mMin).toFixed(3) + 'm (';
-		calcLinear = calcLinear + ((vMax - vMin) * (fValue - pllMin) / (pllMax - pllMin) + vMin).toFixed(3) + 'V)';
+		var calcLinear = ((mMax - mMin) * (fValue - pllMin) / (pllMax - pllMin) + mMin).toFixed(3) + 'm ('
+					   + ((vMax - vMin) * (fValue - pllMin) / (pllMax - pllMin) + vMin).toFixed(3) + 'V)';
 		return calcLinear;
 	}
 	
 	function CalcLinearPress(fValue, pllMin, pllMax, vMin, vMax, mMin, mMax) {
-		var calcLinearPress = ((mMax - mMin) * (fValue - pllMin) / (pllMax - pllMin) + mMin).toFixed(3) + 'Mpa (';
-		calcLinearPress = calcLinearPress + ((vMax - vMin) * (fValue - pllMin) / (pllMax - pllMin) + vMin).toFixed(3) + 'V)';
+		var calcLinearPress = ((mMax - mMin) * (fValue - pllMin) / (pllMax - pllMin) + mMin).toFixed(3) + 'Mpa ('
+							+ ((vMax - vMin) * (fValue - pllMin) / (pllMax - pllMin) + vMin).toFixed(3) + 'V)';
 		return calcLinearPress;
 	}
 	
 	function getPHTLF(fValue) {
- 		
- 		var strValue;
+ 		var strValue = '';
  		if (gbPumpMode == 0) {
  			strValue = '48.1% NF (1.325V)';
  		} else {
@@ -104,16 +127,15 @@ $(function () {
  			strValue = 'Conditioning out';
  		}
  		
- 		$('#lblTripset0' ).text(strValue);
+ 		$('#lblTripset0').text(strValue);
  	}
  	
  	function getPLL(fValue) {
- 		var strValue;
- 		var nState;
- 		var i;
- 		
+ 		var strValue = '';
+ 		var nState = -1;
+
  		if (gbPumpMode == 0) {
- 			if (fValue < vgfPLL4(0, gbOutput)) {
+ 			if (fValue <  vgfPLL4(0, gbOutput)) {
  				strValue = '2.0m (1.380V)';
             	nState = 0;
  			} else if (fValue >= vgfPLL4(0, gbOutput)) {
@@ -145,15 +167,20 @@ $(function () {
         	nState = -1;
  		}
  		
- 		$('#lblTripset1' ).text(strValue);
+ 		$('#lblTripset1').text(strValue);
+ 		
+ 		for( var i=0;i<7;i++ ) {
+ 			$("#shpReactor2"+i).css("background","");
+ 		}
+ 		
+ 		if( nState > -1 ) $("#shpReactor2"+nState).css("background","#ebf0cf");
  	}
  	
  	function getSGLL(fValue) {
-		var strValue;
-		var strValueCondition;
-		var nState;
-		var i;
-		
+		var strValue = '';
+		var strValueCondition = '';
+		var nState = 0;
+
 		if (fValue >= vgfSGLL2(0, gbOutput) && fValue < vgfSGLL2(1, gbOutput)) {
 			strValue = CalcLinear(fValue, vgfSGLL2(0, gbOutput), vgfSGLL2(1, gbOutput), 1.554, 3.473, -1.55, 1.74);
         	strValueCondition = 'Linear function of 0% FP(0.5V)< ΦAVEC < 90% FP(3.2V)';
@@ -168,16 +195,21 @@ $(function () {
         	nState = -1;
 		}
 		
-		$('#lblTripset2' ).text(strValue);
+		$('#lblTripset2').text(strValue);
+ 		
+ 		for( var i=0;i<2;i++ ) {
+ 			$("#shpReactor3"+i).css("background","");
+ 		}
+ 		
+ 		if( nState > -1 ) $("#shpReactor3"+nState).css("background","#ebf0cf");
  	}
  	
  	function getPHTLP(fValue) {
- 		var strValue;
- 		var nState;
- 		var i;
+ 		var strValue = '';
+ 		var nState = -1;
  		
  		if (gbPumpMode == 0) {
- 			if (gbOddEven = 0) {
+ 			if (gbOddEven == 0) {
  				if (fValue <= vgfPHTLP2O(0, gbOutput)) {
  					strValue = '5.9MPa (1.755V)';
                 	nState = 0;
@@ -214,19 +246,19 @@ $(function () {
  		}
  		
  		//Conditioning Out
-		if (fValue < vgfConditionOut(1, gbOutput)) {
+		if (fValue < vgfConditionOut(0, gbOutput)) {
 			strValue = 'Conditioning out';
         	nState = -1;
 		}
 		
 		$('#lblTripset5' ).text(strValue);
- 		
- 	}
 
-	gfReactorValue = 100;
-    gbOutput = 1;
-    gbPumpMode = 0;
-    gbOddEven = 1;
+ 		for( var i=0;i<9;i++ ) {
+ 			$("#shpReactor6"+i).css("background","");
+ 		}
+ 		
+ 		if( nState > -1 ) $("#shpReactor6"+nState).css("background","#ebf0cf");
+ 	}
 
     function vgfConditionOut(int1, int2)  {
     	if (int2 == 0) {
@@ -347,15 +379,10 @@ $(function () {
     		}    	
     	}
     }
-    
-    
-    gbGraph = false;
-	
 	
 	function cboPumpMode_Click() {
-
-		gbPumpMode = document.getElementById('cboPumpMode').value;
-		var fValue = document.getElementById('txtReactor').value;
+		gbPumpMode = $("#cboPumpMode").val()*1;
+		var fValue = $("#txtReactor").val()*1;
 		
 		getPHTLF(fValue);
 		getPLL(fValue);
@@ -364,9 +391,8 @@ $(function () {
 	}	
  
  	function optOutput_Click(idx) {
- 	
  		gbOutput = idx;
- 		var fValue = document.getElementById('txtReactor').value;
+ 		var fValue = $("#txtReactor").val()*1;
 		
 		getPHTLF(fValue);
 		getPLL(fValue);
@@ -376,9 +402,8 @@ $(function () {
 	}
 	
  	function optPumpMode_Click(idx) {
- 	
  		gbOddEven = idx;
- 		var fValue = document.getElementById('txtReactor').value;
+ 		var fValue = $("#txtReactor").val()*1;
 		
 		getPHTLF(fValue);
 		getPLL(fValue);
@@ -388,33 +413,17 @@ $(function () {
 	}
  
 	function txtReactor_Change() {
-		var fValue = document.getElementById('txtReactor').value;
+ 		var fValue = $("#txtReactor").val()*1;
 		
 		if(isNaN(fValue)) {
  			alert("숫자를 입력하십시오.");
  		} else {
-		
-		getPHTLF(fValue);
-		getPLL(fValue);
-		getSGLL(fValue);
-		getPHTLP(fValue);
+			getPHTLF(fValue);
+			getPLL(fValue);
+			getSGLL(fValue);
+			getPHTLP(fValue);
 		}
 	}
-	
-	function userControl_MouseMove() {
-		var i;
-		for (i=0; i<=6; i++) {
-			$('#lblTripPara'+i ).css("display", "none");
-		}
-		$('#lblPHTHPExcep' ).css("display", "none");
-	}
-	
-	function userControl_Terminate() {
-		if (gbGraph) {
-		
-		}
-	}
-
 	
 </script>
 </head>
@@ -440,29 +449,24 @@ $(function () {
 						<div class="fx_srch_item">
 							<label>원자로 출력</label>
                             <div class="fx_form">
-                                <input type="text" id="txtReactor" name="txtReactor" class="fx_none" style="width:140px;">
-                                <label><input type="radio" name="optOutput" value="0" onclick="optOutput_Click(this.value)" checked>%</label>
-                                <label><input type="radio" name="optOutput" value="1" onclick="optOutput_Click(this.value)">V</label>
+                                <input type="text" id="txtReactor" class="fx_none" style="width:140px;">
+                                <label><input type="radio" id="optOutput1" value="1">%</label>
+                                <label><input type="radio" id="optOutput0" value="0">V</label>
                             </div>
 						</div>
 						<div class="fx_srch_item">
 							<label>PHT Pump Mode</label>
                             <div class="fx_form">
-                                <select class="fx_none" id="cboPumpMode" name="cboPumpMode" style="width:140px;" onchange="cboPumpMode_Click();">
-                                    <option value="2">2</option>
-                                    <option value="4">4</option>
+                                <select class="fx_none" id="cboPumpMode" style="width:140px;">
+                                    <option value="0">2</option>
+                                    <option value="1">4</option>
                                 </select>
-                                <label><input type="radio" name="optPumpMode" value="0" onclick="optPumpMode_Click(this.value)" checked>ODD</label>
-                                <label><input type="radio" name="optPumpMode" value="1" onclick="optPumpMode_Click(this.value)">EVEN</label>
+                                <label><input type="radio" id="optPumpMode0" value="0">ODD</label>
+                                <label><input type="radio" id="optPumpMode1" value="1">EVEN</label>
                             </div>
 						</div>
                     </div>
 				</div>
-				<!-- fx_srch_button -->
-				<div class="fx_srch_button">
-					<a class="btn_srch" id="sds1Search" name="sds1Search">Search</a>
-				</div>
-				<!-- //fx_srch_button -->
 			</div>
 			<!-- //fx_srch_wrap -->            
             <!-- form_wrap -->
@@ -489,95 +493,119 @@ $(function () {
                     </thead>
                     <tbody>
                         <tr>
-                            <th><div id="lblTripPara0" name="lblTripPara0">PHT Low Flow</div></th>
+                            <th><label id="lblTripPara0">PHT Low Flow</label></th>
                             <td colspan="2" class="tc">2,4</td>
-                            <td class="tc">-</td>
-                            <td class="tc"><div id="lblTripset0" name="lblTripset0"> </div></td>
+                            <td class="tc"><div id="shpReactor10">-</div></td>
+                            <td class="tc"><label id="lblTripset0"> </label></td>
                         </tr>
                         <tr>
-                            <th rowspan="2"><div id="lblTripPara1" name="lblTripPara1">Pressurizer Low Level</div></th>
+                            <th rowspan="2"><label id="lblTripPara1"><a href="#" style="color:#6d6d6d">Pressurizer Low Level</a></label></th>
                             <td colspan="2" class="tc">2</td>
                             <td class="tc">
-                                <div class="fx_form column center">
-                                    <label>◇AVEC ＜ 40% FP(1.7V)</label>
-                                    <label>◇AVEC ＞＝ 40% FP(1.7V)</label>
+                                <div class="fx_form column center" id="shpReactor20" style="min-height:20px">
+                                    <label>ΦAVEC ＜ 40% FP(1.7V)</label>
+                                </div>
+                                <div class="fx_form column center" id="shpReactor21" style="min-height:20px;margin-left:0px">
+                                    <label>ΦAVEC ＞＝ 40% FP(1.7V)</label>
                                 </div>
                             </td>
-                            <td rowspan="2" class="tc"><div id="lblTripset1" name="lblTripset1"> </div></td>
+                            <td rowspan="2" class="tc"><label id="lblTripset1"> </label></td>
                         </tr>
                         <tr>
                             <td colspan="2" class="tc bd_l_line">4</td>
                             <td class="tc">
-                                <div class="fx_form column center">
-                                    <label>◇AVEC ＜ 40% FP(1.7V)</label>
-                                    <label>Linear function of 40% FP(1.7V) ＜ ◇AVEC ＜ 55% FP(2.15V)</label>
-                                    <label>55% FP(2.15V) ＜＝ ◇AVEC ＜ 75% FP(2.75V)</label>
-                                    <label>Linear function of 75% FP(2.75V) ＜ ◇AVEC ＜＝ 95% FP(3.35V)</label>
-                                    <label>◇AVEC ＞ 95% FP(3.35V)</label>
+                                <div class="fx_form column center" id="shpReactor22" style="min-height:20px">
+                                    <label>ΦAVEC ＜ 40% FP(1.7V)</label>
+                                </div>
+                                <div class="fx_form column center" id="shpReactor23" style="min-height:20px;margin-left:0px">
+                                    <label>Linear function of 40% FP(1.7V) ＜ ΦAVEC ＜ 55% FP(2.15V)</label>
+                                </div>
+                                <div class="fx_form column center" id="shpReactor24" style="min-height:20px;margin-left:0px">
+                                    <label>55% FP(2.15V) ＜＝ ΦAVEC ＜ 75% FP(2.75V)</label>
+                                </div>
+                                <div class="fx_form column center" id="shpReactor25" style="min-height:20px;margin-left:0px">
+                                    <label>Linear function of 75% FP(2.75V) ＜ ΦAVEC ＜＝ 95% FP(3.35V)</label>
+                                </div>
+                                <div class="fx_form column center" id="shpReactor26" style="min-height:20px;margin-left:0px">
+                                    <label>ΦAVEC ＞ 95% FP(3.35V)</label>
                                 </div>
                             </td>
                         </tr>
                         <tr>
-                            <th><div id="lblTripPara2" name="lblTripPara2">S/G Low Level</div></th>
+                            <th><label id="lblTripPara2"><a href="#" style="color:#6d6d6d">S/G Low Level</a></label></th>
                             <td colspan="2" class="tc">-</td>
                             <td class="tc">
-                                <div class="fx_form column center">
-                                    <label>Linear function of 0% FP(0.5V) ＜ ◇AVEC ＜ 90% FP(3.2V)</label>
-                                    <label>◇AVEC ＞＝ 90% FP(3.2V)</label>
+                                <div class="fx_form column center" id="shpReactor30" style="min-height:20px">
+                                    <label>Linear function of 0% FP(0.5V) ＜ ΦAVEC ＜ 90% FP(3.2V)</label>
+                                </div>
+                                <div class="fx_form column center" id="shpReactor31" style="min-height:20px;margin-left:0px">
+                                    <label>ΦAVEC ＞＝ 90% FP(3.2V)</label>
                                 </div>
                             </td>
-                            <td class="tc"><div id="lblTripset2" name="lblTripset2"> </div></td>
+                            <td class="tc"><label id="lblTripset2"> </label></td>
                         </tr>
                         <tr>
-                            <th><div id="lblTripPara3" name="lblTripPara3">Mod. High Temperature</div></th>
+                            <th><label id="lblTripPara3">Mod. High Temperature</label></th>
                             <td colspan="2" class="tc">-</td>
-                            <td class="tc">-</td>
-                            <td class="tc"><div id="lblTripset3" name="lblTripset3">87℃ (2.988V)</div></td>
-                        </tr>
-                        <tr id="lblPHTHP" name="lblPHTHP">
-                            <th><div id="lblTripPara4" name="lblTripPara4">PHT High Pr'</div></th>
-                            <td colspan="2" class="tc">2,4</td>
-                            <td class="tc">-</td>
-                            <td class="tc" ><div id="lblTripset4" name="lblTripset4">10.45MPa (3.802V)</div><div id="lblPHTHPExcep" name="lblPHTHPExcep" style="display:none;">*예외</div></td>
+                            <td class="tc"><div id="shpReactor40">-</div></td>
+                            <td class="tc"><label id="lblTripset3">87℃ (2.988V)</label></td>
                         </tr>
                         <tr>
-                            <th rowspan="3"><div id="lblTripPara5" name="lblTripPara5">PHT Low Pr'</div></th>
+                            <th><label id="lblTripPara4">PHT High Pr'</label></th>
+                            <td colspan="2" class="tc">2,4</td>
+                            <td class="tc"><div id="shpReactor50">-</div></td>
+                            <td class="tc" ><label id="lblTripset4">10.45MPa (3.802V)</label>&nbsp;<label id="lblPHTHPExcep" style="color:#6d6d6d"><a href="#">*예외</a></label></td>
+                        </tr>
+                        <tr>
+                            <th rowspan="3"><label id="lblTripPara5"><a href="#" style="color:#6d6d6d">PHT Low Pr'</a></label></th>
                             <td rowspan="2" class="tc">2</td>
                             <td class="tc">ODD</td>
                             <td class="tc">
-                                <div class="fx_form column center">
-                                    <label>◇LINC ＜＝ 0% FP(0.5V)</label>
-                                    <label>Linear function of 0% FP(0.5V) ＜ ◇LINC ＜ 64.9875% FP(2.233V)</label>
-                                    <label>◇LINC ＞＝ 64.9875% FP(2.233V)</label>
+                                <div class="fx_form column center" id="shpReactor60" style="min-height:20px">
+                                    <label>ΦLINC ＜＝ 0% FP(0.5V)</label>
+                                </div>
+                                <div class="fx_form column center" id="shpReactor61" style="min-height:20px;margin-left:0px">
+                                    <label>Linear function of 0% FP(0.5V) ＜ ΦLINC ＜ 64.9875% FP(2.233V)</label>
+                                </div>
+                                <div class="fx_form column center" id="shpReactor62" style="min-height:20px;margin-left:0px">
+                                    <label>ΦLINC ＞＝ 64.9875% FP(2.233V)</label>
                                 </div>
                             </td>
-                            <td rowspan="3" class="tc"><div id="lblTripset5" name="lblTripset5"> </div></td>
+                            <td rowspan="3" class="tc"><label id="lblTripset5"> </label></td>
                         </tr>
                         <tr>
                             <td class="tc bd_l_line">EVEN</td>
                             <td class="tc">
-                                <div class="fx_form column center">
-                                    <label>◇LINC ＜＝ 0% FP(0.5V)</label>
-                                    <label>Linear function of 0% FP(0.5V) ＜ ◇LINC ＜ 19.9875% FP(1.566V)</label>
-                                    <label>◇LINC ＞＝ 19.9875% FP(1.566V)</label>
+                                <div class="fx_form column center" id="shpReactor63" style="min-height:20px">
+                                    <label>ΦLINC ＜＝ 0% FP(0.5V)</label>
+                                </div>
+                                <div class="fx_form column center" id="shpReactor64" style="min-height:20px;margin-left:0px">
+                                    <label>Linear function of 0% FP(0.5V) ＜ ΦLINC ＜ 19.9875% FP(1.566V)</label>
+                                </div>
+                                <div class="fx_form column center" id="shpReactor65" style="min-height:20px;margin-left:0px">
+                                    <label>ΦLINC ＞＝ 19.9875% FP(1.566V)</label>
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2" class="tc bd_l_line">4</td>
                             <td class="tc">
-                                <div class="fx_form column center">
-                                    <label>◇LINC ＜＝ 0% FP(0.5V)</label>
-                                    <label>Linear function of 0% FP(0.5V) ＜ ◇LINC ＜ 94.9875% FP(3.033V)</label>
-                                    <label>◇LINC ＞＝ 94.9875% FP(3.033V)</label>
+                                <div class="fx_form column center" id="shpReactor66" style="min-height:20px">
+                                    <label>ΦLINC ＜＝ 0% FP(0.5V)</label>
+                                </div>
+                                <div class="fx_form column center" id="shpReactor67" style="min-height:20px;margin-left:0px">
+                                    <label>Linear function of 0% FP(0.5V) ＜ ΦLINC ＜ 94.9875% FP(3.033V)</label>
+                                </div>
+                                <div class="fx_form column center" id="shpReactor68" style="min-height:20px;margin-left:0px">
+                                    <label>ΦLINC ＞＝ 94.9875% FP(3.033V)</label>
                                 </div>
                             </td>
                         </tr>
                         <tr>
-                            <th><div id="lblTripPara6" name="lblTripPara6">S/G Feed Line Low Pr'<div></th>
+                            <th><label id="lblTripPara6">S/G Feed Line Low Pr'</label></th>
                             <td colspan="2" class="tc">-</td>
-                            <td class="tc">-</td>
-                            <td class="tc"><div id="lblTripset6" name="lblTripset6">3.90 MPa (3.163V)</div></td>
+                            <td class="tc"><div id="shpReactor70">-</div></td>
+                            <td class="tc"><div id="lblTripset6">3.90 MPa (3.163V)</div></td>
                         </tr>                        
                     </tbody>
                 </table>
@@ -615,5 +643,102 @@ $(function () {
 	<!-- //footer -->
 </div>
 <!--  //wrap  -->
+
+<!-- layer_pop_wrap -->
+<div class="layer_pop_wrap big" id="modal_1">
+    <!-- header_wrap -->
+<div class="pop_header">
+   <h3>PHT High Pr` 예외</h3>
+        <a onclick="closeLayer('modal_1');" title="Close"></a>
+</div>
+<!-- //header_wrap -->
+<!-- pop_contents -->
+<div class="pop_contents" style="max-height:500px;">
+	<!-- form_wrap -->
+	<div class="form_wrap">
+ 		<!-- form_table -->
+		<form id="setbackinfo" name="setbackinfo">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				<tr><td valign="top" align="center">
+					<table class="form_table">
+	                    <colgroup>
+	                        <col width="180px" />
+	                        <col width="90px" />
+	                        <col width="180px" />
+	                        <col width="180px" />
+	                        <col width="180px" />
+	                    </colgroup>
+						<thead>
+							<tr>
+								<th rowspan="2">Trip Parameter</th>
+								<th rowspan="2">Device Code</th>
+								<th colspan="3">Trip Setpoint</th>
+							</tr>
+							<tr>
+								<th class="bd_l_line">4 Pumps</th>
+								<th>P1/P3</th>
+								<th>P2/P4</th>
+							</tr>
+						</thead>
+						<tbody style="text-align:center">
+							<tr>
+								<td class="bd_l_line" rowspan="4">PHTHP²<br>(immediate trip)</td>
+								<td>68233-PT1D</td>
+								<td>3.802V[10.45 Mpa(g)]</td>
+								<td>3.802V[10.45 Mpa(g)]</td>
+								<td>3.802V[10.45 Mpa(g)]</td>
+							</tr>
+							<tr>
+								<td class="bd_l_line"><font style="color:#ffffff">68233</font>-PT2D</td>
+								<td>3.802V[10.45 Mpa(g)]</td>
+								<td>3.708V[10.24 Mpa(g)]</td>
+								<td>3.802V[10.45 Mpa(g)]</td>
+							</tr>
+							<tr>
+								<td class="bd_l_line"><font style="color:#ffffff">68233</font>-PT3D</td>
+								<td>3.802V[10.45 Mpa(g)]</td>
+								<td>3.802V[10.45 Mpa(g)]</td>
+								<td>3.802V[10.45 Mpa(g)]</td>
+							</tr>
+							<tr>
+								<td class="bd_l_line"><font style="color:#ffffff">68233</font>-PT4D</td>
+								<td>3.802V[10.45 Mpa(g)]</td>
+								<td>3.708V[10.24 Mpa(g)]</td>
+								<td>3.802V[10.45 Mpa(g)]</td>
+							</tr>
+							<tr>
+								<td class="bd_l_line" rowspan="4">PHTHP²<br>(delayed trip)</td>
+								<td>68233-PT1D</td>
+								<td>3.708V[10.24 Mpa(g)]</td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td class="bd_l_line"><font style="color:#ffffff">68233</font>-PT2D</td>
+								<td>3.708V[10.24 Mpa(g)]</td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td class="bd_l_line"><font style="color:#ffffff">68233</font>-PT3D</td>
+								<td>3.708V[10.24 Mpa(g)]</td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td class="bd_l_line"><font style="color:#ffffff">68233</font>-PT4D</td>
+								<td>3.708V[10.24 Mpa(g)]</td>
+								<td></td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				</td></tr>
+			</table>
+		</form>    
+	</div>
+</div>
+<!-- pop_contents -->
+<!-- //layer_pop_wrap -->
 </body>
 </html>

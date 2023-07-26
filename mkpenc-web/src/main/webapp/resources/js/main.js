@@ -30,3 +30,10 @@ function mbr_NoticeDeleteEventCallback(data){
 		alert("공지사항 삭제에 오류가 발생했습니다..!!");
 	}
 }
+
+function mainCallback(data) {
+	lblDataListAjax = data.lblDataList;
+	DccTagInfoListAjax = data.DccTagInfoList;
+	$("#lblDate").text(data.SearchTime);
+	$("#lblDate").css('color',data.ForeColor);
+}

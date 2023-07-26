@@ -1,11 +1,11 @@
 package com.mkpenc.dcc.alarm.model;
 
 import com.mkpenc.common.annotaion.Model;
-import com.mkpenc.common.base.BaseSearch;
+import com.mkpenc.common.base.AlarmBaseSearch;
 
 @SuppressWarnings("serial")
 @Model
-public class DccSearchAlarm  extends BaseSearch {
+public class DccSearchAlarm  extends AlarmBaseSearch {
 	private String hogiHeader;
 	private String xyHeader;
 	
@@ -13,6 +13,7 @@ public class DccSearchAlarm  extends BaseSearch {
 	private String sMenuNo;
 	private String sDive;
 	private String sUGrpNo;
+	private String sUGrpName;
 	
 	private String sHogi;
 	private String sXYGubun;
@@ -66,6 +67,9 @@ public class DccSearchAlarm  extends BaseSearch {
 	private String ci;
 	
 	private String tValue;
+	private String type;
+	
+	private String sPageSize;
 	
 	/**
 	 * @return the hogiHeader
@@ -138,6 +142,18 @@ public class DccSearchAlarm  extends BaseSearch {
 	 */
 	public void setsUGrpNo(String sUGrpNo) {
 		this.sUGrpNo = sUGrpNo;
+	}
+	/**
+	 * @return the sUGrpName
+	 */
+	public String getsUGrpName() {
+		return sUGrpName;
+	}
+	/**
+	 * @param sUGrpName the sUGrpName to set
+	 */
+	public void setsUGrpName(String sUGrpName) {
+		this.sUGrpName = sUGrpName;
 	}
 	/**
 	 * @return the sHogi
@@ -654,5 +670,29 @@ public class DccSearchAlarm  extends BaseSearch {
 	 */
 	public void settValue(String tValue) {
 		this.tValue = tValue;
+	}
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+	/**
+	 * @return the sPageSize
+	 */
+	public String getsPageSize() {
+		return sPageSize;
+	}
+	/**
+	 * @param sPageSize the sPageSize to set
+	 */
+	public void setsPageSize(String sPageSize) {
+		this.sPageSize = sPageSize;
 	}
 }

@@ -31,6 +31,7 @@ import com.mkpenc.dcc.alarm.model.DccAlarmInfo;
 import com.mkpenc.dcc.common.model.ComTagDccInfo;
 import com.mkpenc.dcc.status.model.DccTagInfo;
 import com.mkpenc.dcc.tip.model.DccIolistInfo;
+import com.mkpenc.dcc.trend.model.TrendTagDccInfo;
 
 @Service
 public class ExcelHelperUtil {
@@ -554,8 +555,11 @@ public class ExcelHelperUtil {
 	
 	public void iolistAIExcelDownload(HttpServletRequest request, HttpServletResponse response, List<IOListInfo> iolistInfoList) throws Exception{
 		
+		String hogiXY = iolistInfoList.size() > 0 ? iolistInfoList.get(0).getIhogi()+iolistInfoList.get(0).getXygubun() : "3X";
+		String fileName = hogiXY+"_AI_"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+		
 		Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet("I_O LIST- AI");
+        Sheet sheet = wb.createSheet(fileName);
         Row row = null;
         Cell cell = null;
         int rowNum = 0;
@@ -706,7 +710,7 @@ public class ExcelHelperUtil {
         }
         
         String browser = WebUtil.getBrowser(request);
-		String encodedFilename = WebUtil.webEncoding(browser, "I_O LIST(AI).xlsx");
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
         
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
@@ -719,12 +723,15 @@ public class ExcelHelperUtil {
         output.close();
         wb.close();		
 		
-	}	
+	}
 
 	public void iolistAOExcelDownload(HttpServletRequest request, HttpServletResponse response, List<IOListInfo> iolistInfoList) throws Exception{
 		
+		String hogiXY = iolistInfoList.size() > 0 ? iolistInfoList.get(0).getIhogi()+iolistInfoList.get(0).getXygubun() : "3X";
+		String fileName = hogiXY+"_AO_"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+		
 		Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet("I_O LIST - AO");
+        Sheet sheet = wb.createSheet(fileName);
         Row row = null;
         Cell cell = null;
         int rowNum = 0;
@@ -789,7 +796,7 @@ public class ExcelHelperUtil {
         }
         
         String browser = WebUtil.getBrowser(request);
-		String encodedFilename = WebUtil.webEncoding(browser, "I_O LIST(AO).xlsx");
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
         
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
@@ -806,8 +813,11 @@ public class ExcelHelperUtil {
 	
 	public void iolistCIExcelDownload(HttpServletRequest request, HttpServletResponse response, List<IOListInfo> iolistInfoList) throws Exception{
 		
+		String hogiXY = iolistInfoList.size() > 0 ? iolistInfoList.get(0).getIhogi()+iolistInfoList.get(0).getXygubun() : "3X";
+		String fileName = hogiXY+"_CI_"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+		
 		Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet("I_O LIST - CI");
+        Sheet sheet = wb.createSheet(fileName);
         Row row = null;
         Cell cell = null;
         int rowNum = 0;
@@ -888,7 +898,7 @@ public class ExcelHelperUtil {
         }
         
         String browser = WebUtil.getBrowser(request);
-		String encodedFilename = WebUtil.webEncoding(browser, "I_O LIST(DI).xlsx");
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
         
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
@@ -904,8 +914,11 @@ public class ExcelHelperUtil {
 	
 	public void iolistDIExcelDownload(HttpServletRequest request, HttpServletResponse response,  List<IOListInfo> iolistInfoList) throws Exception{
 		
+		String hogiXY = iolistInfoList.size() > 0 ? iolistInfoList.get(0).getIhogi()+iolistInfoList.get(0).getXygubun() : "3X";
+		String fileName = hogiXY+"_DI_"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+		
 		Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet("I_O LIST - DI");
+        Sheet sheet = wb.createSheet(fileName);
         Row row = null;
         Cell cell = null;
         int rowNum = 0;
@@ -975,7 +988,7 @@ public class ExcelHelperUtil {
         }
         
         String browser = WebUtil.getBrowser(request);
-		String encodedFilename = WebUtil.webEncoding(browser, "I_O LIST(DI).xlsx");
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
         
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
@@ -992,8 +1005,11 @@ public class ExcelHelperUtil {
 	
 	public void iolistDOExcelDownload(HttpServletRequest request, HttpServletResponse response,  List<IOListInfo> iolistInfoList) throws Exception{
 		
+		String hogiXY = iolistInfoList.size() > 0 ? iolistInfoList.get(0).getIhogi()+iolistInfoList.get(0).getXygubun() : "3X";
+		String fileName = hogiXY+"_DO_"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+		
 		Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet("I_O LIST - DO");
+        Sheet sheet = wb.createSheet(fileName);
         Row row = null;
         Cell cell = null;
         int rowNum = 0;
@@ -1059,7 +1075,7 @@ public class ExcelHelperUtil {
         }
         
         String browser = WebUtil.getBrowser(request);
-		String encodedFilename = WebUtil.webEncoding(browser, "I_O LIST(DO).xlsx");
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
         
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
@@ -1075,8 +1091,11 @@ public class ExcelHelperUtil {
 	
 	public void iolistDTExcelDownload(HttpServletRequest request, HttpServletResponse response,  List<IOListInfo> iolistInfoList) throws Exception{
 		
+		String hogiXY = iolistInfoList.size() > 0 ? iolistInfoList.get(0).getIhogi()+iolistInfoList.get(0).getXygubun() : "3X";
+		String fileName = hogiXY+"_DT_"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+		
 		Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet("I_O LIST - DT");
+        Sheet sheet = wb.createSheet(fileName);
         Row row = null;
         Cell cell = null;
         int rowNum = 0;
@@ -1120,7 +1139,7 @@ public class ExcelHelperUtil {
         }
         
         String browser = WebUtil.getBrowser(request);
-		String encodedFilename = WebUtil.webEncoding(browser, "I_O LIST(DT).xlsx");
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
         
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
@@ -1137,8 +1156,11 @@ public class ExcelHelperUtil {
 	
 	public void iolistSCExcelDownload(HttpServletRequest request, HttpServletResponse response,  List<IOListInfo> iolistInfoList) throws Exception{
 		
+		String hogiXY = iolistInfoList.size() > 0 ? iolistInfoList.get(0).getIhogi()+iolistInfoList.get(0).getXygubun() : "3X";
+		String fileName = hogiXY+"_SC_"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+		
 		Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet("I_O LIST - SC");
+        Sheet sheet = wb.createSheet(fileName);
         Row row = null;
         Cell cell = null;
         int rowNum = 0;
@@ -1179,7 +1201,7 @@ public class ExcelHelperUtil {
         }
         
         String browser = WebUtil.getBrowser(request);
-		String encodedFilename = WebUtil.webEncoding(browser, "I_O LIST(SC).xlsx");
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
         
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
@@ -1196,8 +1218,11 @@ public class ExcelHelperUtil {
 	
 	public void iolistFTAIExcelDownload(HttpServletRequest request, HttpServletResponse response,  List<IOListInfo> iolistInfoList) throws Exception{
 		
+		String hogiXY = iolistInfoList.size() > 0 ? iolistInfoList.get(0).getIhogi()+iolistInfoList.get(0).getXygubun() : "3X";
+		String fileName = hogiXY+"_FTAI_"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+		
 		Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet("I_O LIST - FTAI");
+        Sheet sheet = wb.createSheet(fileName);
         Row row = null;
         Cell cell = null;
         int rowNum = 0;
@@ -1337,7 +1362,7 @@ public class ExcelHelperUtil {
         }
         
         String browser = WebUtil.getBrowser(request);
-		String encodedFilename = WebUtil.webEncoding(browser, "I_O LIST(FTAI).xlsx");
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
         
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
@@ -1353,8 +1378,11 @@ public class ExcelHelperUtil {
 	}
 	
 	public void iolistFTDTExcelDownload(HttpServletRequest request, HttpServletResponse response,  List<IOListInfo> iolistInfoList) throws Exception{
+		String hogiXY = iolistInfoList.size() > 0 ? iolistInfoList.get(0).getIhogi()+iolistInfoList.get(0).getXygubun() : "3X";
+		String fileName = hogiXY+"_FTDT_"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+		
 		Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet("I_O LIST - FTDT");
+        Sheet sheet = wb.createSheet(fileName);
         Row row = null;
         Cell cell = null;
         int rowNum = 0;
@@ -1398,7 +1426,810 @@ public class ExcelHelperUtil {
         }
         
         String browser = WebUtil.getBrowser(request);
-		String encodedFilename = WebUtil.webEncoding(browser, "I_O LIST(FTDT).xlsx");
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
+        
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
+
+        //Excel File Output
+        ServletOutputStream output = response.getOutputStream();
+        output.flush();
+        wb.write(output);
+        output.flush();
+        output.close();
+        wb.close();
+	}
+	
+	public void iolistTipAIExcelDownload(HttpServletRequest request, HttpServletResponse response, List<IOListInfo> iolistInfoList) throws Exception{
+		
+		Workbook wb = new XSSFWorkbook();
+		String fileName = "AI"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+        Sheet sheet = wb.createSheet(fileName);
+        Row row = null;
+        Cell cell = null;
+        int rowNum = 0;
+
+        
+        // Header
+        row = sheet.createRow(rowNum++);
+        cell = row.createCell(0);
+        cell.setCellValue("ADDRESS");
+        cell = row.createCell(1);
+        cell.setCellValue("REV");
+        cell = row.createCell(2);
+        cell.setCellValue("DESCR");
+        cell = row.createCell(3);
+        cell.setCellValue("DRAWING");
+        cell = row.createCell(4);
+        cell.setCellValue("LOOPNAME");
+        cell = row.createCell(5);
+        cell.setCellValue("XYGUBUN");
+        cell = row.createCell(6);
+        cell.setCellValue("VLOW");
+        cell = row.createCell(7);
+        cell.setCellValue("VHIGH");
+        cell = row.createCell(8);
+        cell.setCellValue("ELOW");
+        cell = row.createCell(9);
+        cell.setCellValue("EHIGH");
+
+        cell = row.createCell(10);
+        cell.setCellValue("UNIT");
+        cell = row.createCell(11);
+        cell.setCellValue("CONV");
+        cell = row.createCell(12);
+        cell.setCellValue("RTD");
+        cell = row.createCell(13);
+        cell.setCellValue("TYPE");
+        cell = row.createCell(14);
+        cell.setCellValue("IOGROUP");
+        cell = row.createCell(15);
+        cell.setCellValue("WINDOW");
+        cell = row.createCell(16);
+        cell.setCellValue("PRIORITY");
+        cell = row.createCell(17);
+        cell.setCellValue("CR");
+        cell = row.createCell(18);
+        cell.setCellValue("LIMIT1");
+        cell = row.createCell(19);
+        
+        cell.setCellValue("LIMIT2");
+        cell = row.createCell(20);
+        cell.setCellValue("J");
+        cell = row.createCell(21);
+        cell.setCellValue("N");
+        cell = row.createCell(22);
+        cell.setCellValue("MESSAGE");
+        cell = row.createCell(23);
+        cell.setCellValue("EQU#");
+        cell = row.createCell(24);
+        cell.setCellValue("BSCAL");
+        cell = row.createCell(25);
+        cell.setCellValue("WIBA");
+        cell = row.createCell(26);
+        cell.setCellValue("DEVICE");
+        cell = row.createCell(27);
+        cell.setCellValue("PURPOSE");
+        cell = row.createCell(28);
+        cell.setCellValue("PROGRAM");
+        cell = row.createCell(29);
+        cell.setCellValue("원인");
+        cell = row.createCell(30);
+        cell.setCellValue("조치");        
+        cell = row.createCell(31);
+        cell.setCellValue("관련절차서");
+        
+     // Body
+        for (IOListInfo iolistInfo:iolistInfoList) {
+        	
+            row = sheet.createRow(rowNum++);
+            
+            cell = row.createCell(0);
+            cell.setCellValue(iolistInfo.getAddress());
+            cell = row.createCell(1);
+            cell.setCellValue(iolistInfo.getRev());
+            cell = row.createCell(2);
+            cell.setCellValue(iolistInfo.getDescr());
+            cell = row.createCell(3);
+            cell.setCellValue(iolistInfo.getDrawing());
+            cell = row.createCell(4);
+            cell.setCellValue(iolistInfo.getLoopname());
+            cell = row.createCell(5);
+            cell.setCellValue(iolistInfo.getXygubun());
+            cell = row.createCell(6);
+            cell.setCellValue(iolistInfo.getVlow());
+            cell = row.createCell(7);
+            cell.setCellValue(iolistInfo.getVhigh());
+            cell = row.createCell(8);
+            cell.setCellValue(iolistInfo.getElow());
+            cell = row.createCell(9);
+            cell.setCellValue(iolistInfo.getEhigh());
+            
+            cell = row.createCell(10);
+            cell.setCellValue(iolistInfo.getUnit());
+            cell = row.createCell(11);
+            cell.setCellValue(iolistInfo.getConv());
+            cell = row.createCell(12);
+            cell.setCellValue(iolistInfo.getRtd());
+            cell = row.createCell(13);
+            cell.setCellValue(iolistInfo.getType());
+            cell = row.createCell(14);
+            cell.setCellValue(iolistInfo.getIogroup());
+            cell = row.createCell(15);
+            cell.setCellValue(iolistInfo.getWindow());
+            cell = row.createCell(16);
+            cell.setCellValue(iolistInfo.getPriority());
+            cell = row.createCell(17);
+            cell.setCellValue(iolistInfo.getCr());
+            cell = row.createCell(18);
+            cell.setCellValue(iolistInfo.getLimit1());
+            cell = row.createCell(19);
+            cell.setCellValue(iolistInfo.getLimit2());
+            
+            cell = row.createCell(20);
+            cell.setCellValue(iolistInfo.getJ());
+            cell = row.createCell(21);
+            cell.setCellValue(iolistInfo.getN());
+            cell = row.createCell(22);
+            cell.setCellValue(iolistInfo.getMessage());
+            cell = row.createCell(23);
+            cell.setCellValue(iolistInfo.getEqu());
+            cell = row.createCell(24);
+            cell.setCellValue(iolistInfo.getBscal());
+            cell = row.createCell(25);
+            cell.setCellValue(iolistInfo.getWiba());
+            cell = row.createCell(26);
+            cell.setCellValue(iolistInfo.getDevice());
+            cell = row.createCell(27);
+            cell.setCellValue(iolistInfo.getPurpose());
+            cell = row.createCell(28);
+            cell.setCellValue(iolistInfo.getProgram());
+            
+            cell = row.createCell(29);
+            cell.setCellValue(iolistInfo.getZtext1());
+            cell = row.createCell(30);
+            cell.setCellValue(iolistInfo.getZtext2());
+            cell = row.createCell(31);
+            cell.setCellValue(iolistInfo.getZtext3());
+        }
+        
+        String browser = WebUtil.getBrowser(request);
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
+        
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
+
+        //Excel File Output
+        ServletOutputStream output = response.getOutputStream();
+        output.flush();
+        wb.write(output);
+        output.flush();
+        output.close();
+        wb.close();		
+		
+	}
+
+	public void iolistTipAOExcelDownload(HttpServletRequest request, HttpServletResponse response, List<IOListInfo> iolistInfoList) throws Exception{
+		
+		Workbook wb = new XSSFWorkbook();
+		String fileName = "AO"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+        Sheet sheet = wb.createSheet(fileName);
+        Row row = null;
+        Cell cell = null;
+        int rowNum = 0;
+
+        
+        // Header
+        row = sheet.createRow(rowNum++);
+        cell = row.createCell(0);
+        cell.setCellValue("ADDRESS");
+        cell = row.createCell(1);
+        cell.setCellValue("REV");
+        cell = row.createCell(2);
+        cell.setCellValue("DESCR");
+        cell = row.createCell(3);
+        cell.setCellValue("DRAWING");
+        cell = row.createCell(4);
+        cell.setCellValue("XYGUBUN");
+        cell = row.createCell(5);
+        cell.setCellValue("CTRLNAME");
+        cell = row.createCell(6);
+        cell.setCellValue("DEVICE");
+        cell = row.createCell(7);
+        cell.setCellValue("INTERLOCK");
+        cell = row.createCell(8);
+        cell.setCellValue("FEEDBACK");
+        cell = row.createCell(9);
+        cell.setCellValue("PURPOSE");
+        cell = row.createCell(10);
+        cell.setCellValue("WIBA");
+        
+     // Body
+        for (IOListInfo iolistInfo:iolistInfoList) {
+        	
+            row = sheet.createRow(rowNum++);
+            
+            cell = row.createCell(0);
+            cell.setCellValue(iolistInfo.getAddress());
+            cell = row.createCell(1);
+            cell.setCellValue(iolistInfo.getRev());
+            cell = row.createCell(2);
+            cell.setCellValue(iolistInfo.getDescr());
+            cell = row.createCell(3);
+            cell.setCellValue(iolistInfo.getDrawing());
+            cell = row.createCell(4);
+            cell.setCellValue(iolistInfo.getXygubun());
+            cell = row.createCell(5);
+            cell.setCellValue(iolistInfo.getCtrlname());
+            cell = row.createCell(6);
+            cell.setCellValue(iolistInfo.getDevice());
+            cell = row.createCell(7);
+            cell.setCellValue(iolistInfo.getInterlock());
+            cell = row.createCell(8);
+            cell.setCellValue(iolistInfo.getFeedback());
+            cell = row.createCell(9);
+            cell.setCellValue(iolistInfo.getPurpose());
+            cell = row.createCell(10);
+            cell.setCellValue(iolistInfo.getWiba());
+        }
+        
+        String browser = WebUtil.getBrowser(request);
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
+        
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
+
+        //Excel File Output
+        ServletOutputStream output = response.getOutputStream();
+        output.flush();
+        wb.write(output);
+        output.flush();
+        output.close();
+        wb.close();		
+		
+	}
+	
+	public void iolistTipCIExcelDownload(HttpServletRequest request, HttpServletResponse response, List<IOListInfo> iolistInfoList) throws Exception{
+		
+		Workbook wb = new XSSFWorkbook();
+		String fileName = "CI"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+        Sheet sheet = wb.createSheet(fileName);
+        Row row = null;
+        Cell cell = null;
+        int rowNum = 0;
+
+        
+        // Header  ADDRESS, rev, type, iogroup, priority, tr, cr, message, device, drawing, condition, wiba, condition
+        row = sheet.createRow(rowNum++);
+        cell = row.createCell(0);
+        cell.setCellValue("ADDRESS");
+        cell = row.createCell(1);
+        cell.setCellValue("REV");
+        cell = row.createCell(2);
+        cell.setCellValue("TYPE");
+        cell = row.createCell(3);
+        cell.setCellValue("IOGROUP");
+        cell = row.createCell(4);
+        cell.setCellValue("PRIORITY");
+        cell = row.createCell(5);
+        cell.setCellValue("TR");
+        cell = row.createCell(6);
+        cell.setCellValue("CR");
+        cell = row.createCell(7);
+        cell.setCellValue("MESSAGE");
+        cell = row.createCell(8);
+        cell.setCellValue("DEVICE");
+        cell = row.createCell(9);
+        cell.setCellValue("DRAWING");
+        cell = row.createCell(10);
+        cell.setCellValue("CONDITION");
+        cell = row.createCell(11);
+        cell.setCellValue("WIBA");
+        cell = row.createCell(12);
+        cell.setCellValue("CONDITION");      
+        cell = row.createCell(13);
+        cell.setCellValue("원인");
+        cell = row.createCell(14);
+        cell.setCellValue("조치");
+        cell = row.createCell(15);
+        cell.setCellValue("관련절차서");
+        
+     // Body
+        for (IOListInfo iolistInfo:iolistInfoList) {
+        	
+            row = sheet.createRow(rowNum++);
+            
+            cell = row.createCell(0);
+            cell.setCellValue(iolistInfo.getAddress());
+            cell = row.createCell(1);
+            cell.setCellValue(iolistInfo.getRev());
+            cell = row.createCell(2);
+            cell.setCellValue(iolistInfo.getType());
+            cell = row.createCell(3);
+            cell.setCellValue(iolistInfo.getIogroup());
+            cell = row.createCell(4);
+            cell.setCellValue(iolistInfo.getPriority());
+            cell = row.createCell(5);
+            cell.setCellValue(iolistInfo.getTr());
+            cell = row.createCell(6);
+            cell.setCellValue(iolistInfo.getCr());
+            cell = row.createCell(7);
+            cell.setCellValue(iolistInfo.getMessage());
+            cell = row.createCell(8);
+            cell.setCellValue(iolistInfo.getDevice());
+            cell = row.createCell(9);
+            cell.setCellValue(iolistInfo.getDrawing());
+            cell = row.createCell(10);
+            cell.setCellValue(iolistInfo.getCondition());
+            cell = row.createCell(11);
+            cell.setCellValue(iolistInfo.getWiba());
+            cell = row.createCell(12);
+            cell.setCellValue(iolistInfo.getCondition());
+            cell = row.createCell(13);
+            cell.setCellValue(iolistInfo.getZtext1());
+            cell = row.createCell(14);
+            cell.setCellValue(iolistInfo.getZtext2());
+            cell = row.createCell(15);
+            cell.setCellValue(iolistInfo.getZtext3());
+        }
+        
+        String browser = WebUtil.getBrowser(request);
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
+        
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
+
+        //Excel File Output
+        ServletOutputStream output = response.getOutputStream();
+        output.flush();
+        wb.write(output);
+        output.flush();
+        output.close();
+        wb.close();
+	}
+	
+	public void iolistTipDIExcelDownload(HttpServletRequest request, HttpServletResponse response,  List<IOListInfo> iolistInfoList) throws Exception{
+		
+		Workbook wb = new XSSFWorkbook();
+		String fileName = "DI"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+        Sheet sheet = wb.createSheet(fileName);
+        Row row = null;
+        Cell cell = null;
+        int rowNum = 0;
+
+        
+        // Header  ADDRESS, iobit, rev, descr, purpose, device, ctrlname, alarmcond, indicate, drawing, xygubun, wiba, com1, com2
+        row = sheet.createRow(rowNum++);
+        cell = row.createCell(0);
+        cell.setCellValue("ADDRESS");
+        cell = row.createCell(1);
+        cell.setCellValue("IOBIT");
+        cell = row.createCell(2);
+        cell.setCellValue("REV");
+        cell = row.createCell(3);
+        cell.setCellValue("DESCR");
+        cell = row.createCell(4);
+        cell.setCellValue("PURPOSE");
+        cell = row.createCell(5);
+        cell.setCellValue("DEVICE");
+        cell = row.createCell(6);
+        cell.setCellValue("CTRLNAME");
+        cell = row.createCell(7);
+        cell.setCellValue("ALARMCOND");
+        cell = row.createCell(8);
+        cell.setCellValue("INDICATE");
+        cell = row.createCell(9);
+        cell.setCellValue("DRAWING");
+        cell = row.createCell(10);
+        cell.setCellValue("XYGUBUN");
+        cell = row.createCell(11);
+        cell.setCellValue("WIBA");
+        cell = row.createCell(12);
+        cell.setCellValue("OPEN상태");
+        cell = row.createCell(13);
+        cell.setCellValue("CLOSE상태");                 
+        
+     // Body
+        for (IOListInfo iolistInfo:iolistInfoList) {
+        	
+            row = sheet.createRow(rowNum++);
+            
+            cell = row.createCell(0);
+            cell.setCellValue(iolistInfo.getAddress());
+            cell = row.createCell(1);
+            cell.setCellValue(iolistInfo.getIobit());
+            cell = row.createCell(2);
+            cell.setCellValue(iolistInfo.getRev());
+            cell = row.createCell(3);
+            cell.setCellValue(iolistInfo.getDescr());
+            cell = row.createCell(4);
+            cell.setCellValue(iolistInfo.getPurpose());
+            cell = row.createCell(5);
+            cell.setCellValue(iolistInfo.getDevice());
+            cell = row.createCell(6);
+            cell.setCellValue(iolistInfo.getCtrlname());
+            cell = row.createCell(7);
+            cell.setCellValue(iolistInfo.getAlarmcond());
+            cell = row.createCell(8);
+            cell.setCellValue(iolistInfo.getIndicate());
+            cell = row.createCell(9);
+            cell.setCellValue(iolistInfo.getDrawing());
+            cell = row.createCell(10);
+            cell.setCellValue(iolistInfo.getDrawing());
+            cell = row.createCell(11);
+            cell.setCellValue(iolistInfo.getWiba());
+            cell = row.createCell(12);
+            cell.setCellValue(iolistInfo.getCom1());
+            cell = row.createCell(13);
+            cell.setCellValue(iolistInfo.getCom2());
+            
+        }
+        
+        String browser = WebUtil.getBrowser(request);
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
+        
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
+
+        //Excel File Output
+        ServletOutputStream output = response.getOutputStream();
+        output.flush();
+        wb.write(output);
+        output.flush();
+        output.close();
+        wb.close();
+        
+	}
+	
+	public void iolistTipDOExcelDownload(HttpServletRequest request, HttpServletResponse response,  List<IOListInfo> iolistInfoList) throws Exception{
+		
+		Workbook wb = new XSSFWorkbook();
+		String fileName = "DO"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+        Sheet sheet = wb.createSheet(fileName);
+        Row row = null;
+        Cell cell = null;
+        int rowNum = 0;
+
+        
+        // Header  ADDRESS, iobit, rev, descr, purpose,bscal, device, ctrlname, interlock, drawing, xygubun, wiba, com1, com2
+        row = sheet.createRow(rowNum++);
+        cell = row.createCell(0);
+        cell.setCellValue("ADDRESS");
+        cell = row.createCell(1);
+        cell.setCellValue("IOBIT");
+        cell = row.createCell(2);
+        cell.setCellValue("REV");
+        cell = row.createCell(3);
+        cell.setCellValue("DESCR");
+        cell = row.createCell(4);
+        cell.setCellValue("PURPOSE");
+        cell = row.createCell(5);
+        cell.setCellValue("BSCAL");
+        cell = row.createCell(6);
+        cell.setCellValue("DEVICE");
+        cell = row.createCell(7);
+        cell.setCellValue("CTRLNAME");
+        cell = row.createCell(8);
+        cell.setCellValue("INTERLOCK");
+        cell = row.createCell(9);
+        cell.setCellValue("DRAWING"); 
+        cell = row.createCell(10);
+        cell.setCellValue("XYGUBUN"); 
+        cell = row.createCell(11);
+        cell.setCellValue("WIBA"); 
+        cell = row.createCell(12);
+        cell.setCellValue("OPEN상태");
+        cell = row.createCell(13);
+        cell.setCellValue("CLOSE상태");
+        
+     // Body
+        for (IOListInfo iolistInfo:iolistInfoList) {
+        	
+            row = sheet.createRow(rowNum++);
+            
+            cell = row.createCell(0);
+            cell.setCellValue(iolistInfo.getAddress());
+            cell = row.createCell(1);
+            cell.setCellValue(iolistInfo.getIobit());
+            cell = row.createCell(2);
+            cell.setCellValue(iolistInfo.getRev());
+            cell = row.createCell(3);
+            cell.setCellValue(iolistInfo.getDescr());
+            cell = row.createCell(4);
+            cell.setCellValue(iolistInfo.getPurpose());
+            cell = row.createCell(5);
+            cell.setCellValue(iolistInfo.getBscal());
+            cell = row.createCell(6);
+            cell.setCellValue(iolistInfo.getDevice());
+            cell = row.createCell(7);
+            cell.setCellValue(iolistInfo.getCtrlname());
+            cell = row.createCell(8);
+            cell.setCellValue(iolistInfo.getInterlock());
+            cell = row.createCell(9);
+            cell.setCellValue(iolistInfo.getDrawing());
+            cell = row.createCell(10);
+            cell.setCellValue(iolistInfo.getXygubun());
+            cell = row.createCell(11);
+            cell.setCellValue(iolistInfo.getWiba());
+            cell = row.createCell(12);
+            cell.setCellValue(iolistInfo.getCom1());
+            cell = row.createCell(13);
+            cell.setCellValue(iolistInfo.getCom2());
+            
+        }
+        
+        String browser = WebUtil.getBrowser(request);
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
+        
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
+
+        //Excel File Output
+        ServletOutputStream output = response.getOutputStream();
+        output.flush();
+        wb.write(output);
+        output.flush();
+        output.close();
+        wb.close();
+	}
+	
+	public void iolistTipDTExcelDownload(HttpServletRequest request, HttpServletResponse response,  List<IOListInfo> iolistInfoList) throws Exception{
+		
+		Workbook wb = new XSSFWorkbook();
+		String fileName = "DT"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+        Sheet sheet = wb.createSheet(fileName);
+        Row row = null;
+        Cell cell = null;
+        int rowNum = 0;
+        
+        // Header  address, program, descr, loopname
+        row = sheet.createRow(rowNum++);
+        cell = row.createCell(0);
+        cell.setCellValue("ADDRESS");
+        cell = row.createCell(1);
+        cell.setCellValue("PROGRAM");
+        cell = row.createCell(2);
+        cell.setCellValue("DESCR");
+        cell = row.createCell(3);
+        cell.setCellValue("LOOPNAME");
+        
+     // Body
+        for (IOListInfo iolistInfo:iolistInfoList) {
+        	
+            row = sheet.createRow(rowNum++);
+            
+            cell = row.createCell(0);
+            cell.setCellValue(iolistInfo.getAddress());
+            cell = row.createCell(1);
+            cell.setCellValue(iolistInfo.getProgram());
+            cell = row.createCell(2);
+            cell.setCellValue(iolistInfo.getDescr());
+            cell = row.createCell(3);
+            cell.setCellValue(iolistInfo.getLoopname());
+        }
+        
+        String browser = WebUtil.getBrowser(request);
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
+        
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
+
+        //Excel File Output
+        ServletOutputStream output = response.getOutputStream();
+        output.flush();
+        wb.write(output);
+        output.flush();
+        output.close();
+        wb.close();
+		
+	}
+	
+	public void iolistTipFTAIExcelDownload(HttpServletRequest request, HttpServletResponse response,  List<IOListInfo> iolistInfoList) throws Exception{
+		
+		Workbook wb = new XSSFWorkbook();
+		String fileName = "FTAI"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+        Sheet sheet = wb.createSheet(fileName);
+        Row row = null;
+        Cell cell = null;
+        int rowNum = 0;
+
+        
+     // Header
+        row = sheet.createRow(rowNum++);
+        cell = row.createCell(0);
+        cell.setCellValue("ADDRESS");
+        cell = row.createCell(1);
+        cell.setCellValue("REV");
+        cell = row.createCell(2);
+        cell.setCellValue("DESCR");
+        cell = row.createCell(3);
+        cell.setCellValue("DRAWING");
+        cell = row.createCell(4);
+        cell.setCellValue("LOOPNAME");
+        cell = row.createCell(5);
+        cell.setCellValue("XYGUBUN");
+        cell = row.createCell(6);
+        cell.setCellValue("VLOW");
+        cell = row.createCell(7);
+        cell.setCellValue("VHIGH");
+        cell = row.createCell(8);
+        cell.setCellValue("ELOW");
+        cell = row.createCell(9);
+        cell.setCellValue("EHIGH");
+        
+        cell = row.createCell(10);
+        cell.setCellValue("UNIT");
+        cell = row.createCell(11);
+        cell.setCellValue("CONV");
+        cell = row.createCell(12);
+        cell.setCellValue("RTD");
+        cell = row.createCell(13);
+        cell.setCellValue("TYPE");
+        cell = row.createCell(14);
+        cell.setCellValue("IOGROUP");
+        cell = row.createCell(15);
+        cell.setCellValue("WINDOW");
+        cell = row.createCell(16);
+        cell.setCellValue("PRIORITY");
+        cell = row.createCell(17);
+        cell.setCellValue("CR");
+        cell = row.createCell(18);
+        cell.setCellValue("LIMIT1");
+        cell = row.createCell(19);
+        
+        cell.setCellValue("LIMIT2");
+        cell = row.createCell(20);
+        cell.setCellValue("J");
+        cell = row.createCell(21);
+        cell.setCellValue("N");
+        cell = row.createCell(22);
+        cell.setCellValue("MESSAGE");
+        cell = row.createCell(23);
+        cell.setCellValue("EQU#");
+        cell = row.createCell(24);
+        cell.setCellValue("BSCAL");
+        cell = row.createCell(25);
+        cell.setCellValue("WIBA");
+        cell = row.createCell(26);
+        cell.setCellValue("DEVICE");
+        cell = row.createCell(27);
+        cell.setCellValue("PURPOSE");
+        cell = row.createCell(28);
+        cell.setCellValue("PROGRAM");
+        cell = row.createCell(29);
+        cell.setCellValue("원인");
+        cell = row.createCell(30);
+        cell.setCellValue("조치");        
+        cell = row.createCell(31);
+        cell.setCellValue("관련절차서");
+        
+     // Body
+        for (IOListInfo iolistInfo:iolistInfoList) {
+        	
+            row = sheet.createRow(rowNum++);
+            
+            cell = row.createCell(0);
+            cell.setCellValue(iolistInfo.getAddress());
+            cell = row.createCell(1);
+            cell.setCellValue(iolistInfo.getRev());
+            cell = row.createCell(2);
+            cell.setCellValue(iolistInfo.getDescr());
+            cell = row.createCell(3);
+            cell.setCellValue(iolistInfo.getDrawing());
+            cell = row.createCell(4);
+            cell.setCellValue(iolistInfo.getLoopname());
+            cell = row.createCell(5);
+            cell.setCellValue(iolistInfo.getXygubun());
+            cell = row.createCell(6);
+            cell.setCellValue(iolistInfo.getVlow());
+            cell = row.createCell(7);
+            cell.setCellValue(iolistInfo.getVhigh());
+            cell = row.createCell(8);
+            cell.setCellValue(iolistInfo.getElow());
+            cell = row.createCell(9);
+            cell.setCellValue(iolistInfo.getEhigh());
+            
+            cell = row.createCell(10);
+            cell.setCellValue(iolistInfo.getUnit());
+            cell = row.createCell(11);
+            cell.setCellValue(iolistInfo.getConv());
+            cell = row.createCell(12);
+            cell.setCellValue(iolistInfo.getRtd());
+            cell = row.createCell(13);
+            cell.setCellValue(iolistInfo.getType());
+            cell = row.createCell(14);
+            cell.setCellValue(iolistInfo.getIogroup());
+            cell = row.createCell(15);
+            cell.setCellValue(iolistInfo.getWindow());
+            cell = row.createCell(16);
+            cell.setCellValue(iolistInfo.getPriority());
+            cell = row.createCell(17);
+            cell.setCellValue(iolistInfo.getCr());
+            cell = row.createCell(18);
+            cell.setCellValue(iolistInfo.getLimit1());
+            cell = row.createCell(19);
+            cell.setCellValue(iolistInfo.getLimit2());
+            
+            cell = row.createCell(20);
+            cell.setCellValue(iolistInfo.getJ());
+            cell = row.createCell(21);
+            cell.setCellValue(iolistInfo.getN());
+            cell = row.createCell(22);
+            cell.setCellValue(iolistInfo.getMessage());
+            cell = row.createCell(23);
+            cell.setCellValue(iolistInfo.getEqu());
+            cell = row.createCell(24);
+            cell.setCellValue(iolistInfo.getBscal());
+            cell = row.createCell(25);
+            cell.setCellValue(iolistInfo.getWiba());
+            cell = row.createCell(26);
+            cell.setCellValue(iolistInfo.getDevice());
+            cell = row.createCell(27);
+            cell.setCellValue(iolistInfo.getPurpose());
+            cell = row.createCell(28);
+            cell.setCellValue(iolistInfo.getProgram());
+            cell = row.createCell(29);
+            cell.setCellValue(iolistInfo.getZtext1());
+            
+            cell = row.createCell(30);
+            cell.setCellValue(iolistInfo.getZtext2());
+            cell = row.createCell(31);
+            cell.setCellValue(iolistInfo.getZtext3());
+
+        }
+        
+        String browser = WebUtil.getBrowser(request);
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
+        
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
+
+        //Excel File Output
+        ServletOutputStream output = response.getOutputStream();
+        output.flush();
+        wb.write(output);
+        output.flush();
+        output.close();
+        wb.close();		
+		
+	}
+	
+	public void iolistTipFTDTExcelDownload(HttpServletRequest request, HttpServletResponse response,  List<IOListInfo> iolistInfoList) throws Exception{
+		Workbook wb = new XSSFWorkbook();
+		String fileName = "FTDT"+new SimpleDateFormat("yyyyMMdd").format(new Date());
+        Sheet sheet = wb.createSheet(fileName);
+        Row row = null;
+        Cell cell = null;
+        int rowNum = 0;
+        
+        // Header
+        row = sheet.createRow(rowNum++);
+        cell = row.createCell(0);
+        cell.setCellValue("ADDRESS");
+        cell = row.createCell(1);
+        cell.setCellValue("PROGRAM");
+        cell = row.createCell(2);
+        cell.setCellValue("DESCR");
+        cell = row.createCell(3);
+        cell.setCellValue("LOOPNAME");
+        
+     // Body
+        for (IOListInfo iolistInfo:iolistInfoList) {
+        	
+            row = sheet.createRow(rowNum++);
+            
+            cell = row.createCell(0);
+            cell.setCellValue(iolistInfo.getAddress());
+            cell = row.createCell(1);
+            cell.setCellValue(iolistInfo.getProgram());
+            cell = row.createCell(2);
+            cell.setCellValue(iolistInfo.getDescr());
+            cell = row.createCell(3);
+            cell.setCellValue(iolistInfo.getLoopname());
+        }
+        
+        String browser = WebUtil.getBrowser(request);
+		String encodedFilename = WebUtil.webEncoding(browser, fileName+".xlsx");
         
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
@@ -1794,11 +2625,17 @@ public class ExcelHelperUtil {
 		Cell cell = null;
 		int rowNum = 0;
 		int size = 0;
-		String fileName = new SimpleDateFormat("yyMM").format(new Date())+".xlsx";
+		String fileDtm = new SimpleDateFormat("yyMMdd").format(new Date());
+		String fileName = fileDtm.substring(2,4)+"_"+fileDtm.substring(4,6)+".xlsx";
 		String prefix = "";
 		String title = "";
 		
 		switch( type ) {
+			case "schematic":
+				prefix = "psd_";
+				title="Plant Schematic Diagram";
+				size = 32;
+				break;
 			case "htc":
 				prefix = "htc_";
 				title = "Heat Transport Control Status";
@@ -1835,9 +2672,39 @@ public class ExcelHelperUtil {
 				size = 64;
 				break;
 			case "phtpump":
-				prefix = "phtpump_";
+				prefix = "mp_";
 				title = "PHT Pump Status";
 				size = 60;
+				break;
+			case "zv":
+				prefix = "zv_";
+				title = "Zone Values In %";
+				size = 42;
+				break;
+			case "zd":
+				prefix = "zd_";
+				title = "Zone Deviations In %";
+				size = 30;
+				break;
+			case "zc":
+				prefix = "zc_";
+				title = "Zone Deviations In %";
+				size = 43;
+				break;
+			case "ar":
+				prefix = "ar_";
+				title = "Adjuster ROD Status";
+				size = 149;
+				break;
+			case "tpm":
+				prefix = "tpm_";
+				title="Reactor Channel Temperature Monitoring";
+				size = 380;
+				break;
+			case "react":
+				prefix = "rcd_";
+				title="Reactivity Control Diagram";
+				size = 2;
 				break;
 		}
 		
@@ -1848,40 +2715,46 @@ public class ExcelHelperUtil {
 		cell = row.createCell(0);
 		cell.setCellValue(title);
 		// Set empty row
-		row = sheet.createRow(rowNum++);
+		//row = sheet.createRow(rowNum++);
 		// Set lblDate
 		row = sheet.createRow(rowNum++);
 		cell = row.createCell(0);
 		cell.setCellValue(scanTime);
 		// Set empty row
-		row = sheet.createRow(rowNum++);
+		//row = sheet.createRow(rowNum++);
 		
 		for( int lli=0;lli<values.size();lli++ ) {
-			for( int lii=0;lii<size;lii++ ) {
+			//for( int lii=0;lii<size;lii++ ) {
 				
 				row = sheet.createRow(rowNum++);
 				
 				cell = row.createCell(0);
-				cell.setCellValue(lii+1);
+				//cell.setCellValue(lii+1);
+				cell.setCellValue(lli+1);
 				
 				cell = row.createCell(1);
-				cell.setCellValue(dccTagInfoList.get(lii).getDataLoop());
+				//cell.setCellValue(dccTagInfoList.get(lii).getDataLoop());
+				cell.setCellValue(dccTagInfoList.get(lli).getDataLoop());
 				
 				cell = row.createCell(2);
 				cell.setCellValue(values.get(lli).get("fValue").toString());
 				
 				cell = row.createCell(3);
-				cell.setCellValue(dccTagInfoList.get(lii).getUnit());
+				//cell.setCellValue(dccTagInfoList.get(lii).getUnit());
+				cell.setCellValue(dccTagInfoList.get(lli).getUnit());
 				
 				cell = row.createCell(4);
-				cell.setCellValue(dccTagInfoList.get(lii).getIOTYPE());
+				//cell.setCellValue(dccTagInfoList.get(lii).getIOTYPE());
+				cell.setCellValue(dccTagInfoList.get(lli).getIOTYPE());
 				
 				cell = row.createCell(5);
-				cell.setCellValue(dccTagInfoList.get(lii).getADDRESS());
+				//cell.setCellValue(dccTagInfoList.get(lii).getADDRESS());
+				cell.setCellValue(dccTagInfoList.get(lli).getADDRESS());
 				
 				cell = row.createCell(6);
-				cell.setCellValue(dccTagInfoList.get(lii).getIOBIT());
-			}
+				//cell.setCellValue(dccTagInfoList.get(lii).getIOBIT());
+				cell.setCellValue(dccTagInfoList.get(lli).getIOBIT());
+			//}
 		}
 		
 		String browser = WebUtil.getBrowser(request);
@@ -1900,7 +2773,7 @@ public class ExcelHelperUtil {
 		
 	}
 	
-	public void mimicExcelDownload(HttpServletRequest request, HttpServletResponse response, List<String> lblDataList,
+	public void mimicExcelDownload(HttpServletRequest request, HttpServletResponse response, List<Map> lblDataList,
 			List<ComTagDccInfo> tagDccInfoList, String searchTime, String type) throws Exception{
 		
 		Workbook wb = new XSSFWorkbook();
@@ -1909,7 +2782,8 @@ public class ExcelHelperUtil {
 		Cell cell = null;
 		int rowNum = 0;
 		int size = 0;
-		String fileName = new SimpleDateFormat("yyMM").format(new Date())+".xlsx";
+		String fileDtm = new SimpleDateFormat("yyMMdd").format(new Date());
+		String fileName = fileDtm.substring(2,4)+"_"+fileDtm.substring(4,6)+".xlsx";
 		String prefix = "";
 		String title = "";
 		
@@ -1924,7 +2798,101 @@ public class ExcelHelperUtil {
 				title = "Liquid Zone Control System(3단계)";
 				size = 42;
 				break;
-			
+			case "pht":
+				prefix = "pht_";
+				title = "Primary Heat Transport System";
+				size = 32;
+				break;
+			case "phtctrl":
+				prefix = "pics_";
+				title = "Presure & Inventory Control System";
+				size = 27;
+				break;
+			case "moderator":
+				prefix = "mod_";
+				title = "Moderator System";
+				size = 21;
+				break;
+			case "phtpuri":
+				prefix = "puri_";
+				title = "PHT Purification System";
+				size = 7;
+				break;
+			case "ecc":
+				prefix = "ecc_";
+				title = "Emergency Code Cooling System";
+				size = 23;
+				break;
+			case "mainsteam":
+				prefix = "msp_";
+				title = "Main Steam System";
+				size = 20;
+				break;
+			case "feedwater":
+				prefix = "sgfw_";
+				title = "Feed Water";
+				size = 41;
+				break;
+			case "condensate":
+				prefix = "condensate_";
+				title = "Condensate System";
+				size = 30;
+				break;
+			case "fuelhandlingmenu":
+				prefix = "fh_";
+				title = "Fuel Handling System";
+				size = 13;
+				break;
+			case "d2octrla":
+				prefix = "d2oa_";
+				title = "D2O Control System(A-Side)";
+				size = 15;
+				break;
+			case "d2octrlc":
+				prefix = "d2oc_";
+				title = "D2O Control System(C-Side)";
+				size = 14;
+				break;
+			case "radmain":
+				prefix = "rad_";
+				title = "Radiation System";
+				size = 7;
+				break;
+			case "rbbase":
+				prefix = "rbb_";
+				title = "RB Base";
+				size = 5;
+				break;
+			case "rb1f":
+				prefix = "rb1f_";
+				title = "RB 1F";
+				size = 8;
+				break;
+			case "rb2f":
+				prefix = "rb2f_";
+				title = "RB 2F";
+				size = 1;
+				break;
+			case "rb3f":
+				prefix = "rb3f_";
+				title = "RB 3F";
+				size = 5;
+				break;
+			case "rb4f":
+				prefix = "rb4f_";
+				title = "RB 4F";
+				size = 7;
+				break;
+			case "rb5f":
+				prefix = "rb5f_";
+				title = "RB 5F";
+				size = 2;
+				break;
+			case "sbbase":
+				prefix = "sbb_";
+				title = "SB Base";
+				size = 3;
+				break;
 		}
 		
 		fileName = prefix+fileName;
@@ -1933,34 +2901,36 @@ public class ExcelHelperUtil {
 		row = sheet.createRow(rowNum++);
 		cell = row.createCell(0);
 		cell.setCellValue(title);
-		// Set empty row
-		row = sheet.createRow(rowNum++);
 		// Set lblDate
 		row = sheet.createRow(rowNum++);
 		cell = row.createCell(0);
 		cell.setCellValue(searchTime);
-		// Set empty row
-		row = sheet.createRow(rowNum++);
 
 		
 		for( int lli=0;lli<lblDataList.size();lli++ ) {
-			for( int lii=0;lii<size;lii++ ) {
+			//for( int lii=0;lii<size;lii++ ) {
 			row = sheet.createRow(rowNum++);
 			cell = row.createCell(0);
-			cell.setCellValue(lii+1);
+			//cell.setCellValue(lii+1);
+			cell.setCellValue(lli+1);
 			cell = row.createCell(1);
-			cell.setCellValue(tagDccInfoList.get(lii).getDataLoop());
+			//cell.setCellValue(tagDccInfoList.get(lii).getDataLoop());
+			cell.setCellValue(tagDccInfoList.get(lli).getDataLoop());
 			cell = row.createCell(2);
-			cell.setCellValue(lblDataList.get(lli));
+			cell.setCellValue(lblDataList.get(lli).get("fValue").toString());
 			cell = row.createCell(3);
-			cell.setCellValue(tagDccInfoList.get(lii).getUnit());
+			//cell.setCellValue(tagDccInfoList.get(lii).getUnit());
+			cell.setCellValue(tagDccInfoList.get(lli).getUnit());
 			cell = row.createCell(4);
-			cell.setCellValue(tagDccInfoList.get(lii).getIOTYPE());
+			//cell.setCellValue(tagDccInfoList.get(lii).getIOTYPE());
+			cell.setCellValue(tagDccInfoList.get(lli).getIOTYPE());
 			cell = row.createCell(5);
-			cell.setCellValue(tagDccInfoList.get(lii).getADDRESS());
+			//cell.setCellValue(tagDccInfoList.get(lii).getADDRESS());
+			cell.setCellValue(tagDccInfoList.get(lli).getADDRESS());
 			cell = row.createCell(6);
-			cell.setCellValue(tagDccInfoList.get(lii).getIOBIT());
-			}
+			//cell.setCellValue(tagDccInfoList.get(lii).getIOBIT());
+			cell.setCellValue(tagDccInfoList.get(lli).getIOBIT());
+			//}
 		}
 		
 		String browser = WebUtil.getBrowser(request);
@@ -2229,7 +3199,29 @@ public class ExcelHelperUtil {
 						cell = row.createCell(2);
 						cell.setCellValue(fixedAlarmList.get(0).get(idx).toString());
 						cell = row.createCell(3);
-						cell.setCellValue(fixedAlarmList.get(1).get(idx).toString());
+						switch( idx ) {
+							case 0:
+								cell.setCellValue("CH N Actv HI");
+								break;
+							case 1:
+								cell.setCellValue("CH Q Actv HI");
+								break;
+							case 2:
+								cell.setCellValue("CH N Prs HI");
+								break;
+							case 3:
+								cell.setCellValue("CH N Prs HI");
+								break;
+							case 4:
+								cell.setCellValue("CH N Actv HI");
+								break;
+							case 5:
+								cell.setCellValue("CH N Actv HI");
+								break;
+							default:
+								cell.setCellValue(fixedAlarmList.get(1).get(idx).toString());
+								break;
+						}
 					}
 			        break;
 				case "276":
@@ -2310,35 +3302,64 @@ public class ExcelHelperUtil {
 		wb.close();
 		
 	}
-
+	
 	public void alarmTFExcelDownload(HttpServletRequest request, HttpServletResponse response, String prefix,
 			List<Map> LblInfoList, List<Map> arrTrendData) throws Exception{
+		
+		doTrendExcelDownload(request,response,prefix,LblInfoList,arrTrendData,"Trend_Fixed");
+	}
+	
+	public void alarmTSExcelDownload(HttpServletRequest request, HttpServletResponse response, String prefix,
+			List<Map> LblInfoList, List<Map> arrTrendData) throws Exception{
+		
+		doTrendExcelDownload(request,response,prefix,LblInfoList,arrTrendData,"Trend_Spare");
+	}
+	
+	public void alarmFTAMExcelDownload(HttpServletRequest request, HttpServletResponse response, String prefix,
+			List<Map> LblInfoList, List<Map> arrTrendData) throws Exception{
+		
+		doTrendExcelDownload(request,response,prefix,LblInfoList,arrTrendData,"Trend_FTAM");
+	}
+	
+	public void alarmDMExcelDownload(HttpServletRequest request, HttpServletResponse response, String prefix,
+			List<Map> LblInfoList, List<Map> arrTrendData) throws Exception{
+		
+		doTrendExcelDownload(request,response,prefix,LblInfoList,arrTrendData,"Trend_Dcc&Mark-V");
+	}
+	
+	public void alarmDSExcelDownload(HttpServletRequest request, HttpServletResponse response, String prefix,
+			List<Map> LblInfoList, List<Map> arrTrendData) throws Exception{
+		
+		doTrendExcelDownload(request,response,prefix,LblInfoList,arrTrendData,"Performance_DccStatus");
+	}
+
+	public void doTrendExcelDownload(HttpServletRequest request, HttpServletResponse response, String prefix,
+			List<Map> LblInfoList, List<Map> arrTrendData, String sheetName) throws Exception{
 
 		Workbook wb = new XSSFWorkbook();
-		Sheet sheet = wb.createSheet("Trend_Fixed");
+		Sheet sheet = wb.createSheet(sheetName);
 		Row row = null;
 		Cell cell = null;
 		int rowNum = 0;
 		String fileName = prefix;
-		String suffix = new SimpleDateFormat("MM_dd").format(new Date())+".xlsx";
+		String suffix = new SimpleDateFormat("MM-dd").format(new Date())+".xlsx";
 		
 		// Set Title
 		row = sheet.createRow(rowNum++);
 		cell = row.createCell(0);
 		cell.setCellValue("시 간");
-		cell = row.createCell(0);
-		for( int l=1;l<LblInfoList.size()+1;l++ ) {
-			cell.setCellValue(LblInfoList.get(l).toString());
+		for( int l=0;l<LblInfoList.get(0).size();l++ ) {
+			cell = row.createCell(l+1);
+			cell.setCellValue(((Map) LblInfoList.get(0)).get(l).toString());
 		}
-		
 		if( arrTrendData.size() > 0 ) {
 			for( int idx=0;idx<arrTrendData.size();idx++ ) {
 				row = sheet.createRow(rowNum++);
 				cell = row.createCell(0);
 				cell.setCellValue(arrTrendData.get(idx).get("m_time").toString());
-				for( int li=1;li<LblInfoList.size()+1;li++ ) {
-					cell = row.createCell(li);
-					cell.setCellValue(((Map) arrTrendData.get(li).get("m_data")).get(idx).toString());
+				for( int li=0;li<LblInfoList.get(0).size();li++ ) {
+					cell = row.createCell(li+1);
+					cell.setCellValue(((Map) arrTrendData.get(idx).get("m_data")).get(li).toString());
 				}
 			}
 		}
@@ -2358,5 +3379,76 @@ public class ExcelHelperUtil {
 		output.close();
 		wb.close();
 		
+	}
+	
+	public void alarmLFExcelDownload(HttpServletRequest request, HttpServletResponse response, String prefix,
+			List<Map> LblInfoList, List<Map> arrTrendData, List<TrendTagDccInfo> dccGrpTagList) throws Exception{
+		
+		doLogExcelDownload(request,response,prefix,LblInfoList,arrTrendData,dccGrpTagList);
+	}
+	
+	public void alarmLSExcelDownload(HttpServletRequest request, HttpServletResponse response, String prefix,
+			List<Map> LblInfoList, List<Map> arrTrendData, List<TrendTagDccInfo> dccGrpTagList) throws Exception{
+		
+		doLogExcelDownload(request,response,prefix,LblInfoList,arrTrendData,dccGrpTagList);
+	}
+	
+	public void doLogExcelDownload(HttpServletRequest request, HttpServletResponse response, String prefix,
+			List<Map> LblInfoList, List<Map> arrTrendData, List<TrendTagDccInfo> dccGrpTagList) throws Exception{
+
+		String suffix = new SimpleDateFormat("MM_dd").format(new Date());
+		
+		Workbook wb = new XSSFWorkbook();
+		Sheet sheet = wb.createSheet("DCC_TL_"+suffix);
+		Row row = null;
+		Cell cell = null;
+		int rowNum = 0;
+		
+		// Set Title
+		row = sheet.createRow(rowNum++);
+		cell = row.createCell(0);
+		String celVal = dccGrpTagList.size() > 0 ? dccGrpTagList.get(0).getHogi()+dccGrpTagList.get(0).getXYGubun() : "";
+		cell.setCellValue(celVal);
+		for( int l=0;l<dccGrpTagList.size();l++ ) {
+			cell = row.createCell(l+1);
+			String cellVal = dccGrpTagList.get(l).getDataLoop()+" "+dccGrpTagList.get(l).getIOTYPE()+"["+dccGrpTagList.get(l).getADDRESS()+"]";
+			cell.setCellValue(cellVal);
 		}
+		if( arrTrendData.size() > 0 ) {
+			for( int idx=0;idx<arrTrendData.size();idx++ ) {
+				row = sheet.createRow(rowNum++);
+				cell = row.createCell(0);
+				cell.setCellValue(arrTrendData.get(idx).get("m_time").toString());
+				for( int li=0;li<LblInfoList.get(0).size();li++ ) {
+					cell = row.createCell(li+1);
+					cell.setCellValue(((Map) arrTrendData.get(idx).get("m_data")).get(li).toString());
+				}
+			}
+		}
+		String fileName = "";
+		if( "".equals(prefix) ) {
+			fileName = "DCC_TL_"+suffix+".xlsx";
+		} else {
+			if( prefix.indexOf(".") > -1 ) {
+				fileName = prefix;
+			} else {
+				fileName = prefix+".xlsx";
+			}
+		}
+		
+		String browser = WebUtil.getBrowser(request);
+		String encodedFilename = WebUtil.webEncoding(browser, fileName);
+		
+		response.setContentType("application/vnd.ms-excel");
+		response.setHeader("Content-Disposition", "attachment;filename=" + encodedFilename);
+		
+		//Excel File Output
+		ServletOutputStream output = response.getOutputStream();
+		output.flush();
+		wb.write(output);
+		output.flush();
+		output.close();
+		wb.close();
+		
+	}
 }

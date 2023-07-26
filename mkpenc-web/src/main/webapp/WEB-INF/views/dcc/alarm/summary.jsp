@@ -22,19 +22,16 @@
 <script type="text/javascript" src="<c:url value="/resources/datetimepicker/jquery.datetimepicker.full.min.js" />" charset="utf-8"></script>
 
 <script type="text/javascript">
-	var hogiHeader = '${BaseSearch.hogiHeader}' != "undefined" ? '${BaseSearch.hogiHeader}' : "3";
-	var xyHeader = '${BaseSearch.xyHeader}' != "undefined" ? '${BaseSearch.xyHeader}' : "X";
+	var timerOn = false;
 
 	$(function(){
-		if( $("input:radio[id='4']").is(":checked") ) {
-			hogiHeader = "4";
+		
+		$("#lblDate").text('${UserInfo.hogi} ' + ' ${UserInfo.xyGubun}' + ' ${BaseSearch.startDate}' );
+		var diff = new Date().getTime() - new Date('${BaseSearch.startDate}').getTime();
+		if( diff / 1800000 > 1 ) {
+			$("#lblDate").css('color','#e85516');
 		} else {
-			hogiHeader = "3";
-		}
-		if( $("input:radio[id='Y']").is(":checked") ) {
-			xyHeader = "Y";
-		} else {
-			xyHeader = "X";
+			$("#lblDate").css('color','#05c8be');
 		}
 		
 		if( '${BaseSearch.startDate}' != null ) {
@@ -47,52 +44,33 @@
 		jQuery.datetimepicker.setLocale('ko');
 		
 		$('#selectDate').datetimepicker(DatetimepickerDefaults({}));
-
-		$(document.body).delegate('#3', 'click', function() {
-			sendPage(0,'3',xyHeader);
-		});
-		$(document.body).delegate('#4', 'click', function() {
-			sendPage(0,'4',xyHeader);
-		});
-		$(document.body).delegate('#X', 'click', function() {
-			sendPage(0,hogiHeader,'X');
-		});
-		$(document.body).delegate('#Y', 'click', function() {
-			sendPage(0,hogiHeader,'Y');
-		});
 		
 		$("#alarmSearch").click(function() {
-			sendPage(2,hogiHeader,xyHeader);
+			sendPage(2);
 		});
 		
-		$("#alarmSave").click(function() {
-			if( $("input:radio[id='4']").is(":checked") ) {
-				hogiHeader = $("#4").val();
-			} else {
-				hogiHeader = $("#3").val();
-			}
-			if( $("input:radio[id='Y']").is(":checked") ) {
-				xyHeader = $("#Y").val();
-			} else {
-				xyHeader = $("#X").val();
-			}
-			toTXT(hogiHeader,xyHeader);
+		$("#alarmSave").click(function() {	
+			toTXT();
 		});
 		
 		$("#btnCurrent").click(function() {
-			sendPage(0,hogiHeader,xyHeader);
+			sendPage(0);
 		});
 		
 		$("#btnPrev").click(function() {
-			sendPage(-1,hogiHeader,xyHeader);
+			sendPage(-1);
 		});
 		
 		$("#btnNext").click(function() {
-			sendPage(1,hogiHeader,xyHeader);
+			sendPage(1);
 		});
 	});
+	
+	function setTimer(num){
+		sendPage(num);
+	}
 
-	function sendPage(pageNum,hogiHeader,xyHeader) {
+	function sendPage(pageNum) {
 		var sDate,sHour,sMin;
 		var today = new Date();
 		if($("#selectDate").val() != null && $("#selectDate").val() != "") {
@@ -104,14 +82,12 @@
 		var comSubmit = new ComSubmit("searchForm");
 		comSubmit.setUrl("/dcc/alarm/summary");
 		comSubmit.addParam("startDate",sDate+':00.000');
-		comSubmit.addParam("hogiHeader", hogiHeader);
-		comSubmit.addParam("xyHeader", xyHeader);
 		comSubmit.addParam("currentPage", pageNum);
 		comSubmit.addParam("pagNo", '${DccSummaryList[0].seq}');
 		comSubmit.submit();
 	}
 	
-	function toTXT(hogiHeader,xyHeader) {
+	function toTXT() {
 		var sDate,sHour,sMin;
 		var today = new Date();
 		if($("#selectDate").val() != null && $("#selectDate").val() != "") {
@@ -123,8 +99,6 @@
 		var	comSubmit = new ComSubmit("searchForm");
 		comSubmit.setUrl("/dcc/alarm/summaryTxtExport");
 		comSubmit.addParam("pType", "S3");
-		comSubmit.addParam("hogiHeader", hogiHeader);
-		comSubmit.addParam("xyHeader", xyHeader);
 		comSubmit.addParam("startDate",sDate+':00.000');
 		comSubmit.addParam("currentPage", 2);
 		comSubmit.addParam("pagNo", '${DccSummaryList[0].seq}');
@@ -156,7 +130,7 @@
 			<!-- page_title -->
 			<div class="page_title">
 				<h3>SUMMARY</h3>
-				<div class="bc"><span>DCC</span><span>Alarm</span><strong>Summary</strong></div>
+				<div class="bc"><span>DCC</span><span>Alarm</span><strong>SUMMARY</strong></div>
 			</div>
 			<!-- //page_title -->
 			<!-- fx_srch_wrap -->

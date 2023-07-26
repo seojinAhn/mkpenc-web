@@ -23,6 +23,8 @@ import com.mkpenc.dcc.admin.model.MemberInfo;
 import com.mkpenc.dcc.admin.model.RestartCodeInfo;
 import com.mkpenc.dcc.admin.model.SwSmInfo;
 import com.mkpenc.dcc.admin.service.DccAdminService;
+import com.mkpenc.dcc.common.service.BasCommonService;
+import com.mkpenc.alt.common.service.AltCommonService;
 import com.mkpenc.common.model.CommonConstant;
 import com.mkpenc.common.model.Upload;
 import com.mkpenc.common.module.ExcelHelperUtil;
@@ -31,7 +33,14 @@ import com.mkpenc.common.module.PageHtmlUtil;
 import com.mkpenc.configuration.SessionConfig;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,9 +54,18 @@ import org.slf4j.LoggerFactory;
 public class DccAdminContentsController {
 	
 	private static Logger logger = LoggerFactory.getLogger(DccAdminContentsController.class);
+
+	@Autowired
+	private CommonConstant commonConstant;
 	 
 	@Autowired
 	private DccAdminService dccAdminService;
+	
+	@Autowired
+	private BasCommonService basCommonService;
+	
+	@Autowired
+	private AltCommonService altCommonService;
 	
 	@Autowired
 	private PageHtmlUtil pageHtmlUtil;
@@ -87,7 +105,7 @@ public class DccAdminContentsController {
 
         	dccAdminService.updateMemberInfo(dccSearchAdmin);
         	
-        	SessionConfig.getSessionidCheck("SESSION_UID", memberInfo.getId());        	
+        	SessionConfig.getSessionidCheck("SESSION_UID", memberInfo.getId());
         	
         	request.getSession().setAttribute("USER_INFO", memberInfo);
         	request.getSession().setAttribute("SESSION_UID", memberInfo.getId());
@@ -161,12 +179,21 @@ public class DccAdminContentsController {
         			dccSearchAdmin.setUserId(dccSearchAdmin.getSearchWord());
         		}else if(dccSearchAdmin.getSearchKey().equals("userName")){
         			dccSearchAdmin.setUserName(dccSearchAdmin.getSearchWord());
+        		} else if(dccSearchAdmin.getSearchKey().equals("all")){
+        			dccSearchAdmin.setUserName(dccSearchAdmin.getSearchWord());
         		}
         	}
         	
         	//Get User Total Count
         	int memberTotalCnt = dccAdminService.selectMemberTotalCnt(dccSearchAdmin);
-        	dccSearchAdmin.setTotalCnt(memberTotalCnt);
+        	if( memberTotalCnt > 0 ) {
+        		dccSearchAdmin.setTotalCnt(memberTotalCnt);
+        	} else {
+        		dccSearchAdmin.setUserName(null);
+        		dccSearchAdmin.setUserId(dccSearchAdmin.getSearchWord());
+        		memberTotalCnt = dccAdminService.selectMemberTotalCnt(dccSearchAdmin);
+        		dccSearchAdmin.setTotalCnt(memberTotalCnt);
+        	}
         	
         	List<MemberInfo> memberList = dccAdminService.selectMemberList(dccSearchAdmin);
 
@@ -403,7 +430,17 @@ public class DccAdminContentsController {
 		
 		ioListinfo.setIhogi(dccSearchAdmin.getsIhogi());
     	ioListinfo.setXygubun(dccSearchAdmin.getsXYGubun());
-    	ioListinfo.setAddress(dccSearchAdmin.getsAddress());
+		String addrStr = "";
+		String addressRange = dccSearchAdmin.getsAddress() == null ? "" : dccSearchAdmin.getsAddress();
+		if( addressRange.indexOf("-") > -1 ) {
+			addrStr = "BETWEEN "+addressRange.split("-")[0]+" AND "+addressRange.split("-")[1];
+		} else if( addressRange.indexOf(",") > -1 ) {
+			addrStr = "IN ("+addressRange+")";
+		} else {
+			addrStr = "".equals(addressRange) ? "" : "= "+addressRange;
+		}
+    	//ioListinfo.setAddress(dccSearchAdmin.getsAddress());
+    	ioListinfo.setAddress(addrStr);
     	
     	/*
     	switch(dccSearchAdmin.getsIOType()) {
@@ -433,7 +470,7 @@ public class DccAdminContentsController {
 	        					String searchWord = dccSearchAdmin.getSearchWords()[i];
 	        					
 	        					switch(searchKey) {
-	        						case "0" : ioListinfo.setDescr(searchWord);			break; 
+	        						case "0" : ioListinfo.setDescr(searchWord);			break;
 	        						case "1" : ioListinfo.setMessage(searchWord);		break;
 	        						case "2" : ioListinfo.setRev(searchWord);			break;
 	        						case "3" : ioListinfo.setDrawing(searchWord);		break;
@@ -571,7 +608,7 @@ public class DccAdminContentsController {
         				}     // end for         			
 	        			break;
 	        	}// end switch
-    		}// search key endif	     
+    		}// search key endif
 		
 		return ioListinfo;
 	}
@@ -589,12 +626,31 @@ public class DccAdminContentsController {
         	if(dccSearchAdmin.getsIOType() != null && !dccSearchAdmin.getsIOType().equals("") ) {
         		
         			IOListInfo ioListinfo = setSearchIOList(dccSearchAdmin);
+        			/*String addrStr = "";
+        			String addressRange = dccSearchAdmin.getsAddress() == null ? "" : dccSearchAdmin.getsAddress();
+        			if( addressRange.indexOf("-") > -1 ) {
+        				addrStr = "BETWEEN "+addressRange.split("-")[0]+" AND "+addressRange.split("-")[1];
+        			} else if( addressRange.indexOf(",") > -1 ) {
+        				addrStr = "IN ("+addressRange+")";
+        			} else {
+        				addrStr = "".equals(addressRange) ? "" : "= "+addressRange;
+        			}
+        			ioListinfo.setAddress(addrStr);*/
 		        	
 		        	int ioListInfoTotalCnt = dccAdminService.selectIOListInfoTotalCnt(ioListinfo);
 		        	dccSearchAdmin.setTotalCnt(ioListInfoTotalCnt);
 		        	
 		        	List<IOListInfo> ioListInfoList = dccAdminService.selectIOListInfoList(ioListinfo);
-		        	
+		        	String addrRange = "";
+		        	if( ioListInfoTotalCnt > 1 ) {
+		        		addrRange = ioListInfoList.get(0).getAddress()+" - "+ioListInfoList.get(ioListInfoTotalCnt-1).getAddress();
+		        	} else if( ioListInfoTotalCnt > 0 ) {
+		        		addrRange = ioListInfoList.get(0).getAddress()+" - "+ioListInfoList.get(0).getAddress();
+		        	} else {
+		        		addrRange = "0 - 0";
+		        	}
+
+		        	dccSearchAdmin.setAddrRange(addrRange);
 		        	dccSearchAdmin.setMenuName(this.menuName);
 		        	
 		        	mav.addObject("IOListInfoList", ioListInfoList);
@@ -675,6 +731,80 @@ public class DccAdminContentsController {
 		ModelAndView mav = new ModelAndView();
 
         if(request.getSession().getAttribute("USER_INFO") != null) {
+        	List<Map> dccMasterStates = new ArrayList();
+        	List<Map> dccSlaveStates = new ArrayList();
+        	Map searchMap = new HashMap();
+        	
+        	if( commonConstant.getUrl().indexOf("10.135.101.222") > -1 ) {
+            	dccMasterStates = altCommonService.selectLogTimer(searchMap);
+            	dccSlaveStates = basCommonService.selectLogTimer(searchMap);
+			} else {
+	        	dccMasterStates = basCommonService.selectLogTimer(searchMap);
+            	dccSlaveStates = altCommonService.selectLogTimer(searchMap);
+			}
+
+        	List<Map> masterStates = new ArrayList();
+        	List<Map> slaveStates = new ArrayList();
+        	
+        	LocalDateTime mNow = LocalDateTime.now();
+        	for( int i=0;i<dccMasterStates.size();i++ ) {
+    			String mGubun = dccMasterStates.get(i).get("Gubun") == null ? "E" : dccMasterStates.get(i).get("Gubun").toString();
+    			String mHogi = dccMasterStates.get(i).get("Hogi") == null ? "E" : dccMasterStates.get(i).get("Hogi").toString();
+    			String mDataType = dccMasterStates.get(i).get("Datatype") == null ? "E" : dccMasterStates.get(i).get("Datatype").toString();
+    			String mScanTime = dccMasterStates.get(i).get("Scantime") == null ? "" : dccMasterStates.get(i).get("Scantime").toString();
+    			
+    			//logger.info("gubun : "+mGubun+", hogi : "+mHogi+", datatype : "+mDataType+", scantime : "+mScanTime);
+    			
+    			Map mTmp = new HashMap();
+    			if( !"E".equals(mGubun) && !"E".equals(mHogi) && !"E".equals(mDataType) ) {
+        			int mDiff = (int) Duration.between(mNow,convDtm(mScanTime,true)).getSeconds();
+	    			if( Math.abs(mDiff) < 180 ) {
+						mTmp.put("state", "ON");
+	    			} else {
+	    				mTmp.put("state", "OFF");
+	    			}
+					mTmp.put("toolTip", mScanTime);
+					mTmp.put("type", mGubun+mHogi+mDataType);
+    			} else {
+    				mTmp.put("state", "OFF");
+    				mTmp.put("toolTip", mScanTime);
+    				mTmp.put("type", "EEE");
+    			}
+				
+				masterStates.add(mTmp);
+        	}
+
+        	for( int i=0;i<dccSlaveStates.size();i++ ) {
+    			String sGubun = dccSlaveStates.get(i).get("Gubun") == null ? "E" : dccSlaveStates.get(i).get("Gubun").toString();
+    			String sHogi = dccSlaveStates.get(i).get("Gubun") == null ? "E" : dccSlaveStates.get(i).get("Hogi").toString();
+    			String sDataType = dccSlaveStates.get(i).get("Gubun") == null ? "E" : dccSlaveStates.get(i).get("Datatype").toString();
+    			String sScanTime = dccSlaveStates.get(i).get("Scantime") == null ? "" : dccSlaveStates.get(i).get("Scantime").toString();
+    			
+    			//logger.info("gubun : "+sGubun+", hogi : "+sHogi+", datatype : "+sDataType+", scantime : "+sScanTime);
+
+    			Map sTmp = new HashMap();
+    			if( !"E".equals(sGubun) && !"E".equals(sHogi) && !"E".equals(sDataType) ) {
+        			int sDiff = (int) Duration.between(mNow,convDtm(sScanTime,true)).getSeconds();
+	    			if( Math.abs(sDiff) < 180 ) {
+						sTmp.put("state", "ON");
+	    			} else {
+	    				sTmp.put("state", "OFF");
+	    			}
+					sTmp.put("toolTip", sScanTime);
+					sTmp.put("type", sGubun+sHogi+sDataType);
+    			} else {
+    				sTmp.put("state", "OFF");
+    				sTmp.put("toolTip",  sScanTime);
+    				sTmp.put("type", "EEE");
+    			}
+				
+				slaveStates.add(sTmp);
+        	}
+        	
+        	mav.addObject("ScanTime",mNow.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString());
+        	
+        	mav.addObject("masterStates",masterStates);
+        	mav.addObject("slaveStates",slaveStates);
 
         	mav.addObject("BaseSearch", dccSearchAdmin);
         	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
@@ -683,6 +813,127 @@ public class DccAdminContentsController {
         
         return mav;
     }
+	
+	@RequestMapping(value="reloadSysmonitoring", method= {RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView reloadSysmonitoring(DccSearchAdmin dccSearchAdmin, HttpServletRequest request) {
+     
+        logger.info("############ reloadSysmonitoring");
+		
+		ModelAndView mav = new ModelAndView("jsonView");
+
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+        	List<Map> dccMasterStates = new ArrayList();
+        	List<Map> dccSlaveStates = new ArrayList();
+        	Map searchMap = new HashMap();
+        	
+        	if( commonConstant.getUrl().indexOf("10.135.101.222") > -1 ) {
+            	dccMasterStates = altCommonService.selectLogTimer(searchMap);
+            	dccSlaveStates = basCommonService.selectLogTimer(searchMap);
+			} else {
+	        	dccMasterStates = basCommonService.selectLogTimer(searchMap);
+            	dccSlaveStates = altCommonService.selectLogTimer(searchMap);
+			}
+
+        	List<Map> masterStates = new ArrayList();
+        	List<Map> slaveStates = new ArrayList();
+        	
+        	LocalDateTime mNow = LocalDateTime.now();
+        	for( int i=0;i<dccMasterStates.size();i++ ) {
+    			String mGubun = dccMasterStates.get(i).get("Gubun") == null ? "E" : dccMasterStates.get(i).get("Gubun").toString();
+    			String mHogi = dccMasterStates.get(i).get("Hogi") == null ? "E" : dccMasterStates.get(i).get("Hogi").toString();
+    			String mDataType = dccMasterStates.get(i).get("Datatype") == null ? "E" : dccMasterStates.get(i).get("Datatype").toString();
+    			String mScanTime = dccMasterStates.get(i).get("Scantime") == null ? "" : dccMasterStates.get(i).get("Scantime").toString();
+    			
+    			//logger.info("gubun : "+mGubun+", hogi : "+mHogi+", datatype : "+mDataType+", scantime : "+mScanTime);
+    			
+    			Map mTmp = new HashMap();
+    			if( !"E".equals(mGubun) && !"E".equals(mHogi) && !"E".equals(mDataType) ) {
+        			int mDiff = (int) Duration.between(mNow,convDtm(mScanTime,true)).getSeconds();
+	    			if( Math.abs(mDiff) < 180 ) {
+						mTmp.put("state", "ON");
+	    			} else {
+	    				mTmp.put("state", "OFF");
+	    			}
+					mTmp.put("toolTip", mScanTime);
+					mTmp.put("type", mGubun+mHogi+mDataType);
+    			} else {
+    				mTmp.put("state", "OFF");
+    				mTmp.put("toolTip", mScanTime);
+    				mTmp.put("type", "EEE");
+    			}
+				
+				masterStates.add(mTmp);
+        	}
+
+        	for( int i=0;i<dccSlaveStates.size();i++ ) {
+    			String sGubun = dccSlaveStates.get(i).get("Gubun") == null ? "E" : dccSlaveStates.get(i).get("Gubun").toString();
+    			String sHogi = dccSlaveStates.get(i).get("Gubun") == null ? "E" : dccSlaveStates.get(i).get("Hogi").toString();
+    			String sDataType = dccSlaveStates.get(i).get("Gubun") == null ? "E" : dccSlaveStates.get(i).get("Datatype").toString();
+    			String sScanTime = dccSlaveStates.get(i).get("Scantime") == null ? "" : dccSlaveStates.get(i).get("Scantime").toString();
+    			
+    			//logger.info("gubun : "+sGubun+", hogi : "+sHogi+", datatype : "+sDataType+", scantime : "+sScanTime);
+
+    			Map sTmp = new HashMap();
+    			if( !"E".equals(sGubun) && !"E".equals(sHogi) && !"E".equals(sDataType) ) {
+        			int sDiff = (int) Duration.between(mNow,convDtm(sScanTime,true)).getSeconds();
+	    			if( Math.abs(sDiff) < 180 ) {
+						sTmp.put("state", "ON");
+	    			} else {
+	    				sTmp.put("state", "OFF");
+	    			}
+					sTmp.put("toolTip", sScanTime);
+					sTmp.put("type", sGubun+sHogi+sDataType);
+    			} else {
+    				sTmp.put("state", "OFF");
+    				sTmp.put("toolTip",  sScanTime);
+    				sTmp.put("type", "EEE");
+    			}
+				
+				slaveStates.add(sTmp);
+        	}
+        	
+        	mav.addObject("ScanTime",mNow.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString());
+        	
+        	mav.addObject("masterStates",masterStates);
+        	mav.addObject("slaveStates",slaveStates);
+
+        	mav.addObject("BaseSearch", dccSearchAdmin);
+        	mav.addObject("UserInfo", request.getSession().getAttribute("USER_INFO"));
+        	
+        }
+        
+        return mav;
+    }
+	
+	private LocalDateTime convDtm(String date, boolean isMilli) {
+		String[] pDate = {};
+		
+		if( date.split(" ")[0].indexOf("-") > -1 ) {
+			pDate = date.split(" ")[0].split("-");
+		} else if(date.split(" ")[0].indexOf("/") > -1 ) { 
+			pDate = date.split(" ")[0].split("/");
+		}
+		String[] pTime = date.split(" ")[1].split(":");
+		String millis = "000";
+
+		pTime[2] = pTime[2].indexOf(".") > -1 ? pTime[2].substring(0,pTime[2].indexOf(".")) : pTime[2];
+		if( isMilli ) {
+			if( pTime[2].indexOf(".") > -1 ) {
+				millis = pTime[2].substring(pTime[2].indexOf(".")+1,pTime[2].length());
+			}
+		
+			LocalDateTime ldt = LocalDateTime.of(Integer.parseInt(pDate[0]),Integer.parseInt(pDate[1]),Integer.parseInt(pDate[2]),
+												Integer.parseInt(pTime[0]),Integer.parseInt(pTime[1]),Integer.parseInt(pTime[2]),Integer.parseInt(millis));
+			
+			return ldt;
+		} else {
+			LocalDateTime ldt = LocalDateTime.of(Integer.parseInt(pDate[0]),Integer.parseInt(pDate[1]),Integer.parseInt(pDate[2]),
+												Integer.parseInt(pTime[0]),Integer.parseInt(pTime[1]),Integer.parseInt(pTime[2]));
+
+			return ldt;
+		}
+	}
 	
 	@RequestMapping("sysimprovelist")
 	public ModelAndView sysimprovelist(DccSearchAdmin dccSearchAdmin, HttpServletRequest request) {
@@ -866,6 +1117,37 @@ public class DccAdminContentsController {
 	
         return mav;
 	}
+	
+	@RequestMapping("swsmdelete")
+	public ModelAndView swsmdelete(DccSearchAdmin dccSearchAdmin, HttpServletRequest request) {
+        ModelAndView mav = new ModelAndView();
+
+        logger.info("############ swsmdelete");
+        
+        if(request.getSession().getAttribute("USER_INFO") != null) {
+			Upload upload = new Upload();
+			upload.setDiv(this.menuName);
+        	
+        	int rtn = dccAdminService.deleteSwSmInfo(dccSearchAdmin);
+        	
+        	if( rtn > 0 ) {
+				if( !"".equals(dccSearchAdmin.getiFileName1().trim()) && rtn > 0 ) rtn = fileHelperUtil.deleteAttachFile(upload,dccSearchAdmin.getiFileName1().trim() );
+				if( !"".equals(dccSearchAdmin.getiFileName2().trim()) && rtn > 0 ) rtn = fileHelperUtil.deleteAttachFile(upload,dccSearchAdmin.getiFileName2().trim() );
+				if( !"".equals(dccSearchAdmin.getiFileName3().trim()) && rtn > 0 ) rtn = fileHelperUtil.deleteAttachFile(upload,dccSearchAdmin.getiFileName3().trim() );
+				if( !"".equals(dccSearchAdmin.getiFileName4().trim()) && rtn > 0 ) rtn = fileHelperUtil.deleteAttachFile(upload,dccSearchAdmin.getiFileName4().trim() );
+				if( !"".equals(dccSearchAdmin.getiFileName5().trim()) && rtn > 0 ) rtn = fileHelperUtil.deleteAttachFile(upload,dccSearchAdmin.getiFileName5().trim() );
+				if( !"".equals(dccSearchAdmin.getiFileName6().trim()) && rtn > 0 ) rtn = fileHelperUtil.deleteAttachFile(upload,dccSearchAdmin.getiFileName6().trim() );
+				if( !"".equals(dccSearchAdmin.getiFileName7().trim()) && rtn > 0 ) rtn = fileHelperUtil.deleteAttachFile(upload,dccSearchAdmin.getiFileName7().trim() );
+				if( !"".equals(dccSearchAdmin.getiFileName8().trim()) && rtn > 0 ) rtn = fileHelperUtil.deleteAttachFile(upload,dccSearchAdmin.getiFileName8().trim() );
+				if( !"".equals(dccSearchAdmin.getiFileName9().trim()) && rtn > 0 ) rtn = fileHelperUtil.deleteAttachFile(upload,dccSearchAdmin.getiFileName9().trim() );
+				if( !"".equals(dccSearchAdmin.getiFileName10().trim()) && rtn > 0 ) rtn = fileHelperUtil.deleteAttachFile(upload,dccSearchAdmin.getiFileName10().trim() );
+        	}
+        	
+    		mav.setViewName("redirect:/dcc/admin/swsmlist");
+        }
+        
+        return mav;
+    }
 	
 	@RequestMapping(value = "swsmDetail", method = { RequestMethod.POST })
 	@ResponseBody
@@ -1097,7 +1379,7 @@ public class DccAdminContentsController {
         }
         
         return mav;
-    }	
+    }
 	
 	@RequestMapping("hwsminsert")
 	public ModelAndView hwsminsert(DccSearchAdmin dccSearchAdmin, HttpServletRequest request) {

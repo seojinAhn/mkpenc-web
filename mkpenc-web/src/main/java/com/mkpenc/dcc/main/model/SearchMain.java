@@ -22,6 +22,8 @@ public class SearchMain extends BaseSearch {
 	private String searchKey;
 	private String searchWord;
 	
+	private String noLogin;
+	
 	
 	public String getsGrpID() {
 		return sGrpID;
@@ -107,6 +109,18 @@ public class SearchMain extends BaseSearch {
 	 */
 	public void setSearchWord(String searchWord) {
 		this.searchWord = searchWord;
+	}
+	/**
+	 * @return the noLogin
+	 */
+	public String getNoLogin() {
+		return noLogin;
+	}
+	/**
+	 * @param noLogin the noLogin to set
+	 */
+	public void setNoLogin(String noLogin) {
+		this.noLogin = noLogin;
 	}
 
 	

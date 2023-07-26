@@ -96,6 +96,11 @@ public class DccAlarmServiceImpl  implements DccAlarmService {
 	}
 	
 	@Override
+	public List<Map> selectGasInfo4Hogi(DccSearchAlarm dccSearchAlarm) {
+		return dccAlarmMapper.selectGasInfo4Hogi(dccSearchAlarm);
+	}
+	
+	@Override
 	public List<Map> selectStreamAIInfo(DccSearchAlarm dccSearchAlarm) {
 		return dccAlarmMapper.selectStreamAIInfo(dccSearchAlarm);
 	}

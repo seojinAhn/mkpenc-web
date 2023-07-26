@@ -44,5 +44,7 @@ public interface DccAlarmMapper {
 	//gaschromatograthy
 	List<Map> selectGasInfo(DccSearchAlarm dccSearchAlarm);
 	
+	List<Map> selectGasInfo4Hogi(DccSearchAlarm dccSearchAlarm);
+	
 	List<Map> selectStreamAIInfo(DccSearchAlarm dccSearchAlarm);
 }

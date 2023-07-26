@@ -19,8 +19,23 @@
 <script type="text/javascript" src="<c:url value="/resources/js/performance.js" />" charset="utf-8"></script>
 
 <script type="text/javascript">
+var timerOn = false;
 
 $(function () {
+	var perVal = '${BaseSearch.sPer}'*1;
+	if( perVal != '' && typeof perVal != 'undefined' ) {
+		$("#sPer").val(perVal);
+	}
+	
+	$(document.body).delegate('#sIOType','change',function() {
+		var curIOType = $("#sIOType option:selected").val();
+		
+		if( curIOType != '0' ) {
+			$("#sPer").prop("disabled",true);
+		} else {
+			$("#sPer").prop("disabled",false);
+		}
+	});
 	
 		
  	$("#searchXY").click(function(){
@@ -37,6 +52,8 @@ $(function () {
  		// 화면초기화
 		var	comSubmit	=	new ComSubmit("compareXYFrm");
 		comSubmit.setUrl("/dcc/performance/comparexy");
+		comSubmit.addParam("sPer",$("#sPer").val());
+		comSubmit.addParam("sIOType",$("#sIOType option:selected").val());
 		comSubmit.submit();
   		
   	});
@@ -154,11 +171,32 @@ $(function () {
                     <c:forEach var="AryValue" items="${AryValueList}">
                         <tr>
                             <td class="tc">${AryValue.INDEX}</td>
-                            <td class="tc">${AryValue.ADDRESS}</td>
+                            <c:if test="${BaseSearch.sIOType eq '1'}">
+                            	<td class="tc">${AryValue.ADDRESS}: ${AryValue.IOBIT}</td>
+                            </c:if>
+                            <c:if test="${BaseSearch.sIOType ne '1'}">
+                            	<td class="tc">${AryValue.ADDRESS}</td>
+                            </c:if>
                             <td class="tc">${AryValue.LOOPNAME}</td>
                             <td class="tc">${AryValue.DESCR}</td>
-                            <td class="tc">${AryValue.xValue}</td>
-                            <td class="tc">${AryValue.yValue}</td>
+                            <c:if test="${BaseSearch.sIOType ne '1'}">
+                            	<c:if test="${AryValue.xValue eq -32768.0 or AryValue.xValue eq '-32768.0'}">
+	                            	<td class="tc">***IRR</td>
+	                            </c:if>
+                            	<c:if test="${AryValue.xValue ne -32768.0 and AryValue.xValue ne '-32768.0'}">
+	                            	<td class="tc">${AryValue.xValue}</td>
+	                            </c:if>
+                            	<c:if test="${AryValue.yValue eq -32768.0 or AryValue.yValue eq '-32768.0'}">
+	                            	<td class="tc">***IRR</td>
+                            	</c:if>
+                            	<c:if test="${AryValue.yValue ne -32768.0 and AryValue.yValue ne '-32768.0'}">
+	                            	<td class="tc">${AryValue.yValue}</td>
+                            	</c:if>
+                            </c:if>
+                            <c:if test="${BaseSearch.sIOType eq '1'}">
+	                            <td class="tc">${AryValue.xValue}</td>
+	                            <td class="tc">${AryValue.yValue}</td>
+                            </c:if>
                              <td class="tc">
 	                            <c:if test="${AryValue.WIBA eq '1' }">
 	                           			IN

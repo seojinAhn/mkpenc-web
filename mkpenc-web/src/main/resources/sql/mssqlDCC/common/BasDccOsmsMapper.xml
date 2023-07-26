@@ -72,6 +72,13 @@
                AND HOGI = #{hogi}
                 AND DATATYPE = #{xyGubun}
     </select>
+    
+    <select id="selectScanTimeMark" parameterType="java.util.Map" resultType="java.util.Map">
+    	SELECT Convert(varchar,ScanTime,120) as SCANTIME
+    	 FROM LOG_Timer
+        WHERE GUBUN = 'M'
+           AND HOGI = #{hogi}
+    </select>
         
  	<select id="selectTblNoFldNo" parameterType="java.util.Map" resultType="java.util.Map">
         	SELECT C.TBLNO, C.FLDNO 
@@ -132,7 +139,7 @@
 				       		</if>	
 				       		GROUP BY TBLNO	             
      					)
-    </select>         
+    </select>
     
     <select id="selectLogDccTrend4Hogi" parameterType="java.util.Map" resultType="java.util.Map">
       	SELECT ${tblnoGrp} SEQ, * 
@@ -143,9 +150,47 @@
       	 <if test="@org.apache.commons.lang3.StringUtils@isEmpty(startDate)">
 	      	 WHERE Scantime = #{pSCanTime}
       	 </if>
-    </select>      
+    </select>
     
-     <select id="selectLogDccTrendReal" parameterType="java.util.Map" resultType="java.util.Map">
+    <select id="selectLogDccTrendSearch" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * 
+         FROM LOG_${hogi}DCC_TREND
+    	 <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(startDate)">
+	      	 WHERE Scantime <![CDATA[>]]>  DATEADD(SECOND, -5,#{pSCanTime}) AND Scantime <![CDATA[<=]]> #{pSCanTime}
+      	 </if>
+      	 <if test="@org.apache.commons.lang3.StringUtils@isEmpty(startDate)">
+	      	 WHERE Scantime = #{pSCanTime}
+      	 </if>
+    	  AND Seq in (
+    						SELECT C.TBLNO 
+    						 FROM MST_GrpTag B, MST_TAG_DCC C
+     					   WHERE B.HOGI = C.IHOGI 
+     					     <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(xyGubun) and "X".equals(xyGubun)'>
+		           					AND B.ISEQ = C.ISEQ
+				           	</if> 
+     					     <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(xyGubun) and "Y".equals(xyGubun)'>
+		           					AND B.YSEQ = C.ISEQ
+				           	</if>  
+				            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(hogi)">
+				            		AND B.GrpHOGI = #{hogi}
+				            </if>
+				         	<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(dive)">
+				           			AND B.Gubun = #{dive}
+				       		</if>
+				       		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(grpID)">
+				           			AND B.ID = #{grpID}
+				       		</if>
+				       		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(menuNo)">
+				           			AND B.MenuNo = #{menuNo}
+				       		</if>      
+				       		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(uGrpNo)">
+				           			AND B.GrpNo = #{uGrpNo}
+				       		</if>	
+				       		GROUP BY TBLNO	             
+     					)
+    </select>
+    
+    <select id="selectLogDccTrendReal" parameterType="java.util.Map" resultType="java.util.Map">
 	       Select Convert(char(19), Scantime,120) as scantime, Tvalue${fldNo} as tValue
 	       	from log_${hogi}dcc_trend
 	        where scantime = (select scantime 
@@ -153,7 +198,7 @@
 	        									where gubun ='D'
 	        									    and  Hogi = #{hogi}
 	        									    and DataType = #{xyGubun})
-                  and SEQ = 	#{tblNo}   									    
+                  and SEQ = #{tblNo}   									    
 	       									       
      </select> 
      
@@ -176,10 +221,10 @@
 	        									    and  Hogi = #{hogi}
 	        									    and DataType = #{xyGubun})
                   and SEQ = 	#{tblNo}   		
-     </select> 
+     </select>       
     
     <select id="selectDccGrpTagListB" parameterType="java.util.Map" resultType="java.util.Map">
-		<if test='@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(dive,"d")'> 
+		<if test='@org.apache.commons.lang3.StringUtils@equalsIgnoreCase(dive,"d")'>
 			SELECT
 				b.Iseq iSeq,
 				b.gubun,
@@ -313,6 +358,5 @@
 		</if>
 		ORDER BY B.TagNo
 	</select> 
-
 
 </mapper>

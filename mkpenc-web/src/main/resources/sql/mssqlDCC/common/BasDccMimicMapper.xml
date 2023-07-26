@@ -15,7 +15,10 @@
 			         		, TYPE
 			         		, IOTYPE
 			         		, ADDRESS
-			         		, IOBIT
+			         		, CASE
+			         			WHEN IOBIT IS NULL THEN -1
+			         			ELSE IOBIT
+			         		  END IOBIT
 			         		, C.TBLNO
 			         		, FLDNO
 			         		, SaveCoreChk
@@ -108,6 +111,9 @@
     						SELECT C.TBLNO 
     						 FROM MST_GrpTag B, MST_TAG_DCC C
      					   WHERE B.HOGI = C.IHOGI 
+     					     <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(xyGubun) and "X".equals(xyGubun)'>
+		           					AND B.ISEQ = C.ISEQ
+				           	</if> 
      					     <if test='@org.apache.commons.lang3.StringUtils@isNotEmpty(xyGubun) and "Y".equals(xyGubun)'>
 		           					AND B.YSEQ = C.ISEQ
 				           	</if>  
@@ -125,7 +131,8 @@
 				       		</if>      
 				       		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(uGrpNo)">
 				           			AND B.GrpNo = #{uGrpNo}
-				       		</if>		             
+				       		</if>
+				       		GROUP BY TBLNO
      					)
     </select>         
     

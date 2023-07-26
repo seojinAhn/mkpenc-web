@@ -188,4 +188,20 @@ public class FileHelperUtil {
 		}
 	}
 
+	public int deleteAttachFile(Upload upload, String fileName) {
+		String path = getPath(upload);
+		
+		File dir = new File(commonConstant.getAttachPath(), path);
+		File file = new File(dir, fileName);
+
+		if( file.exists() ) {
+			file.delete();
+		}
+		
+		if( file.exists() ) {
+			return 0;
+		} else {
+			return 1;
+		}
+	}
 }

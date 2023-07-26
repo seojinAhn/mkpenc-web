@@ -18,6 +18,10 @@
 <script type="text/javascript" src="<c:url value="/resources/js/login.js" />" charset="utf-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/tip.js" />" charset="utf-8"></script>
 
+<script type="text/javascript">
+	var timerOn = false;
+</script>
+
 </head>
 <body>
 <div class="wrap">
@@ -1133,7 +1137,6 @@
     <!-- //pop_footer -->
 </div>
 <!-- //layer_pop_wrap -->
-<script type="text/javascript" src="<c:url value="/resources/js/context_menu.js" />" charset="utf-8"></script>
 </body>
 </html>
 
